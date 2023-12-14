@@ -17,20 +17,300 @@ For Natural Users, the following parameters are concerned:
 For more information, see the [Country restrictions](http://www.google.fr) article.
 </Note>
 
+### Body parameters 
 <Snippet file="parameters/Address.mdx" />
+<Snippet file="parameters/FirstName.mdx" />
+<Snippet file="parameters/LastName.mdx" />
+<Snippet file="parameters/Birthday.mdx" />
+<Snippet file="parameters/Nationality.mdx" />
+<Snippet file="parameters/CountryOfResidence.mdx" />
+<Snippet file="parameters/Occupation.mdx" />
+<Snippet file="parameters/IncomeRange.mdx" />
+<Snippet file="parameters/Tag.mdx" />
+<Snippet file="parameters/Email.mdx" />
+<Snippet file="parameters/TermsAndConditionsAccepted.mdx" />
+<Snippet file="parameters/UserCategory.mdx" />
 
-<ParamField path="IncomeRange" type="integer">
-    **Allowed values :** 1, 2, 3, 4, 5, 6
+### Responses
 
-    The bracket indicating the income of the user. The brackets are:
+###### 200 - Natural User created
+<Snippet file="response-parameters/Id.mdx" />
+<Snippet file="response-parameters/Address.mdx" />
+<Snippet file="response-parameters/FirstName.mdx" />
+<Snippet file="response-parameters/LastName.mdx" />
+<Snippet file="response-parameters/Birthday.mdx" />
+<Snippet file="response-parameters/Nationality.mdx" />
+<Snippet file="response-parameters/CountryOfResidence.mdx" />
+<Snippet file="response-parameters/Occupation.mdx" />
+<Snippet file="response-parameters/IncomeRange.mdx" />
+<Snippet file="response-parameters/ProofOfIdentity.mdx" />
+<Snippet file="response-parameters/ProofOfAddress.mdx" />
+<Snippet file="response-parameters/CreationDate.mdx" />
+<Snippet file="response-parameters/PersonType.mdx" />
+<Snippet file="response-parameters/Email.mdx" />
+<Snippet file="response-parameters/KYCLevel.mdx" />
+<Snippet file="response-parameters/TermsAndConditionsAccepted.mdx" />
+<Snippet file="response-parameters/TermsAndConditionsAcceptedDate.mdx" />
+<Snippet file="response-parameters/UserCategory.mdx" />
+<Snippet file="response-parameters/UserStatus.mdx" />
+<Snippet file="response-parameters/Tag.mdx" />
 
-    - 1 = 18K
-    - 2 = 18K–30K
-    - 3 = 30K–50K
-    - 4 = 50K–80K
-    - 5 = 80K–120K
-    - 6 = >120K
+###### 400 - Restricted country as `Nationality` value 
 
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
+    "Date": 1676551649.0,
+    "errors": {
+        "Nationality": "The Nationality used is blocked"
+    }
+}
+```
 
-    This value is `null` if the UserCategory is PAYER.
-</ParamField>
+###### 400 - Invalid email
+
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+        "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
+    }
+}
+```
+
+<RequestExample>
+```json REST
+    {
+        "Address":{
+            "AddressLine1":"3 rue des Plantes",
+            "AddressLine2":"Appartement 7",
+            "City":"Paris",
+            "Region":"Ile-de-France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        },
+        "FirstName":"Hugo",
+        "LastName":"Garnier",
+        "Birthday":652117514,
+        "Nationality":"FR",
+        "CountryOfResidence":"FR",
+        "Occupation":null,
+        "IncomeRange":null,
+        "Tag":"Created using MANGOPAY API Collection Postman",
+        "Email":"email@test.com",
+        "TermsAndConditionsAccepted":false,
+        "UserCategory":"PAYER"
+    }
+```
+
+```php PHP
+    <?php 
+
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+
+    $api = new MangoPayApi();
+
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-api-key';
+    $api->Config->TemporaryFolder = 'tmp/';
+
+    try {
+        $user = new \MangoPay\UserNatural();
+
+        $user->FirstName = 'Alex';
+        $user->LastName = 'Smith';
+        $user->Email = "asmith@example.com";
+        
+        $user->Address = new \MangoPay\Address();
+        $user->Address->AddressLine1 = 'Rue des plantes';
+        $user->Address->AddressLine2 = 'Building A';
+        $user->Address->City = 'Paris';
+        $user->Address->Country = 'FR';
+        $user->Address->PostalCode = '75000';
+        $user->Address->Region = 'IDF';
+        $user->Tag = 'Created using Mangopay PHP SDK';
+        
+        $user->TermsAndConditionsAccepted = true;
+        $user->UserCategory = 'Payer';
+        
+        $response = $api->Users->Create($user);
+
+        print_r($response);
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let naturalUser = {
+  Address: {
+    AddressLine1: '2795 Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'Arkansas',
+    PostalCode: '72212',
+    Country: 'US',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+  Birthday: 655772400,
+  Nationality: 'FR',
+  CountryOfResidence: 'US',
+  Tag: 'My first user',
+  Email: 'john.doe@mangopay.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const createUser = async (userObject) => {
+  return await mangopay.Users.create(userObject)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUser(naturalUser)
+```
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createNaturalUser(naturalUserObject)
+    begin
+        response = MangoPay::NaturalUser.create(naturalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myNaturalUser = {
+    Tag: 'Created using Mangopay Ruby SDK',
+    Email: 'john.ruby@test.com',
+    FirstName: 'John',
+    LastName: 'Doe',
+    Address: {
+        AddressLine1: '2795 Edgewood Road',
+        City: 'Little Rock',
+        Region: 'Arkansas',
+        PostalCode: '72212',
+        Country: 'US'
+    },
+    Birthday: 655772400,
+    Nationality: 'FR',
+    CountryOfResidence: 'US',
+    TermsAndConditionsAccepted: true,
+    UserCategory: 'OWNER'
+}
+
+createNaturalUser(myNaturalUser)
+```
+
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.core.enumerations.CountryIso;
+
+public class HandleRequest {
+    public static void main(String[] args) {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural user = new UserNatural();
+        Address address = new Address();
+
+        address.setAddressLine1("2795 Edgewood Road");
+        address.setCity("Little Rock");
+        address.setRegion("Arkansas");
+        address.setPostalCode("72212");
+        address.setCountry(CountryIso.US);
+
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john.java@mangopay.com");
+        user.setAddress(address);
+        user.setBirthday(655772400);
+        user.setNationality(CountryIso.FR);
+        user.setCountryOfResidence(CountryIso.US);
+        user.setTermsAndConditionsAccepted(true);
+        user.setTag("Created with Java SDK");
+        user.setUserCategory(UserCategory.OWNER);
+
+        mangopay.getUserApi().create(user);        
+    }
+}
+```
+
+```python Python
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import (User, NaturalUser)
+from mangopay.utils import Address
+
+user = NaturalUser(
+    first_name='Alex',
+    last_name='Smith',
+    address=Address(
+        address_line_1='2795 Edgewood Road',
+        city='Little Rock',
+        region='Arkansas',
+        postal_code='72212',
+        country='US'
+    ),
+    birthday=655772400,
+    nationality='FR',
+    country_of_residence='US',
+    person_type='NATURAL',
+    email='john.python@test.com',
+    tag='Created with Python SDK',
+    user_category='OWNER'
+)
+
+response = user.save()
+print(response)
+```
+
+</RequestExample>
