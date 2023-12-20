@@ -1,0 +1,99 @@
+---
+title: 'Authentification'
+---
+
+## Introduction
+
+The Mangopay REST API uses the OAuth 2.0 authentication protocol to provide secure access to resources. 
+
+<Note>
+**Note – SDKs handle authentication automatically**
+
+For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. Find out more in SDK authentication section.
+</Note>
+
+<Tip>
+**Best practices – Security considerations**
+
+- HTTPS is mandatory for production environments
+- We strongly recommend authenticating from your server for security reasons (rather than from the user’s browser)
+</Tip>
+
+## OAuth 2.0 authentication
+
+The OAuth 2.0 method of authentication consists in generating a temporary authentication token, called a Bearer token. This can then be used as tokenized credentials until it expires, at which point a new token must be generated. The logic is as follows:
+
+Generate a Bearer token
+Use the Bearer token until it expires
+Generate a new one before expiry
+Since you only send your API key to generate the token, this industry-standard method ensures a high level of security.
+
+You need a `ClientId` and an API key ([get a Sandbox API key for free](https://hub.mangopay.com/user-registration)).
+
+<Steps>
+  <Step title="Generate a Bearer token">
+    To generate your authentication token, call the endpoint below using Basic Access authentication as follows:
+
+    **A. Combine your `ClientId` and API key into a string separated by a colon `ClientId`:`api-key`**
+  </Step>
+  <Step title="Use your Bearer token until it expires">
+    These are instructions or content that only pertain to the second step.
+  </Step>
+  <Step title="Generate a new token before expiry">
+    Before your token expires, generate a new one with the OAuth token endpoint as described above. 
+
+    <Tip>
+        **Best practice – Only generate new tokens when the last one expires**<br />
+
+        There is no need to generate a different token for every call you make – only before the previous one expires.
+    </Tip>
+
+    Once the token expires (that is, the `expires_in` seconds value elapses), then it is no longer valid and calls made with it will return the following HTTP 401 error: 
+
+    ```json
+    {
+        "Message": "The authorization credentials are not valid",
+        "Type": "invalid_credentials",
+        "Id": "9e1f5654-2957-408b-a198-e921ca6830b7",
+        "Date": 1700772361.0,
+        "errors": null
+    }
+    ```
+
+    If your authentication is misconfigured and causes repeated access attempts with invalid credentials, it may result in a temporary blockage on your IP address:
+
+    ```json
+    {
+        "error": "unauthorized_client",
+        "error_description": "This account has been temporarily locked for security reasons. Please try again later."
+    }
+    ```
+  </Step>
+</Steps>
+
+## SDK authentication
+
+With our official SDKs, you don’t have to worry about the logic behind the authentication to Mangopay: you just need to set your credentials after the SDK initialization.
+
+The authentication is then handled automatically, relying on OAuth 2.0 to provide a secure connection to Mangopay.
+
+Please find below examples of how to set your credentials after the SDK initialization to authenticate:
+
+
+<CodeGroup>
+    ```php PHP
+    $api = new MangoPay\MangoPayApi();
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-client-api-key;
+    ```
+
+    ```javascript NodeJS
+    const mangopay = require('mangopay2-nodejs-sdk');
+
+    let mangopayApi = new mangopay({
+        clientId: 'your_client_id',
+        clientApiKey: 'your_client_api_key',
+        baseUrl: 'https://api.sandbox.mangopay.com'
+    });
+    ```
+</CodeGroup>
