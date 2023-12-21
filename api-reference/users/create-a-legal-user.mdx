@@ -21,3 +21,264 @@ For more information, see the [Country restrictions](https://mangopay.com/docs/c
 ### Body parameters 
 
 <Snippet file="parameters/HeadquartersAddress.mdx" />
+<Snippet file="parameters/LegalRepresentativeAddress.mdx" />
+<Snippet file="parameters/Name.mdx" />
+<Snippet file="parameters/LegalPersonType.mdx" />
+<Snippet file="parameters/LegalRepresentativeFirstName.mdx" />
+<Snippet file="parameters/LegalRepresentativeLastName.mdx" />
+<Snippet file="parameters/LegalRepresentativeEmail.mdx" />
+<Snippet file="parameters/LegalRepresentativeBirthday.mdx" />
+<Snippet file="parameters/LegalRepresentativeNationality.mdx" />
+<Snippet file="parameters/LegalRepresentativeCountryOfResidence.mdx" />
+<Snippet file="parameters/CompanyNumber.mdx" />
+<Snippet file="parameters/LegalUserTag.mdx" />
+<Snippet file="parameters/LegalEntityEmail.mdx" />
+<Snippet file="parameters/TermsAndConditionsAccepted.mdx" />
+<Snippet file="parameters/UserCategory.mdx" />
+
+<RequestExample>
+```json REST
+{
+    "HeadquartersAddress": {
+        "AddressLine1": "34 rue des Entreprises",
+        "AddressLine2": "Batiment B",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "12032 Wiza Way",
+        "AddressLine2": "Mitchell Drive",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Cedrick",
+    "LegalRepresentativeLastName": "Dickinson",
+    "LegalRepresentativeEmail": "Agustin.Ullrich@yahoo.com",
+    "LegalRepresentativeBirthday": 652117514,
+    "LegalRepresentativeNationality": "FR",
+    "LegalRepresentativeCountryOfResidence": "FR",
+    "CompanyNumber": "123456789",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "Email": "cortney_douglas@yahoo.com",
+    "TermsAndConditionsAccepted": true,
+    "UserCategory": "OWNER"
+}
+```
+
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $user = new \MangoPay\UserLegal();
+    $user->Name = 'Smith corp';
+    $user->Email = 'smith@example.com';
+    $user->LegalPersonType = \MangoPay\LegalPersonType::Business;
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->HeadquartersAddress = $address;
+    $user->LegalRepresentativeAddress = $address;
+    
+    $user->LegalRepresentativeFirstName = 'Alex';
+    $user->LegalRepresentativeLastName = 'Smith';
+    $user->LegalRepresentativeEmail = 'asmith@example.com';
+    $user->LegalRepresentativeBirthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->LegalRepresentativeNationality = 'FR';
+    $user->LegalRepresentativeCountryOfResidence = 'FR';
+    $user->CompanyNumber = 'LU123456';
+    
+    $user->Tag = 'Created using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Create($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-mangopay-client-id',
+  clientApiKey: 'your-mangopay-api-key',
+})
+
+let myLegalUser = {
+  HeadquartersAddress: {
+    AddressLine1: '45 Main Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Created using the Mangopay NodeJS SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL',
+}
+
+const createLegalUser = async (legalUser) => {
+  return await mangopay.Users.create(legalUser)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createLegalUser(myLegalUser)
+```
+
+``` ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createLegalUser(legalUserObject)
+    begin
+        response = MangoPay::LegalUser.create(legalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    HeadquartersAddress: {
+    AddressLine1: '59 Main Road',
+    AddressLine2: 'PB 456',
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Updated using the Mangopay Ruby SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL'
+}
+
+createLegalUser(myLegalUser)
+```
+
+``` python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import LegalUser
+from mangopay.utils import Address
+
+legal_user = LegalUser(
+    headquarters_address = Address(
+        address_line_1='4 Main Road',
+        city = 'London',
+        postal_code='WC1N 4RG',
+        country='GB'
+    ),
+    legal_representative_address = Address(
+        address_line_1='5 London Road',
+        city = 'London',
+        postal_code='NE1 0AA',
+        country='GB'
+    ),
+    name = 'Executive Consulting',
+    legal_person_type = 'BUSINESS',
+    legal_representative_first_name = 'Kim',
+    legal_representative_last_name = 'Yen',
+    legal_representative_email = 'kim.yen@example.com',
+    legal_representative_birthday = 188301600,
+    legal_representative_nationality = 'GB',
+    legal_representative_country_of_residence = 'GB',
+    company_number = '12345678',
+    tag='Created with Python SDK',
+    email= 'ky.consulting@example.com',
+    terms_and_conditions_accepted = True, 
+    user_category='OWNER'
+)
+
+response = legal_user.save()
+pprint(response)
+```
+
+
+</RequestExample>
