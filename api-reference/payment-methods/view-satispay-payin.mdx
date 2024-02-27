@@ -1,0 +1,144 @@
+---  
+ title: 'View a PayIn (Satispay)'  
+ api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import CountryResponse from '/snippets/parameters/CountryResponse.mdx';
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import ReturnURLResponse from '/snippets/parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import PayInId from '/snippets/parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+###### 200 Succeeded  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<CountryResponse />  
+
+ <ResponseExample>  
+
+```json Succeeded  
+
+{
+    "Id": "wt_e7a7e499-ed07-4086-a8f1-73207e497b3c",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1707772706,
+    "AuthorId": "213407540",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1707772720,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "214818911",
+    "CreditedUserId": "213407540",
+    "PaymentType": "SATISPAY",
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_e7a7e499-ed07-4086-a8f1-73207e497b3c",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140186246851&rs=pJm8rdr5445tSOGD5vWL5HPkSDbt7wYR&cs=3726012989f6fc7cbefca757f6f109dc4b06fdf17c29a48c9c88abf1ab5c22f7",
+    "StatementDescriptor": "MGP",
+    "Country": "FR"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(vars(view_payin))
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

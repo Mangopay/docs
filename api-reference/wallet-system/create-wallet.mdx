@@ -1,0 +1,277 @@
+---  
+ title: 'Create a Wallet'  
+ api: 'POST /v2.01/{ClientId}/wallets'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import FundsTypeResponse from '/snippets/parameters/FundsTypeResponse.mdx';
+import CurrencyResponse from '/snippets/parameters/CurrencyResponse.mdx';
+import BalanceResponse from '/snippets/parameters/BalanceResponse.mdx';
+import OwnersResponse from '/snippets/parameters/OwnersResponse.mdx';
+import DescriptionResponse from '/snippets/parameters/DescriptionResponse.mdx';
+import Tag5 from '/snippets/parameters/Tag5.mdx';
+import Currency20 from '/snippets/parameters/Currency20.mdx';
+import Owners from '/snippets/parameters/Owners.mdx';
+import Description1 from '/snippets/parameters/Description1.mdx';
+  
+
+<Note>  
+**Best practice – Create one wallet per user and currency** 
+  
+While Mangopay authorizes you to create as many wallets as required, we recommend you create one wallet per user and currency.  
+</Note>  
+
+<Warning>  
+**Caution – Currency not updatable** 
+  
+The `Currency` of a created wallet cannot be changed.  
+</Warning>  
+
+### Body parameters  
+
+<Description1 />  
+
+<Owners />  
+
+<Currency20 />  
+
+<Tag5 />  
+
+### Responses  
+
+###### 200   
+
+<DescriptionResponse />  
+
+<OwnersResponse />  
+
+<BalanceResponse />  
+
+<CurrencyResponse />  
+
+<FundsTypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Balance": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Currency": "EUR",
+    "FundsType": "DEFAULT",
+    "Id": "145389978",
+    "Tag": "End user: 456-TSt",
+    "CreationDate": 1657095351
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Limited to one owner per wallet  
+
+ <ResponseExample>  
+
+```json Limited to one owner per wallet  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c09ebc81-24d6-47ef-8cef-d491209faee8",
+    "Date": 1702037849.0,
+    "errors": {
+        "Owners": "Owners doesn't support multiple values for the moment"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Currency not supported  
+
+ <ResponseExample>  
+
+```json Currency not supported  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "d3370a5b-af3c-4b99-9e6e-6c7dea052e19",
+    "Date": 1690284549.0,
+    "errors": {
+        "Currency": "Currency: The currency AZN is not available"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Currency": "EUR",
+    "Tag": "End user: 456-TSt",
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    
+    $wallet = new \MangoPay\Wallet();
+
+    $wallet->Owners = ['198675238'];
+    $wallet->Currency = 'EUR';
+    $wallet->Description = 'EUR Wallet';
+    $wallet->Tag = 'Created with Mangopay PHP SDK';
+
+    $response = $api->Wallets->Create($wallet);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key'
+})
+
+let userId = '165863393'
+
+let wallet = {
+    Owners: [userId],
+    Currency: 'EUR',
+    Description: 'Wallet in EUR',
+    Tag: 'Created using Mangopay NodeJS SDK'
+}
+
+const createWallet = async (walletObject) => {
+  return await mangopay.Wallets.create(wallet)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWallet(wallet)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createWallet(walletObject)
+    begin
+        response = MangoPay::Wallet.create(walletObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create wallet: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+}
+
+myWallet = {
+    Owners: [myUser[:Id]],
+    Currency: 'EUR',
+    Description: 'Wallet in EUR',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createWallet(myWallet)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet(
+    owners=[natural_user],
+    description='Wallet of Rhoda Keeling',
+    currency='EUR',
+    tag="Created using the Mangopay Python SDK"
+)
+
+create_wallet = user_wallet.save()
+
+pprint(create_wallet)  
+```  
+
+  
+</RequestExample>

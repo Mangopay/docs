@@ -1,0 +1,205 @@
+---  
+ title: 'List Bank Accounts for a User'  
+ api: 'GET /v2.01/{ClientId}/users/{UserId}/bankaccounts'  
+---  
+
+import Array_BankAccountsResponse from '/snippets/parameters/Array_BankAccountsResponse.mdx';
+import UserId1 from '/snippets/parameters/UserId1.mdx';
+import Active from '/snippets/parameters/Active.mdx';
+import Sort from '/snippets/parameters/Sort.mdx';
+import per_page from '/snippets/parameters/per_page.mdx';
+import page from '/snippets/parameters/page.mdx';
+  
+
+<Note>  
+**Note** 
+  
+The returned parameters may vary depending on the encountered bank account types.  
+</Note>  
+
+### Query parameters  
+
+<page />  
+
+<per_page />  
+
+<Sort />  
+
+<Active />  
+
+### Path parameters  
+
+<UserId1 />  
+
+### Responses  
+
+###### 200   
+
+<Array_BankAccountsResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "OwnerAddress":{
+            "AddressLine1":"The Oasis",
+            "AddressLine2":"Rue des plantes",
+            "City":"Paris",
+            "Region":"Ile de Frog",
+            "PostalCode":"75010",
+            "Country":"FR"
+        },
+        "IBAN":"FR7630004000031234567890143",
+        "BIC":"CRLYFRPP",
+        "UserId":"142036728",
+        "OwnerName":"John Doe",
+        "Type":"IBAN",
+        "Id":"142036878",
+        "Tag":"Postman create a bank account",
+        "CreationDate":1654073079,
+        "Active":true
+    },
+    {
+        "OwnerAddress":{
+            "AddressLine1":"77 Street",
+            "AddressLine2":"Rue des plantes",
+            "City":"Paris",
+            "Region":"Ile de France",
+            "PostalCode":"75009",
+            "Country":"FR"
+        },
+        "AccountNumber":"11696419",
+        "ABA":"071000288",
+        "DepositAccountType":"CHECKING",
+        "UserId":"142036728",
+        "OwnerName":"John Doe",
+        "Type":"US",
+        "Id":"150294885",
+        "Tag":null,
+        "CreationDate":1661864955,
+        "Active":true
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '146476890';
+
+    $response = $api->Users->GetBankAccounts($userId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r$e);
+}
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '165863393',
+}
+
+const listUserBankAccounts = async (userId) => {
+  return await mangopay.Users.getBankAccounts(userId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listUserBankAccounts(user.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listBankAccounts(userId)
+    begin
+        response = MangoPay::BankAccount.fetch(userId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '165863393'
+}
+
+listBankAccounts(myUser[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+
+natural_user = NaturalUser.get('213753890')
+
+bank_accounts = natural_user.bankaccounts.all()
+
+for bank_account in bank_accounts:
+    pprint(vars(bank_account))  
+```  
+
+  
+</RequestExample>

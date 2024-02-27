@@ -1,0 +1,243 @@
+---  
+ title: 'View a Recurring PayIn Registration'  
+ api: 'GET /v2.01/{ClientId}/recurringpayinregistrations/{RecurringPayinRegistrationId}'  
+---  
+
+import MigrationResponse from '/snippets/parameters/MigrationResponse.mdx';
+import NextTransactionFeesResponse from '/snippets/parameters/NextTransactionFeesResponse.mdx';
+import NextTransactionDebitedFundsResponse from '/snippets/parameters/NextTransactionDebitedFundsResponse.mdx';
+import FirstTransactionFeesResponse from '/snippets/parameters/FirstTransactionFeesResponse.mdx';
+import FirstTransactionDebitedFundsResponse from '/snippets/parameters/FirstTransactionDebitedFundsResponse.mdx';
+import FreeCyclesResponse from '/snippets/parameters/FreeCyclesResponse.mdx';
+import FractionedPaymentResponse from '/snippets/parameters/FractionedPaymentResponse.mdx';
+import FixedNextAmountResponse from '/snippets/parameters/FixedNextAmountResponse.mdx';
+import FrequencyResponse from '/snippets/parameters/FrequencyResponse.mdx';
+import EndDateResponse from '/snippets/parameters/EndDateResponse.mdx';
+import ShippingResponse from '/snippets/parameters/ShippingResponse.mdx';
+import BillingResponse from '/snippets/parameters/BillingResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import CardIdResponse from '/snippets/parameters/CardIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CycleNumberResponse from '/snippets/parameters/CycleNumberResponse.mdx';
+import TotalAmountResponse from '/snippets/parameters/TotalAmountResponse.mdx';
+import RecurringTypeResponse from '/snippets/parameters/RecurringTypeResponse.mdx';
+import CurrentStateResponse from '/snippets/parameters/CurrentStateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import RecurringPayinRegistrationId from '/snippets/parameters/RecurringPayinRegistrationId.mdx';
+  
+
+### Query parameters  
+
+<RecurringPayinRegistrationId />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<CurrentStateResponse />  
+
+<RecurringTypeResponse />  
+
+<TotalAmountResponse />  
+
+<CycleNumberResponse />  
+
+<AuthorIdResponse />  
+
+<CardIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<BillingResponse />  
+
+<ShippingResponse />  
+
+<EndDateResponse />  
+
+<FrequencyResponse />  
+
+<FixedNextAmountResponse />  
+
+<FractionedPaymentResponse />  
+
+<FreeCyclesResponse />  
+
+<FirstTransactionDebitedFundsResponse />  
+
+<FirstTransactionFeesResponse />  
+
+<NextTransactionDebitedFundsResponse />  
+
+<NextTransactionFeesResponse />  
+
+<MigrationResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id":"155172881",
+    "Status":"ENDED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "CurrentState":{
+        "PayinsLinked":0,
+        "CumulatedDebitedAmount":{
+            "Currency":"EUR",
+            "Amount":0
+        },
+        "CumulatedFeesAmount":{
+            "Currency":"EUR",
+            "Amount":0
+        },
+        "LastPayinId":null
+    },
+    "RecurringType":"CUSTOM",
+    "TotalAmount":null,
+    "CycleNumber":null,
+    "AuthorId":"146476890",
+    "CardId":"155155221",
+    "CreditedUserId":"142036728",
+    "CreditedWalletId":"145389978",
+    "Billing":{
+        "FirstName":"John",
+        "LastName":"Doe",
+        "Address":{
+            "AddressLine1":"The Oasis",
+            "AddressLine2":"Rue des Plantes",
+            "City":"Paris",
+            "Region":"Ile de France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "Shipping":{
+        "FirstName":"John",
+        "LastName":"Doe",
+        "Address":{
+            "AddressLine1":"The Oasis",
+            "AddressLine2":"Rue des Plantes",
+            "City":"Paris",
+            "Region":"Ile de France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "EndDate":1698923634,
+    "Frequency":"Monthly",
+    "FixedNextAmount":true,
+    "FractionedPayment":true,
+    "FreeCycles":0,
+    "FirstTransactionDebitedFunds":null,
+    "FirstTransactionFees":null,
+    "NextTransactionDebitedFunds":null,
+    "NextTransactionFees":null,
+    "Migration":true
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringRegistration = {
+  Id: '192912686',
+}
+
+const viewRecurringRegistration = async (recurringRegistrationId) => {
+  return await mangopay.PayIns.getRecurringPayin(recurringRegistrationId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewRecurringRegistration(myRecurringRegistration.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewRecurringRegistration(recurringRegistrationId)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::Recurring.fetch(recurringRegistrationId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch recurring registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRecurringRegistration = {
+  Id: '192912686',
+}
+
+viewRecurringRegistration(myRecurringRegistration[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import RecurringPayInRegistration
+
+recurring_payin_registration_id = '213857583'
+
+try:
+    view_recurring_payin_registration = RecurringPayInRegistration.get(recurring_payin_registration_id)
+    pprint(vars(view_recurring_payin_registration))
+except RecurringPayInRegistration.DoesNotExist:
+    print('The Recurring PayIn Registration {} does not exist.'.format(recurring_payin_registration_id))
+  
+```  
+
+  
+</RequestExample>

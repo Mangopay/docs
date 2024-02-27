@@ -1,0 +1,185 @@
+---  
+ title: 'Submit a Dispute Document'  
+ api: 'PUT /v2.01/{ClientId}/disputes/{DisputeId}/documents/{DisputeDocumentId}'  
+---  
+
+import RefusedReasonMessageResponse from '/snippets/parameters/RefusedReasonMessageResponse.mdx';
+import RefusedReasonTypeResponse from '/snippets/parameters/RefusedReasonTypeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import ProcessedDateResponse from '/snippets/parameters/ProcessedDateResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import DisputeIdResponse from '/snippets/parameters/DisputeIdResponse.mdx';
+import Status5 from '/snippets/parameters/Status5.mdx';
+import DisputeDocumentId from '/snippets/parameters/DisputeDocumentId.mdx';
+import DisputeId from '/snippets/parameters/DisputeId.mdx';
+  
+
+### Path parameters  
+
+<DisputeId />  
+
+<DisputeDocumentId />  
+
+### Body parameters  
+
+<Status5 />  
+
+### Responses  
+
+###### 200   
+
+<DisputeIdResponse />  
+
+<TypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ProcessedDateResponse />  
+
+<StatusResponse />  
+
+<RefusedReasonTypeResponse />  
+
+<RefusedReasonMessageResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "DisputeId": "159102965",
+    "Type": "DELIVERY_PROOF",
+    "Id": "159188418",
+    "Tag": null,
+    "CreationDate": 1672655973,
+    "ProcessedDate": null,
+    "Status": "VALIDATION_ASKED",
+    "RefusedReasonType": null,
+    "RefusedReasonMessage": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Status": "VALIDATION_ASKED"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $disputeId = '199385842';
+    $disputeDocumentId = '199387308';
+
+    $disputeDocument = $api->DisputeDocuments->Get($disputeDocumentId);
+    $disputeDocument->Status = \MangoPay\DisputeDocumentStatus::ValidationAsked;
+
+    $response = $api->Disputes->UpdateDisputeDocument($disputeId, $disputeDocument);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '192746554',
+}
+
+let myDisputeDocument = {
+  Id: '192747541',
+  Status: 'VALIDATION_ASKED',
+}
+
+const submitDisputeDocument = async (disputeId, disputeDocument) => {
+  return await mangopay.Disputes.updateDisputeDocument(disputeId, disputeDocument)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+submitDisputeDocument(myDispute.Id, myDisputeDocument)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def submitDisputeDocument(disputeId, disputeDocumentId, disputeDocumentObject)
+    begin
+        response = MangoPay::Dispute.update_document(disputeId, disputeDocumentId, disputeDocumentObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit Document: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'194413022'
+}
+
+myDocument = {
+    Id:'194643965',
+    Status:'VALIDATION_ASKED'
+}
+
+submitDisputeDocument(myDispute[:Id], myDocument[:Id], myDocument)  
+```  
+
+  
+</RequestExample>

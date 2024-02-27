@@ -1,0 +1,226 @@
+---  
+ title: 'List Transactions for a Bank Account'  
+ api: 'GET /v2.01/{ClientId}/bankaccounts/{BankAccountId}/transactions'  
+---  
+
+import Array_TransactionsResponse from '/snippets/parameters/Array_TransactionsResponse.mdx';
+import BankAccountId from '/snippets/parameters/BankAccountId.mdx';
+import Nature from '/snippets/parameters/Nature.mdx';
+import Type from '/snippets/parameters/Type.mdx';
+import AfterDate from '/snippets/parameters/AfterDate.mdx';
+import BeforeDate from '/snippets/parameters/BeforeDate.mdx';
+import ResultCode from '/snippets/parameters/ResultCode.mdx';
+import Status from '/snippets/parameters/Status.mdx';
+  
+
+This call returns all the transactions of a given bank account, whether the bank account is the source (pay-in) or the target (payout) of the transaction.  
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+<BeforeDate />  
+
+<AfterDate />  
+
+<Type />  
+
+<Nature />  
+
+### Path parameters  
+
+<BankAccountId />  
+
+### Responses  
+
+###### 200 Payouts-only example  
+
+<Array_TransactionsResponse />  
+
+ <ResponseExample>  
+
+```json Payouts-only example  
+
+[
+    {
+        "Id":"155249846",
+        "Tag":"Created using MANGOPAY API Collection Postman",
+        "CreationDate":1667471665,
+        "AuthorId":"146476890",
+        "CreditedUserId":null,
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":1000
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":990
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":10
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1667471665,
+        "Type":"PAYOUT",
+        "Nature":"REGULAR",
+        "CreditedWalletId":null,
+        "DebitedWalletId":"148968396"
+    },
+    {
+        "Id":"155250949",
+        "Tag":"Created using MANGOPAY API Collection Postman",
+        "CreationDate":1667471872,
+        "AuthorId":"146476890",
+        "CreditedUserId":null,
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":16000
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":15990
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":10
+        },
+        "Status":"FAILED",
+        "ResultCode":"001001",
+        "ResultMessage":"Unsufficient wallet balance",
+        "ExecutionDate":null,
+        "Type":"PAYOUT",
+        "Nature":"REGULAR",
+        "CreditedWalletId":null,
+        "DebitedWalletId":"148968396"
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankAccountId = '198982485';
+
+    $response = $api->BankAccounts->GetTransactions($bankAccountId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let bankAccount = {
+  Id: '154876798',
+}
+
+const getBankAccountTransactions = async (bankAccountId) => {
+  return await mangopay.BankAccounts.getTransactions(bankAccountId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getBankAccountTransactions(bankAccount.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listTransactionsBankAccount(bankAccountId)
+    begin
+        response = MangoPay::BankAccount.transactions(bankAccountId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Transactions: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myBankAccount = {
+    Id: '154876798'
+}
+
+listTransactionsBankAccount(myBankAccount[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+
+natural_user = NaturalUser.get('213753890')
+
+bank_account = BankAccount(
+    user_id = natural_user.id,
+    id = '214651521'
+)
+
+transactions = BankAccount.get_transactions(self = bank_account)
+
+for transaction in transactions:
+    pprint(vars(transaction))  
+```  
+
+  
+</RequestExample>

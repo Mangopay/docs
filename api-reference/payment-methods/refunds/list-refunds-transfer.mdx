@@ -1,0 +1,200 @@
+---  
+ title: 'List Refunds for a Transfer'  
+ api: 'GET /v2.01/{ClientId}/transfers/{TransferId}/refunds'  
+---  
+
+import Array_RefundsResponse from '/snippets/parameters/Array_RefundsResponse.mdx';
+import TransferId from '/snippets/parameters/TransferId.mdx';
+import AfterDate from '/snippets/parameters/AfterDate.mdx';
+import BeforeDate from '/snippets/parameters/BeforeDate.mdx';
+import ResultCode from '/snippets/parameters/ResultCode.mdx';
+import Status from '/snippets/parameters/Status.mdx';
+  
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+<BeforeDate />  
+
+<AfterDate />  
+
+### Path parameters  
+
+<TransferId />  
+
+### Responses  
+
+###### 200   
+
+<Array_RefundsResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "Id":"155586343",
+        "Tag":"custom meta",
+        "CreationDate":1667916816,
+        "AuthorId":"146476890",
+        "CreditedUserId":null,
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":1100
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":1120
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":-20
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1667916816,
+        "Type":"TRANSFER",
+        "Nature":"REFUND",
+        "InitialTransactionId":"155585643",
+        "InitialTransactionType":"TRANSFER",
+        "InitialTransactionNature":"REGULAR",
+        "DebitedWalletId":"152161320",
+        "CreditedWalletId":"148968396",
+        "RefundReason":{
+            "RefundReasonMessage":null,
+            "RefundReasonType":"OTHER"
+        }
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $transferId = '155585643';
+
+    $response = $api->Transfers->GetRefunds($transferId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myTransfer = {
+  Id: '180974208',
+}
+
+const listRefunds = async (transferId) => {
+  return await mangopay.Transfers.getRefunds(transferId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listRefunds(myTransfer.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listTransferRefunds(transferId)
+    begin
+        response = MangoPay::Transfer.refunds(transferId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch refunds: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myTransfer = {
+    Id: '180974208'
+}
+
+listTransferRefunds(myTransfer[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.resources import LegalUser, Transfer, TransferRefund
+
+legal_user = LegalUser.get('211918806')
+
+legal_user_wallet_id = '213754077'
+
+transfer = Transfer.get('214568995')
+
+transfer_refund = TransferRefund(
+    id = transfer.id,
+    author = legal_user,
+    transfer = transfer
+)
+
+transfer_refunds = Transfer.get_refunds(self = transfer_refund)
+
+for transfer_refund in transfer_refunds:
+    pprint(vars(transfer_refund))  
+```  
+
+  
+</RequestExample>

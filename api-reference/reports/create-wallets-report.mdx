@@ -1,0 +1,325 @@
+---  
+ title: 'Create a Wallets Report'  
+ api: 'POST /v2.01/{ClientId}/reports/wallets'  
+---  
+
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import ColumnsResponse from '/snippets/parameters/ColumnsResponse.mdx';
+import FiltersResponse from '/snippets/parameters/FiltersResponse.mdx';
+import PreviewResponse from '/snippets/parameters/PreviewResponse.mdx';
+import SortResponse from '/snippets/parameters/SortResponse.mdx';
+import ReportTypeResponse from '/snippets/parameters/ReportTypeResponse.mdx';
+import CallbackURLResponse from '/snippets/parameters/CallbackURLResponse.mdx';
+import DownloadURLResponse from '/snippets/parameters/DownloadURLResponse.mdx';
+import DownloadFormatResponse from '/snippets/parameters/DownloadFormatResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import ReportDateResponse from '/snippets/parameters/ReportDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import Columns from '/snippets/parameters/Columns.mdx';
+import Filters from '/snippets/parameters/Filters.mdx';
+import Preview from '/snippets/parameters/Preview.mdx';
+import Sort1 from '/snippets/parameters/Sort1.mdx';
+import CallbackURL from '/snippets/parameters/CallbackURL.mdx';
+import DownloadFormat from '/snippets/parameters/DownloadFormat.mdx';
+import Tag6 from '/snippets/parameters/Tag6.mdx';
+  
+
+<Note>  
+**Note – Report expiration date** 
+  
+A report expires after 24 hours (i.e., you can no longer download it after this delay). You can still generate a new report with the same filters and information easily.  
+</Note>  
+
+### Body parameters  
+
+<Tag6 />  
+
+<DownloadFormat />  
+
+<CallbackURL />  
+
+<Sort1 />  
+
+<Preview />  
+
+<Filters />  
+
+<Columns />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<TagResponse />  
+
+<ReportDateResponse />  
+
+<StatusResponse />  
+
+<DownloadFormatResponse />  
+
+<DownloadURLResponse />  
+
+<CallbackURLResponse />  
+
+<ReportTypeResponse />  
+
+<SortResponse />  
+
+<PreviewResponse />  
+
+<FiltersResponse />  
+
+<ColumnsResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "147284953",
+    "CreationDate": 1658838991,
+    "Tag": "This is my tag",
+    "ReportDate": null,
+    "Status": "PENDING",
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "CallbackURL": null,
+    "ReportType": "WALLETS",
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658838931,
+        "AfterDate": 1656246931,
+        "OwnerId": null,
+        "Currency": null,
+        "MinBalanceAmount": null,
+        "MinBalanceCurrency": null,
+        "MaxBalanceAmount": null,
+        "MaxBalanceCurrency": null
+    },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "Owners",
+        "Description",
+        "BalanceAmount",
+        "BalanceCurrency",
+        "Currency",
+        "FundsType"
+    ],
+    "ResultCode": null,
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "custom meta",
+    "DownloadFormat": "CSV",
+    "CallbackURL": null,
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658838931,
+        "AfterDate": 1656246931,
+        "OwnerId": null,
+        "Currency": null,
+        "MinBalanceAmount": null,
+        "MinBalanceCurrency": null,
+        "MaxBalanceAmount": null,
+        "MaxBalanceCurrency": null
+    },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "Owners",
+        "Description",
+        "BalanceAmount",
+        "BalanceCurrency",
+        "Currency",
+        "FundsType"
+    ],
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $reportRequest = new \MangoPay\ReportRequest();
+    $reportRequest->ReportType = \MangoPay\ReportType::Wallets;
+    $reportRequest->CallbackURL = 'https://mangopay.com/docs/please-ignore';
+    $reportRequest->Tag = 'Created using Mangopay PHP SDK';
+    
+    $reportRequest->Filters = [
+        'Currency' => 'EUR',
+        'BalanceAmount' => [
+            'Min' => 1,
+            'Max' => 1000000
+        ],
+        'BeforeDate' => 1658838931,
+        'AfterDate'  => 1656246931,
+        'OwnerId' => null,
+        'MinBalanceAmount' => 1, 
+        'MinBalanceCurrency' => 'EUR',
+        'MaxBalanceAmount' => 100000000,
+        'MaxBalanceCurrency' => 'EUR',
+    ];
+
+    $reportRequest->Columns = [
+        'Id',
+        'CreationDate',
+        'Tag',
+        'Owners',
+        'Description',
+        'BalanceAmount',
+        'BalanceCurrency',
+        'Currency',
+        'FundsType',
+    ];
+
+    $response = $api->Reports->Create($reportRequest);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myWalletsReport = {
+  ReportType: 'WALLET',
+  Tag: 'Created with Mangopay NodeJs SDK',
+  DownloadFormat: 'CSV',
+  CallbackURL: 'https://mangopay.com/docs/please-ignore',
+  Sort: 'CreationDate:ASC',
+  Preview: false,
+  Filters: {
+    BeforeDate: 1658838931,
+    AfterDate: 1656246931,
+    OwnerId: null,
+    Currency: 'EUR',
+    MinBalanceAmount: 1,
+    MinBalanceCurrency: 'EUR',
+    MaxBalanceAmount: 1000000,
+    MaxBalanceCurrency: 'EUR',
+  },
+  Columns: [
+    'Id',
+    'Tag',
+    'CreationDate',
+    'Owners',
+    'Description',
+    'BalanceAmount',
+    'BalanceCurrency',
+    'Currency',
+    'FundsType',
+  ],
+}
+
+const createWalletsReport = async (report) => {
+  return await mangopay.Reports.create(report)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWalletsReport(myWalletsReport)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myReport = {
+    ReportType: 'wallets',
+    Tag: 'Created with Mangopay Ruby SDK',
+    DownloadFormat: 'CSV',
+    CallbackURL: 'https://mangopay.com/docs/please-ignore',
+    Sort: 'CreationDate:ASC',
+    Preview: false,
+    Filters: {
+      BeforeDate: 1658838931,
+      AfterDate: 1656246931,
+      OwnerId: nil,
+      Currency: 'EUR',
+      MinBalanceAmount: 1,
+      MinBalanceCurrency: 'EUR',
+      MaxBalanceAmount: 1000000,
+      MaxBalanceCurrency: 'EUR'
+    },
+    Columns: [
+      'Id',
+      'Tag',
+      'CreationDate',
+      'Owners',
+      'Description',
+      'BalanceAmount',
+      'BalanceCurrency',
+      'Currency',
+      'FundsType'
+    ]
+
+}
+
+createWalletsReport(myReport)  
+```  
+
+  
+</RequestExample>

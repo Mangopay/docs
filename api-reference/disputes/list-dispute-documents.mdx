@@ -1,0 +1,126 @@
+---  
+ title: 'List all Dispute Documents'  
+ api: 'GET /v2.01/{ClientId}/dispute-documents'  
+---  
+
+import Array_DisputedocumentsResponse from '/snippets/parameters/Array_DisputedocumentsResponse.mdx';
+import AfterDate1 from '/snippets/parameters/AfterDate1.mdx';
+import BeforeDate1 from '/snippets/parameters/BeforeDate1.mdx';
+  
+
+### Query parameters  
+
+<BeforeDate1 />  
+
+<AfterDate1 />  
+
+### Responses  
+
+###### 200   
+
+<Array_DisputedocumentsResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "DisputeId": "159102965",
+        "Type": "DELIVERY_PROOF",
+        "Id": "159188418",
+        "Tag": null,
+        "CreationDate": 1672655973,
+        "ProcessedDate": null,
+        "Status": "VALIDATION_ASKED",
+        "RefusedReasonType": null,
+        "RefusedReasonMessage": null
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $response = $api->DisputeDocuments->GetAll();
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+const listDisputeDocuments = async () => {
+  return await mangopay.DisputeDocuments.getAll()
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listDisputeDocuments()  
+```  
+
+  
+```json REST  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listDisputeDocuments()
+    begin
+        response = MangoPay::Dispute.fetch_documents()
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Dispute Documents: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+listDisputeDocuments()  
+```  
+
+  
+</RequestExample>

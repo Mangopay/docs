@@ -1,0 +1,121 @@
+---  
+ title: 'List Disputes for a Wallet'  
+ api: 'GET /v2.01/{ClientId}/wallets/{WalletId}/disputes'  
+---  
+
+import Array_DisputesResponse from '/snippets/parameters/Array_DisputesResponse.mdx';
+import WalletId from '/snippets/parameters/WalletId.mdx';
+  
+
+### Path parameters  
+
+<WalletId />  
+
+### Responses  
+
+###### 200   
+
+<Array_DisputesResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "InitialTransactionId": "158596153",
+        "InitialTransactionType": "PAYIN",
+        "InitialTransactionNature": "REGULAR",
+        "DisputeType": "CONTESTABLE",
+        "ContestDeadlineDate": 1673049599,
+        "DisputedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "ContestedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "Status": "PENDING_CLIENT_ACTION",
+        "StatusMessage": null,
+        "DisputeReason": {
+            "DisputeReasonMessage": "This is a test dispute",
+            "DisputeReasonType": "UNKNOWN"
+        },
+        "ResultCode": "",
+        "ResultMessage": null,
+        "Id": "159102965",
+        "Tag": null,
+        "CreationDate": 1672411848,
+        "ClosedDate": 1675260940,
+        "RepudiationId": "159102966"
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myWallet = {
+  Id: '148968396',
+}
+
+const listWalletDisputes = async (walletId) => {
+  return await mangopay.Disputes.getDisputesForWallet(walletId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listWalletDisputes(myWallet.Id)
+  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listWalletDisputes(walletId)
+    begin
+        response = MangoPay::Dispute.fetch_for_wallet(walletId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myWallet = {
+    Id: '194579906'
+}
+
+listWalletDisputes(myWallet[:Id])  
+```  
+
+  
+</RequestExample>

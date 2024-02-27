@@ -1,0 +1,417 @@
+---  
+ title: 'Create a Payout'  
+ api: 'POST /v2.01/{ClientId}/payouts/bankwire'  
+---  
+
+import BankWireRefResponse from '/snippets/parameters/BankWireRefResponse.mdx';
+import BankAccountIdResponse from '/snippets/parameters/BankAccountIdResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import FallbackReasonResponse from '/snippets/parameters/FallbackReasonResponse.mdx';
+import ModeAppliedResponse from '/snippets/parameters/ModeAppliedResponse.mdx';
+import ModeRequestedResponse from '/snippets/parameters/ModeRequestedResponse.mdx';
+import PayoutModeRequested from '/snippets/parameters/PayoutModeRequested.mdx';
+import BankWireRef from '/snippets/parameters/BankWireRef.mdx';
+import BankAccountId from '/snippets/parameters/BankAccountId.mdx';
+import DebitedWalletId1 from '/snippets/parameters/DebitedWalletId1.mdx';
+import Fees6 from '/snippets/parameters/Fees6.mdx';
+import DebitedFunds7 from '/snippets/parameters/DebitedFunds7.mdx';
+import AuthorId3 from '/snippets/parameters/AuthorId3.mdx';
+import Tag2 from '/snippets/parameters/Tag2.mdx';
+  
+
+### Body parameters  
+
+<Tag2 />  
+
+<AuthorId3 />  
+
+<DebitedFunds7 />  
+
+<Fees6 />  
+
+<DebitedWalletId1 />  
+
+<BankAccountId />  
+
+<BankWireRef />  
+
+<PayoutModeRequested />  
+
+### Responses  
+
+###### 200   
+
+<ModeRequestedResponse />  
+
+<ModeAppliedResponse />  
+
+<FallbackReasonResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<BankAccountIdResponse />  
+
+<BankWireRefResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "ModeRequested":"STANDARD",
+    "ModeApplied":"PENDING_RESPONSE",
+    "FallbackReason":null,
+    "Id":"150301497",
+    "Tag":"custom",
+    "CreationDate":1661868011,
+    "AuthorId":"142036728",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":1188
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "Status":"CREATED",
+    "ResultCode":null,
+    "ResultMessage":null,
+    "ExecutionDate":null,
+    "Type":"PAYOUT",
+    "Nature":"REGULAR",
+    "CreditedWalletId":null,
+    "DebitedWalletId":"145389978",
+    "PaymentType":"BANK_WIRE",
+    "BankAccountId":"150287803",
+    "BankWireRef":"invoice 7282"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Instant payout is deactivated  
+
+ <ResponseExample>  
+
+```json Instant payout is deactivated  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "e1606a91-e563-45f3-a337-acdd933ab80b#1673533663",
+    "Date": 1673533664.0,
+    "errors": {
+        "PayoutModeRequested": "InstantPayment is disabled"
+    }  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Instant payout is deactivated (<inline-code>INSTANT_PAYOUT_ONLY</inline-code> requested)  
+
+ <ResponseExample>  
+
+```json Instant payout is deactivated (<inline-code>INSTANT_PAYOUT_ONLY</inline-code> requested)  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "b5a1b347-9b21-4077-bd41-d41ea4b07be4#1676883139",
+    "Date": 1676883140.0,
+    "errors": {
+        "PayoutModeRequested": "InstantPayment was explicitly requested but this feature is not activated on your configuration"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Destination bank not eligible for instant payout  
+
+ <ResponseExample>  
+
+```json Destination bank not eligible for instant payout  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c2a051f4-b4d2-4097-9a03-b4b3a67bb9e1#1676883693",
+    "Date": 1676883694.0,
+    "errors": {
+        "PayoutModeRequested": "The request for instant payment cannot be successful due to ineligibility "
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag":"custom meta",
+    "AuthorId":"142036728",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "DebitedWalletId":"145389978",
+    "BankAccountId":"54682154",
+    "BankWireRef":"invoice 7282",
+    "PayoutModeRequested":"STANDARD"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payout = new \MangoPay\PayOut();
+
+    $payout->Tag = 'Created with Mangopay PHP SDK';
+    $payout->AuthorId = '146476890';
+    $payout->DebitedFunds = new \MangoPay\Money();
+    $payout->DebitedFunds->Currency = 'EUR';
+    $payout->DebitedFunds->Amount = 1000;
+    $payout->Fees = new \MangoPay\Money();
+    $payout->Fees->Currency = 'EUR';
+    $payout->Fees->Amount = 0;
+    $payout->DebitedWalletId = '148968396';
+
+    $payout->PayoutPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+    $payout->PayoutPaymentDetails->BankAccountId = '198982485';
+    $payout->PayoutPaymentDetails->BankWireRef = 'MangopayPHP';
+
+    $payout->MeanOfPaymentDetails = $payout->PayoutPaymentDetails;
+    
+    $payout->PaymentType = \MangoPay\PayOutPaymentType::BankWire;
+    $payout->PayoutModeRequested = 'STANDARD';
+
+    $response = $api->PayOuts->Create($payout);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+  WalletId: '148968396',
+}
+
+let myBankAccount = {
+  Id: '154876798',
+}
+
+let myPayout = {
+  DebitedWalletId: myUser.WalletId,
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount.Id,
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'STANDARD',
+  AuthorId: myUser.Id,
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createPayout = async (payout) => {
+  return await mangopay.PayOuts.create(payout)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayout(myPayout)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPayout(payoutObject)
+    begin
+        response = MangoPay::PayOut::BankWire.create(payoutObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create payout: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+  WalletId: '148968396'
+}
+
+myBankAccount = {
+  Id: '154876798'
+}
+
+myPayout = {
+  DebitedWalletId: myUser[:WalletId],
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount[:Id],
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'STANDARD',
+  AuthorId: myUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createPayout(myPayout)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankWirePayOut
+from mangopay.utils import Money
+
+natural_user_id = '213753890'
+
+natural_user_wallet_id = '213754077'
+
+payout = BankWirePayOut(
+    author_id = natural_user_id,
+    debited_funds = Money(amount=200, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    debited_wallet_id = natural_user_wallet_id,
+    bank_account_id = '214651521',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_payout = payout.save()
+
+pprint(create_payout)
+  
+```  
+
+  
+</RequestExample>

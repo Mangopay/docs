@@ -1,0 +1,175 @@
+---  
+ title: 'View a PayIn (Google Pay)'  
+ api: 'GET /V2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import CardInfoResponse from '/snippets/parameters/CardInfoResponse.mdx';
+import IpAddressResponse from '/snippets/parameters/IpAddressResponse.mdx';
+import BrowserInfoResponse from '/snippets/parameters/BrowserInfoResponse.mdx';
+import ShippingResponse from '/snippets/parameters/ShippingResponse.mdx';
+import BillingResponse from '/snippets/parameters/BillingResponse.mdx';
+import SecureModeNeededResponse from '/snippets/parameters/SecureModeNeededResponse.mdx';
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import PayInId from '/snippets/parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+###### 200 Succeeded  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<StatementDescriptorResponse />  
+
+<SecureModeNeededResponse />  
+
+<BillingResponse />  
+
+<ShippingResponse />  
+
+<BrowserInfoResponse />  
+
+<IpAddressResponse />  
+
+<CardInfoResponse />  
+
+ <ResponseExample>  
+
+```json Succeeded  
+
+{
+    "Id": "wt_794a782f-f6b1-4ba5-8adb-b8004323b31e",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1706097653,
+    "AuthorId": "213407540",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1706097666,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "213407543",
+    "CreditedUserId": "213407540",
+    "PaymentType": "GOOGLE_PAY",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": "Mangopay",
+    "SecureMode": "DEFAULT",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "SecureModeRedirectURL": "https://api.sandbox.whenthen.co/payment-gateway/monext/3ds/challenge/3a01e913-64d2-4724-a6f9-64ddc3a08d8a/794a782f-f6b1-4ba5-8adb-b8004323b31e",
+    "SecureModeNeeded": true,
+    "SecurityInfo": null,
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "fr",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": -120,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "7579:9817:dac3:76c8:23d4:2fcd:94a3:b5be",
+    "CardInfo": {
+        "BIN": "411111",
+        "IssuingBank": "JPMORGAN CHASE BANK, N.A.",
+        "IssuerCountryCode": "US",
+        "Type": "CREDIT",
+        "SubType": null,
+        "Brand": "VISA"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(vars(view_payin))
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

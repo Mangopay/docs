@@ -1,0 +1,276 @@
+---  
+ title: 'Create an Instant Conversion (Spot FX)'  
+ api: 'POST /v2.01/{ClientId}/conversions/instant-conversion'  
+---  
+
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import ConversionRateResponseResponse from '/snippets/parameters/ConversionRateResponseResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import Tag2 from '/snippets/parameters/Tag2.mdx';
+import Fees5 from '/snippets/parameters/Fees5.mdx';
+import CreditedFunds from '/snippets/parameters/CreditedFunds.mdx';
+import DebitedFunds6 from '/snippets/parameters/DebitedFunds6.mdx';
+import CreditedWalletId1 from '/snippets/parameters/CreditedWalletId1.mdx';
+import DebitedWalletId from '/snippets/parameters/DebitedWalletId.mdx';
+import AuthorId2 from '/snippets/parameters/AuthorId2.mdx';
+  
+
+This call triggers an immediate conversion at the market rate, of the debited funds to the credited wallet at the market rate. A quote is not required for an instant conversion.  
+
+### Body parameters  
+
+<AuthorId2 />  
+
+<DebitedWalletId />  
+
+<CreditedWalletId1 />  
+
+<DebitedFunds6 />  
+
+<CreditedFunds />  
+
+<Fees5 />  
+
+<Tag2 />  
+
+### Responses  
+
+###### 200 Succeeded  
+
+<IdResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreationDateResponse />  
+
+<StatusResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<ConversionRateResponseResponse />  
+
+<TagResponse />  
+
+ <ResponseExample>  
+
+```json Succeeded  
+
+{
+    "Id": "cvr_01HQ1QSE554QW3HYQ9DMVF0D5H",
+    "Type": "CONVERSION",
+    "Nature": "REGULAR",
+    "CreationDate": 1708381747,
+    "Status": "SUCCEEDED",
+    "AuthorId": "204071581",
+    "DebitedWalletId": "204844308",
+    "CreditedWalletId": "204079338",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "GBP",
+        "Amount": 8468
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1708381747,
+    "ConversionRateResponse": {
+        "ClientRate": 0.8468,
+        "MarketRate": 0.8554
+    },
+    "Tag": "Created using the Mangopay API Postman collection"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Author not debited wallet owner  
+
+ <ResponseExample>  
+
+```json Author not debited wallet owner  
+
+{
+    "Message": "Author 45671234 is not debited wallet 204089031 owner.",
+    "Type": "author_is_not_debited_wallet_owner",
+    "Id": "5251717e-0965-4e33-a85a-a1042775913f",
+    "Date": 1699532783,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Author not credited wallet owner  
+
+ <ResponseExample>  
+
+```json Author not credited wallet owner  
+
+{
+    "Message": "Author 204068024 is not credited wallet 208282959 owner.",
+    "Type": "author_is_not_credited_wallet_owner",
+    "Id": "f072dcfd-d02c-4489-835f-7abe0b11fa66",
+    "Date": 1699532982,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Debited funds currency doesn’t match debited wallet currency  
+
+ <ResponseExample>  
+
+```json Debited funds currency doesn’t match debited wallet currency  
+
+{
+    "Message": "Debited currency incompatibility.",
+    "Type": "currency_incompatibility",
+    "Id": "af071186-b891-4e0d-baeb-736c15a757e8",
+    "Date": 1699532861,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Credited funds currency doesn’t match credited wallet currency  
+
+ <ResponseExample>  
+
+```json Credited funds currency doesn’t match credited wallet currency  
+
+{
+    "Message": "Credited currency incompatibility.",
+    "Type": "currency_incompatibility",
+    "Id": "2466e688-5f4f-4dfa-8ebe-97b5608c3dd5",
+    "Date": 1699532915,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Fees currency doesn't match debited funds currency  
+
+ <ResponseExample>  
+
+```json Fees currency doesn't match debited funds currency  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "f19eafbd-0310-4814-8f6b-691910b7b4a2",
+    "Date": 1707323047,
+    "errors": {
+        "Fees.Currency": "Provided currency USD does not match debit currency of GBP"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 403 Currency not activated  
+
+ <ResponseExample>  
+
+```json Currency not activated  
+
+{
+    "Message": "The currency JPY is not enabled for Forex. Contact your support to activate this feature.",
+    "Type": "forex_not_available",
+    "Id": "f8701d45-2540-4497-a7ce-4a3bc3181d68",
+    "Date": 1699533051,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 403 FX feature not activated  
+
+ <ResponseExample>  
+
+```json FX feature not activated  
+
+{
+    "Message": "Forex module is not enabled. Contact your support to activate this feature.",
+    "Type": "forbidden_ressource",
+    "Id": "812b8909-9fb1-45b5-9000-06e8c8d73687",
+    "Date": 1699533020,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+  "AuthorId": "204068024",
+  "DebitedWalletId": "204089031",
+  "CreditedWalletId": "204089144",
+  "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 10000
+   },
+  "CreditedFunds": {
+       "Currency": "GBP"
+   },
+  "Fees": {
+       "Currency": "EUR",
+       "Amount": 100
+  },
+  "Tag": "Created using the Mangopay API Postman collection"
+}  
+```  
+
+  
+</RequestExample>

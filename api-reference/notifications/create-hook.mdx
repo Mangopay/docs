@@ -1,0 +1,198 @@
+---  
+ title: 'Create a Hook'  
+ api: 'POST /v2.01/{ClientId}/hooks'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import EventTypeResponse from '/snippets/parameters/EventTypeResponse.mdx';
+import ValidityResponse from '/snippets/parameters/ValidityResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import UrlResponse from '/snippets/parameters/UrlResponse.mdx';
+import Tag2 from '/snippets/parameters/Tag2.mdx';
+import Url from '/snippets/parameters/Url.mdx';
+import EventType from '/snippets/parameters/EventType.mdx';
+  
+
+<Note>  
+**Note** 
+  
+You can only create one Hook for each `EventType`.  
+</Note>  
+
+### Body parameters  
+
+<EventType />  
+
+<Url />  
+
+<Tag2 />  
+
+### Responses  
+
+###### 200   
+
+<UrlResponse />  
+
+<StatusResponse />  
+
+<ValidityResponse />  
+
+<EventTypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Url": "https://mangopay.com/docs/please-ignore",
+    "Status": "ENABLED",
+    "Validity": "VALID",
+    "EventType": "UBO_DECLARATION_VALIDATION_ASKED",
+    "Id": "144246103",
+    "Tag": "Custom meta",
+    "CreationDate": 1655991027
+}
+  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Hook already exists for this <inline-code>EventType</inline-code>  
+
+ <ResponseExample>  
+
+```json Hook already exists for this <inline-code>EventType</inline-code>  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "829f2782-85a9-45b1-a2bd-993b0978c5bc",
+    "Date": 1690295313.0,
+    "errors": {
+        "EventType": "A hook has already been registered for this EventType"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "EventType" : "DISPUTE_CREATED",
+    "Url": "https://www.google.fr",
+    "Tag": "custom meta"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $hook = new \MangoPay\Hook();
+
+    $hook->EventType = \MangoPay\EventType::MandateFailed;
+    $hook->Url = 'https://mangopay.com/docs/please-ignore';
+    $hook->Tag = 'Created using Mangopay PHP SDK';
+
+    $response = $api->Hooks->Create($hook);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myHook = {
+  EventType: 'TRANSFER_SETTLEMENT_CREATED',
+  Url: 'https://mangopay.com/docs/please-ignore',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createHook = async (hook) => {
+  return await mangopay.Hooks.create(hook)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createHook(myHook)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createHook(hookObject)
+    begin
+        response = MangoPay::Hook.create(hookObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Hook: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myHook = {
+    EventType: 'PAYOUT_NORMAL_SUCCEEDED',
+    Url: 'https://mangopay.com/docs/please-ignore',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createHook(myHook)  
+```  
+
+  
+</RequestExample>

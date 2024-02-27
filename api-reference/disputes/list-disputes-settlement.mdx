@@ -1,0 +1,82 @@
+---  
+ title: 'List Disputes pending settlement'  
+ api: 'GET /v2.01/{ClientId}/disputes/pendingsettlement'  
+---  
+
+import Array_DisputesResponse from '/snippets/parameters/Array_DisputesResponse.mdx';
+  
+
+This call lists all the disputes for which you need to make a settlement transfer.  
+
+### Responses  
+
+###### 200   
+
+<Array_DisputesResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "InitialTransactionId": "158596153",
+        "InitialTransactionType": "PAYIN",
+        "InitialTransactionNature": "REGULAR",
+        "DisputeType": "CONTESTABLE",
+        "ContestDeadlineDate": 1673049599,
+        "DisputedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "ContestedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "Status": "CLOSED",
+        "StatusMessage": null,
+        "DisputeReason": {
+            "DisputeReasonMessage": "This is a test dispute",
+            "DisputeReasonType": "UNKNOWN"
+        },
+        "ResultCode": "LOST",
+        "ResultMessage": null,
+        "Id": "159102965",
+        "Tag": null,
+        "CreationDate": 1672411848,
+        "ClosedDate": null,
+        "RepudiationId": "159102966"
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+const listDisputesPendingSettlement = async () => {
+  return await mangopay.Disputes.getPendingSettlement()
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listDisputesPendingSettlement()  
+```  
+
+  
+</RequestExample>

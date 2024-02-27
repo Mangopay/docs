@@ -1,0 +1,171 @@
+---  
+ title: 'List all KYC Documents'  
+ api: 'GET /v2.01/{ClientId}/kyc/documents'  
+---  
+
+import Array_KYCDocumentResponse from '/snippets/parameters/Array_KYCDocumentResponse.mdx';
+import AfterDate1 from '/snippets/parameters/AfterDate1.mdx';
+import BeforeDate1 from '/snippets/parameters/BeforeDate1.mdx';
+import Type2 from '/snippets/parameters/Type2.mdx';
+import Status3 from '/snippets/parameters/Status3.mdx';
+  
+
+### Query parameters  
+
+<Status3 />  
+
+<Type2 />  
+
+<BeforeDate1 />  
+
+<AfterDate1 />  
+
+### Responses  
+
+###### 200   
+
+<Array_KYCDocumentResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "Type": "REGISTRATION_PROOF",
+        "UserId": "151479566",
+        "Flags": [],
+        "Id": "151480832",
+        "Tag": "KYC Natural",
+        "CreationDate": 1663160678,
+        "ProcessedDate": null,
+        "Status": "CREATED",
+        "RefusedReasonType": null,
+        "RefusedReasonMessage": null
+    },
+    {
+        "Type": "IDENTITY_PROOF",
+        "UserId": "151479566",
+        "Flags": [],
+        "Id": "158785224",
+        "Tag": "Created using MANGOPAY API Collection Postman",
+        "CreationDate": 1671864905,
+        "ProcessedDate": null,
+        "Status": "VALIDATION_ASKED",
+        "RefusedReasonType": null,
+        "RefusedReasonMessage": null
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $response = $api->KycDocuments->GetAll();
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+const listKycDocuments = async () => {
+  return await mangopay.KycDocuments.getAll()
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listKycDocuments()  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listAllKycDocuments()
+    begin
+        response = MangoPay::KycDocument.fetch_all()
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch KYC Documents #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+
+listAllKycDocuments()  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import User
+
+# Page always needs to be 1. Set per_page to however many users you want displayed.
+# Set per_page as the minimum number of user you want to see.
+users = User.all(page=1, per_page=50) 
+
+for user in users:
+    documents = user.documents.all()
+    for document in documents:
+        pprint(document)  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,91 @@
+---  
+ title: 'Extend an SSO invitation'  
+ api: 'PUT /v2.01/{ClientId}/clients/ssos/{SsoId}/extendinvitation'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import LastLoginDateResponse from '/snippets/parameters/LastLoginDateResponse.mdx';
+import PermissionGroupIdResponse from '/snippets/parameters/PermissionGroupIdResponse.mdx';
+import InvitationStatusResponse from '/snippets/parameters/InvitationStatusResponse.mdx';
+import ClientIdResponse from '/snippets/parameters/ClientIdResponse.mdx';
+import EmailResponse from '/snippets/parameters/EmailResponse.mdx';
+import ActiveResponse from '/snippets/parameters/ActiveResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import LastNameResponse from '/snippets/parameters/LastNameResponse.mdx';
+import FirstNameResponse from '/snippets/parameters/FirstNameResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import SsoId from '/snippets/parameters/SsoId.mdx';
+  
+
+This endpoint allows you to resend an invitation for a created SSO access with an `InvitationStatus` of `EXPIRED`.  
+
+### Path parameters  
+
+<SsoId />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<FirstNameResponse />  
+
+<LastNameResponse />  
+
+<TagResponse />  
+
+<ActiveResponse />  
+
+<EmailResponse />  
+
+<ClientIdResponse />  
+
+<InvitationStatusResponse />  
+
+<PermissionGroupIdResponse />  
+
+<LastLoginDateResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "192546892",
+    "FirstName": "Alex",
+    "LastName": "Smith",
+    "Tag": "Custom meta",
+    "Active": true,
+    "Email": "melodie.frayssens+asmith@mangopay.com",
+    "ClientId": "sandboxmelodie",
+    "InvitationStatus": "SENT",
+    "PermissionGroupId": "WRITE",
+    "LastLoginDate": null,
+    "CreationDate": 1685625698
+}
+  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 415 <inline-code>InvitationStatus</inline-code> is already <inline-code>SENT</inline-code>  
+
+ <ResponseExample>  
+
+```json <inline-code>InvitationStatus</inline-code> is already <inline-code>SENT</inline-code>  
+
+{
+    "Message": "method doesn’t support that content type ",
+    "Type": "content_type_not_supported",
+    "Id": "3d10ecf2-ec35-4af5-9961-1a89d37eea43#1685680956",
+    "Date": 1685680957.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>

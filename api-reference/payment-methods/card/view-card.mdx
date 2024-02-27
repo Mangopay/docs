@@ -1,0 +1,196 @@
+---  
+ title: 'View a Card'  
+ api: 'GET /v2.01/{ClientId}/cards/{CardId}'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import FingerprintResponse from '/snippets/parameters/FingerprintResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import UserIdResponse from '/snippets/parameters/UserIdResponse.mdx';
+import ValidityResponse from '/snippets/parameters/ValidityResponse.mdx';
+import BankCodeResponse from '/snippets/parameters/BankCodeResponse.mdx';
+import ProductResponse from '/snippets/parameters/ProductResponse.mdx';
+import CountryResponse from '/snippets/parameters/CountryResponse.mdx';
+import CardProviderResponse from '/snippets/parameters/CardProviderResponse.mdx';
+import AliasResponse from '/snippets/parameters/AliasResponse.mdx';
+import ExpirationDateResponse from '/snippets/parameters/ExpirationDateResponse.mdx';
+import CardId1 from '/snippets/parameters/CardId1.mdx';
+  
+
+### Path parameters  
+
+<CardId1 />  
+
+### Responses  
+
+###### 200   
+
+<ExpirationDateResponse />  
+
+<AliasResponse />  
+
+<CardProviderResponse />  
+
+<CountryResponse />  
+
+<ProductResponse />  
+
+<BankCodeResponse />  
+
+<ValidityResponse />  
+
+<UserIdResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<FingerprintResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "ExpirationDate": "0224",
+    "Alias": "497248XXXXXX0072",
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardProvider": "CB",
+    "Country": "FRA",
+    "Product": "unknown",
+    "BankCode": "30007",
+    "Active": true,
+    "Currency": "EUR",
+    "Validity": "VALID",
+    "UserId": "146476890",
+    "Id": "149334067",
+    "Tag": null,
+    "CreationDate": 1660737672,
+    "Fingerprint": "66faa0d970e3403992b29500022d8d9b"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardId = '193935874';
+
+    $response = $api->Cards->Get($cardId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myCard = {
+  Id: '192775715',
+}
+
+const viewCard = async (cardId) => {
+  return await mangopay.Cards.get(cardId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewCard(myCard.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewCard(cardId)
+    begin
+        response = MangoPay::Card.fetch(cardId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch card: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCard = {
+    Id: '194579926'
+}
+
+viewCard(myCard[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Card
+
+natural_user = NaturalUser.get('213600749')
+
+user_card_id = '213601128'
+   
+try:
+    view_user_card = Card.get(user_card_id)
+    pprint(vars(view_user_card))
+except Card.DoesNotExist:
+    print('The Card {} does not exist for User {}'.format(user_card_id, natural_user.id))  
+```  
+
+  
+</RequestExample>

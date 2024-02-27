@@ -1,0 +1,344 @@
+---  
+ title: 'Create a Transactions Report'  
+ api: 'POST /v2.01/{ClientId}/reports/transactions'  
+---  
+
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import ColumnsResponse from '/snippets/parameters/ColumnsResponse.mdx';
+import FiltersResponse from '/snippets/parameters/FiltersResponse.mdx';
+import PreviewResponse from '/snippets/parameters/PreviewResponse.mdx';
+import SortResponse from '/snippets/parameters/SortResponse.mdx';
+import ReportTypeResponse from '/snippets/parameters/ReportTypeResponse.mdx';
+import CallbackURLResponse from '/snippets/parameters/CallbackURLResponse.mdx';
+import DownloadURLResponse from '/snippets/parameters/DownloadURLResponse.mdx';
+import DownloadFormatResponse from '/snippets/parameters/DownloadFormatResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import ReportDateResponse from '/snippets/parameters/ReportDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import Columns1 from '/snippets/parameters/Columns1.mdx';
+import Filters1 from '/snippets/parameters/Filters1.mdx';
+import Preview from '/snippets/parameters/Preview.mdx';
+import Sort1 from '/snippets/parameters/Sort1.mdx';
+import CallbackURL from '/snippets/parameters/CallbackURL.mdx';
+import DownloadFormat from '/snippets/parameters/DownloadFormat.mdx';
+import Tag6 from '/snippets/parameters/Tag6.mdx';
+  
+
+<Note>  
+**Note – Report expiration date** 
+  
+A report expires after 24 hours (i.e., you can no longer download it after this period). You can still generate a new report with the same filters and information easily.  
+</Note>  
+
+<Note>  
+**Note – `BeforeDate` value restriction** 
+  
+To ensure that data provided on each report are up-to-date, the `BeforeDate` parameter cannot be greater than the report creation date minus 5 minutes. 
+If it is, `BeforeDate` will be automatically set according to this constraint.  
+</Note>  
+
+### Body parameters  
+
+<Tag6 />  
+
+<DownloadFormat />  
+
+<CallbackURL />  
+
+<Sort1 />  
+
+<Preview />  
+
+<Filters1 />  
+
+<Columns1 />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<TagResponse />  
+
+<ReportDateResponse />  
+
+<StatusResponse />  
+
+<DownloadFormatResponse />  
+
+<DownloadURLResponse />  
+
+<CallbackURLResponse />  
+
+<ReportTypeResponse />  
+
+<SortResponse />  
+
+<PreviewResponse />  
+
+<FiltersResponse />  
+
+<ColumnsResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "146642145",
+    "CreationDate": 1658317704,
+    "Tag": "test doc july 2022",
+    "ReportDate": null,
+    "Status": "PENDING",
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "CallbackURL": null,
+    "ReportType": "TRANSACTIONS",
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658317644,
+        "AfterDate": 1655725644,
+        "Type": [],
+        "ResultCode": [],
+        "Status": [],
+        "Nature": [],
+        "WalletId": null,
+        "AuthorId": null,
+        "MinDebitedFundsAmount": null,
+        "MinDebitedFundsCurrency": null,
+        "MaxDebitedFundsAmount": null,
+        "MaxDebitedFundsCurrency": null,
+        "MinFeesAmount": null,
+        "MinFeesCurrency": null,
+        "MaxFeesAmount": null,
+        "MaxFeesCurrency": null
+    },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "ExecutionDate",
+        "AuthorId",
+        "CreditedUserId",
+        "DebitedFundsAmount",
+        "DebitedFundsCurrency",
+        "CreditedFundsAmount",
+        "CreditedFundsCurrency",
+        "FeesAmount",
+        "FeesCurrency",
+        "Status",
+        "ResultCode",
+        "ResultMessage",
+        "Type",
+        "Nature",
+        "CreditedWalletId",
+        "DebitedWalletId"
+    ],
+    "ResultCode": null,
+    "ResultMessage": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "custom meta",
+    "DownloadFormat": "CSV",
+    "CallbackURL": null,
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658317644,
+        "AfterDate": 1655725644,
+        "Type": [],
+        "ResultCode": [],
+        "Status": [],
+        "Nature": [],
+        "WalletId": null,
+        "AuthorId": null,
+        "MinDebitedFundsAmount": null,
+        "MinDebitedFundsCurrency": null,
+        "MaxDebitedFundsAmount": null,
+        "MaxDebitedFundsCurrency": null,
+        "MinFeesAmount": null,
+        "MinFeesCurrency": null,
+        "MaxFeesAmount": null,
+        "MaxFeesCurrency": null
+    },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "ExecutionDate",
+        "AuthorId",
+        "CreditedUserId",
+        "DebitedFundsAmount",
+        "DebitedFundsCurrency",
+        "CreditedFundsAmount",
+        "CreditedFundsCurrency",
+        "FeesAmount",
+        "FeesCurrency",
+        "Status",
+        "ResultCode",
+        "ResultMessage",
+        "Type",
+        "Nature",
+        "CreditedWalletId",
+        "DebitedWalletId"
+    ],
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $reportRequest = new \MangoPay\ReportRequest();
+    $reportRequest->ReportType = \MangoPay\ReportType::Transactions;
+    $reportRequest->CallbackURL = 'https://mangopay.com/docs/please-ignore';
+    $reportRequest->Tag = 'Created using Mangopay PHP SDK';
+    
+    $reportRequest->Filters = [
+        'BeforeDate' => 1658838931,
+        'AfterDate' => 1656246931,
+        'Type' => ['PAYIN', 'PAYOUT'],
+        'ResultCode' => ['000000'],
+        'Status' => ['SUCCEEDED'],
+        'Nature' => ['REGULAR'],
+        'MinDebitedFundsAmount' => null,
+        'MinDebitedFundsCurrency' => 'EUR',
+        'MaxDebitedFundsAmount' => null,
+        'MaxDebitedFundsCurrency' => 'EUR',
+        'MinFeesAmount' => 0,
+        'MinFeesCurrency' => 'EUR',
+        'MaxFeesAmount' => 100000,
+        'MaxFeesCurrency' => 'EUR',
+    ];
+
+    $reportRequest->Columns = [
+        'Id',
+        'Tag',
+        'CreationDate',
+        'ExecutionDate',
+        'AuthorId',
+        'CreditedUserId',
+        'DebitedFundsAmount',
+        'DebitedFundsCurrency',
+        'CreditedFundsAmount',
+        'CreditedFundsCurrency',
+        'FeesAmount',
+        'FeesCurrency',
+        'Status',
+        'ResultCode',
+        'ResultMessage',
+        'Type',
+        'Nature',
+        'CreditedWalletId',
+        'DebitedWalletId',
+    ];
+
+    $response = $api->Reports->Create($reportRequest);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myReport = {
+    ReportType: 'transactions',
+    Tag: 'Created using Mangopay Ruby SDK',
+    DownloadFormat: 'CSV',
+    CallbackURL: 'https://mangopay.com/docs/please-ignore',
+    Sort: 'CreationDate: ASC',
+    Preview: false,
+    Filters: {
+      BeforeDate: 1658838931,
+      AfterDate: 1656246931,
+      Type: ['PAYIN', 'PAYOUT'],
+      ResultCode: ['000000'],
+      Status: ['SUCCEEDED'],
+      Nature: ['REGULAR'],
+      WalletId: nil,
+      AuthorId: nil,
+      MinDebitedFundsAmount: nil,
+      MinDebitedFundsCurrency: 'EUR',
+      MaxDebitedFundsAmount: nil,
+      MaxDebitedFundsCurrency: 'EUR',
+      MinFeesAmount: 0,
+      MinFeesCurrency: 'EUR',
+      MaxFeesAmount: 100000,
+      MaxFeesCurrency: 'EUR'
+    },
+    Columns: [
+        'Id',
+        'Tag',
+        'CreationDate',
+        'ExecutionDate',
+        'AuthorId',
+        'CreditedUserId',
+        'DebitedFundsAmount',
+        'DebitedFundsCurrency',
+        'CreditedFundsAmount',
+        'CreditedFundsCurrency',
+        'FeesAmount',
+        'FeesCurrency',
+        'Status',
+        'ResultCode',
+        'ResultMessage',
+        'Type',
+        'Nature',
+        'CreditedWalletId',
+        'DebitedWalletId'
+    ]
+}
+
+createTransactionsReport(myReport)  
+```  
+
+  
+</RequestExample>

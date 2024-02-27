@@ -1,0 +1,73 @@
+---  
+ title: 'View an indicative Conversion Rate'  
+ api: 'GET /v2.01/{ClientId}/conversions/rate/{DebitedCurrency}/{CreditedCurrency}'  
+---  
+
+import MarketRateDateResponse from '/snippets/parameters/MarketRateDateResponse.mdx';
+import MarketRateResponse from '/snippets/parameters/MarketRateResponse.mdx';
+import ClientRateResponse from '/snippets/parameters/ClientRateResponse.mdx';
+import CreditedCurrencyResponse from '/snippets/parameters/CreditedCurrencyResponse.mdx';
+import DebitedCurrencyResponse from '/snippets/parameters/DebitedCurrencyResponse.mdx';
+import CreditedCurrency from '/snippets/parameters/CreditedCurrency.mdx';
+import DebitedCurrency from '/snippets/parameters/DebitedCurrency.mdx';
+  
+
+<Note>  
+**Note – Rate is not guaranteed** 
+  
+The rate returned by the API is indicative of the rate offered by Mangopay, but it is not a guaranteed rate. When you Create an Instant Conversion, the actual rate used during the transaction is displayed in the response.   
+</Note>  
+
+### Path parameters  
+
+<DebitedCurrency />  
+
+<CreditedCurrency />  
+
+### Responses  
+
+###### 200 EURGBP currency pair with markup of 100 basis points (1% or 0.01)  
+
+<DebitedCurrencyResponse />  
+
+<CreditedCurrencyResponse />  
+
+<ClientRateResponse />  
+
+<MarketRateResponse />  
+
+<MarketRateDateResponse />  
+
+ <ResponseExample>  
+
+```json EURGBP currency pair with markup of 100 basis points (1% or 0.01)  
+
+{
+    "DebitedCurrency": "EUR",
+    "CreditedCurrency": "GBP",
+    "ClientRate": 0.8626,
+    "MarketRate": 0.8713,
+    "MarketRateDate": 1700729255
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 FX feature not activated  
+
+ <ResponseExample>  
+
+```json FX feature not activated  
+
+{
+    "Message": "Forex module is not enabled. Contact your support to activate this feature.",
+    "Type": "forbidden_ressource",
+    "Id": "51199cfd-d8ca-4f30-8262-955c1d2f97ec",
+    "Date": 1699977915.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>

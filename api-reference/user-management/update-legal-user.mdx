@@ -1,0 +1,593 @@
+---  
+ title: 'Update a Legal User'  
+ api: 'PUT /v2.01/{ClientId}/users/legal/{UserId}'  
+---  
+
+import UserStatusResponse from '/snippets/parameters/UserStatusResponse.mdx';
+import UserCategoryResponse from '/snippets/parameters/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/parameters/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/parameters/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/parameters/KYCLevelResponse.mdx';
+import EmailResponse from '/snippets/parameters/EmailResponse.mdx';
+import PersonTypeResponse from '/snippets/parameters/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import CompanyNumberResponse from '/snippets/parameters/CompanyNumberResponse.mdx';
+import LegalRepresentativeProofOfIdentityResponse from '/snippets/parameters/LegalRepresentativeProofOfIdentityResponse.mdx';
+import StatuteResponse from '/snippets/parameters/StatuteResponse.mdx';
+import ShareholderDeclarationResponse from '/snippets/parameters/ShareholderDeclarationResponse.mdx';
+import ProofOfRegistrationResponse from '/snippets/parameters/ProofOfRegistrationResponse.mdx';
+import LegalRepresentativeCountryOfResidenceResponse from '/snippets/parameters/LegalRepresentativeCountryOfResidenceResponse.mdx';
+import LegalRepresentativeNationalityResponse from '/snippets/parameters/LegalRepresentativeNationalityResponse.mdx';
+import LegalRepresentativeBirthdayResponse from '/snippets/parameters/LegalRepresentativeBirthdayResponse.mdx';
+import LegalRepresentativeEmailResponse from '/snippets/parameters/LegalRepresentativeEmailResponse.mdx';
+import LegalRepresentativeLastNameResponse from '/snippets/parameters/LegalRepresentativeLastNameResponse.mdx';
+import LegalRepresentativeFirstNameResponse from '/snippets/parameters/LegalRepresentativeFirstNameResponse.mdx';
+import LegalPersonTypeResponse from '/snippets/parameters/LegalPersonTypeResponse.mdx';
+import NameResponse from '/snippets/parameters/NameResponse.mdx';
+import LegalRepresentativeAddressResponse from '/snippets/parameters/LegalRepresentativeAddressResponse.mdx';
+import HeadquartersAddressResponse from '/snippets/parameters/HeadquartersAddressResponse.mdx';
+import UserCategory from '/snippets/parameters/UserCategory.mdx';
+import TermsAndConditionsAccepted from '/snippets/parameters/TermsAndConditionsAccepted.mdx';
+import Email1 from '/snippets/parameters/Email1.mdx';
+import Tag2 from '/snippets/parameters/Tag2.mdx';
+import CompanyNumber from '/snippets/parameters/CompanyNumber.mdx';
+import LegalRepresentativeCountryOfResidence from '/snippets/parameters/LegalRepresentativeCountryOfResidence.mdx';
+import LegalRepresentativeNationality from '/snippets/parameters/LegalRepresentativeNationality.mdx';
+import LegalRepresentativeBirthday from '/snippets/parameters/LegalRepresentativeBirthday.mdx';
+import LegalRepresentativeEmail from '/snippets/parameters/LegalRepresentativeEmail.mdx';
+import LegalRepresentativeLastName from '/snippets/parameters/LegalRepresentativeLastName.mdx';
+import LegalRepresentativeFirstName from '/snippets/parameters/LegalRepresentativeFirstName.mdx';
+import LegalPersonType from '/snippets/parameters/LegalPersonType.mdx';
+import Name2 from '/snippets/parameters/Name2.mdx';
+import LegalRepresentativeAddress from '/snippets/parameters/LegalRepresentativeAddress.mdx';
+import HeadquartersAddress from '/snippets/parameters/HeadquartersAddress.mdx';
+import UserId from '/snippets/parameters/UserId.mdx';
+  
+
+<Warning>  
+**Caution – Modification may cause verification downgrade** 
+  
+Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+The impacted parameters are:  
+`LegalRepresentativeFirstName`  
+`LegalRepresentativeLastName`  
+`LegalRepresentativeBirthday`  
+`LegalRepresentativeNationality`  
+`LegalPersonType`  
+See the Verification downgrade article for more information.  
+</Warning>  
+
+<Note>  
+**Note – Country-based restrictions apply to users** 
+  
+Due to Mangopay's <glossary:aml>AML rules</glossary>, it is not possible to create or modify users using blocked countries.  
+For Legal Users, the following parameters are concerned:  
+`Country` of the `HeadquartersAddress`  
+`LegalRepresentativeNationality`  
+`LegalRepresentativeCountryOfResidence`  
+`Country` of the `LegalRepresentativeAddress`  
+For more information, see the Country restrictions article.  
+</Note>  
+
+### Path parameters  
+
+<UserId />  
+
+### Body parameters  
+
+<HeadquartersAddress />  
+
+<LegalRepresentativeAddress />  
+
+<Name2 />  
+
+<LegalPersonType />  
+
+<LegalRepresentativeFirstName />  
+
+<LegalRepresentativeLastName />  
+
+<LegalRepresentativeEmail />  
+
+<LegalRepresentativeBirthday />  
+
+<LegalRepresentativeNationality />  
+
+<LegalRepresentativeCountryOfResidence />  
+
+<CompanyNumber />  
+
+<Tag2 />  
+
+<Email1 />  
+
+<TermsAndConditionsAccepted />  
+
+<UserCategory />  
+
+### Responses  
+
+###### 200 Payer  
+
+<HeadquartersAddressResponse />  
+
+<LegalRepresentativeAddressResponse />  
+
+<NameResponse />  
+
+<LegalPersonTypeResponse />  
+
+<LegalRepresentativeFirstNameResponse />  
+
+<LegalRepresentativeLastNameResponse />  
+
+<LegalRepresentativeEmailResponse />  
+
+<LegalRepresentativeBirthdayResponse />  
+
+<LegalRepresentativeNationalityResponse />  
+
+<LegalRepresentativeCountryOfResidenceResponse />  
+
+<ProofOfRegistrationResponse />  
+
+<ShareholderDeclarationResponse />  
+
+<StatuteResponse />  
+
+<LegalRepresentativeProofOfIdentityResponse />  
+
+<CompanyNumberResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<EmailResponse />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusResponse />  
+
+ <ResponseExample>  
+
+```json Payer  
+
+{
+    "HeadquartersAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "34 rue des Entreprises",
+        "AddressLine2": "Appartement 14",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Richard",
+    "LegalRepresentativeLastName": "Moulin",
+    "LegalRepresentativeEmail": null,
+    "LegalRepresentativeBirthday": null,
+    "LegalRepresentativeNationality": null,
+    "LegalRepresentativeCountryOfResidence": null,
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "LegalRepresentativeProofOfIdentity": null,
+    "CompanyNumber": null,
+    "Id": "158026537",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1670863988,
+    "PersonType": "LEGAL",
+    "Email": "richard.moulin@email.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 200 Owner  
+
+<HeadquartersAddressResponse />  
+
+<LegalRepresentativeAddressResponse />  
+
+<NameResponse />  
+
+<LegalPersonTypeResponse />  
+
+<LegalRepresentativeFirstNameResponse />  
+
+<LegalRepresentativeLastNameResponse />  
+
+<LegalRepresentativeEmailResponse />  
+
+<LegalRepresentativeBirthdayResponse />  
+
+<LegalRepresentativeNationalityResponse />  
+
+<LegalRepresentativeCountryOfResidenceResponse />  
+
+<ProofOfRegistrationResponse />  
+
+<ShareholderDeclarationResponse />  
+
+<StatuteResponse />  
+
+<LegalRepresentativeProofOfIdentityResponse />  
+
+<CompanyNumberResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<EmailResponse />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusResponse />  
+
+ <ResponseExample>  
+
+```json Owner  
+
+{
+    "HeadquartersAddress": {
+        "AddressLine1": "34 rue des Entreprises",
+        "AddressLine2": "Batiment B",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "12032 Wiza Way",
+        "AddressLine2": "Mitchell Drive",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Cedrick",
+    "LegalRepresentativeLastName": "Dickinson",
+    "LegalRepresentativeEmail": "Agustin.Ullrich@yahoo.com",
+    "LegalRepresentativeBirthday": 652117514,
+    "LegalRepresentativeNationality": "FR",
+    "LegalRepresentativeCountryOfResidence": "FR",
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "LegalRepresentativeProofOfIdentity": null,
+    "CompanyNumber": "123456789",
+    "Id": "158026721",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1670864174,
+    "PersonType": "LEGAL",
+    "Email": "cortney_douglas@yahoo.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": 1670864174,
+    "UserCategory": "OWNER",
+    "UserStatus": "ACTIVE"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Owner can't become Payer  
+
+ <ResponseExample>  
+
+```json Owner can't become Payer  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+    "Date": 1707907057.0,
+    "errors": {
+        "UserCategory": "A User OWNER can't be modified to a user PAYER"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Terms and conditions acceptance can't be revoked  
+
+ <ResponseExample>  
+
+```json Terms and conditions acceptance can't be revoked  
+
+{
+    "Message": "The user cannot revoke the terms and conditions acceptance",
+    "Type": "invalid_action",
+    "Id": "5d0f2332-3808-4235-ab62-2ebac79f213c",
+    "Date": 1690290952.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "HeadquartersAddress": {
+        "AddressLine1": "34 rue des Entreprises",
+        "AddressLine2": "Batiment B",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "12032 Wiza Way",
+        "AddressLine2": "Mitchell Drive",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Cedrick",
+    "LegalRepresentativeLastName": "Dickinson",
+    "LegalRepresentativeEmail": "Agustin.Ullrich@yahoo.com",
+    "LegalRepresentativeBirthday": 652117514,
+    "LegalRepresentativeNationality": "FR",
+    "LegalRepresentativeCountryOfResidence": "FR",
+    "CompanyNumber": "123456789",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "Email": "cortney_douglas@yahoo.com",
+    "TermsAndConditionsAccepted": true,
+    "UserCategory": "OWNER"
+}
+  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '198675834';
+    $user = $api->Users->Get($userId);
+
+    $user->Name = 'Smith corp';
+    $user->Email = 'smithupdated@example.com';
+    $user->LegalPersonType = \MangoPay\LegalPersonType::Business;
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->HeadquartersAddress = $address;
+    $user->LegalRepresentativeAddress = $address;
+    
+    $user->LegalRepresentativeFirstName = 'Alex';
+    $user->LegalRepresentativeLastName = 'Smith';
+    $user->LegalRepresentativeEmail = 'asmith@example.com';
+    $user->LegalRepresentativeBirthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->LegalRepresentativeNationality = 'FR';
+    $user->LegalRepresentativeCountryOfResidence = 'FR';
+    $user->CompanyNumber = 'LU123456';
+    
+    $user->Tag = 'Updated using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+}) 
+
+let myLegalUser = {
+  Id: '175370690',
+  HeadquartersAddress: {
+    AddressLine1: '57 Main Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Created using the Mangopay NodeJS SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL',
+}
+
+const updateLegalUser = async (legalUser) => {
+  return await mangopay.Users.update(legalUser)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateLegalUser(myLegalUser)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateLegalUser(legalUserId, legalUserObject)
+    begin
+        response = MangoPay::LegalUser.update(legalUserId, legalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122',
+    HeadquartersAddress: {
+    AddressLine1: '57 Main Road',
+    AddressLine2: 'PB 456',
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Updated using the Mangopay Ruby SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL'
+}
+
+updateLegalUser(myLegalUser[:Id], myLegalUser)  
+```  
+
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import LegalUser
+
+legal_user = LegalUser(
+    id = '210602889',  # ID of legal user to update
+    legal_person_type = 'SOLETRADER' # Add elements with update details  
+)
+
+update_legal_user = legal_user.save()
+
+pprint(update_legal_user)
+  
+```  
+
+  
+</RequestExample>

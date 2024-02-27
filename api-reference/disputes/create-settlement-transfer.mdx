@@ -1,0 +1,367 @@
+---  
+ title: 'Create a Settlement Transfer'  
+ api: 'POST /v2.01/{ClientId}/repudiations/{RepudiationId}/settlementtransfer'  
+---  
+
+import RepudiationIdResponse from '/snippets/parameters/RepudiationIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import Fees11 from '/snippets/parameters/Fees11.mdx';
+import DebitedFunds14 from '/snippets/parameters/DebitedFunds14.mdx';
+import AuthorId from '/snippets/parameters/AuthorId.mdx';
+import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
+  
+
+### Path parameters  
+
+<RepudiationId />  
+
+### Body parameters  
+
+<AuthorId />  
+
+<DebitedFunds14 />  
+
+<Fees11 />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<DebitedFundsResponse />  
+
+<FeesResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedFundsResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<RepudiationIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "159220385",
+    "Tag": null,
+    "CreationDate": 1672677972,
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 999
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "AuthorId": "146476890",
+    "CreditedUserId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 999
+    },
+    "Status": "SUCCEEDED",
+    "ExecutionDate": 1672677972,
+    "Type": "TRANSFER",
+    "Nature": "SETTLEMENT",
+    "CreditedWalletId": "CREDIT_EUR",
+    "DebitedWalletId": "148968396",
+    "RepudiationId": "159196330"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 200 Failed  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<DebitedFundsResponse />  
+
+<FeesResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedFundsResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<RepudiationIdResponse />  
+
+ <ResponseExample>  
+
+```json Failed  
+
+{
+    "Id": "159220127",
+    "Tag": null,
+    "CreationDate": 1672677824,
+    "ResultCode": "003010",
+    "ResultMessage": "The total DebitedFunds settled cannot exceed the initial transaction DebitedFunds available for settlement",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1
+    },
+    "AuthorId": "146476890",
+    "CreditedUserId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 999
+    },
+    "Status": "FAILED",
+    "ExecutionDate": null,
+    "Type": "TRANSFER",
+    "Nature": "SETTLEMENT",
+    "CreditedWalletId": "CREDIT_EUR",
+    "DebitedWalletId": "148968396",
+    "RepudiationId": "159196330"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Settlement <inline-code>DebitedFunds</inline-code> exceed the initial transaction <inline-code>DebitedFunds</inline-code>  
+
+ <ResponseExample>  
+
+```json Settlement <inline-code>DebitedFunds</inline-code> exceed the initial transaction <inline-code>DebitedFunds</inline-code>  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "7da1f9f4-8c9f-4f9f-ba1c-babf394131ca#1673358577",
+    "Date": 1673358578.0,
+    "errors": {
+        "DebitedFunds": "The settlement DebitedFunds cannot exceed the initial transaction DebitedFunds"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Settlement <inline-code>Fees</inline-code> exceed the initial transaction <inline-code>Fees</inline-code>  
+
+ <ResponseExample>  
+
+```json Settlement <inline-code>Fees</inline-code> exceed the initial transaction <inline-code>Fees</inline-code>  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "084e42e2-7523-4e28-99eb-79300d0dc37b#1672678394",
+    "Date": 1672678395.0,
+    "errors": {
+        "Fees": "The settlement Fees cannot exceed the initial transaction Fees"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId":"146476890",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    }
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $repudiationId = '199385843';
+    $repudiation = $api->Disputes->GetRepudiation($repudiationId);
+
+    $settlementTransfer = new \MangoPay\SettlementTransfer();
+
+    $settlementTransfer->AuthorId = $repudiation->AuthorId;
+    $settlementTransfer->DebitedFunds = new \MangoPay\Money();
+    $settlementTransfer->DebitedFunds->Amount = 500;
+    $settlementTransfer->DebitedFunds->Currency = "EUR";
+    $settlementTransfer->Fees = new \MangoPay\Money();
+    $settlementTransfer->Fees->Amount = 0;
+    $settlementTransfer->Fees->Currency = "EUR";
+
+
+    $response = $api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '192775714',
+  RepudiationId: '192775715',
+}
+
+let mySettlementTransfer = {
+  AuthorId: '180749339',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: '1000',
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+}
+
+const createSettlementTransfer = async (settlementTransfer, repudiationId) => {
+  return await mangopay.Disputes.createSettlementTransfer(
+    settlementTransfer,
+    repudiationId
+  )
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createSettlementTransfer(mySettlementTransfer, myDispute.RepudiationId)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myRepudiation = {
+    Id: '194618172'
+}
+
+mySettlementTransfer = {
+    Type: 'TRANSFER',
+    Nature: 'SETTLEMENT',
+    AuthorId: '194579896',
+    DebitedFunds: {
+        Currency: 'EUR',
+        Amount: 10000
+    },
+    Fees: {
+        Currency: 'EUR',
+        Amount: 9000
+    }
+
+}
+
+createSettlementTransfer(myRepudiation[:Id], mySettlementTransfer)  
+```  
+
+  
+</RequestExample>

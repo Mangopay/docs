@@ -1,0 +1,311 @@
+---  
+ title: 'Create a Web Direct-Debit PayIn'  
+ api: 'POST POST /v2.01/{ClientId}/payins/directdebit/web'  
+---  
+
+import CultureResponse from '/snippets/parameters/CultureResponse.mdx';
+import TemplateURLResponse from '/snippets/parameters/TemplateURLResponse.mdx';
+import ReturnURLResponse from '/snippets/parameters/ReturnURLResponse.mdx';
+import RedirectURLResponse from '/snippets/parameters/RedirectURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import DirectDebitTypeResponse from '/snippets/parameters/DirectDebitTypeResponse.mdx';
+import ProfilingAttemptReference from '/snippets/parameters/ProfilingAttemptReference.mdx';
+import Culture1 from '/snippets/parameters/Culture1.mdx';
+import TemplateURLOptions from '/snippets/parameters/TemplateURLOptions.mdx';
+import ReturnURL3 from '/snippets/parameters/ReturnURL3.mdx';
+import CreditedWalletId from '/snippets/parameters/CreditedWalletId.mdx';
+import Fees8 from '/snippets/parameters/Fees8.mdx';
+import DebitedFunds10 from '/snippets/parameters/DebitedFunds10.mdx';
+import CreditedUserId from '/snippets/parameters/CreditedUserId.mdx';
+import AuthorId from '/snippets/parameters/AuthorId.mdx';
+import Tag from '/snippets/parameters/Tag.mdx';
+import DirectDebitType from '/snippets/parameters/DirectDebitType.mdx';
+  
+
+### Body parameters  
+
+<DirectDebitType />  
+
+<Tag />  
+
+<AuthorId />  
+
+<CreditedUserId />  
+
+<DebitedFunds10 />  
+
+<Fees8 />  
+
+<CreditedWalletId />  
+
+<ReturnURL3 />  
+
+<TemplateURLOptions />  
+
+<Culture1 />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+###### 200   
+
+<DirectDebitTypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<RedirectURLResponse />  
+
+<ReturnURLResponse />  
+
+<TemplateURLResponse />  
+
+<CultureResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "DirectDebitType": "SOFORT",
+    "Id": "158596153",
+    "Tag": "custom meta",
+    "CreationDate": 1671609130,
+    "ResultCode": null,
+    "ResultMessage": null,
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1188
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 12
+    },
+    "Status": "CREATED",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "148968396",
+    "DebitedWalletId": null,
+    "PaymentType": "DIRECT_DEBIT",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=7012a35bacc94224887444a6befdcabc&transactionId=158596153&token=14gpfysmDhsVLpjlL2451671609131187",
+    "ReturnURL": "http://www.my-site.com/returnURL/?transactionId=158596153",
+    "TemplateURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=7012a35bacc94224887444a6befdcabc&transactionId=158596153",
+    "Culture": "EN"
+}
+  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "DirectDebitType": "SOFORT",
+    "Tag": "custom meta",
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 12
+    },
+    "CreditedWalletId": "148968396",
+    "ReturnURL": "http://www.my-site.com/returnURL/?transactionId=158596153",
+    "TemplateURLOptions": ""PAYLINE"=>"https://...",
+    "Culture": "EN"
+}
+  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  PaymentType: 'DIRECT_DEBIT',
+  ExecutionType: 'WEB',
+  DirectDebitType: 'SOFORT',
+  AuthorId: '146476890',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '146476890',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '148968396',
+  ReturnURL: 'https://mangopay.com/docs/please-ignore',
+  TemplateURL: 'https://mangopay.com/docs/please-ignore',
+  Culture: 'EN',
+}
+
+const createWebDirectDebitPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWebDirectDebitPayIn(myPayIn)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createWebDirectDebitPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::DirectDebit::Web.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    DirectDebitType: 'SOFORT',
+    AuthorId: '146476890',
+    Tag: 'Created with Mangopay Node.js SDK',
+    CreditedUserId: '146476890',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '148968396',
+    ReturnURL: 'https://mangopay.com/docs/please-ignore',
+    TemplateURL: 'https://mangopay.com/docs/please-ignore',
+    Culture: 'EN',
+  }
+
+createWebDirectDebitPayIn(myPayIn)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, DirectDebitWebPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+direct_debit_web_payin = DirectDebitWebPayIn(
+    direct_debit_type = 'GIROPAY',
+    author_id = natural_user.id,
+    debited_funds = Money(amount='1000', currency='EUR'),
+    fees = Money(amount='0', currency='EUR'),
+    credited_wallet_id = '213754077',
+    return_url = 'https://mangopay.com/docs/please-ignore',
+    culture = 'EN',
+    tag = 'Created using the Mangopay Python SDK',
+)
+
+create_direct_debit_web_payin = direct_debit_web_payin.save()
+
+pprint(create_direct_debit_web_payin)  
+```  
+
+  
+</RequestExample>

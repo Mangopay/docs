@@ -1,0 +1,207 @@
+---  
+ title: 'Create an iDEAL PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/payment-methods/ideal'  
+---  
+
+import BankNameResponse from '/snippets/parameters/BankNameResponse.mdx';
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/parameters/ProfilingAttemptReference.mdx';
+import Bic from '/snippets/parameters/Bic.mdx';
+import StatementDescriptor from '/snippets/parameters/StatementDescriptor.mdx';
+import Tag from '/snippets/parameters/Tag.mdx';
+import ReturnURL2 from '/snippets/parameters/ReturnURL2.mdx';
+import Fees from '/snippets/parameters/Fees.mdx';
+import DebitedFunds from '/snippets/parameters/DebitedFunds.mdx';
+import CreditedWalletId from '/snippets/parameters/CreditedWalletId.mdx';
+import AuthorId from '/snippets/parameters/AuthorId.mdx';
+  
+
+<Note>  
+**Note – Timeout after 30 minutes** 
+  
+The iDEAL payment session lasts for 30 minutes, at which point the pay-in fails automatically if no action has been taken by the user.  
+</Note>  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds />  
+
+<Fees />  
+
+<ReturnURL2 />  
+
+<Tag />  
+
+<StatementDescriptor />  
+
+<Bic />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+###### 200 Created  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<BankNameResponse />  
+
+ <ResponseExample>  
+
+```json Created  
+
+{
+    "Id": "wt_00e4bd1b-08f8-40cf-8104-2d91fe270b34",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1701250187,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204068186",
+    "CreditedUserId": "204068024",
+    "PaymentType": "IDEAL",
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=wt_00e4bd1b-08f8-40cf-8104-2d91fe270b34",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140149255664&rs=QcZIrtphnfHddyqe3HSu0njaOtjRG4f3&cs=2f1247aa2007ed84a2cb7ab5c941e7ead2f6525996518040b0bad0e3c28bb7db",
+    "StatementDescriptor": "MGP",
+    "BankName": "ING Bank"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId": "204068024",
+    "CreditedWalletId": "204068186",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "ReturnURL": "https://mangopay.com/",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "StatementDescriptor": "Mangopay",
+  "Bic": "INGBNL2A"
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, IdealPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+ideal_payin = IdealPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    bic = 'INGBNL2A',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_ideal_payin = ideal_payin.save()
+
+pprint(create_ideal_payin)  
+```  
+
+  
+</RequestExample>

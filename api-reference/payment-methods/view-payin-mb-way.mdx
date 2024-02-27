@@ -1,0 +1,228 @@
+---  
+ title: 'View a PayIn (MB WAY)'  
+ api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import PhoneResponse from '/snippets/parameters/PhoneResponse.mdx';
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import PayInId from '/snippets/parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+###### 200 Succeeded  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<StatementDescriptorResponse />  
+
+<PhoneResponse />  
+
+ <ResponseExample>  
+
+```json Succeeded  
+
+{
+    "Id": "wt_9fb9e538-7a0b-417e-af6e-196d2a7ffb5b",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1696930998,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1696931187,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204089031",
+    "CreditedUserId": "204068024",
+    "PaymentType": "MBWAY",
+    "ExecutionType": "WEB",
+    "StatementDescriptor": "Mangopay",
+    "Phone": "33#652317452"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payinId = '198161872';
+
+    $response = $api->PayIns->Get($payinId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  Id: '156279887',
+}
+
+const viewPayIn = async (payinId) => {
+  return await mangopay.PayIns.get(payinId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewPayIn(myPayIn.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewPayIn(payinId)
+    begin
+        response = MangoPay::PayIn.fetch(payinId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch PayIn: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    Id: '156279887'
+}
+
+viewPayIn(myPayIn[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(vars(view_payin))
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

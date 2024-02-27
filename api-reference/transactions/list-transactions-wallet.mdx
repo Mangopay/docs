@@ -1,0 +1,196 @@
+---  
+ title: 'List Transactions for a Wallet'  
+ api: 'GET /v2.01/{ClientId}/wallets/{WalletId}/transactions'  
+---  
+
+import Array_TransactionsResponse from '/snippets/parameters/Array_TransactionsResponse.mdx';
+import WalletId from '/snippets/parameters/WalletId.mdx';
+import Nature from '/snippets/parameters/Nature.mdx';
+import Type from '/snippets/parameters/Type.mdx';
+import AfterDate from '/snippets/parameters/AfterDate.mdx';
+import BeforeDate from '/snippets/parameters/BeforeDate.mdx';
+import ResultCode from '/snippets/parameters/ResultCode.mdx';
+import Status from '/snippets/parameters/Status.mdx';
+  
+
+This call returns all the transactions (pay-in, transfers, and payouts) of a given wallet.  
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+<BeforeDate />  
+
+<AfterDate />  
+
+<Type />  
+
+<Nature />  
+
+### Path parameters  
+
+<WalletId />  
+
+### Responses  
+
+###### 200   
+
+<Array_TransactionsResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "Id":"145498191",
+        "Tag":"Custom meta",
+        "CreationDate":1657175185,
+        "AuthorId":"145494935",
+        "CreditedUserId":"145397183",
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":1200
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":1100
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":10
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1661859994,
+        "Type":"PAYIN",
+        "Nature":"REGULAR",
+        "CreditedWalletId":"145397873",
+        "DebitedWalletId":null
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $walletId = '148968396';
+
+    $response = $api->Wallets->GetTransactions($walletId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myWallet = {
+  Id: '168935920',
+}
+
+const listWalletTransactions = async (walletId) => {
+  return await mangopay.Wallets.getTransactions(walletId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listWalletTransactions(myWallet.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listWalletTransactions(walletId)
+    begin
+        response = MangoPay::Wallet.transactions(walletId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch wallet transactions: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myWallet = {
+  Id: '148968396'
+}
+
+listWalletTransactions(myWallet[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, Transaction
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('213754077')
+
+transactions = Transaction.all(user_id = natural_user.id, wallet_id = user_wallet.id)
+
+for transaction in transactions:
+    pprint(vars(transaction))  
+```  
+
+  
+</RequestExample>

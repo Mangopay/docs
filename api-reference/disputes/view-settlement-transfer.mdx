@@ -1,0 +1,194 @@
+---  
+ title: 'View a Settlement Transfer'  
+ api: 'GET /v2.01/{ClientId}/settlements/{SettlementId}'  
+---  
+
+import RepudiationIdResponse from '/snippets/parameters/RepudiationIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import SettlementId from '/snippets/parameters/SettlementId.mdx';
+  
+
+### Path parameters  
+
+<SettlementId />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<DebitedFundsResponse />  
+
+<FeesResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedFundsResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<RepudiationIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "159220385",
+    "Tag": null,
+    "CreationDate": 1672677972,
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 999
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "AuthorId": "146476890",
+    "CreditedUserId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 999
+    },
+    "Status": "SUCCEEDED",
+    "ExecutionDate": 1672677972,
+    "Type": "TRANSFER",
+    "Nature": "SETTLEMENT",
+    "CreditedWalletId": "CREDIT_EUR",
+    "DebitedWalletId": "148968396",
+    "RepudiationId": "159196330"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $settlementTransferId = '199394630';
+
+    $response = $api->Disputes->GetSettlementTransfer($settlementTransferId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let mySettlementTransfer = {
+  Id: '192776141',
+}
+
+const viewSettlementTransfer = async (settlementTransferId) => {
+  return await mangopay.Disputes.getSettlementTransfer(settlementTransferId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewSettlementTransfer(settlementTransferId)
+    begin
+        response = MangoPay::Dispute.fetch_settlement_transfer(settlementTransferId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch settlement transfer: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+mySettlementTransfer = {
+    Id: '194996201'
+}
+
+viewSettlementTransfer(mySettlementTransfer[:Id])  
+```  
+
+  
+</RequestExample>

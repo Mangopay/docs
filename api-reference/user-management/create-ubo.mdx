@@ -1,0 +1,348 @@
+---  
+ title: 'Create a UBO'  
+ api: 'POST /v2.01/{ClientId}/users/{UserId}/kyc/ubodeclarations/{UboDeclarationId}/ubos'  
+---  
+
+import IsActiveResponse from '/snippets/parameters/IsActiveResponse.mdx';
+import BirthplaceResponse from '/snippets/parameters/BirthplaceResponse.mdx';
+import AddressResponse from '/snippets/parameters/AddressResponse.mdx';
+import NationalityResponse from '/snippets/parameters/NationalityResponse.mdx';
+import BirthdayResponse from '/snippets/parameters/BirthdayResponse.mdx';
+import FirstNameResponse from '/snippets/parameters/FirstNameResponse.mdx';
+import LastNameResponse from '/snippets/parameters/LastNameResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import Birthplace from '/snippets/parameters/Birthplace.mdx';
+import Address4 from '/snippets/parameters/Address4.mdx';
+import Nationality1 from '/snippets/parameters/Nationality1.mdx';
+import Birthday1 from '/snippets/parameters/Birthday1.mdx';
+import FirstName2 from '/snippets/parameters/FirstName2.mdx';
+import LastName2 from '/snippets/parameters/LastName2.mdx';
+import UboDeclarationId from '/snippets/parameters/UboDeclarationId.mdx';
+import UserId from '/snippets/parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+<UboDeclarationId />  
+
+### Body parameters  
+
+<LastName2 />  
+
+<FirstName2 />  
+
+<Birthday1 />  
+
+<Nationality1 />  
+
+<Address4 />  
+
+<Birthplace />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<LastNameResponse />  
+
+<FirstNameResponse />  
+
+<BirthdayResponse />  
+
+<NationalityResponse />  
+
+<AddressResponse />  
+
+<BirthplaceResponse />  
+
+<IsActiveResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "158947898",
+    "CreationDate": 1672153693,
+    "LastName": "Wiza",
+    "FirstName": "Jess",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "Address": {
+        "AddressLine1": "669 Ratke Forge",
+        "AddressLine2": "Schamberger Walk",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Birthplace": {
+        "City": "Paris",
+        "Country": "FR"
+    },
+    "IsActive": true
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Max 15 UBOs per declaration  
+
+ <ResponseExample>  
+
+```json Max 15 UBOs per declaration  
+
+{
+    "Message": "You can not create more than 15 UBO for a declaration",
+    "Type": "invalid_action",
+    "Id": "f5c1f9c7-bafa-4fe9-b5b1-2b005d0e6f8a",
+    "Date": 1698759679.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "LastName": "Wiza",
+    "FirstName": "Jess",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "Address": {
+        "AddressLine1": "669 Ratke Forge",
+        "AddressLine2": "Schamberger Walk",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Birthplace": {
+        "City": "Paris",
+        "Country": "FR"
+    }
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '198557165';
+    $uboDeclarationId = '198692872';
+
+    $ubo = new \MangoPay\Ubo();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $ubo->Address = $address;
+    $ubo->FirstName = 'John';
+    $ubo->LastName = 'Doe';
+    $ubo->Nationality = 'FR';
+    $ubo->Birthday = mktime(0, 0, 0, 12, 21, 1975); 
+
+    $Birthplace = new \MangoPay\Birthplace();
+    $Birthplace->City = 'Paris';
+    $Birthplace->Country = 'FR';
+
+    $ubo->Birthplace = $Birthplace;
+
+    $response = $api->UboDeclarations->CreateUbo($userId, $uboDeclarationId, $ubo);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+}
+
+let myUbo = {
+  FirstName: 'Alex',
+  LastName: 'Smith',
+  Address: {
+    AddressLine1: '669 Ratke Forge',
+    AddressLine2: 'Schamberger Walk',
+    City: 'Paris',
+    Region: 'Ile-de-France',
+    PostalCode: '75001',
+    Country: 'FR',
+  },
+  Nationality: 'FR',
+  Birthday: 652117514,
+  Birthplace: {
+    City: 'Paris',
+    Country: 'FR',
+  },
+}
+
+const createUbo = async (userId, uboDeclarationId, ubo) => {
+  return await mangopay.UboDeclarations.createUbo(userId, uboDeclarationId, ubo)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUbo(myUser.Id, myUboDeclaration.Id, myUbo)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createUbo(legalUserId, uboDeclarationId, uboObject)
+    begin
+        response = MangoPay::Ubo.create(legalUserId, uboDeclarationId, uboObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create UBO: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+myUboDeclaration = {
+    Id: '194511216'
+}
+
+myUbo = {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+            AddressLine1: '669 Ratke Forge',
+            AddressLine2: 'Schamberger Walk',
+            City: 'Paris',
+            Region: 'Ile-de-France',
+            PostalCode: '75001',
+            Country: 'FR'
+        },
+    Nationality: 'FR',
+    Birthday: 652117514,
+    Birthplace: {
+        City: 'Paris',
+        Country: 'FR'
+    }
+}
+
+createUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+from mangopay.utils import Address, Birthplace
+
+legal_user = LegalUser(
+    id = '210760575'
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210863422'
+)
+
+user_ubo = Ubo(
+    first_name = “Ellie”, 
+    last_name = “Adams”, 
+    address = Address(
+        address_line_1 = ’23 Brook Road’,
+        city = 'London',
+        postal_code = 'NE1 0AA',
+        country = 'GB',
+    ),
+    nationality = 'GB',
+    birthday = 336672000,
+    birthplace = Birthplace(
+        city = 'London',
+        country = 'GB'
+    ),
+    user = legal_user,
+    ubo_declaration = user_ubo_declaration,
+    isActive = True
+)
+
+create_ubo = user_ubo.save()
+
+pprint(create_ubo)
+  
+```  
+
+  
+</RequestExample>

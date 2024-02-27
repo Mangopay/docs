@@ -1,0 +1,147 @@
+---  
+ title: 'View a hook'  
+ api: 'GET /v2.01/{ClientId}/hooks/{HookId}'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import EventTypeResponse from '/snippets/parameters/EventTypeResponse.mdx';
+import ValidityResponse from '/snippets/parameters/ValidityResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import UrlResponse from '/snippets/parameters/UrlResponse.mdx';
+import HookId from '/snippets/parameters/HookId.mdx';
+  
+
+### Path parameters  
+
+<HookId />  
+
+### Responses  
+
+###### 200   
+
+<UrlResponse />  
+
+<StatusResponse />  
+
+<ValidityResponse />  
+
+<EventTypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Url": "https://mangopay.com/docs/please-ignore",
+    "Status": "ENABLED",
+    "Validity": "VALID",
+    "EventType": "UBO_DECLARATION_VALIDATION_ASKED",
+    "Id": "144246103",
+    "Tag": "Custom meta",
+    "CreationDate": 1655991027
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $hookId = '198685419';
+
+    $response = $api->Hooks->Get($hookId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let hook = {
+  Id: '144086866',
+}
+
+const getHook = async (hookId) => {
+  return await mangopay.Hooks.get(hookId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getHook(hook.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewHook(hookId)
+    begin
+        response = MangoPay::Hook.fetch(hookId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Hook: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myHook = {
+    Id: '194445815'
+}
+
+viewHook(myHook[:Id])  
+```  
+
+  
+</RequestExample>

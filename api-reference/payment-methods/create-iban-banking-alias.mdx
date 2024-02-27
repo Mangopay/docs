@@ -1,0 +1,296 @@
+---  
+ title: 'Create an IBAN Banking Alias'  
+ api: 'POST /v2.01/{ClientId}/wallets/{WalletId}/bankingaliases/iban'  
+---  
+
+import WalletIdResponse from '/snippets/parameters/WalletIdResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ActiveResponse from '/snippets/parameters/ActiveResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import CountryResponse from '/snippets/parameters/CountryResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import BICResponse from '/snippets/parameters/BICResponse.mdx';
+import IBANResponse from '/snippets/parameters/IBANResponse.mdx';
+import OwnerNameResponse from '/snippets/parameters/OwnerNameResponse.mdx';
+import Tag2 from '/snippets/parameters/Tag2.mdx';
+import Country4 from '/snippets/parameters/Country4.mdx';
+import OwnerName1 from '/snippets/parameters/OwnerName1.mdx';
+import WalletId from '/snippets/parameters/WalletId.mdx';
+  
+
+### Path parameters  
+
+<WalletId />  
+
+### Body parameters  
+
+<OwnerName1 />  
+
+<Country4 />  
+
+<Tag2 />  
+
+### Responses  
+
+###### 200   
+
+<OwnerNameResponse />  
+
+<IBANResponse />  
+
+<BICResponse />  
+
+<CreditedUserIdResponse />  
+
+<CountryResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ActiveResponse />  
+
+<TypeResponse />  
+
+<IdResponse />  
+
+<WalletIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "OwnerName": "John Doe",
+    "IBAN": "FR117452110000JIULYOYXT2D48",
+    "BIC": "MPAYFRP1PIN",
+    "CreditedUserId": "146476890",
+    "Country": "FR",
+    "Tag": "custom meta",
+    "CreationDate": 1670263006,
+    "Active": true,
+    "Type": "IBAN",
+    "Id": "157608228",
+    "WalletId": "157607922"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Country not supported  
+
+ <ResponseExample>  
+
+```json Country not supported  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "fd020620-8e5c-4b64-925c-aa980e42c237#1670340996",
+    "Date": 1670340997.0,
+    "errors": {
+        "Country": "The requested country is not supported"
+    }
+}
+  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 403 Feature not activated  
+
+ <ResponseExample>  
+
+```json Feature not activated  
+
+{
+    "Message": "This endpoint is not available for your account",
+    "Type": "forbidden_ressource",
+    "Id": "441d156a-ebd1-421e-851b-460a25c6a53f#1670262779",
+    "Date": 1670262780.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Wallet already has a Banking Alias  
+
+ <ResponseExample>  
+
+```json Wallet already has a Banking Alias  
+
+{
+    "Message": "There is already a wallet banking alias existing for this criteria",
+    "Type": "wallet_banking_alias_already_exists",
+    "Id": "7227ab60-2c18-42db-be46-e9169aaeb64a",
+    "Date": 1689155544.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "OwnerName": "John Doe",
+    "Country": "FR",
+    "Tag": "custom meta"
+}
+  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $walletId = '194311530';
+
+    $bankingAlias = new \MangoPay\BankingAliasIBAN();
+    $bankingAlias->OwnerName = 'Alex Smith';
+    $bankingAlias->Tag = 'Updated using Mangopay PHP SDK';
+    $bankingAlias->Country ='FR';
+    $bankingAlias->WalletId = $walletId;
+    
+    $response = $api->BankingAliases->Create($bankingAlias);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myBankingAlias = {
+  OwnerName: 'John',
+  Tag: 'Created with Mangopay NodeJS SDK',
+  Country: 'FR',
+  Type: 'IBAN',
+  WalletId: '172463559',
+}
+
+const createBankingAlias = async (bankingAlias) => {
+  return await mangopay.BankingAliases.create(bankingAlias)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankingAlias(myBankingAlias)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createBankingAlias(bankingAliasObject, walletId)
+    begin
+        response = MangoPay::BankingAliasesIBAN.create(bankingAliasObject, walletId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create banking alias: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+
+myBankingAlias = {
+    OwnerName: 'John',
+    Tag: 'Created with Mangopay NodeJS SDK',
+    Country: 'FR',
+    Type: 'IBAN',
+    WalletId: '194311640'
+}
+
+myWallet = {
+    Id: '194311640'
+}
+
+createBankingAlias(myBankingAlias, myWallet[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, BankingAliasIBAN
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('215029593')
+
+iban_alias = BankingAliasIBAN(
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    credited_user = natural_user,
+    wallet_id = user_wallet.id,
+    tag = 'Create using the Mangopay Python SDK',
+    country = 'FR' 
+)
+
+create_iban_alias = iban_alias.save()
+
+pprint(create_iban_alias)  
+```  
+
+  
+</RequestExample>

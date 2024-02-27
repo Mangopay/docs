@@ -1,0 +1,178 @@
+---  
+ title: 'Check Instant Payout eligibility'  
+ api: 'POST /v2.01/{ClientId}/payouts/reachability'  
+---  
+
+import UnreachableReasonResponse from '/snippets/parameters/UnreachableReasonResponse.mdx';
+import IsReachableResponse from '/snippets/parameters/IsReachableResponse.mdx';
+import BankWireRef from '/snippets/parameters/BankWireRef.mdx';
+import BankAccountId from '/snippets/parameters/BankAccountId.mdx';
+import DebitedWalletId1 from '/snippets/parameters/DebitedWalletId1.mdx';
+import Fees6 from '/snippets/parameters/Fees6.mdx';
+import DebitedFunds7 from '/snippets/parameters/DebitedFunds7.mdx';
+import AuthorId3 from '/snippets/parameters/AuthorId3.mdx';
+import PayoutModeRequested1 from '/snippets/parameters/PayoutModeRequested1.mdx';
+  
+
+This call is used to check whether or not the destination bank is eligible for instant payout.  
+
+### Body parameters  
+
+<PayoutModeRequested1 />  
+
+<AuthorId3 />  
+
+<DebitedFunds7 />  
+
+<Fees6 />  
+
+<DebitedWalletId1 />  
+
+<BankAccountId />  
+
+<BankWireRef />  
+
+### Responses  
+
+###### 200 Bank is reachable  
+
+<IsReachableResponse />  
+
+<UnreachableReasonResponse />  
+
+ <ResponseExample>  
+
+```json Bank is reachable  
+
+{
+    "InstantPayout": {
+        "IsReachable": true,
+        "UnreachableReason": null
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 200 Bank is unreachable  
+
+<IsReachableResponse />  
+
+<UnreachableReasonResponse />  
+
+ <ResponseExample>  
+
+```json Bank is unreachable  
+
+{
+    "InstantPayout":{
+        "IsReachable":false,
+        "UnreachableReason":{
+            "Code":"130010",
+            "Message":"Generic operation error"
+        }
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Instant payment disabled   
+
+ <ResponseExample>  
+
+```json Instant payment disabled   
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"33e27bba-bb56-4d64-8574-cc1916a684c7#1661933575",
+    "Date":1661933576.0,
+    "errors":{
+        "PayoutModeRequested":"InstantPayment is disabled"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "PayoutModeRequested":"INSTANT_PAYMENT",
+    "AuthorId":"142036728",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "DebitedWalletId":"145389978",
+    "BankAccountId":"54682154",
+    "BankWireRef":"invoice 7282"
+}  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def checkReachability(payoutObject)
+    begin
+        response = MangoPay::PayOut::InstantPayoutEligibility::Reachability.create(payoutObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to check reachability: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+  WalletId: '148968396'
+}
+
+myBankAccount = {
+  Id: '154876798'
+}
+
+myPayout = {
+  DebitedWalletId: myUser[:WalletId],
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount[:Id],
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'INSTANT_PAYMENT',
+  AuthorId: myUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay Ruby SDK'
+}
+
+checkReachability(myPayout)  
+```  
+
+  
+</RequestExample>

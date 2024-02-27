@@ -1,0 +1,139 @@
+---  
+ title: 'View a PayIn (BLIK)'  
+ api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import PayInId from '/snippets/parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+###### 200 Succeeded  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+ <ResponseExample>  
+
+```json Succeeded  
+
+{
+    "Id": "wt_57b8f69d-cbcc-4202-9a4f-9a3f3668240b",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1686211211,
+    "AuthorId": "6659843",
+    "DebitedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "CreditedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "Fees": {
+        "Currency": "PLN",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "The transaction was successful",
+    "ExecutionDate": 1686211211,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "6659844",
+    "PaymentType": "BLIK",
+    "ExecutionType": "DIRECT",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_57b8f69d-cbcc-4202-9a4f-9a3f3668240b",
+    "RedirectUrl": "https://r3.girogate.de/ti/dumbdummy?tx=140079495229&rs=oHkl4WvsgwtWpMptWpqWlFa90j0EzzO9&cs=e43baf1ae4a556dfb823fd304acc408580c193e04c1a9bcb26699b4185393b05",
+    "StatementDescriptor": "MGP"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(vars(view_payin))
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

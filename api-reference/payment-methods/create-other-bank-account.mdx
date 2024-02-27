@@ -1,0 +1,316 @@
+---  
+ title: 'Create an OTHER Bank Account'  
+ api: 'POST /v2.01/{ClientId}/users/{UserId}/bankaccounts/other'  
+---  
+
+import ActiveResponse from '/snippets/parameters/ActiveResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import OwnerNameResponse from '/snippets/parameters/OwnerNameResponse.mdx';
+import UserIdResponse from '/snippets/parameters/UserIdResponse.mdx';
+import CountryResponse from '/snippets/parameters/CountryResponse.mdx';
+import BICResponse from '/snippets/parameters/BICResponse.mdx';
+import AccountNumberResponse from '/snippets/parameters/AccountNumberResponse.mdx';
+import OwnerAddressResponse from '/snippets/parameters/OwnerAddressResponse.mdx';
+import Tag3 from '/snippets/parameters/Tag3.mdx';
+import OwnerName from '/snippets/parameters/OwnerName.mdx';
+import Country3 from '/snippets/parameters/Country3.mdx';
+import BIC1 from '/snippets/parameters/BIC1.mdx';
+import AccountNumber from '/snippets/parameters/AccountNumber.mdx';
+import OwnerAddress from '/snippets/parameters/OwnerAddress.mdx';
+import UserId1 from '/snippets/parameters/UserId1.mdx';
+  
+
+<Warning>  
+**Caution – Additional information may be required** 
+  
+OTHER-type bank accounts may require additional information depending on the country (e.g., BSB number for payouts to Australia). Please get in touch with our Support team to make sure the correct details are provided.  
+</Warning>  
+
+### Path parameters  
+
+<UserId1 />  
+
+### Body parameters  
+
+<OwnerAddress />  
+
+<AccountNumber />  
+
+<BIC1 />  
+
+<Country3 />  
+
+<OwnerName />  
+
+<Tag3 />  
+
+### Responses  
+
+###### 200   
+
+<OwnerAddressResponse />  
+
+<AccountNumberResponse />  
+
+<BICResponse />  
+
+<CountryResponse />  
+
+<UserIdResponse />  
+
+<OwnerNameResponse />  
+
+<TypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ActiveResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "OwnerAddress":{
+        "AddressLine1":"The Oasis",
+        "AddressLine2":"Rue des plantes",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "AccountNumber":"11696419",
+    "BIC":"BNPAFRPP",
+    "Country":"FR",
+    "UserId":"142036728",
+    "OwnerName":"Joe Blogs",
+    "Type":"OTHER",
+    "Id":"150298347",
+    "Tag":null,
+    "CreationDate":1661866304,
+    "Active":true
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "OwnerAddress":{
+        "AddressLine1":"The Oasis",
+        "AddressLine2":"Rue des plantes",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "AccountNumber":"11696419",
+    "BIC":"BNPAFRPP",
+    "Country":"FR",
+    "OwnerName":"Joe Blogs",
+    "Tag":"custom meta",
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '146476890';
+
+    $bankAccount = new \MangoPay\BankAccount();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $details = new \MangoPay\BankAccountDetailsOTHER();
+    $details->AccountNumber = '11696419';
+    $details->BIC = 'BNPAFRPP';
+    $details->Country = 'FR';
+
+    $bankAccount->OwnerAddress = $address;
+    $bankAccount->OwnerName = 'Alex Smith';
+    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
+    $bankAccount->Type = 'IBAN';
+    $bankAccount->Details = $details;
+
+    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '165863393',
+  Address: {
+    AddressLine1: 'Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'IDF',
+    PostalCode: '75000',
+    Country: 'FR',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+}
+
+let bankAccount = {
+  Type: 'OTHER',
+  OwnerName: user.FirstName + '' + user.LastName,
+  OwnerAddress: user.Address,
+  AccountNumber: '11696419',
+  BIC: 'BNPAFRPP',
+  Country: 'FR',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createBankAccount = async (userId, bankAccount) => {
+  return await mangopay.Users.createBankAccount(userId, bankAccount)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankAccount(user.Id, bankAccount)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createOtherBankAccount(userId, otherBankAccountObject)
+    begin
+        response = MangoPay::BankAccount.create(userId, otherBankAccountObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '165863393'
+}
+
+myOtherBankAccount = {
+    Type: 'OTHER',
+    OwnerName: 'Alex Smith',
+    OwnerAddress: {
+        AddressLine1: 'Edgewood Road',
+        AddressLine2: 'Address line 2',
+        City: 'Little Rock',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR'
+    },
+    AccountNumber: '11696419',
+    BIC: 'BNPAFRPP',
+    Country: 'FR',
+    Tag: 'Created using Mangopay Ruby SDK'
+  }
+
+createOtherBankAccount(myUser[:Id], myOtherBankAccount)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+from mangopay.utils import Address
+
+natural_user = NaturalUser.get('213753890')
+
+other_bank_account = BankAccount(
+    user_id = natural_user.id,
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    owner_address = Address(
+        address_line_1 = natural_user.address.address_line_1,
+        address_line_2 = natural_user.address.address_line_2,
+        city = natural_user.address.city,
+        region = natural_user.address.region,
+        postal_code = natural_user.address.postal_code,
+        country = natural_user.address.country,
+    ),
+    account_number = '11696419',
+    bic = 'BNPAFRPP',
+    country = 'FR',
+    type = 'OTHER',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_other_bank_account = other_bank_account.save()
+
+pprint(create_other_bank_account)
+  
+```  
+
+  
+</RequestExample>

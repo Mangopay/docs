@@ -1,0 +1,243 @@
+---  
+ title: 'Cancel a Deposit Preauthorization or request a no-show'  
+ api: 'PUT /v2.01/{ClientId}/deposit-preauthorizations/{DepositId}'  
+---  
+
+import CardInfoResponse from '/snippets/parameters/CardInfoResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import Applied3DSVersionResponse from '/snippets/parameters/Applied3DSVersionResponse.mdx';
+import Requested3DSVersionResponse from '/snippets/parameters/Requested3DSVersionResponse.mdx';
+import ShippingResponse from '/snippets/parameters/ShippingResponse.mdx';
+import BillingResponse from '/snippets/parameters/BillingResponse.mdx';
+import IpAddressResponse from '/snippets/parameters/IpAddressResponse.mdx';
+import BrowserInfoResponse from '/snippets/parameters/BrowserInfoResponse.mdx';
+import CultureResponse from '/snippets/parameters/CultureResponse.mdx';
+import StatementDescriptorResponse from '/snippets/parameters/StatementDescriptorResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import SecureModeNeededResponse from '/snippets/parameters/SecureModeNeededResponse.mdx';
+import SecureModeRedirectURLResponse from '/snippets/parameters/SecureModeRedirectURLResponse.mdx';
+import SecureModeReturnURLResponse from '/snippets/parameters/SecureModeReturnURLResponse.mdx';
+import PreferredCardNetworkResponse from '/snippets/parameters/PreferredCardNetworkResponse.mdx';
+import CardIdResponse from '/snippets/parameters/CardIdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import PayinsLinkedResponse from '/snippets/parameters/PayinsLinkedResponse.mdx';
+import PaymentStatusResponse from '/snippets/parameters/PaymentStatusResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import ExpirationDateResponse from '/snippets/parameters/ExpirationDateResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import PaymentStatus1 from '/snippets/parameters/PaymentStatus1.mdx';
+import DepositId from '/snippets/parameters/DepositId.mdx';
+  
+
+This endpoints allows you to take one of two actions against a deposit preauthorization, in both cases provided that no preauthorized pay-ins have been made to capture funds:  
+-Cancel it manually by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can’t be used for any further action.  
+-Request a no-show by setting the `PaymentStatus` to `NO_SHOW_REQUESTED`. If successful, the `PaymentStatus` `NO_SHOW` indicates that you can use the Create a Deposit Preauthorized PayIn complement endpoint to capture additional funds.  
+
+### Path parameters  
+
+<DepositId />  
+
+### Body parameters  
+
+<PaymentStatus1 />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<ExpirationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse />  
+
+<StatusResponse />  
+
+<PaymentStatusResponse />  
+
+<PayinsLinkedResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<CardIdResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<StatementDescriptorResponse />  
+
+<CultureResponse />  
+
+<BrowserInfoResponse />  
+
+<IpAddressResponse />  
+
+<BillingResponse />  
+
+<ShippingResponse />  
+
+<Requested3DSVersionResponse />  
+
+<Applied3DSVersionResponse />  
+
+<TagResponse />  
+
+<CardInfoResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+   "Id": "bca6b50b-b808-4b6b-ae46-145259dd01b5",
+   "CreationDate": 1669137965,
+   "ExpirationDate": 1671729965,
+   "AuthorId": "156671912",
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 500
+   },
+   "Status": "SUCCEEDED",
+   "PaymentStatus": "CANCELED",
+   "PayinsLinked": {
+       "PayinCaptureId": null,
+       "PayinComplementId": null
+   },
+   "ResultCode": "000000",
+   "ResultMessage": "Success",
+   "CardId": "156674899",
+   "PreferredCardNetwork": null,
+   "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?depositId=bca6b50b-b808-4b6b-ae46-145259dd01b5",
+   "SecureModeRedirectURL": null,
+   "SecureModeNeeded": true,
+   "PaymentType": "CARD",
+   "ExecutionType": "DIRECT",
+   "StatementDescriptor": null,
+   "Culture": "EN",
+   "BrowserInfo": {
+       "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+       "JavaEnabled": true,
+       "Language": "FR-FR",
+       "ColorDepth": 4,
+       "ScreenHeight": 1800,
+       "ScreenWidth": 400,
+       "TimeZoneOffset": 60,
+       "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+       "JavascriptEnabled": true
+   },
+   "IpAddress": "80.236.38.245",
+   "Billing": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Shipping": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Requested3DSVersion": null,
+   "Applied3DSVersion": "V2_1",
+   "Tag": "Custom meta",
+   "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW  
+
+ <ResponseExample>  
+
+```json Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW  
+
+{
+    "Message": "The capture has a success status.",
+    "Type": "invalid_action",
+    "Id": "37b05486-e0de-4b17-9056-b3197a4d85e2",
+    "Date": 1699264645.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+   "PaymentStatus": "CANCELED"
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Deposit
+
+deposit_preauthorization = Deposit(
+    id = '5ac7a986-cf01-47f0-a882-8b0928ae5458',
+    payment_status = 'CANCELED'
+)
+
+cancel_deposit_preauthorization = deposit_preauthorization.save()
+
+pprint(cancel_deposit_preauthorization)  
+```  
+
+  
+</RequestExample>

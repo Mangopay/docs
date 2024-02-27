@@ -1,0 +1,201 @@
+---  
+ title: 'View a Repudiation'  
+ api: 'GET /v2.01/{ClientId}/repudiations/{RepudiationId}'  
+---  
+
+import InitialTransactionNatureResponse from '/snippets/parameters/InitialTransactionNatureResponse.mdx';
+import InitialTransactionTypeResponse from '/snippets/parameters/InitialTransactionTypeResponse.mdx';
+import InitialTransactionIdResponse from '/snippets/parameters/InitialTransactionIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
+  
+
+### Path parameters  
+
+<RepudiationId />  
+
+### Responses  
+
+###### 200   
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedFundsResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedFundsResponse />  
+
+<FeesResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<InitialTransactionIdResponse />  
+
+<InitialTransactionTypeResponse />  
+
+<InitialTransactionNatureResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "AuthorId": "146476890",
+    "CreditedUserId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "SUCCEEDED",
+    "ExecutionDate": 1672662591,
+    "Type": "PAYOUT",
+    "Nature": "REPUDIATION",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "CREDIT_EUR",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Id": "159196330",
+    "Tag": null,
+    "CreationDate": 1672662590,
+    "InitialTransactionId": "159196283",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $repudiationId = '199385843';
+
+    $response = $api->Disputes->GetRepudiation($repudiationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRepudiation = {
+  Id: '192775715',
+}
+
+const viewRedpudiation = async (repudiationId) => {
+  return await mangopay.Disputes.getRepudiation(repudiationId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewRedpudiation(myRepudiation.Id)  
+```  
+
+  
+```json REST  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewRepudiation(repudiationId)
+    begin
+        response = MangoPay::Dispute.fetch_repudiation(repudiationId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Repudiation: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRepudiation = {
+    Id:'192775715'
+}
+
+viewRepudiation(myRepudiation[:Id])  
+```  
+
+  
+</RequestExample>

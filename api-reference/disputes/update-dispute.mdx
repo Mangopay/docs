@@ -1,0 +1,209 @@
+---  
+ title: 'Update a Dispute'  
+ api: 'PUT /v2.01/{ClientId}/disputes/{DisputeId}'  
+---  
+
+import RepudiationIdResponse from '/snippets/parameters/RepudiationIdResponse.mdx';
+import ClosedDateResponse from '/snippets/parameters/ClosedDateResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import DisputeReasonResponse from '/snippets/parameters/DisputeReasonResponse.mdx';
+import StatusMessageResponse from '/snippets/parameters/StatusMessageResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import ContestedFundsResponse from '/snippets/parameters/ContestedFundsResponse.mdx';
+import DisputedFundsResponse from '/snippets/parameters/DisputedFundsResponse.mdx';
+import ContestDeadlineDateResponse from '/snippets/parameters/ContestDeadlineDateResponse.mdx';
+import DisputeTypeResponse from '/snippets/parameters/DisputeTypeResponse.mdx';
+import InitialTransactionNatureResponse from '/snippets/parameters/InitialTransactionNatureResponse.mdx';
+import InitialTransactionTypeResponse from '/snippets/parameters/InitialTransactionTypeResponse.mdx';
+import InitialTransactionIdResponse from '/snippets/parameters/InitialTransactionIdResponse.mdx';
+import DisputeId from '/snippets/parameters/DisputeId.mdx';
+  
+
+### Path parameters  
+
+<DisputeId />  
+
+### Responses  
+
+###### 200   
+
+<InitialTransactionIdResponse />  
+
+<InitialTransactionTypeResponse />  
+
+<InitialTransactionNatureResponse />  
+
+<DisputeTypeResponse />  
+
+<ContestDeadlineDateResponse />  
+
+<DisputedFundsResponse />  
+
+<ContestedFundsResponse />  
+
+<StatusResponse />  
+
+<StatusMessageResponse />  
+
+<DisputeReasonResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ClosedDateResponse />  
+
+<RepudiationIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "InitialTransactionId": "159196292",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR",
+    "DisputeType": "CONTESTABLE",
+    "ContestDeadlineDate": 1673395199,
+    "DisputedFunds": {
+        "Currency": "EUR",
+        "Amount": 2000
+    },
+    "ContestedFunds": {
+        "Currency": "EUR",
+        "Amount": 2000
+    },
+    "Status": "PENDING_CLIENT_ACTION",
+    "StatusMessage": null,
+    "DisputeReason": {
+        "DisputeReasonMessage": "This is a test dispute",
+        "DisputeReasonType": "DUPLICATE"
+    },
+    "ResultCode": "",
+    "ResultMessage": null,
+    "Id": "159206448",
+    "Tag": "Updated tag",
+    "CreationDate": 1672669787,
+    "ClosedDate": null,
+    "RepudiationId": "159206449"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "Updated tag"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $disputeId = '192746554';
+    $dispute = $api->Disputes->Get($disputeId);
+    
+    $dispute->Tag = 'Updated using Mangopay PHP SDK';
+    
+    $response = $api->Disputes->Update($dispute);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '192746554',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const updateDispute = async (dispute) => {
+  return await mangopay.Disputes.update(dispute)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateDispute(myDispute)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateDispute(disputeId, disputeObject)
+    begin
+        response = MangoPay::Dispute.update(disputeId, disputeObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'194413022',
+    Tag: 'Updated using Mangopay Ruby SDK'
+}
+
+updateDispute(myDispute[:Id], myDispute)  
+```  
+
+  
+</RequestExample>

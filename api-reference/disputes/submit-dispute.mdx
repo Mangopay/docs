@@ -1,0 +1,344 @@
+---  
+ title: 'Submit a Dispute'  
+ api: 'PUT /v2.01/{ClientId}/disputes/{DisputeId}/submit'  
+---  
+
+import RepudiationIdResponse from '/snippets/parameters/RepudiationIdResponse.mdx';
+import ClosedDateResponse from '/snippets/parameters/ClosedDateResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import DisputeReasonResponse from '/snippets/parameters/DisputeReasonResponse.mdx';
+import StatusMessageResponse from '/snippets/parameters/StatusMessageResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import ContestedFundsResponse from '/snippets/parameters/ContestedFundsResponse.mdx';
+import DisputedFundsResponse from '/snippets/parameters/DisputedFundsResponse.mdx';
+import ContestDeadlineDateResponse from '/snippets/parameters/ContestDeadlineDateResponse.mdx';
+import DisputeTypeResponse from '/snippets/parameters/DisputeTypeResponse.mdx';
+import InitialTransactionNatureResponse from '/snippets/parameters/InitialTransactionNatureResponse.mdx';
+import InitialTransactionTypeResponse from '/snippets/parameters/InitialTransactionTypeResponse.mdx';
+import InitialTransactionIdResponse from '/snippets/parameters/InitialTransactionIdResponse.mdx';
+import ContestedFunds from '/snippets/parameters/ContestedFunds.mdx';
+import DisputeId from '/snippets/parameters/DisputeId.mdx';
+  
+
+This call is used both for the initial submission of the dispute and any resubmission made afterwards (in case more documents are required for instance).  
+
+### Path parameters  
+
+<DisputeId />  
+
+### Body parameters  
+
+<ContestedFunds />  
+
+### Responses  
+
+###### 200   
+
+<InitialTransactionIdResponse />  
+
+<InitialTransactionTypeResponse />  
+
+<InitialTransactionNatureResponse />  
+
+<DisputeTypeResponse />  
+
+<ContestDeadlineDateResponse />  
+
+<DisputedFundsResponse />  
+
+<ContestedFundsResponse />  
+
+<StatusResponse />  
+
+<StatusMessageResponse />  
+
+<DisputeReasonResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ClosedDateResponse />  
+
+<RepudiationIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "InitialTransactionId": "158596153",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR",
+    "DisputeType": "CONTESTABLE",
+    "ContestDeadlineDate": 1673049599,
+    "DisputedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "ContestedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Status": "SUBMITTED",
+    "StatusMessage": null,
+    "DisputeReason": {
+        "DisputeReasonMessage": "This is a test dispute",
+        "DisputeReasonType": "UNKNOWN"
+    },
+    "ResultCode": "",
+    "ResultMessage": null,
+    "Id": "159102965",
+    "Tag": null,
+    "CreationDate": 1672411848,
+    "ClosedDate": null,
+    "RepudiationId": "159102966"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 <inline-code>ContestedFunds</inline-code> required  
+
+ <ResponseExample>  
+
+```json <inline-code>ContestedFunds</inline-code> required  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"994a6ed2-bca5-4673-a37f-16c01e9ad065#1673365608",
+    "Date":1673365609,
+    "errors":{
+        "ContestedFunds":"This field is required"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 <inline-code>ContestedFunds</inline-code> higher than <inline-code>DisputedFunds</inline-code>  
+
+ <ResponseExample>  
+
+```json <inline-code>ContestedFunds</inline-code> higher than <inline-code>DisputedFunds</inline-code>  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "d37b150a-6238-4298-9da4-2540e6d46bd5#1672669956",
+    "Date": 1672669957.0,
+    "errors": {
+        "ContestedFunds": "The ContestedFunds amount must be less than or equal to the DisputedFunds amount"
+    }
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+###### 400 <inline-code>ContestDeadlineDate</inline-code> in the past  
+
+ <ResponseExample>  
+
+```json <inline-code>ContestDeadlineDate</inline-code> in the past  
+
+{
+    "Message": "The ContestDeadlineDate has now passed and this Dispute is no longer contestable",
+    "Type": "dispute_contest_deadline_passed",
+    "Id": "9544eb52-8ae4-41ac-99e0-1215f17e3859#1673434106",
+    "Date": 1673434107.0,
+    "errors": null
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "ContestedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    }
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+// To submit a dispute for the first time
+
+try {
+    $disputeId = '199385842';
+
+    $contestedFunds = new \MangoPay\Money();
+    $contestedFunds->Amount = 500;
+    $contestedFunds->Currency = 'EUR';
+
+    $response = $api->Disputes->ContestDispute($disputeId, $contestedFunds);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+
+// To submit a reopened dispute
+try {
+    $disputeId = '199385842';
+
+    $response = $api->Disputes->ResubmitDispute($disputeId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// When submitting a dispute for the first time
+
+let myDispute = {
+  Id: '193572349',
+  contestedFunds: {
+    Currency: 'EUR',
+    Amount: '10',
+  },
+}
+
+const submitDispute = async (disputeId, contestedFunds) => {
+  return await mangopay.Disputes.contestDispute(disputeId, contestedFunds)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+submitDispute(myDispute.Id, myDispute.contestedFunds)
+
+// When resubmitting the dispute (in case more documents are required)
+
+let myDispute = {
+  Id: '192746554',
+}
+
+const resubmitDispute = async (disputeId) => {
+  return await mangopay.Disputes.resubmitDispute(disputeId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+resubmitDispute(myDispute.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+# When submitting a dispute for the first time
+
+def submitDispute(disputeId, contestedFunds)
+    begin
+        response = MangoPay::Dispute.contest(disputeId, contestedFunds)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'194413022'
+}
+
+myContestedFunds = {
+    Currency: 'EUR',
+    Amount: 250
+      }
+
+submitDispute(myDispute[:Id], myContestedFunds)
+
+# When resubmitting the dispute (in case more documents are required)
+
+def resubmitDispute(disputeId)
+    begin
+        response = MangoPay::Dispute.resubmit(disputeId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id: '194413022'
+}
+
+resubmitDispute(myDispute[:Id])  
+```  
+
+  
+</RequestExample>

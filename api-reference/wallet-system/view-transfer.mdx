@@ -1,0 +1,216 @@
+---  
+ title: 'View a Transfer'  
+ api: 'GET /v2.01/{ClientId}/transfers/{TransferId}'  
+---  
+
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import TransferId from '/snippets/parameters/TransferId.mdx';
+  
+
+### Path parameters  
+
+<TransferId />  
+
+### Responses  
+
+###### 200   
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<DebitedWalletIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Id": "147418644",
+    "Tag": "custom meta",
+    "CreationDate": 1658928843,
+    "AuthorId": "142036728",
+    "CreditedUserId": "145397183",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1188
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 12
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1658928843,
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "DebitedWalletId": "145389978",
+    "CreditedWalletId": "145397873"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $transferId = '155585643';
+
+    $response = $api->Transfers->Get($transferId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myTransfer = {
+  Id: '174877749',
+}
+
+const viewTransfer = async (transferId) => {
+  return await mangopay.Transfers.get(transferId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewTransfer(myTransfer.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewTransfer(transferId)
+    begin
+        response = MangoPay::Transfer.fetch(transferId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch transfer: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+
+myTransfer = {
+  Id: '194342401'
+}
+
+viewTransfer(myTransfer[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Transfer
+
+try:
+    view_transfer = Transfer.get('214568995')
+    pprint(vars(view_transfer))
+except Transfer.DoesNotExist:
+    print('Transfer {} does not exist'.format(view_transfer.id))
+  
+```  
+
+  
+</RequestExample>

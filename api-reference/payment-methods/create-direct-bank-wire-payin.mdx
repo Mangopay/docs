@@ -1,0 +1,309 @@
+---  
+ title: 'Create a Direct Bank Wire PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/bankwire/direct/'  
+---  
+
+import BankAccountResponse from '/snippets/parameters/BankAccountResponse.mdx';
+import WireReferenceResponse from '/snippets/parameters/WireReferenceResponse.mdx';
+import DeclaredFeesResponse from '/snippets/parameters/DeclaredFeesResponse.mdx';
+import DeclaredDebitedFundsResponse from '/snippets/parameters/DeclaredDebitedFundsResponse.mdx';
+import ExecutionTypeResponse from '/snippets/parameters/ExecutionTypeResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/parameters/ProfilingAttemptReference.mdx';
+import DeclaredFees from '/snippets/parameters/DeclaredFees.mdx';
+import DeclaredDebitedFunds from '/snippets/parameters/DeclaredDebitedFunds.mdx';
+import CreditedWalletId from '/snippets/parameters/CreditedWalletId.mdx';
+import CreditedUserId from '/snippets/parameters/CreditedUserId.mdx';
+import AuthorId from '/snippets/parameters/AuthorId.mdx';
+import Tag from '/snippets/parameters/Tag.mdx';
+  
+
+The object expires 1 month after creation if no funds are received.  
+
+<Warning>  
+**Warning – Display bank account details clearly to the end user** 
+  
+The direct bank wire relies on independent action from the end user. They must use the `WireReference` and wire the funds to the bank account identified by the `IBAN` and `BIC`.  
+If the end user wires the funds with the incorrect reference, to a different account, or for a different amount than the one declared, then the reconciliation will be delayed or unsuccessful.  
+</Warning>  
+
+### Body parameters  
+
+<Tag />  
+
+<AuthorId />  
+
+<CreditedUserId />  
+
+<CreditedWalletId />  
+
+<DeclaredDebitedFunds />  
+
+<DeclaredFees />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+###### 200 Status is CREATED  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<ExecutionTypeResponse />  
+
+<DeclaredDebitedFundsResponse />  
+
+<DeclaredFeesResponse />  
+
+<WireReferenceResponse />  
+
+<BankAccountResponse />  
+
+ <ResponseExample>  
+
+```json Status is CREATED  
+
+{
+    "Id": "157579682",
+    "Tag": null,
+    "CreationDate": 1670249107,
+    "ResultCode": null,
+    "ResultMessage": null,
+    "AuthorId": "156671912",
+    "CreditedUserId": "156671912",
+    "DebitedFunds": {
+        "Currency": "XXX",
+        "Amount": 0
+    },
+    "CreditedFunds": {
+        "Currency": "XXX",
+        "Amount": 0
+    },
+    "Fees": {
+        "Currency": "XXX",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "156683554",
+    "DebitedWalletId": null,
+    "PaymentType": "BANK_WIRE",
+    "ExecutionType": "DIRECT",
+    "DeclaredDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DeclaredFees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "WireReference": "MGi3dy0q42",
+    "BankAccount": {
+        "OwnerAddress": {
+            "AddressLine1": "2 Avenue Amélie",
+            "AddressLine2": null,
+            "City": "Luxembourg",
+            "Region": null,
+            "PostalCode": "L-1125",
+            "Country": "LU"
+        },
+        "Type": "IBAN",
+        "OwnerName": "MANGOPAY SA",
+        "IBAN": "FR7630056009271234567890182",
+        "BIC": "CCFRFRPPXXX"
+    }
+}
+  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "Custom meta",
+    "AuthorId": "156671912",
+    "CreditedUserId": "156671912",
+    "CreditedWalletId": "156683554",
+    "DeclaredDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DeclaredFees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+}
+  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDirectBankWirePayIn = {
+  PaymentType: 'BANK_WIRE',
+  ExecutionType: 'DIRECT',
+  AuthorId: '146476890',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '146476890',
+  DeclaredDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  DeclaredFees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '148968396',
+}
+
+const createDirectBankWirePayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createDirectBankWirePayIn(myDirectBankWirePayIn)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDirectBankWirePayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::BankWire::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    AuthorId: '146476890',
+    Tag: 'Created with Mangopay Node.js SDK',
+    CreditedUserId: '146476890',
+    DeclaredDebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    DeclaredFees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '148968396',
+  }
+
+createDirectBankWirePayIn(myPayIn)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, BankWirePayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('215029593')
+
+direct_bank_wire_payin = BankWirePayIn(
+    author_id=natural_user,
+    credited_wallet_id=user_wallet.id,
+    declared_debited_funds=Money(amount=1000, currency='EUR'),
+    declared_fees=Money(amount=50, currency='EUR')
+)
+
+create_direct_bank_wire_payin = direct_bank_wire_payin.save()
+
+pprint(create_direct_bank_wire_payin)  
+```  
+
+  
+</RequestExample>

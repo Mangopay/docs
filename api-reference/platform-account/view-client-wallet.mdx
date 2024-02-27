@@ -1,0 +1,140 @@
+---  
+ title: 'View a Client Wallet'  
+ api: 'GET /v2.01/{ClientId}/clients/wallets/{FundsType}/{Currency}'  
+---  
+
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import FundsTypeResponse from '/snippets/parameters/FundsTypeResponse.mdx';
+import CurrencyResponse from '/snippets/parameters/CurrencyResponse.mdx';
+import BalanceResponse from '/snippets/parameters/BalanceResponse.mdx';
+import Currency20 from '/snippets/parameters/Currency20.mdx';
+import FundsType from '/snippets/parameters/FundsType.mdx';
+  
+
+### Path parameters  
+
+<FundsType />  
+
+<Currency20 />  
+
+### Responses  
+
+###### 200   
+
+<BalanceResponse />  
+
+<CurrencyResponse />  
+
+<FundsTypeResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "Balance": {
+        "Currency": "EUR",
+        "Amount": 2027
+    },
+    "Currency": "EUR",
+    "FundsType": "FEES",
+    "Id": "FEES_EUR",
+    "Tag": null,
+    "CreationDate": 1658926202
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myWallet = {
+  FundsType: 'FEES',
+  Currency: 'EUR',
+}
+
+const viewClientWallet = async (fundsType, currency) => {
+  return await mangopay.Clients.getClientWallet(fundsType, currency)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewClientWallet(myWallet.FundsType, myWallet.Currency)  
+```  
+
+  
+```php PHP  
+
+<?php
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = '/tmp/';
+
+try {
+
+    // $fundsType = MangoPay\FundsType::FEES;
+    $fundsType = MangoPay\FundsType::CREDIT;
+    $response = $api->Clients->GetWallets($fundsType);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import ClientWallet
+
+client_wallet = ClientWallet.get(funds_type = 'FEES', currency = 'GBP') 
+
+pprint(vars(client_wallet))  
+```  
+
+  
+</RequestExample>

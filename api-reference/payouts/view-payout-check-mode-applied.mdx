@@ -1,0 +1,161 @@
+---  
+ title: 'View a Payout and check mode applied'  
+ api: 'GET /v2.01/{ClientId}/payouts/bankwire/{PayOutId}'  
+---  
+
+import BankWireRefResponse from '/snippets/parameters/BankWireRefResponse.mdx';
+import BankAccountIdResponse from '/snippets/parameters/BankAccountIdResponse.mdx';
+import PaymentTypeResponse from '/snippets/parameters/PaymentTypeResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/parameters/ResultCodeResponse.mdx';
+import StatusResponse from '/snippets/parameters/StatusResponse.mdx';
+import FeesResponse from '/snippets/parameters/FeesResponse.mdx';
+import CreditedFundsResponse from '/snippets/parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/parameters/DebitedFundsResponse.mdx';
+import CreditedUserIdResponse from '/snippets/parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/parameters/TagResponse.mdx';
+import IdResponse from '/snippets/parameters/IdResponse.mdx';
+import EndToEndIdResponse from '/snippets/parameters/EndToEndIdResponse.mdx';
+import FallbackReasonResponse from '/snippets/parameters/FallbackReasonResponse.mdx';
+import ModeAppliedResponse from '/snippets/parameters/ModeAppliedResponse.mdx';
+import ModeRequestedResponse from '/snippets/parameters/ModeRequestedResponse.mdx';
+import PayoutId from '/snippets/parameters/PayoutId.mdx';
+  
+
+This call returns the information about a payout with additional information about the payout mode (`ModeRequested`, `ModeApplied`, and `FallbackReason` parameters).  
+
+### Path parameters  
+
+<PayoutId />  
+
+### Responses  
+
+###### 200   
+
+<ModeRequestedResponse />  
+
+<ModeAppliedResponse />  
+
+<FallbackReasonResponse />  
+
+<EndToEndIdResponse />  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<FeesResponse />  
+
+<StatusResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentTypeResponse />  
+
+<BankAccountIdResponse />  
+
+<BankWireRefResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+{
+    "ModeRequested":"STANDARD",
+    "ModeApplied":"STANDARD",
+    "FallbackReason":null,
+    "EndToEndId": "cc46c027908543b5877f04913335996a",
+    "Id":"150301497",
+    "Tag":"custom meta",
+    "CreationDate":1661868011,
+    "AuthorId":"142036728",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":1188
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "Status":"SUCCEEDED",
+    "ResultCode":"000000",
+    "ResultMessage":"Success",
+    "ExecutionDate":1661868012,
+    "Type":"PAYOUT",
+    "Nature":"REGULAR",
+    "CreditedWalletId":null,
+    "DebitedWalletId":"145389978",
+    "PaymentType":"BANK_WIRE",
+    "BankAccountId":"150287803",
+    "BankWireRef":"invoice 7282"
+}  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayout = {
+  Id: '174860560',
+}
+
+const getPayoutCheckMode = async (payoutId) => {
+  return await mangopay.PayOuts.getBankwire(payoutId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getPayoutCheckMode(myPayout.Id)  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,150 @@
+---  
+ title: 'List Disputes for a User'  
+ api: 'GET /v2.01/{ClientId}/users/{UserId}/disputes'  
+---  
+
+import Array_DisputesResponse from '/snippets/parameters/Array_DisputesResponse.mdx';
+import UserId from '/snippets/parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+### Responses  
+
+###### 200   
+
+<Array_DisputesResponse />  
+
+ <ResponseExample>  
+
+```json 200  
+
+[
+    {
+        "InitialTransactionId": "158596153",
+        "InitialTransactionType": "PAYIN",
+        "InitialTransactionNature": "REGULAR",
+        "DisputeType": "CONTESTABLE",
+        "ContestDeadlineDate": 1673049599,
+        "DisputedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "ContestedFunds": {
+            "Currency": "EUR",
+            "Amount": 1200
+        },
+        "Status": "PENDING_CLIENT_ACTION",
+        "StatusMessage": null,
+        "DisputeReason": {
+            "DisputeReasonMessage": "This is a test dispute",
+            "DisputeReasonType": "UNKNOWN"
+        },
+        "ResultCode": "",
+        "ResultMessage": null,
+        "Id": "159102965",
+        "Tag": null,
+        "CreationDate": 1672411848,
+        "ClosedDate": null,
+        "RepudiationId": "159102966"
+    }
+]  
+
+ ```  
+
+ </ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '146476890';
+
+    $response = $api->Disputes->GetDisputesForUser($userId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+```  
+javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+}
+
+const listDisputesUser = async (userId) => {
+  return await mangopay.Disputes.getDisputesForUser(userId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listDisputesUser(myUser.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listUserDisputes(userId)
+    begin
+        response = MangoPay::Dispute.fetch_for_user(userId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '146476890'
+}
+
+listUserDisputes(myUser[:Id])  
+```  
+
+  
+</RequestExample>
