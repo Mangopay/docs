@@ -1,0 +1,152 @@
+---
+title: 'Authentication'
+'og:description': 'Understand how to authenticate calls to the Mangopay API using OAuth 2.0, including a step-by-step guide, examples, and best practices.'
+---  
+
+## Introduction  
+
+The Mangopay REST API uses the OAuth 2.0 authentication protocol to provide secure access to resources.   
+
+<Note>  
+**Note – SDKs handle authentication automatically** 
+  
+For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. Find out more in SDK authentication section.  
+</Note>  
+
+<Note>  
+**Best practices – Security considerations** 
+  
+HTTPS is mandatory for production environments  
+We strongly recommend authenticating from your server for security reasons (rather than from the user’s browser)  
+</Note>  
+
+## OAuth 2.0 authentication  
+
+The OAuth 2.0 method of authentication consists in generating a temporary authentication token, called a Bearer token. This can then be used as tokenized credentials until it expires, at which point a new token must be generated. The logic is as follows:   
+-Generate a Bearer token  
+-Use the Bearer token until it expires  
+-Generate a new one before expiry  
+
+Since you only send your API key to generate the token, this industry-standard method ensures a high level of security.  
+
+You need a `ClientId` and an API key (get a Sandbox API key for free).  
+
+### 1. Generate a Bearer token  
+
+To generate your authentication token, call the endpoint below using Basic Access authentication as follows:  
+
+#### A. Combine your `ClientId` and API key into a string separated by a colon  
+
+`ClientId`:`ApiKey`  
+
+#### B. Encode the string in Base64  
+
+Once encoded, the string looks something like this:  
+
+RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu  
+
+#### C. Call the OAuth token endpoint  
+
+Use the encoded string, preceded by “Basic” and a space, as your Authorization header (this is Basic Access authentication). Unlike most other calls to the API, this endpoint accepts the `x-www-form-urlencoded` Content-Type.TW please add the old table here  
+```json API response
+{
+    "access_token": "094696b3724d4aa5a182eac360dcd537",
+    "token_type": "bearer",
+    "expires_in": 1199
+}
+```TW please add the old table here  
+
+<Note>  
+**Note – OAuth token endpoint supports Basic Access** 
+  
+The `/oauth/token` endpoint is the only route that supports Basic Access authentication.  
+</Note>  
+
+### 2. Use your Bearer token until it expires  
+
+Now that you have your Bearer `access_token`, you can use it to access Mangopay API resources until it expires.  
+
+Use the token, preceded by “Bearer” and a space, as the Authorization header in your requests:TW please add the old table here  
+
+### 3. Generate a new token before expiry  
+
+Before your token expires, generate a new one with the OAuth token endpoint as described above.   
+
+<Note>  
+**Best practice – Only generate new tokens when the last one expires** 
+  
+There is no need to generate a different token for every call you make – only before the previous one expires.  
+</Note>  
+
+Once the token expires (that is, the `expires_in` seconds value elapses), then it is no longer valid and calls made with it will return the following HTTP 401 error:   
+```json 401 - Authorization credentials not valid
+{
+    "Message": "The authorization credentials are not valid",
+    "Type": "invalid_credentials",
+    "Id": "9e1f5654-2957-408b-a198-e921ca6830b7",
+    "Date": 1700772361.0,
+    "errors": null
+}
+```  
+
+If your authentication is misconfigured and causes repeated access attempts with invalid credentials, it may result in a temporary blockage on your IP address:  
+```json 400 - Account temporarily blocked
+{
+    "error": "unauthorized_client",
+    "error_description": "This account has been temporarily locked for security reasons. Please try again later."
+}
+```  
+
+## SDK authentication  
+
+With our official SDKs, you don’t have to worry about the logic behind the authentication to Mangopay: you just need to set your credentials after the SDK initialization.  
+
+The authentication is then handled automatically, relying on OAuth 2.0 to provide a secure connection to Mangopay.  
+
+Please find below examples of how to set your credentials after the SDK initialization to authenticate:  
+<CodeGroup>  
+
+```php Authentication examples
+$api = new MangoPay\MangoPayApi();
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-client-api-key;
+```  
+
+```nodejs Authentication examples
+const mangopay = require('mangopay2-nodejs-sdk');
+
+let mangopayApi = new mangopay({
+    clientId: 'your_client_id',
+    clientApiKey: 'your_client_api_key',
+    baseUrl: 'https://api.sandbox.mangopay.com'
+});
+```  
+
+```ruby Authentication examples
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+```  
+
+```java Authentication examples
+    import com.mangopay.MangoPayApi;
+
+    MangoPayApi api = new MangoPayApi();
+
+    api.getConfig().setClientId("your-client-id");
+    api.getConfig().setClientPassword("your-client-password");
+```  
+
+```.net Authentication examples
+MangoPayApi api = new MangoPayApi();
+
+api.Config.ClientId = "your-client-id";
+api.Config.ClientPassword = "your-client-api-key";
+api.Config.BaseUrl = "https://api.sandbox.mangopay.com";
+```  
+</CodeGroup>

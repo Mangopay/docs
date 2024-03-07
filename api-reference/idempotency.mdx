@@ -1,0 +1,55 @@
+---
+title: 'Idempotency'
+'og:description': 'Understand idempotency and how to make your requests idempotent, allowing you to prevent duplicated calls.'
+---  
+
+## Introduction  
+
+The Mangopay API supports idempotency for all  POST calls, which means that a request can be retried several times without performing the same operation. This avoids unwanted duplicated calls that can have detrimental consequences, for example in case of a network error.  
+
+You can make calls idempotent by adding an `Idempotency-Key` to your request header. The idempotency key is a unique string generated on your side which must contain between 16 and 36 characters (only alphanumeric and dashes).  
+
+<Note>  
+**Best practice – Use GUID** 
+  
+We strongly recommend generating a globally unique identifier (GUID) as your idempotency key.  
+</Note>  
+
+Using an idempotency key is optional; the API will function normally without it.  
+
+<Note>  
+**Note – Idempotency key required for some features** 
+  
+The idempotency key is required to accept two subsequent pay-ins of the same amount within 24 hours if they rely on the same preauthorization (including for multi-capture).  
+</Note>  
+
+## Benefits  
+
+By using an idempotency key, you’ll be able to avoid duplicated calls and retrieve missed API responses.  
+
+### Blocking duplicated calls  
+
+If you use the same idempotency key within 24 hours, regardless of the other parameter values, Mangopay will block all but the first request. This means you are able to rerun the same request knowing that it is only going to be processed once.   
+
+  
+```json Response example
+{
+  "Message": "A resource has already been created with this Idempotency Key",
+  "Type": "idempotent_creation_conflict",
+  "Id": "bf6cce22-4c12-454f-ac05-ca20c8683735#1452723935",
+  "Date": 1452723944,
+  "errors": null
+}
+```  
+
+When an idempotent request is blocked, the 409 HTTP response code is returned, and this regardless of the response code of the previous API call.  
+
+### Retrieving missed API responses  
+
+In the event of a timeout or a loss of connection, the idempotency key can be used to retrieve the missed API responses using the View an API Response endpoint.  
+
+<Warning>  
+**Caution – Limited to within 24 hours** 
+  
+This only works within 24 hours after the initial use of the idempotency key.  
+</Warning>
