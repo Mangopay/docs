@@ -4,7 +4,7 @@
 ---  
 
 import Array_DisputesResponse from '/snippets/response-parameters/Array_DisputesResponse.mdx';
-import WalletId from '/snippets/parameters/WalletId.mdx';
+import WalletId from '/snippets/path-parameters/WalletId.mdx';
   
 
 ### Path parameters  
@@ -115,6 +115,30 @@ myWallet = {
 }
 
 listWalletDisputes(myWallet[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Wallet
+
+user_wallet = Wallet.get('wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV')
+
+disputes = user_wallet.disputes.all()
+
+for dispute in disputes:
+    print()
+    pprint(dispute._vars)  
 ```  
 
   

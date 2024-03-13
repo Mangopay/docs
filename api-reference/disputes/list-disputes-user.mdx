@@ -4,7 +4,7 @@
 ---  
 
 import Array_DisputesResponse from '/snippets/response-parameters/Array_DisputesResponse.mdx';
-import UserId from '/snippets/parameters/UserId.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
   
 
 ### Path parameters  
@@ -144,6 +144,30 @@ myUser = {
 }
 
 listUserDisputes(myUser[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Dispute
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+disputes = Dispute.all(user_id = natural_user.id)
+
+for dispute in disputes:   
+    print()
+    pprint(dispute._data)  
 ```  
 
   

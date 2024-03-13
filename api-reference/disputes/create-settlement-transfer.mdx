@@ -6,25 +6,25 @@
 import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
 import RepudiationIdResponse from '/snippets/response-parameters/RepudiationIdResponse.mdx';
 import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
-import CreditedWalletId1Response from '/snippets/response-parameters/CreditedWalletId1Response.mdx';
+import CreditedWalletId2Response from '/snippets/response-parameters/CreditedWalletId2Response.mdx';
 import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
 import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
 import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
-import StatusResponse from '/snippets/response-parameters/StatusResponse.mdx';
-import CreditedFunds1Response from '/snippets/response-parameters/CreditedFunds1Response.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import CreditedFunds5Response from '/snippets/response-parameters/CreditedFunds5Response.mdx';
 import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
 import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
-import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
-import DebitedFunds1Response from '/snippets/response-parameters/DebitedFunds1Response.mdx';
+import Fees5Response from '/snippets/response-parameters/Fees5Response.mdx';
+import DebitedFunds6Response from '/snippets/response-parameters/DebitedFunds6Response.mdx';
 import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
 import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
 import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
 import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
 import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
-import Fees12 from '/snippets/parameters/Fees12.mdx';
-import DebitedFunds14 from '/snippets/parameters/DebitedFunds14.mdx';
-import AuthorId from '/snippets/parameters/AuthorId.mdx';
-import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
+import Fees4 from '/snippets/body-parameters/Fees4.mdx';
+import DebitedFunds5 from '/snippets/body-parameters/DebitedFunds5.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
   
 
 ### Path parameters  
@@ -35,9 +35,9 @@ import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
 
 <AuthorId />  
 
-<DebitedFunds14 />  
+<DebitedFunds5 />  
 
-<Fees12 />  
+<Fees4 />  
 
 ### Responses  
 
@@ -53,17 +53,17 @@ import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
 
 <ResultMessageResponse />  
 
-<DebitedFunds1Response />  
+<DebitedFunds6Response />  
 
-<Fees1Response />  
+<Fees5Response />  
 
 <AuthorIdResponse />  
 
 <CreditedUserIdResponse />  
 
-<CreditedFunds1Response />  
+<CreditedFunds5Response />  
 
-<StatusResponse />  
+<Status2Response />  
 
 <ExecutionDateResponse />  
 
@@ -71,7 +71,7 @@ import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
 
 <NatureResponse />  
 
-<CreditedWalletId1Response />  
+<CreditedWalletId2Response />  
 
 <DebitedWalletIdResponse />  
 
@@ -87,17 +87,17 @@ import RepudiationId from '/snippets/parameters/RepudiationId.mdx';
 
 <ResultMessageResponse />  
 
-<DebitedFunds1Response />  
+<DebitedFunds6Response />  
 
-<Fees1Response />  
+<Fees5Response />  
 
 <AuthorIdResponse />  
 
 <CreditedUserIdResponse />  
 
-<CreditedFunds1Response />  
+<CreditedFunds5Response />  
 
-<StatusResponse />  
+<Status2Response />  
 
 <ExecutionDateResponse />  
 
@@ -344,6 +344,35 @@ mySettlementTransfer = {
 }
 
 createSettlementTransfer(myRepudiation[:Id], mySettlementTransfer)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Repudiation, SettlementTransfer
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+repudiation = Repudiation.get('repud_m_01HQT8ZRDVYBVT7T8240AWZD3D')
+
+settlement_transfer = SettlementTransfer(
+    author = natural_user,
+    credited_user_id = natural_user.id,
+    debited_funds = Money(amount=4000, currency='GBP'),
+    fees =  Money(amount=0, currency='GBP'),
+    repudiation = repudiation
+)  
 ```  
 
   

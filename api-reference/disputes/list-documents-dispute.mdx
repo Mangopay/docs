@@ -4,7 +4,7 @@
 ---  
 
 import Array_DisputedocumentsResponse from '/snippets/response-parameters/Array_DisputedocumentsResponse.mdx';
-import DisputeId from '/snippets/parameters/DisputeId.mdx';
+import DisputeId from '/snippets/path-parameters/DisputeId.mdx';
   
 
 ### Path parameters  
@@ -127,6 +127,28 @@ myDispute = {
 }
 
 listDocumentsForDispute(myDispute[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import DisputeDocument
+
+dispute_docs = DisputeDocument.all(dispute_id = "dispute_m_01HQT8ZRCWP0HBT8QGRFMBA97B")
+
+for dispute_doc in dispute_docs:
+    print()
+    pprint(dispute_doc._data)  
 ```  
 
   

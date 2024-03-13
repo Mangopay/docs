@@ -5,22 +5,22 @@
 
 import RepudiationIdResponse from '/snippets/response-parameters/RepudiationIdResponse.mdx';
 import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
-import CreditedWalletId1Response from '/snippets/response-parameters/CreditedWalletId1Response.mdx';
+import CreditedWalletId2Response from '/snippets/response-parameters/CreditedWalletId2Response.mdx';
 import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
 import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
 import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
-import StatusResponse from '/snippets/response-parameters/StatusResponse.mdx';
-import CreditedFunds1Response from '/snippets/response-parameters/CreditedFunds1Response.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import CreditedFunds5Response from '/snippets/response-parameters/CreditedFunds5Response.mdx';
 import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
 import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
-import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
-import DebitedFunds1Response from '/snippets/response-parameters/DebitedFunds1Response.mdx';
+import Fees5Response from '/snippets/response-parameters/Fees5Response.mdx';
+import DebitedFunds6Response from '/snippets/response-parameters/DebitedFunds6Response.mdx';
 import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
 import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
 import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
 import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
 import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
-import SettlementId from '/snippets/parameters/SettlementId.mdx';
+import SettlementId from '/snippets/path-parameters/SettlementId.mdx';
   
 
 ### Path parameters  
@@ -41,17 +41,17 @@ import SettlementId from '/snippets/parameters/SettlementId.mdx';
 
 <ResultMessageResponse />  
 
-<DebitedFunds1Response />  
+<DebitedFunds6Response />  
 
-<Fees1Response />  
+<Fees5Response />  
 
 <AuthorIdResponse />  
 
 <CreditedUserIdResponse />  
 
-<CreditedFunds1Response />  
+<CreditedFunds5Response />  
 
-<StatusResponse />  
+<Status2Response />  
 
 <ExecutionDateResponse />  
 
@@ -59,7 +59,7 @@ import SettlementId from '/snippets/parameters/SettlementId.mdx';
 
 <NatureResponse />  
 
-<CreditedWalletId1Response />  
+<CreditedWalletId2Response />  
 
 <DebitedWalletIdResponse />  
 
@@ -188,6 +188,28 @@ mySettlementTransfer = {
 }
 
 viewSettlementTransfer(mySettlementTransfer[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import SettlementTransfer
+
+try:
+    view_settlement_transfer = SettlementTransfer.get('repudstl_m_01HQWXSKCQHTNN45341N23GHPT')
+    pprint(view_settlement_transfer._data)
+except SettlementTransfer.DoesNotExist:
+    print('Settlement Transfer {} does not exist.'.format(view_settlement_transfer))  
 ```  
 
   
