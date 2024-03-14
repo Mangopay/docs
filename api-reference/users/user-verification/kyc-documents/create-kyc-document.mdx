@@ -1,0 +1,208 @@
+---  
+ title: 'Create a KYC Document'  
+ api: 'POST /v2.01/{ClientId}/users/{UserId}/kyc/documents'  
+---  
+
+import RefusedReasonMessageResponse from '/snippets/response-parameters/RefusedReasonMessageResponse.mdx';
+import RefusedReasonType1Response from '/snippets/response-parameters/RefusedReasonType1Response.mdx';
+import Status12Response from '/snippets/response-parameters/Status12Response.mdx';
+import ProcessedDateResponse from '/snippets/response-parameters/ProcessedDateResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import Id6Response from '/snippets/response-parameters/Id6Response.mdx';
+import FlagsResponse from '/snippets/response-parameters/FlagsResponse.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import Type11Response from '/snippets/response-parameters/Type11Response.mdx';
+import Tag3 from '/snippets/body-parameters/Tag3.mdx';
+import Type2 from '/snippets/body-parameters/Type2.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+### Body parameters  
+
+<Type2 />  
+
+<Tag3 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Type11Response />  
+
+<UserId2Response />  
+
+<FlagsResponse />  
+
+<Id6Response />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<ProcessedDateResponse />  
+
+<Status12Response />  
+
+<RefusedReasonType1Response />  
+
+<RefusedReasonMessageResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Type": "IDENTITY_PROOF",
+    "UserId": "151479566",
+    "Flags": [],
+    "Id": "158785224",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1671864905,
+    "ProcessedDate": null,
+    "Status": "CREATED",
+    "RefusedReasonType": null,
+    "RefusedReasonMessage": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "Custom meta",
+    "Type": "IDENTITY_PROOF"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+
+    $userId = '198675238';
+    
+    $kycDocument = new \MangoPay\KycDocument();
+
+    $kycDocument->Type = \MangoPay\KycDocumentType::IdentityProof;
+    $kycDocument->Tag = 'Created using Mangopay PHP SDK';
+
+    $response = $api->Users->CreateKycDocument($userId, $kycDocument);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+});
+
+let kycDocument = {
+    Type: 'IDENTITY_PROOF',
+    Tag: "Created by the NodeJs SDK"
+};
+
+await mangopay.Users.createKycDocument(userId, kycDocument)
+                    .then((response) => {
+                        res.send(response);
+                    }).catch((err) => {
+                        console.log(err);
+                        res.sendStatus(500);
+                    });  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createKycDocument(userId, kycDocumentObject)
+    begin
+        response = MangoPay::KycDocument.create(userId, kycDocumentObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create KYC Document: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '194150513'
+}
+
+myKycDocument = {
+    Type: 'IDENTITY_PROOF',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createKycDocument(myUser[:Id], myKycDocument)  
+```  
+
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+
+handler = APIRequest(sandbox=True)
+from mangopay.resources import Document, LegalUser
+
+legal_user = LegalUser(
+    id = '210760575'
+)
+
+kyc_document = Document(type='REGISTRATION_PROOF', user=legal_user)
+create_kyc_document = kyc_document.save()
+
+pprint(create_kyc_document)  
+```  
+
+  
+</RequestExample>

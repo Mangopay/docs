@@ -1,0 +1,147 @@
+---  
+ title: 'View a PayIn (iDEAL)'  
+ api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import BankNameResponse from '/snippets/response-parameters/BankNameResponse.mdx';
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/response-parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType5Response from '/snippets/response-parameters/PaymentType5Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
+import CreditedFunds2Response from '/snippets/response-parameters/CreditedFunds2Response.mdx';
+import DebitedFunds2Response from '/snippets/response-parameters/DebitedFunds2Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import PayInId from '/snippets/path-parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Succeeded">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds2Response />  
+
+<CreditedFunds2Response />  
+
+<Fees1Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType5Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<BankNameResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Succeeded  
+
+{
+    "Id": "wt_00e4bd1b-08f8-40cf-8104-2d91fe270b34",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1701250187,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1701250201,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204068186",
+    "CreditedUserId": "204068024",
+    "PaymentType": "IDEAL",
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=wt_00e4bd1b-08f8-40cf-8104-2d91fe270b34",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140149255664&rs=QcZIrtphnfHddyqe3HSu0njaOtjRG4f3&cs=2f1247aa2007ed84a2cb7ab5c941e7ead2f6525996518040b0bad0e3c28bb7db",
+    "StatementDescriptor": "Mangopay",
+    "BankName": "ING Bank"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(view_payin._data)
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

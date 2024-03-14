@@ -1,0 +1,380 @@
+---  
+ title: 'Create a Refund for a PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/{PayInId}/refunds'  
+---  
+
+import RefundReasonResponse from '/snippets/response-parameters/RefundReasonResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
+import InitialTransactionNature1Response from '/snippets/response-parameters/InitialTransactionNature1Response.mdx';
+import InitialTransactionType1Response from '/snippets/response-parameters/InitialTransactionType1Response.mdx';
+import InitialTransactionId1Response from '/snippets/response-parameters/InitialTransactionId1Response.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees9Response from '/snippets/response-parameters/Fees9Response.mdx';
+import CreditedFunds3Response from '/snippets/response-parameters/CreditedFunds3Response.mdx';
+import DebitedFunds5Response from '/snippets/response-parameters/DebitedFunds5Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import AuthorId3Response from '/snippets/response-parameters/AuthorId3Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Fees6 from '/snippets/body-parameters/Fees6.mdx';
+import DebitedFunds7 from '/snippets/body-parameters/DebitedFunds7.mdx';
+import AuthorId3 from '/snippets/body-parameters/AuthorId3.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import PayInId from '/snippets/path-parameters/PayInId.mdx';
+  
+
+The pay-in refund is a request to reimburse a pay-in and is supported for most payment methods. You can make partial refunds by providing a debited funds `Amount` value lower than the initial transaction amount.  
+
+<Note>  
+**Note – Conditions for pay-in Refund** 
+  
+The amount value is 1 or above, regardless of the currency.  
+The initial transaction was made less than 11 months ago.  
+The initial transaction status is `SUCCEEDED`.  
+The initial transaction hasn’t been disputed.  
+</Note>  
+
+For more information, see the Refunds article.  
+
+### Path parameters  
+
+<PayInId />  
+
+### Body parameters  
+
+<Tag />  
+
+<AuthorId3 />  
+
+<DebitedFunds7 />  
+
+<Fees6 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorId3Response />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFunds5Response />  
+
+<CreditedFunds3Response />  
+
+<Fees9Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<InitialTransactionId1Response />  
+
+<InitialTransactionType1Response />  
+
+<InitialTransactionNature1Response />  
+
+<DebitedWalletIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<RefundReasonResponse /></Accordion><Accordion title="400 Fees parameter must be defined"></Accordion><Accordion title="400 Incorrect AuthorId"></Accordion><Accordion title="400 DebitedFunds exceed initial CreditedFunds"></Accordion><Accordion title="400 The transaction is already disputed"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id":"154987535",
+    "Tag":null,
+    "CreationDate":1667200967,
+    "AuthorId":"146476890",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1400
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":1400
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"SUCCEEDED",
+    "ResultCode":"000000",
+    "ResultMessage":"Success",
+    "ExecutionDate":1667200967,
+    "Type":"PAYOUT",
+    "Nature":"REFUND",
+    "InitialTransactionId":"154987477",
+    "InitialTransactionType":"PAYIN",
+    "InitialTransactionNature":"REGULAR",
+    "DebitedWalletId":"148968396",
+    "CreditedWalletId":null,
+    "RefundReason":{
+        "RefundReasonMessage":null,
+        "RefundReasonType":"INITIALIZED_BY_CLIENT"
+    }
+}  
+
+ ```  
+
+```json 400 Fees parameter must be defined  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"9712a945-c96a-4e70-b3de-06529534a9de#1667200884",
+    "Date":1667200885.0,
+    "errors":{
+        "Fees":"if DebitedFunds are defined, Fees must be defined"
+    }
+}  
+
+ ```  
+
+```json 400 Incorrect AuthorId  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"a2af2b8b-506c-4b5b-b607-7441a58c0a66#1667201846",
+    "Date":1667201847.0,
+    "errors":{
+        "AuthorId":"Author of the refund is not the author of the initial payin"
+    }
+}  
+
+ ```  
+
+```json 400 DebitedFunds exceed initial CreditedFunds  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"5eebf638-efd9-4a02-9854-f476c16c0262#1667809509",
+    "Date":1667809510.0,
+    "errors":{
+        "DebitedFunds":"DebitedFunds cannot be superior the CreditedFunds of the initial PayIn"
+    }
+}  
+
+ ```  
+
+```json 400 The transaction is already disputed  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "34989f04-25db-4246-a926-6fadbf1d53e1#1673521386",
+    "Date": 1673521387.0,
+    "errors": {
+        "DebitedFunds": "Due to repudiations against this transaction, you can not refund this amount"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1400
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    }
+}
+  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payinId = '199478487';
+
+    $refund = new \MangoPay\Refund();
+    $refund->AuthorId = '146476890';
+    $refund->DebitedFunds = new \MangoPay\Money();
+    $refund->DebitedFunds->Amount = 1000;
+    $refund->DebitedFunds->Currency = 'EUR';
+    $refund->Fees = new \MangoPay\Money();
+    $refund->Fees->Amount = 0;
+    $refund->Fees->Currency = 'EUR';
+    $refund->Tag = 'Created using Mangopay PHP SDK';
+    
+    $response = $api->PayIns->CreateRefund($payinId, $refund);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  Id: '192870720',
+}
+
+let myRefund = {
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Nodejs SDK',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 250,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+}
+
+const createPayInRefund = async (payInId, refund) => {
+  return await mangopay.PayIns.createRefund(payInId, refund)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayInRefund(myPayIn.Id, myRefund)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPayInRefund(payInId, refundObject)
+    begin
+        response = MangoPay::PayIn.refund(payInId, refundObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Refund: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    Id: '193930143'
+}
+
+myRefund = {
+    AuthorId: '193930097',
+    Tag: 'Created with Mangopay Ruby SDK',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1188
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: -12
+    }
+  }
+
+createPayInRefund(myPayIn[:Id], myRefund)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PayInRefund, DirectDebitDirectPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+natural_user_wallet_id = '213754077'
+
+user_payin = DirectDebitDirectPayIn.get('214568733')
+
+payin_refund = PayInRefund(
+    author = natural_user,
+    payin = user_payin
+)
+
+create_payin_refund = payin_refund.save()
+
+pprint(create_payin_refund)  
+```  
+
+  
+</RequestExample>

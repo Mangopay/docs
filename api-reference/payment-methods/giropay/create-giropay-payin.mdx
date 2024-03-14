@@ -1,0 +1,203 @@
+---  
+ title: 'Create a Giropay PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/payment-methods/giropay'  
+---  
+
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType4Response from '/snippets/response-parameters/PaymentType4Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
+import CreditedFunds2Response from '/snippets/response-parameters/CreditedFunds2Response.mdx';
+import DebitedFunds2Response from '/snippets/response-parameters/DebitedFunds2Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/body-parameters/ProfilingAttemptReference.mdx';
+import StatementDescriptor from '/snippets/body-parameters/StatementDescriptor.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import ReturnURL from '/snippets/body-parameters/ReturnURL.mdx';
+import Fees1 from '/snippets/body-parameters/Fees1.mdx';
+import DebitedFunds2 from '/snippets/body-parameters/DebitedFunds2.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+<Note>  
+**Note – Timeout after 1 hour** 
+  
+The payment session lasts for 1 hour, at which point the pay-in fails automatically if no action has been taken by the user.  
+</Note>  
+
+<Note>  
+**Note – Minimum amount** 
+  
+The minimum accepted amount for Giropay pay-ins is €1.00 (`100`).   
+In Production, pay-ins lower than this amount will fail.  
+</Note>  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds2 />  
+
+<Fees1 />  
+
+<ReturnURL />  
+
+<Tag />  
+
+<StatementDescriptor />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Created">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds2Response />  
+
+<CreditedFunds2Response />  
+
+<Fees1Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType4Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<StatementDescriptorResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Created  
+
+{
+    "Id": "wt_c80ffe77-7c19-496f-b0f9-a7fb40eae880",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1706098595,
+    "AuthorId": "210513027",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "210514820",
+    "CreditedUserId": "210513027",
+    "PaymentType": "GIROPAY",
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_c80ffe77-7c19-496f-b0f9-a7fb40eae880",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140176566852&rs=X1JJW7Y7LCkRnu30mozSUGFCnijKDsfE&cs=eec29dd3a3007f06d65ba32ee55eed9a536fdaae5258398a9cfd9aafe2846ca1",
+    "StatementDescriptor": "MGP"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+
+{
+    "AuthorId": "6672704",
+    "CreditedWalletId": "6672709",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore", 
+    "Tag": "Created using the Mangopay API Postman collection", 
+    "StatementDescriptor": "MGP"
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, GiropayPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+giropay_payin = GiropayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=400, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_giropay_payin = giropay_payin.save()
+
+pprint(create_giropay_payin)  
+```  
+
+  
+</RequestExample>

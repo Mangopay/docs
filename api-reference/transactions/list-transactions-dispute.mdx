@@ -1,0 +1,199 @@
+---  
+ title: 'List Transactions for a Dispute'  
+ api: 'GET /v2.01/{ClientId}/disputes/{DisputeId}/transactions'  
+---  
+
+import Array_Transactions1Response from '/snippets/response-parameters/Array_Transactions1Response.mdx';
+import DisputeId from '/snippets/path-parameters/DisputeId.mdx';
+import Nature from '/snippets/query-parameters/Nature.mdx';
+import Type from '/snippets/query-parameters/Type.mdx';
+import AfterDate1 from '/snippets/query-parameters/AfterDate1.mdx';
+import BeforeDate1 from '/snippets/query-parameters/BeforeDate1.mdx';
+import ResultCode from '/snippets/query-parameters/ResultCode.mdx';
+import Status from '/snippets/query-parameters/Status.mdx';
+  
+
+This call returns the transactions following the creation of a given dispute, in other words, the repudiation transfer, and the settlement (if any).  
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+<BeforeDate1 />  
+
+<AfterDate1 />  
+
+<Type />  
+
+<Nature />  
+
+### Path parameters  
+
+<DisputeId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_Transactions1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+    {
+        "Id":"6701603",
+        "Tag":null,
+        "CreationDate":1660135802,
+        "AuthorId":"6701595",
+        "CreditedUserId":null,
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":2000
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":2000
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":0
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1660135802,
+        "Type":"PAYOUT",
+        "Nature":"REPUDIATION",
+        "CreditedWalletId":null,
+        "DebitedWalletId":"CREDIT_EUR"
+    },
+    {
+        "Id":"6701604",
+        "Tag":null,
+        "CreationDate":1660136001,
+        "AuthorId":"6701595",
+        "CreditedUserId":"run68591378895",
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":20
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":20
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":0
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1660136001,
+        "Type":"PAYIN",
+        "Nature":"REFUND",
+        "CreditedWalletId":"CREDIT_EUR",
+        "DebitedWalletId":null
+    }
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $disputeId = '159763014';
+
+    $response = $api->Disputes->GetTransactions($disputeId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '159763014',
+}
+
+const listTransactionsForDisputes = async (disputeId) => {
+  return await mangopay.Disputes.getTransactions(disputeId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listTransactionsForDisputes(myDispute.Id)
+  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listTransactionsDispute(disputeId)
+    begin
+        response = MangoPay::Dispute.transactions(disputeId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Transactions: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id: '194413022'
+}
+
+listTransactionsDispute(myDispute[:Id])  
+```  
+
+  
+</RequestExample>

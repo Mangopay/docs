@@ -1,0 +1,184 @@
+---  
+ title: 'List Mandates for a Bank Account'  
+ api: 'GET /v2.01/{ClientId}/users/{UserId}/bankaccounts/{BankAccountId}/mandates'  
+---  
+
+import Array_MandatesResponse from '/snippets/response-parameters/Array_MandatesResponse.mdx';
+import BankAccountId1 from '/snippets/path-parameters/BankAccountId1.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+<BankAccountId1 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_MandatesResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+    {
+        "Id":"151566839",
+        "CreationDate":1663244376,
+        "Status":"FAILED",
+        "UserId":"151452401",
+        "ExecutionType":"WEB",
+        "MandateType":"DIRECT_DEBIT",
+        "Tag":null,
+        "ResultCode":"001807",
+        "ResultMessage":"User has let the mandate session expire without confirming"
+    },
+    {
+        "Id":"156620699",
+        "CreationDate":1669040333,
+        "Status":"ACTIVE",
+        "UserId":"151452401",
+        "ExecutionType":"WEB",
+        "MandateType":"DIRECT_DEBIT",
+        "Tag":"This is a tag for my mandate",
+        "ResultCode":"000000",
+        "ResultMessage":"Success"
+    }
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankAccountId = '151467634';
+    
+    $response = $api->Users->GetMandates($bankAccountId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '151452401',
+}
+let bankAccount = {
+  Id: '151467634',
+}
+
+const listBankAccountMandates = async (userId, bankAccountId) => {
+  return await mangopay.Mandates.getMandatesForBankAccount(
+    userId,
+    bankAccountId
+  )
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listBankAccountMandates(user.Id, bankAccount.Id)  
+```  
+
+  
+```json REST  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listMandatesBankAccount(userId, bankAccountId)
+    begin
+        response = MangoPay::Mandate.fetch_for_user_bank_account(userId, bankAccountId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Mandates: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id:'146476890'
+}
+
+myBankAccount = {
+    Id: '194612216'
+}
+
+listMandatesBankAccount(myUser[:Id], myBankAccount[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankAccount
+
+natural_user_id = '213753890'
+
+bank_account_id = '214050174'
+
+bank_account = BankAccount.get(reference = bank_account_id, user_id = natural_user_id)
+
+mandates = bank_account.get_mandates()
+
+for mandate in mandates:
+    pprint(vars(mandate))  
+```  
+
+  
+</RequestExample>

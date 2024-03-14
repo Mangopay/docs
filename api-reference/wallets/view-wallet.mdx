@@ -1,0 +1,183 @@
+---  
+ title: 'View a Wallet'  
+ api: 'GET /v2.01/{ClientId}/wallets/{WalletId}'  
+---  
+
+import CreationDate1Response from '/snippets/response-parameters/CreationDate1Response.mdx';
+import Tag7Response from '/snippets/response-parameters/Tag7Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import FundsTypeResponse from '/snippets/response-parameters/FundsTypeResponse.mdx';
+import Currency23Response from '/snippets/response-parameters/Currency23Response.mdx';
+import BalanceResponse from '/snippets/response-parameters/BalanceResponse.mdx';
+import OwnersResponse from '/snippets/response-parameters/OwnersResponse.mdx';
+import Description1Response from '/snippets/response-parameters/Description1Response.mdx';
+import WalletId from '/snippets/path-parameters/WalletId.mdx';
+  
+
+### Path parameters  
+
+<WalletId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Description1Response />  
+
+<OwnersResponse />  
+
+<BalanceResponse />  
+
+<Currency23Response />  
+
+<FundsTypeResponse />  
+
+<IdResponse />  
+
+<Tag7Response />  
+
+<CreationDate1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Balance": {
+        "Currency": "EUR",
+        "Amount": 72281
+    },
+    "Currency": "EUR",
+    "FundsType": "DEFAULT",
+    "Id": "145389978",
+    "Tag": "End user: 456-TSt",
+    "CreationDate": 1657095351
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $walletId = '193572861';
+
+    $response = $api->Wallets->Get($walletId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myWallet = {
+  Id: '148968396',
+}
+const viewWallet = async (walletId) => {
+  return await mangopay.Wallets.get(walletId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewWallet(myWallet.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewWallet(walletId)
+    begin
+        response = MangoPay::Wallet.fetch(walletId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch wallet: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myWallet = {
+  Id: '194311640',
+}
+
+viewWallet(myWallet[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('215029593')
+
+
+try:
+    view_wallet = Wallet.get(user_wallet.id) 
+    pprint(vars(view_wallet))
+except Wallet.DoesNotExist:
+    print('The wallet {} does not exist'.format(user_wallet.id))  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,329 @@
+---  
+ title: 'Create a Transfer'  
+ api: 'POST /v2.01/{ClientId}/transfers
+'  
+---  
+
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees4Response from '/snippets/response-parameters/Fees4Response.mdx';
+import CreditedFunds5Response from '/snippets/response-parameters/CreditedFunds5Response.mdx';
+import DebitedFunds7Response from '/snippets/response-parameters/DebitedFunds7Response.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Tag3 from '/snippets/body-parameters/Tag3.mdx';
+import DebitedWalletId from '/snippets/body-parameters/DebitedWalletId.mdx';
+import Fees10 from '/snippets/body-parameters/Fees10.mdx';
+import DebitedFunds11 from '/snippets/body-parameters/DebitedFunds11.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import CreditedUserId from '/snippets/body-parameters/CreditedUserId.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedUserId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds11 />  
+
+<Fees10 />  
+
+<CreditedWalletId />  
+
+<DebitedWalletId />  
+
+<Tag3 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<DebitedFunds7Response />  
+
+<CreditedFunds5Response />  
+
+<Fees4Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<DebitedWalletIdResponse />  
+
+<CreditedWalletIdResponse /></Accordion><Accordion title="400 Currency incompatibility"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "147418844",
+    "Tag": "custom meta",
+    "CreationDate": 1658928911,
+    "AuthorId": "145397183",
+    "CreditedUserId": "142036728",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1600
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1582
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 18
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1658928911,
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "DebitedWalletId": "145397873",
+    "CreditedWalletId": "145389978"
+}  
+
+ ```  
+
+```json 400 Currency incompatibility  
+
+{
+    "Message": "Error: multi-currency usage is not authorized",
+    "Type": "currency_incompatibility",
+    "Id": "0c23333c-a0ef-468a-8d33-7bd7ced6e7d4#1661495038",
+    "Date": 1661495039.0,
+    "errors": {
+        "currency": "The Debited Wallet's currency EUR and the Credited Wallet's currency GBP must be the same"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag": "custom meta",
+    "AuthorId": "145397183",
+    "CreditedUserId": "142036728",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1600
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 18
+    },
+    "DebitedWalletId": "145397873",
+    "CreditedWalletId": "145389978"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $transfer = new \MangoPay\Transfer();
+    $transfer->AuthorId = '146476890';
+    $transfer->CreditedUserId = '174796429 ';
+    $transfer->Tag = 'Created using Mangopay PHP SDK';
+    $transfer->DebitedFunds = new \MangoPay\Money();
+    $transfer->DebitedFunds->Currency = "EUR";
+    $transfer->DebitedFunds->Amount = 1000;
+    $transfer->Fees = new \MangoPay\Money();
+    $transfer->Fees->Currency = "EUR";
+    $transfer->Fees->Amount = 0;
+    $transfer->CreditedWalletId = '174796439';
+    $transfer->DebitedWalletId = '148968396';
+
+    $response = $api->Transfers->Create($transfer);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+  WalletId: '148968396',
+}
+
+let myCreditedUser = {
+  Id: '174796429 ',
+  WalletId: '174796439',
+}
+
+let myTransfer = {
+  AuthorId: myUser.Id,
+  Tag: 'Created using Mangopay NodeJS SDK',
+  CreditedUserId: myCreditedUser.Id,
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  DebitedWalletId: myUser.WalletId,
+  CreditedWalletId: myCreditedUser.WalletId,
+}
+
+const createTransfer = async (transfer) => {
+  return await mangopay.Transfers.create(transfer)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createTransfer(myTransfer)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createTransfer(transferObject)
+    begin
+        response = MangoPay::Transfer.create(transferObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create transfer: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+  WalletId: '148968396'
+}
+
+myCreditedUser = {
+  Id: '174796429 ',
+  WalletId: '174796439'
+}
+
+myTransfer = {
+  AuthorId: myUser[:Id],
+  Tag: 'Created using Mangopay NodeJS SDK',
+  CreditedUserId: myCreditedUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0
+  },
+  DebitedWalletId: myUser[:WalletId],
+  CreditedWalletId: myCreditedUser[:WalletId]
+}
+
+createTransfer(myTransfer)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, Transfer
+from mangopay.utils import Money
+
+credited_natural_user = NaturalUser.get('213753890')
+credited_natural_user_wallet = Wallet.get('213754077')
+
+debited_natural_user = NaturalUser.get('210513027')
+debited_natural_user_wallet = Wallet.get('210514820')
+
+transfer = Transfer(
+    author = debited_natural_user,
+    credited_user = credited_natural_user,
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    debited_wallet=debited_natural_user_wallet,
+    credited_wallet=credited_natural_user_wallet
+ )
+
+create_transfer = transfer.save()
+
+pprint(create_transfer)  
+```  
+
+  
+</RequestExample>

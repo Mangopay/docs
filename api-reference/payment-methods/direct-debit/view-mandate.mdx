@@ -1,0 +1,207 @@
+---  
+ title: 'View a Mandate'  
+ api: 'GET /v2.01/{ClientId}/mandates/{MandateId}'  
+---  
+
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import MandateTypeResponse from '/snippets/response-parameters/MandateTypeResponse.mdx';
+import ExecutionType1Response from '/snippets/response-parameters/ExecutionType1Response.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import Status9Response from '/snippets/response-parameters/Status9Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import RedirectURLResponse from '/snippets/response-parameters/RedirectURLResponse.mdx';
+import ReturnURL2Response from '/snippets/response-parameters/ReturnURL2Response.mdx';
+import DocumentURLResponse from '/snippets/response-parameters/DocumentURLResponse.mdx';
+import Culture5Response from '/snippets/response-parameters/Culture5Response.mdx';
+import BankReferenceResponse from '/snippets/response-parameters/BankReferenceResponse.mdx';
+import BankAccountId1Response from '/snippets/response-parameters/BankAccountId1Response.mdx';
+import SchemeResponse from '/snippets/response-parameters/SchemeResponse.mdx';
+import MandateId from '/snippets/path-parameters/MandateId.mdx';
+  
+
+### Path parameters  
+
+<MandateId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<SchemeResponse />  
+
+<BankAccountId1Response />  
+
+<BankReferenceResponse />  
+
+<Culture5Response />  
+
+<DocumentURLResponse />  
+
+<ReturnURL2Response />  
+
+<RedirectURLResponse />  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<Status9Response />  
+
+<UserId2Response />  
+
+<ExecutionType1Response />  
+
+<MandateTypeResponse />  
+
+<Tag2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Scheme": null,
+    "BankAccountId": "151453487",
+    "BankReference": null,
+    "Culture": "FR",
+    "DocumentURL": "https://api.sandbox.mangopay.com/public/mandates/e8a73d/5b7b0ca367b144d39670be5f76dc1b71/document",
+    "ReturnURL": "http://www.my-site.com/returnURL/?MandateId=151566839",
+    "RedirectURL": "https://api.sandbox.mangopay.com/public/mandates/e8a73d/5b7b0ca367b144d39670be5f76dc1b71/confirmation",
+    "Id": "151566839",
+    "CreationDate": 1663244376,
+    "Status": "CREATED",
+    "UserId": "151452401",
+    "ExecutionType": "WEB",
+    "MandateType": "DIRECT_DEBIT",
+    "Tag": null,
+    "ResultCode": null,
+    "ResultMessage": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $mandateId = '194612261';
+
+    $response = $api->Mandates->Get($mandateId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myMandate = {
+  Id: '169718609',
+}
+
+const getMandate = async (mandateId) => {
+  return await mangopay.Mandates.get(mandateId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getMandate(myMandate.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewMandate(mandateId)
+    begin
+        response = MangoPay::Mandate.fetch(mandateId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch mandate: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myMandate = {
+    Id:'194337135'
+}
+
+viewMandate(myMandate[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Mandate
+
+mandate_id = '214058486'
+
+try:
+    view_mandate = Mandate.get(mandate_id)
+    pprint(vars(view_mandate))
+except Mandate.DoesNotExist:
+    print('The Mandate {} does not exist.'.format(view_mandate.id))  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,132 @@
+---  
+ title: 'View Authorizations for a country'  
+ api: 'GET /v2.01/countries/{CountryCode}/authorizations'  
+---  
+
+import LastUpdateResponse from '/snippets/response-parameters/LastUpdateResponse.mdx';
+import AuthorizationResponse from '/snippets/response-parameters/AuthorizationResponse.mdx';
+import CountryNameResponse from '/snippets/response-parameters/CountryNameResponse.mdx';
+import CountryCodeResponse from '/snippets/response-parameters/CountryCodeResponse.mdx';
+import CountryCode from '/snippets/path-parameters/CountryCode.mdx';
+  
+
+This call returns the restrictions for a specific country.  
+
+### Path parameters  
+
+<CountryCode />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<CountryCodeResponse />  
+
+<CountryNameResponse />  
+
+<AuthorizationResponse />  
+
+<LastUpdateResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "CountryCode":"FR",
+    "CountryName":"France",
+    "Authorization":{
+        "BlockUserCreation":false,
+        "BlockBankAccountCreation":false,
+        "BlockPayout":false
+    },
+    "LastUpdate":1463494366
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myCountry = {
+  code: 'FR'
+}
+
+const viewCountryAuthorizations = async (countryCode) => {
+  return await mangopay.Regulatory.getCountryAuthorizations(countryCode)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewCountryAuthorizations(myCountry.code)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewCountryAuthorization(countryCode)
+    begin
+        response = MangoPay::Regulatory.get_country_authorizations(countryCode)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch country authorizations: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCountry = {
+    Code: 'FR'
+}
+
+viewCountryAuthorization(myCountry[:Code])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import CountryAuthorization
+
+view_country_authorization = CountryAuthorization.get_country_authorizations(country_code='FR')
+
+pprint(view_country_authorization._data)
+pprint(vars(view_country_authorization.authorization))  
+```  
+
+  
+</RequestExample>

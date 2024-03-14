@@ -1,0 +1,212 @@
+---  
+ title: 'Create a UBO Declaration'  
+ api: 'POST /v2.01/{ClientId}/users/{UserId}/kyc/ubodeclarations'  
+---  
+
+import Array_UBOsResponse from '/snippets/response-parameters/Array_UBOsResponse.mdx';
+import MessageResponse from '/snippets/response-parameters/MessageResponse.mdx';
+import ReasonResponse from '/snippets/response-parameters/ReasonResponse.mdx';
+import Status11Response from '/snippets/response-parameters/Status11Response.mdx';
+import ProcessDateResponse from '/snippets/response-parameters/ProcessDateResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<UserId2Response />  
+
+<CreationDateResponse />  
+
+<ProcessDateResponse />  
+
+<Status11Response />  
+
+<ReasonResponse />  
+
+<MessageResponse />  
+
+<Array_UBOsResponse /></Accordion><Accordion title="400 Failed due to lack of UBO"></Accordion><Accordion title="400 Declaration already in progress"></Accordion><Accordion title="400 Wrong LegalUserType"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "158947737",
+    "UserId": "158947634",
+    "CreationDate": 1672153298,
+    "ProcessedDate": null,
+    "Status": "CREATED",
+    "Reason": null,
+    "Message": null,
+    "Ubos": []
+}  
+
+ ```  
+
+```json 400 Failed due to lack of UBO  
+
+{
+    "Message": "You can not request validation for a declaration which has no ubo",
+    "Type": "invalid_action",
+    "Id": "96ee403c-1a23-46c9-8b2e-1e56c7e80325#1672326575",
+    "Date": 1672326576.0,
+    "errors": null
+}  
+
+ ```  
+
+```json 400 Declaration already in progress  
+
+{
+    "Message": "You can not create a declaration because you already have a declaration in progress",
+    "Type": "invalid_action",
+    "Id": "5b9c158f-2a55-44c0-b14b-e3cf62a5f2c4#1672326207",
+    "Date": 1672326208.0,
+    "errors": null
+}  
+
+ ```  
+
+```json 400 Wrong LegalUserType  
+
+{
+    "Message": "Cannot create an UBO for a LegalUser of type SOLETRADER",
+    "Type": "invalid_action",
+    "Id": "f2da32db-43cd-405b-b7c2-d50ab14f41d8#1672326440",
+    "Date": 1672326441.0,
+    "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '199463368';
+
+    $response = $api->UboDeclarations->Create($userId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+const createUboDeclaration = async (userId) => {
+  return await mangopay.UboDeclarations.create(userId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUboDeclaration(myUser.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createUboDeclaration(legalUserId)
+    begin
+        response = MangoPay::UboDeclaration.create(legalUserId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create UBO Declaration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+createUboDeclaration(myLegalUser[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import UboDeclaration, LegalUser
+
+legal_user = LegalUser(
+    id = '210760575'
+)
+
+ubo_declaration = UboDeclaration(user=legal_user)
+create_ubo_declaration = ubo_declaration.save()
+
+pprint(create_ubo_declaration)  
+```  
+
+  
+</RequestExample>

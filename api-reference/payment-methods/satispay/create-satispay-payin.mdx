@@ -1,0 +1,205 @@
+---  
+ title: 'Create a Satispay PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/payment-methods/satispay'  
+---  
+
+import Country3Response from '/snippets/response-parameters/Country3Response.mdx';
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType7Response from '/snippets/response-parameters/PaymentType7Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
+import CreditedFunds2Response from '/snippets/response-parameters/CreditedFunds2Response.mdx';
+import DebitedFunds2Response from '/snippets/response-parameters/DebitedFunds2Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/body-parameters/ProfilingAttemptReference.mdx';
+import Country3 from '/snippets/body-parameters/Country3.mdx';
+import StatementDescriptor from '/snippets/body-parameters/StatementDescriptor.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import ReturnURL from '/snippets/body-parameters/ReturnURL.mdx';
+import Fees1 from '/snippets/body-parameters/Fees1.mdx';
+import DebitedFunds2 from '/snippets/body-parameters/DebitedFunds2.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+<Note>  
+**Note – Timeout after 30 minutes** 
+  
+The payment session lasts for 30 minutes, at which point the pay-in fails automatically if no action has been taken by the user.  
+</Note>  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds2 />  
+
+<Fees1 />  
+
+<ReturnURL />  
+
+<Tag />  
+
+<StatementDescriptor />  
+
+<Country3 />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Created">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds2Response />  
+
+<CreditedFunds2Response />  
+
+<Fees1Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType7Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<Country3Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Created  
+
+{
+    "Id": "wt_e7a7e499-ed07-4086-a8f1-73207e497b3c",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1707772706,
+    "AuthorId": "213407540",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "214818911",
+    "CreditedUserId": "213407540",
+    "PaymentType": "SATISPAY",
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_e7a7e499-ed07-4086-a8f1-73207e497b3c",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140186246851&rs=pJm8rdr5445tSOGD5vWL5HPkSDbt7wYR&cs=3726012989f6fc7cbefca757f6f109dc4b06fdf17c29a48c9c88abf1ab5c22f7",
+    "StatementDescriptor": "MGP",
+    "Country": "FR"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId": "213407540",
+    "CreditedWalletId": "214818911",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "StatementDescriptor": "MGP",
+    "Country": "FR"
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, SatispayPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+satispay_payin = SatispayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    country = 'FR',
+    statement_descriptor = 'MGP',
+    tag = 'Created using the Mangopay Python SDK',
+)
+
+create_satispay_payin = satispay_payin.save()
+
+pprint(create_satispay_payin)  
+```  
+
+  
+</RequestExample>

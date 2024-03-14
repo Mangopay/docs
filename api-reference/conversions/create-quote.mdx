@@ -1,0 +1,134 @@
+---  
+ title: 'Create a Quote'  
+ api: 'POST /v2.01/{ClientId}/conversions/quote'  
+---  
+
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import ConversionRateResponseResponse from '/snippets/response-parameters/ConversionRateResponseResponse.mdx';
+import CreditedFundsResponse from '/snippets/response-parameters/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/response-parameters/DebitedFundsResponse.mdx';
+import StatusResponse from '/snippets/response-parameters/StatusResponse.mdx';
+import ExpirationDateResponse from '/snippets/response-parameters/ExpirationDateResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Duration from '/snippets/body-parameters/Duration.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import CreditedFunds from '/snippets/body-parameters/CreditedFunds.mdx';
+import DebitedFunds from '/snippets/body-parameters/DebitedFunds.mdx';
+  
+
+This call guarantees a conversion rate to let you Create a Quoted Conversion.  
+
+### Body parameters  
+
+<DebitedFunds />  
+
+<CreditedFunds />  
+
+<Tag />  
+
+<Duration />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Active">  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<ExpirationDateResponse />  
+
+<StatusResponse />  
+
+<DebitedFundsResponse />  
+
+<CreditedFundsResponse />  
+
+<ConversionRateResponseResponse />  
+
+<TagResponse /></Accordion><Accordion title="403 Duration not allowed"></Accordion><Accordion title="403 Currency not activated"></Accordion><Accordion title="403 Quoted conversion feature not activated"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Active  
+
+{
+    "Id": "cvrquote_01HP1GST19CSEHMSHMMB98B1YM",
+    "CreationDate": 1707300677,
+    "ExpirationDate": 1707300767,
+    "Status": "ACTIVE",
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "USD",
+        "Amount": 1263
+    },
+    "ConversionRateResponse": {
+        "ClientRate": 1.2504,
+        "MarketRate": 1.263
+    },
+    "Tag": "Created using the Mangopay API Postman collection"
+}  
+
+ ```  
+
+```json 403 Duration not allowed  
+
+{
+    "Message": "Duration 300 is not in the allowed list: 90",
+    "Type": "forbidden_ressource",
+    "Id": "3af49cbd-d68c-403c-8a37-b1ef40c224a6",
+    "Date": 1707299786,
+    "errors": null
+}  
+
+ ```  
+
+```json 403 Currency not activated  
+
+{
+    "Message": "The currency JPY is not enabled for Forex. Contact your support to activate this feature.",
+    "Type": "forbidden_ressource",
+    "Id": "0dbb7cbc-da22-4b67-8685-b1aea8c4551e",
+    "Date": 1707315388,
+    "errors": null
+}  
+
+ ```  
+
+```json 403 Quoted conversion feature not activated  
+
+{
+    "Message": "Quoted conversion is not enabled. Contact your support to activate this feature.",
+    "Type": "forbidden_ressource",
+    "Id": "cb1a7c79-4ece-4930-9996-9c43b35df3b7",
+    "Date": 1707315678,
+    "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "USD"
+    },
+    "Duration": 90,
+    "Tag": "Created using the Mangopay API Postman collection"
+}  
+```  
+
+  
+</RequestExample>

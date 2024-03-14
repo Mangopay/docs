@@ -1,0 +1,347 @@
+---  
+ title: 'Add tracking information to a PayPal PayIn'  
+ api: 'PUT /v2.01/{ClientId}/payins/{PayInId}/trackings'  
+---  
+
+import TrackingsResponse from '/snippets/response-parameters/TrackingsResponse.mdx';
+import Reference1Response from '/snippets/response-parameters/Reference1Response.mdx';
+import PaypalBuyerAccountEmailResponse from '/snippets/response-parameters/PaypalBuyerAccountEmailResponse.mdx';
+import ShippingPreferenceResponse from '/snippets/response-parameters/ShippingPreferenceResponse.mdx';
+import Culture1Response from '/snippets/response-parameters/Culture1Response.mdx';
+import LineItems1Response from '/snippets/response-parameters/LineItems1Response.mdx';
+import Shipping1Response from '/snippets/response-parameters/Shipping1Response.mdx';
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/response-parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType8Response from '/snippets/response-parameters/PaymentType8Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees6Response from '/snippets/response-parameters/Fees6Response.mdx';
+import CreditedFunds6Response from '/snippets/response-parameters/CreditedFunds6Response.mdx';
+import DebitedFunds8Response from '/snippets/response-parameters/DebitedFunds8Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import NotifyBuyer from '/snippets/body-parameters/NotifyBuyer.mdx';
+import Carrier from '/snippets/body-parameters/Carrier.mdx';
+import TrackingNumber from '/snippets/body-parameters/TrackingNumber.mdx';
+import PayInId from '/snippets/path-parameters/PayInId.mdx';
+  
+
+You can use this call to add the tracking number and carrier for `LineItems` shipments.  
+
+<Warning>  
+**Caution – Tracking information cannot be edited** 
+  
+You can’t modify the `TrackingNumber`, `Carrier`, or `NotifyBuyer` once added.  
+You can only send a unique tracking number once.   
+</Warning>  
+
+There is no link between the line items and the tracking numbers.   
+
+If adding multiple tracking numbers for the same transaction, it is recommended to set `NotifyBuyer` to `true` on only one of them.   
+
+### Path parameters  
+
+<PayInId />  
+
+### Body parameters  
+
+<TrackingNumber />  
+
+<Carrier />  
+
+<NotifyBuyer />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 First tracking number">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds8Response />  
+
+<CreditedFunds6Response />  
+
+<Fees6Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType8Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<Shipping1Response />  
+
+<LineItems1Response />  
+
+<Culture1Response />  
+
+<ShippingPreferenceResponse />  
+
+<PaypalBuyerAccountEmailResponse />  
+
+<Reference1Response />  
+
+<TrackingsResponse /></Accordion><Accordion title="200 Second tracking number">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds8Response />  
+
+<CreditedFunds6Response />  
+
+<Fees6Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType8Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+<Shipping1Response />  
+
+<LineItems1Response />  
+
+<Culture1Response />  
+
+<ShippingPreferenceResponse />  
+
+<PaypalBuyerAccountEmailResponse />  
+
+<Reference1Response />  
+
+<TrackingsResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 First tracking number  
+
+{
+    "Id": "wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1699367848,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1500
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 300
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1699368834,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204089031",
+    "CreditedUserId": "204068024",
+    "PaymentType": "PAYPAL",
+    "ExecutionType": "WEB",
+    "ReturnURL": "http://www.mangopay.com/docs/please-ignore?transactionId=wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
+    "RedirectURL": "https://www.sandbox.paypal.com/checkoutnow?token=48X37022FD879043B",
+    "StatementDescriptor": "Mangopay",
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-france",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LineItems": [
+        {
+            "Name": "Running shoes",
+            "Quantity": 2,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 1"
+        },
+        {
+            "Name": "Walking shoes",
+            "Quantity": 1,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 2"
+        }
+    ],
+    "Culture": "FR",
+    "ShippingPreference": "SET_PROVIDED_ADDRESS",
+    "PaypalBuyerAccountEmail": "alex.smith@example.com",
+    "Reference": "1234",
+    "Trackings": [
+        {
+            "TrackingNumber": "123456789",
+            "Carrier": "DHL",
+            "NotifyBuyer": true
+        }
+    ]
+}  
+
+ ```  
+
+```json 200 Second tracking number  
+
+{
+    "Id": "wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1699367848,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1500
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 300
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1699368834,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204089031",
+    "CreditedUserId": "204068024",
+    "PaymentType": "PAYPAL",
+    "ExecutionType": "WEB",
+    "ReturnURL": "http://www.mangopay.com/docs/please-ignore?transactionId=wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
+    "RedirectURL": "https://www.sandbox.paypal.com/checkoutnow?token=48X37022FD879043B",
+    "StatementDescriptor": "Mangopay",
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-france",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LineItems": [
+        {
+            "Name": "Running shoes",
+            "Quantity": 2,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 1"
+        },
+        {
+            "Name": "Walking shoes",
+            "Quantity": 1,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 2"
+        }
+    ],
+    "Culture": "FR",
+    "ShippingPreference": "SET_PROVIDED_ADDRESS",
+    "PaypalBuyerAccountEmail": "alex.smith@example.com",
+    "Reference": "1234",
+    "Trackings": [
+        {
+            "TrackingNumber": "123456789",
+            "Carrier": "DHL",
+            "NotifyBuyer": true
+        },
+        {
+            "TrackingNumber": "987654321",
+            "Carrier": "DPD",
+            "NotifyBuyer": false
+        }
+    ]
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "TrackingNumber": "123456789",
+    "Carrier": "DHL",
+    "NotifyBuyer": true
+}  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,323 @@
+---  
+ title: 'Update a UBO'  
+ api: 'PUT /v2.01/{ClientId}/users/{UserId}/kyc/ubodeclarations/{UboDeclarationId}/ubos/{UboId}'  
+---  
+
+import IsActiveResponse from '/snippets/response-parameters/IsActiveResponse.mdx';
+import BirthplaceResponse from '/snippets/response-parameters/BirthplaceResponse.mdx';
+import Address4Response from '/snippets/response-parameters/Address4Response.mdx';
+import Nationality1Response from '/snippets/response-parameters/Nationality1Response.mdx';
+import Birthday1Response from '/snippets/response-parameters/Birthday1Response.mdx';
+import FirstName2Response from '/snippets/response-parameters/FirstName2Response.mdx';
+import LastName2Response from '/snippets/response-parameters/LastName2Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Birthplace from '/snippets/body-parameters/Birthplace.mdx';
+import Address4 from '/snippets/body-parameters/Address4.mdx';
+import Nationality1 from '/snippets/body-parameters/Nationality1.mdx';
+import Birthday1 from '/snippets/body-parameters/Birthday1.mdx';
+import FirstName2 from '/snippets/body-parameters/FirstName2.mdx';
+import LastName2 from '/snippets/body-parameters/LastName2.mdx';
+import UboId from '/snippets/path-parameters/UboId.mdx';
+import UboDeclarationId from '/snippets/path-parameters/UboDeclarationId.mdx';
+  
+
+### Path parameters  
+
+<UboDeclarationId />  
+
+<UboId />  
+
+### Body parameters  
+
+<LastName2 />  
+
+<FirstName2 />  
+
+<Birthday1 />  
+
+<Nationality1 />  
+
+<Address4 />  
+
+<Birthplace />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<LastName2Response />  
+
+<FirstName2Response />  
+
+<Birthday1Response />  
+
+<Nationality1Response />  
+
+<Address4Response />  
+
+<BirthplaceResponse />  
+
+<IsActiveResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "158947898",
+    "CreationDate": 1672153693,
+    "LastName": "Wiza",
+    "FirstName": "Jess",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "Address": {
+        "AddressLine1": "669 Ratke Forge",
+        "AddressLine2": "Schamberger Walk",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Birthplace": {
+        "City": "Paris",
+        "Country": "FR"
+    },
+    "IsActive": true
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "LastName": "Wiza",
+    "FirstName": "Jess",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "Address": {
+        "AddressLine1": "669 Ratke Forge",
+        "AddressLine2": "Schamberger Walk",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Birthplace": {
+        "City": "Paris",
+        "Country": "FR"
+    }
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '199385330';
+    $uboDeclarationId = '199461371';
+    $uboId = '199461374';
+
+    $ubo = $api->UboDeclarations->GetUbo($userId, $uboDeclarationId, $uboId);
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $ubo->Address = $address;
+    $ubo->FirstName = 'Alex';
+    $ubo->LastName = 'Smith';
+    $ubo->Nationality = 'FR';
+    $ubo->Birthday = mktime(0, 0, 0, 12, 21, 1975); 
+
+    $Birthplace = new \MangoPay\Birthplace();
+    $Birthplace->City = 'Paris';
+    $Birthplace->Country = 'FR';
+
+    $ubo->Birthplace = $Birthplace;
+
+
+    $response = $api->UboDeclarations->UpdateUbo($userId, $uboDeclarationId, $ubo);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '174796429',
+}
+
+let myUboDeclaration = {
+  Id: '192604617',
+}
+
+let myUbo = {
+  Id: '192607656',
+  FirstName: 'Alexis',
+  LastName: 'Smith',
+  Address: {
+    AddressLine1: '669 Ratke Forge',
+    AddressLine2: 'Schamberger Walk',
+    City: 'Paris',
+    Region: 'Ile-de-France',
+    PostalCode: '75001',
+    Country: 'FR',
+  },
+  Nationality: 'FR',
+  Birthday: 652117514,
+  Birthplace: {
+    City: 'Paris',
+    Country: 'FR',
+  },
+}
+
+const updateUbo = async (userId, uboDeclarationId, ubo) => {
+  return await mangopay.UboDeclarations.updateUbo(userId, uboDeclarationId, ubo)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateUbo(myUser.Id, myUboDeclaration.Id, myUbo)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+myUboDeclaration = {
+    Id: '194511216'
+}
+
+myUbo = {
+    Id: '194511740',
+    FirstName: 'Alexa',
+    LastName: 'Smith',
+    Address: {
+            AddressLine1: '669 Ratke Forge',
+            AddressLine2: 'Schamberger Walk',
+            City: 'Paris',
+            Region: 'Ile-de-France',
+            PostalCode: '75001',
+            Country: 'FR'
+        },
+    Nationality: 'FR',
+    Birthday: 652117514,
+    Birthplace: {
+        City: 'Paris',
+        Country: 'FR'
+    }
+}
+
+updateUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo[:Id], myUbo)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+from mangopay.utils import Address, Birthplace
+
+legal_user = LegalUser(
+    id = '210602889'  
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210896999'
+)
+
+user_ubo = Ubo(
+    id = '210897219', # ID of UBO we want to update
+    # List ALL details and change what's needed
+    first_name = "Robbie", 
+    last_name = "Adams", 
+    address = Address(
+        address_line_1 = '223 Winchester Street',
+        city = 'Bolton',
+        postal_code = 'BL1 3GA',
+        country = 'GB',
+    ),
+    nationality = 'GB',
+    birthday = 336873600,
+    birthplace = Birthplace(
+        city = 'London',
+        country='GB'
+    ),
+    user = legal_user,
+    ubo_declaration = user_ubo_declaration,
+    isActive = True
+)
+
+update_ubo = user_ubo.save()
+
+pprint(update_ubo)  
+```  
+
+  
+</RequestExample>

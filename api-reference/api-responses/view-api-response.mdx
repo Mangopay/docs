@@ -1,0 +1,118 @@
+---  
+ title: 'View an API Response'  
+ api: 'GET /v2.01/{ClientId}/responses/{IdempotencyKey}'  
+---  
+
+import ResourceResponse from '/snippets/response-parameters/ResourceResponse.mdx';
+import RequestURLResponse from '/snippets/response-parameters/RequestURLResponse.mdx';
+import DateResponse from '/snippets/response-parameters/DateResponse.mdx';
+import ContentTypeResponse from '/snippets/response-parameters/ContentTypeResponse.mdx';
+import ContentLengthResponse from '/snippets/response-parameters/ContentLengthResponse.mdx';
+import StatusCodeResponse from '/snippets/response-parameters/StatusCodeResponse.mdx';
+import IdempotencyKey from '/snippets/path-parameters/IdempotencyKey.mdx';
+  
+
+This call returns an API response based on the corresponding idempotency key, within 24 hours of the initial call.  
+
+### Path parameters  
+
+<IdempotencyKey />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<StatusCodeResponse />  
+
+<ContentLengthResponse />  
+
+<ContentTypeResponse />  
+
+<DateResponse />  
+
+<RequestURLResponse />  
+
+<ResourceResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "StatusCode": "200",
+    "ContentLength": "591",
+    "ContentType": "application/json; charset=utf-8",
+    "Date": "Tue, 19 Jul 2022 08:47:59 GMT",
+    "RequestURL": "https://api.mangopay.com/V2.01/clientId/users/natural",
+    "Resource": {
+        "Address": {
+            "AddressLine1": "Rue des plantes",
+            "AddressLine2": "The Oasis",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        },
+        "FirstName": "Jane",
+        "LastName": "Doe",
+        "Birthday": null,
+        "Nationality": null,
+        "CountryOfResidence": null,
+        "Occupation": null,
+        "IncomeRange": null,
+        "ProofOfIdentity": null,
+        "ProofOfAddress": null,
+        "Capacity": "NORMAL",
+        "Id": "146476890",
+        "Tag": "test doc july 2022",
+        "CreationDate": 1658220479,
+        "PersonType": "NATURAL",
+        "Email": "jdoe@mail.com",
+        "KYCLevel": "LIGHT",
+        "TermsAndConditionsAccepted": true,
+        "TermsAndConditionsAcceptedDate": 1658220479,
+        "UserCategory": "PAYER"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+// SDK init. To do once.
+$api = new \MangoPay\MangoPayApi(); 
+$api->Config->ClientId = 'your-client-id';
+$api->Config->BaseUrl = 'https://api.sandbox.mangopay.com';
+$api->Config->ClientPassword = 'your-api-key';
+
+$api->Responses->get($idempotencyKey);  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import IdempotencyResponse
+
+key = 'ok7urhkW45-pTHf4496-80'
+
+idempotency_response = IdempotencyResponse.get(key)
+
+pprint(idempotency_response._data)  
+```  
+
+  
+</RequestExample>

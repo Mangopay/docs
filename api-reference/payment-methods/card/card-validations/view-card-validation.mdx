@@ -1,0 +1,155 @@
+---  
+ title: 'View a Card Validation'  
+ api: 'GET /V2.01/{ClientId}/cards/{CardId}/validation/{ValidationId}'  
+---  
+
+import CardInfoResponse from '/snippets/response-parameters/CardInfoResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Applied3DSVersionResponse from '/snippets/response-parameters/Applied3DSVersionResponse.mdx';
+import Type1Response from '/snippets/response-parameters/Type1Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import ValidityResponse from '/snippets/response-parameters/ValidityResponse.mdx';
+import SecureModeResponse from '/snippets/response-parameters/SecureModeResponse.mdx';
+import PreferredCardNetworkResponse from '/snippets/response-parameters/PreferredCardNetworkResponse.mdx';
+import BrowserInfoResponse from '/snippets/response-parameters/BrowserInfoResponse.mdx';
+import IpAddressResponse from '/snippets/response-parameters/IpAddressResponse.mdx';
+import SecureModeNeededResponse from '/snippets/response-parameters/SecureModeNeededResponse.mdx';
+import SecureModeRedirectURLResponse from '/snippets/response-parameters/SecureModeRedirectURLResponse.mdx';
+import SecureModeReturnURLResponse from '/snippets/response-parameters/SecureModeReturnURLResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ValidationId from '/snippets/path-parameters/ValidationId.mdx';
+import CardId from '/snippets/path-parameters/CardId.mdx';
+  
+
+### Path parameters  
+
+<CardId />  
+
+<ValidationId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Succeeded">  
+
+<IdResponse />  
+
+<AuthorIdResponse />  
+
+<Status2Response />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<IpAddressResponse />  
+
+<BrowserInfoResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<SecureModeResponse />  
+
+<ValidityResponse />  
+
+<CreationDateResponse />  
+
+<Type1Response />  
+
+<Applied3DSVersionResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<TagResponse />  
+
+<CardInfoResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Succeeded  
+
+{
+    "Id": "055f0b74-9314-4edf-896b-a5d6611cde1a",
+    "AuthorId": "user_m_01HQAPQWR2ZKGXFTEW93FGBTGD",
+    "Status": "SUCCEEDED",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?cardValidationId=055f0b74-9314-4edf-896b-a5d6611cde1a",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com/mvc/EU/cardvalidation/Acs/Redirect?secureSessionToken=28f2b766-6f5c-4b7d-bf09-0b29a4501231",
+    "SecureModeNeeded": true,
+    "IpAddress": "65a7:cef9:8438:b9c1:e84e:cb4c:37bd:b2d7",
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "fr",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": -120,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "PreferredCardNetwork": null,
+    "SecureMode": "DEFAULT",
+    "Validity": "VALID",
+    "CreationDate": 1708682732,
+    "AuthorizationDate": 1708682743,
+    "Type": "CARD_VALIDATION",
+    "Applied3DSVersion": "V2_1",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let myCard = {
+  Id: 'card_m_01HRAB5X7K39MDNS5NV6DD68G8'
+}
+
+let myCardValidation = {
+  Id: '5b0ab172-e1fd-47d7-a1f8-d674986630d2'
+}
+
+  const viewCardValidation = async (cardValidationId) => {
+    return await mangopay.Cards.getCardValidation(myCard.Id, cardValidationId) 
+      .then((response) => {
+        console.info(response)
+        return response
+      })
+      .catch((err) => {
+        console.log(err)
+        return false
+      })
+  }
+  
+  viewCardValidation(myCardValidation.Id)  
+```  
+
+  
+</RequestExample>

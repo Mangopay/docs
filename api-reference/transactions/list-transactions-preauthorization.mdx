@@ -1,0 +1,224 @@
+---  
+ title: 'List Transactions for a Preauthorization'  
+ api: 'GET /v2.01/{ClientId}/preauthorizations/{PreauthorizationId}/transactions'  
+---  
+
+import Array_Transactions1Response from '/snippets/response-parameters/Array_Transactions1Response.mdx';
+import PreauthorizationId from '/snippets/path-parameters/PreauthorizationId.mdx';
+import Nature from '/snippets/query-parameters/Nature.mdx';
+import Type from '/snippets/query-parameters/Type.mdx';
+import AfterDate1 from '/snippets/query-parameters/AfterDate1.mdx';
+import BeforeDate1 from '/snippets/query-parameters/BeforeDate1.mdx';
+import ResultCode from '/snippets/query-parameters/ResultCode.mdx';
+import Status from '/snippets/query-parameters/Status.mdx';
+  
+
+This call returns all preauthorized pay-ins made against a given preauthorization, whether they were successful or not.  
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+<BeforeDate1 />  
+
+<AfterDate1 />  
+
+<Type />  
+
+<Nature />  
+
+### Path parameters  
+
+<PreauthorizationId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_Transactions1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+   {
+       "Id": "156683388",
+       "Tag": "First capture",
+       "CreationDate": 1669114580,
+       "AuthorId": "156671158",
+       "CreditedUserId": "156671158",
+       "DebitedFunds": {
+           "Currency": "EUR",
+           "Amount": 200
+       },
+       "CreditedFunds": {
+           "Currency": "EUR",
+           "Amount": 200
+       },
+       "Fees": {
+           "Currency": "EUR",
+           "Amount": 0
+       },
+       "Status": "SUCCEEDED",
+       "ResultCode": "000000",
+       "ResultMessage": "Success",
+       "ExecutionDate": 1669114581,
+       "Type": "PAYIN",
+       "Nature": "REGULAR",
+       "CreditedWalletId": "156683179",
+       "DebitedWalletId": null
+   },
+   {
+       "Id": "156683907",
+       "Tag": "Second capture",
+       "CreationDate": 1669114814,
+       "AuthorId": "156671158",
+       "CreditedUserId": "156671912",
+       "DebitedFunds": {
+           "Currency": "EUR",
+           "Amount": 200
+       },
+       "CreditedFunds": {
+           "Currency": "EUR",
+           "Amount": 200
+       },
+       "Fees": {
+           "Currency": "EUR",
+           "Amount": 0
+       },
+       "Status": "SUCCEEDED",
+       "ResultCode": "000000",
+       "ResultMessage": "Success",
+       "ExecutionDate": 1669114815,
+       "Type": "PAYIN",
+       "Nature": "REGULAR",
+       "CreditedWalletId": "156683554",
+       "DebitedWalletId": null
+   }
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $preauthorizationId = '192823192';
+
+    $response = $api->CardPreAuthorizations->GetTransactions($preauthorizationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPreauthorization = {
+  Id: '192823192',
+}
+
+const listTransactionsPreauthorization = async (preauthorizationId) => {
+  return await mangopay.CardPreAuthorizations.getTransactions(preauthorizationId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listTransactionsPreauthorization(myPreauthorization.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listTransactionsPreauthorization(preauthorizationId)
+    begin
+        response = MangoPay::PreAuthorization.transactions(preauthorizationId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Transactions: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '192823192'
+}
+
+listTransactionsPreauthorization(myPreauthorization[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PreAuthorization
+
+preauth = PreAuthorization.get('preauth_m_01HPHN0G8236VVKDSF9SX87HE6')
+
+transactions = PreAuthorization.get_transactions(self = preauth)
+
+print('=== Transactions for PreAuthorization {} ==='.format(preauth.id))
+
+for transaction in transactions:
+    print()
+    pprint(transaction._data)  
+```  
+
+  
+</RequestExample>

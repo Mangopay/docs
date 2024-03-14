@@ -1,0 +1,188 @@
+---  
+ title: 'Deactivate a Banking Alias'  
+ api: 'PUT /v2.01/{ClientId}/bankingaliases/{BankingAliasId}'  
+---  
+
+import WalletId1Response from '/snippets/response-parameters/WalletId1Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Type10Response from '/snippets/response-parameters/Type10Response.mdx';
+import Active1Response from '/snippets/response-parameters/Active1Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import Country5Response from '/snippets/response-parameters/Country5Response.mdx';
+import CreditedUserId3Response from '/snippets/response-parameters/CreditedUserId3Response.mdx';
+import BIC2Response from '/snippets/response-parameters/BIC2Response.mdx';
+import IBAN2Response from '/snippets/response-parameters/IBAN2Response.mdx';
+import OwnerName1Response from '/snippets/response-parameters/OwnerName1Response.mdx';
+import Active2 from '/snippets/body-parameters/Active2.mdx';
+import BankingAliasId from '/snippets/path-parameters/BankingAliasId.mdx';
+  
+
+<Warning>  
+**Caution – Deactivating a Banking Alias is irreversible** 
+  
+Once the Banking Alias object is deactivated, you cannot reactivate it. Any funds wired to this banking alias won’t be credited to the corresponding wallet.   
+If such cases arise, please get in touch with Mangopay teams via the Hub (Transactions in production > Pay-in bank wire or ibanisation).  
+</Warning>  
+
+### Path parameters  
+
+<BankingAliasId />  
+
+### Body parameters  
+
+<Active2 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<OwnerName1Response />  
+
+<IBAN2Response />  
+
+<BIC2Response />  
+
+<CreditedUserId3Response />  
+
+<Country5Response />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<Active1Response />  
+
+<Type10Response />  
+
+<IdResponse />  
+
+<WalletId1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "OwnerName": "John Doe.",
+    "IBAN": "FR617452110000GJX2HRBQPLS41",
+    "BIC": "MPAYFRP1PIN",
+    "CreditedUserId": "145397183",
+    "Country": "FR",
+    "Tag": "ibanized",
+    "CreationDate": 1670342493,
+    "Active": false,
+    "Type": "IBAN",
+    "Id": "157688274",
+    "WalletId": "157688124"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Active": false,
+}
+  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankingAliasId = '199314046';
+
+    $bankingAliasIBAN = $api->BankingAliases->Get($bankingAliasId);
+    $bankingAliasIBAN->Active = false;
+    
+    $response = $api->BankingAliases->Update($bankingAliasIBAN);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myBankingAlias = {
+  Id: '169741679',
+}
+
+const deactivateBankingAlias = async (bankingAliasId) => {
+  return await mangopay.BankingAliases.deactivate(bankingAliasId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+deactivateBankingAlias(myBankingAlias.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def deactivateBankingAlias(bankingAliasId)
+    begin
+        response = MangoPay::BankingAliases.update(bankingAliasId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to deactivate banking alias: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myBankingAlias = {
+    Id: '194349049',
+    Active: false
+}
+
+deactivateBankingAlias(myBankingAlias[:Id])  
+```  
+
+  
+</RequestExample>

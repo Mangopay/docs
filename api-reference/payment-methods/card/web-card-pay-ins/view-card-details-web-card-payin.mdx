@@ -1,0 +1,147 @@
+---  
+ title: 'View card details for a Web Card PayIn'  
+ api: 'GET /v2.01/{ClientId}/payins/card/web/{PayInId}/extended'  
+---  
+
+import FingerprintResponse from '/snippets/response-parameters/FingerprintResponse.mdx';
+import Country4Response from '/snippets/response-parameters/Country4Response.mdx';
+import CardTypeResponse from '/snippets/response-parameters/CardTypeResponse.mdx';
+import AliasResponse from '/snippets/response-parameters/AliasResponse.mdx';
+import ExpirationDate1Response from '/snippets/response-parameters/ExpirationDate1Response.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType2Response from '/snippets/response-parameters/PaymentType2Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import PayInId from '/snippets/path-parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<ExpirationDate1Response />  
+
+<AliasResponse />  
+
+<CardTypeResponse />  
+
+<Country4Response />  
+
+<FingerprintResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+   "Id": "150523529",
+   "PaymentType": "CARD",
+   "ExecutionType": "WEB",
+   "ExpirationDate": "0323",
+   "Alias": "497010XXXXXX6588",
+   "CardType": "CB_VISA_MASTERCARD",
+   "Country": "FRA",
+   "Fingerprint": "586d14a7ee9244dd8a7a51bb79aafc24"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payInId = '200015365';
+
+    $response = $api->PayIns->GetExtendedCardView($payInId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewCardDetailsWebCardPayIn(payInId)
+    begin
+        response = MangoPay::PayIn::Card::Web.extended(payInId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch card details: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    Id: '195073631'
+  }
+
+viewCardDetailsWebCardPayIn(myPayIn[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import CardWebPayIn
+
+payin_id = '213979861'
+
+try: 
+    view_web_payin_card = CardWebPayIn.get(payin_id)
+    pprint(vars(view_web_payin_card))
+except CardWebPayIn.DoesNotExist:
+    print('The Web Card PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,164 @@
+---  
+ title: 'View a Banking Alias'  
+ api: 'GET /v2.01/{ClientId}/bankingaliases/{BankingAliasId}'  
+---  
+
+import WalletId1Response from '/snippets/response-parameters/WalletId1Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Type10Response from '/snippets/response-parameters/Type10Response.mdx';
+import Active1Response from '/snippets/response-parameters/Active1Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import Country5Response from '/snippets/response-parameters/Country5Response.mdx';
+import CreditedUserId3Response from '/snippets/response-parameters/CreditedUserId3Response.mdx';
+import BIC2Response from '/snippets/response-parameters/BIC2Response.mdx';
+import IBAN2Response from '/snippets/response-parameters/IBAN2Response.mdx';
+import OwnerName1Response from '/snippets/response-parameters/OwnerName1Response.mdx';
+import BankingAliasId from '/snippets/query-parameters/BankingAliasId.mdx';
+  
+
+### Query parameters  
+
+<BankingAliasId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<OwnerName1Response />  
+
+<IBAN2Response />  
+
+<BIC2Response />  
+
+<CreditedUserId3Response />  
+
+<Country5Response />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<Active1Response />  
+
+<Type10Response />  
+
+<IdResponse />  
+
+<WalletId1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "OwnerName": "Nat Romanova",
+    "IBAN": "FR117452110000JIULYOYXT2D48",
+    "BIC": "MPAYFRP1PIN",
+    "CreditedUserId": "146476890",
+    "Country": "FR",
+    "Tag": "custom meta",
+    "CreationDate": 1670263006,
+    "Active": true,
+    "Type": "IBAN",
+    "Id": "157608228",
+    "WalletId": "157607922"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankingAliasId = '157608228';
+
+    $response = $api->BankingAliases->Get($bankingAliasId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let bankingAlias = {
+  Id: '172463615',
+}
+
+const getBankingAlias = async (bankingAliasId) => {
+  return await mangopay.BankingAliases.get(bankingAliasId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getBankingAlias(bankingAlias.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewBankingAlias(bankingAliasId)
+    begin
+        response = MangoPay::BankingAliases.fetch(bankingAliasId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch banking alias: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+
+myBankingAlias = {
+  Id: '157608228'
+}
+
+viewBankingAlias(myBankingAlias[:Id])  
+```  
+
+  
+</RequestExample>

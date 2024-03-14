@@ -1,0 +1,264 @@
+---  
+ title: 'Create a Card Validation'  
+ api: 'POST /V2.01/{ClientId}/cards/{CardId}/validation'  
+---  
+
+import CardInfoResponse from '/snippets/response-parameters/CardInfoResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Applied3DSVersionResponse from '/snippets/response-parameters/Applied3DSVersionResponse.mdx';
+import Type1Response from '/snippets/response-parameters/Type1Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import ValidityResponse from '/snippets/response-parameters/ValidityResponse.mdx';
+import SecureModeResponse from '/snippets/response-parameters/SecureModeResponse.mdx';
+import PreferredCardNetworkResponse from '/snippets/response-parameters/PreferredCardNetworkResponse.mdx';
+import BrowserInfoResponse from '/snippets/response-parameters/BrowserInfoResponse.mdx';
+import IpAddressResponse from '/snippets/response-parameters/IpAddressResponse.mdx';
+import SecureModeNeededResponse from '/snippets/response-parameters/SecureModeNeededResponse.mdx';
+import SecureModeRedirectURLResponse from '/snippets/response-parameters/SecureModeRedirectURLResponse.mdx';
+import SecureModeReturnURLResponse from '/snippets/response-parameters/SecureModeReturnURLResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/body-parameters/ProfilingAttemptReference.mdx';
+import SecureMode from '/snippets/body-parameters/SecureMode.mdx';
+import PreferredCardNetwork from '/snippets/body-parameters/PreferredCardNetwork.mdx';
+import BrowserInfo from '/snippets/body-parameters/BrowserInfo.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import IpAddress from '/snippets/body-parameters/IpAddress.mdx';
+import SecureModeReturnURL from '/snippets/body-parameters/SecureModeReturnURL.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+import CardId from '/snippets/path-parameters/CardId.mdx';
+  
+
+### Path parameters  
+
+<CardId />  
+
+### Body parameters  
+
+<AuthorId />  
+
+<SecureModeReturnURL />  
+
+<IpAddress />  
+
+<Tag />  
+
+<BrowserInfo />  
+
+<PreferredCardNetwork />  
+
+<SecureMode />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Created">  
+
+<IdResponse />  
+
+<AuthorIdResponse />  
+
+<Status2Response />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<IpAddressResponse />  
+
+<BrowserInfoResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<SecureModeResponse />  
+
+<ValidityResponse />  
+
+<CreationDateResponse />  
+
+<Type1Response />  
+
+<Applied3DSVersionResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<TagResponse />  
+
+<CardInfoResponse /></Accordion><Accordion title="400 Only available for CB_VISA_MASTERCARD"></Accordion><Accordion title="400 Card validation already pending"></Accordion><Accordion title="400 The card is already valid"></Accordion><Accordion title="400 The card is invalid"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Created  
+
+{
+    "Id": "055f0b74-9314-4edf-896b-a5d6611cde1a",
+    "AuthorId": "user_m_01HQAPQWR2ZKGXFTEW93FGBTGD",
+    "Status": "CREATED",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?cardValidationId=055f0b74-9314-4edf-896b-a5d6611cde1a",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com/mvc/EU/cardvalidation/Acs/Redirect?secureSessionToken=28f2b766-6f5c-4b7d-bf09-0b29a4501231",
+    "SecureModeNeeded": true,
+    "IpAddress": "65a7:cef9:8438:b9c1:e84e:cb4c:37bd:b2d7",
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "fr",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": -120,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "PreferredCardNetwork": null,
+    "SecureMode": "DEFAULT",
+    "Validity": "UNKNOWN",
+    "CreationDate": 1708682732,
+    "AuthorizationDate": null,
+    "Type": "CARD_VALIDATION",
+    "Applied3DSVersion": "V2_1",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}  
+
+ ```  
+
+```json 400 Only available for CB_VISA_MASTERCARD  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c67ea4b3-c144-4142-8fbd-aca45be840da",
+    "Date": 1706044641.0,
+    "errors": {
+        "CardId": "The underlying card type is invalid. Only card type CB_VISA_MASTERCARD is accepted on this feature."
+    }
+}  
+
+ ```  
+
+```json 400 Card validation already pending  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"7a2d1d57-6c0e-4689-bb80-62222ae073ed#1687358437",
+    "Date":1687358438.0,
+    "errors":{
+        "CardId":"This card is already being validated."
+    }
+}  
+
+ ```  
+
+```json 400 The card is already valid  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
+    "Date":1687358114.0,
+    "errors":{
+        "CardId":"This card is already VALID."
+    }
+}  
+
+ ```  
+
+```json 400 The card is invalid  
+
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
+    "Date":1687358114.0,
+    "errors":{
+        "CardId":"This card is INVALID."
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId": "2659641945",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "IpAddress": "159.180.248.187",
+    "Tag": "Custom meta",
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "fr",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": "-120",
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+      }
+}  
+```  
+
+  
+```python Python  
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardValidation
+from mangopay.utils import BrowserInfo
+
+natural_user = NaturalUser.get('213600749')
+
+user_card_validation = CardValidation(
+    author = natural_user,
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    ip_address = '159.180.248.187',
+    tag = 'Created with Mangopay Python SDK',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    card_id = '213601128'
+)
+
+create_card_validation = user_card_validation.validate(card_id = user_card_validation.card_id)
+
+pprint(create_card_validation)  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,333 @@
+---  
+ title: 'Create an IBAN Bank Account'  
+ api: 'POST /v2.01/{ClientId}/users/{UserId}/bankaccounts/iban'  
+---  
+
+import ActiveResponse from '/snippets/response-parameters/ActiveResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag4Response from '/snippets/response-parameters/Tag4Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Type5Response from '/snippets/response-parameters/Type5Response.mdx';
+import OwnerNameResponse from '/snippets/response-parameters/OwnerNameResponse.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import BICResponse from '/snippets/response-parameters/BICResponse.mdx';
+import IBANResponse from '/snippets/response-parameters/IBANResponse.mdx';
+import OwnerAddressResponse from '/snippets/response-parameters/OwnerAddressResponse.mdx';
+import Tag4 from '/snippets/body-parameters/Tag4.mdx';
+import OwnerName from '/snippets/body-parameters/OwnerName.mdx';
+import BIC from '/snippets/body-parameters/BIC.mdx';
+import IBAN from '/snippets/body-parameters/IBAN.mdx';
+import OwnerAddress from '/snippets/body-parameters/OwnerAddress.mdx';
+import UserId1 from '/snippets/path-parameters/UserId1.mdx';
+  
+
+<Warning>  
+**Caution – Only for countries that use IBAN** 
+  
+Only use the IBAN type for accounts registered in countries that use IBAN and aren’t GB, US, or CA (for which you should use the dedicated type).   
+</Warning>  
+
+### Path parameters  
+
+<UserId1 />  
+
+### Body parameters  
+
+<OwnerAddress />  
+
+<IBAN />  
+
+<BIC />  
+
+<OwnerName />  
+
+<Tag4 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<OwnerAddressResponse />  
+
+<IBANResponse />  
+
+<BICResponse />  
+
+<UserId2Response />  
+
+<OwnerNameResponse />  
+
+<Type5Response />  
+
+<IdResponse />  
+
+<Tag4Response />  
+
+<CreationDateResponse />  
+
+<ActiveResponse /></Accordion><Accordion title="400 Invalid BIC format "></Accordion><Accordion title="400 Invalid IBAN"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "OwnerAddress":{
+        "AddressLine1":"Rue des plantes",
+        "AddressLine2":"The Oasis",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "IBAN":"FR7630004000031234567890143",
+    "BIC":"BNPAFRPP",
+    "UserId":"142036728",
+    "OwnerName":"John Doe",
+    "Type":"IBAN",
+    "Id":"150287803",
+    "Tag":"custom meta",
+    "CreationDate":1661859994,
+    "Active":true
+}  
+
+ ```  
+
+```json 400 Invalid BIC format   
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c35b1e0b-1a21-42e4-a80f-440ad9de3c57#1662449222",
+    "Date": 1662449223.0,
+    "errors": {
+        "BIC": "The field BIC must match the regular expression '^[a-zA-Z]{6}\\w{2}(\\w{3})?$'."
+    }
+}
+  
+
+ ```  
+
+```json 400 Invalid IBAN  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "692b34b2-86a5-4859-a515-f8838292a56e#1662449297",
+    "Date": 1662449298.0,
+    "errors": {
+        "IBAN": "The value is not a valid IBAN"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "OwnerAddress":{
+        "AddressLine1":"Rue des plantes",
+        "AddressLine2":"The Oasis",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "IBAN":"FR7630004000031234567890143",
+    "BIC":"BNPAFRPP",
+    "OwnerName":"John Doe",
+    "Tag":"custom meta"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '146476890';
+
+    $bankAccount = new \MangoPay\BankAccount();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $details = new \MangoPay\BankAccountDetailsIBAN();
+    $details->IBAN = 'FR7630004000031234567890143';
+    $details->BIC = 'BNPAFRPP';
+
+    $bankAccount->OwnerAddress = $address;
+    $bankAccount->OwnerName = 'Alex Smith';
+    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
+    $bankAccount->Type = 'IBAN';
+    $bankAccount->Details = $details;
+
+    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '165863393',
+  Address: {
+    AddressLine1: 'Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'IDF',
+    PostalCode: '75000',
+    Country: 'FR',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+}
+
+let bankAccount = {
+  Type: 'IBAN',
+  OwnerName: user.FirstName + '' + user.LastName,
+  OwnerAddress: user.Address,
+  IBAN: 'FR7630004000031234567890143',
+  BIC: 'BNPAFRPP',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createBankAccount = async (userId, bankAccount) => {
+  return await mangopay.Users.createBankAccount(userId, bankAccount)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankAccount(user.Id, bankAccount)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createIbanBankAccount(userId, ibanBankAccountObject)
+    begin
+        response = MangoPay::BankAccount.create(userId, ibanBankAccountObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '165863393'
+}
+
+myIbanBankAccount = {
+    Type: 'IBAN',
+    OwnerName: 'Alex Smith',
+    OwnerAddress: {
+        AddressLine1: 'Edgewood Road',
+        AddressLine2: 'Address line 2',
+        City: 'Little Rock',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR'
+    },
+    IBAN: 'FR7630004000031234567890143',
+    BIC: 'BNPAFRPP',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createIbanBankAccount(myUser[:Id], myIbanBankAccount)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+from mangopay.utils import Address
+
+
+natural_user = NaturalUser.get('213753890')
+
+iban_bank_account = BankAccount(
+    user_id = natural_user.id,
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    owner_address = Address(
+        address_line_1 = natural_user.address.address_line_1,
+        address_line_2 = natural_user.address.address_line_2,
+        city = natural_user.address.city,
+        region = natural_user.address.region,
+        postal_code = natural_user.address.postal_code,
+        country = natural_user.address.country,
+    ),
+    iban = 'FR7630004000031234567890143',
+    bic = 'BNPAFRPP',
+    type = 'IBAN',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_iban_bank_account = iban_bank_account.save()
+
+pprint(create_iban_bank_account)  
+```  
+
+  
+</RequestExample>

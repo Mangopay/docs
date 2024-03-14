@@ -1,0 +1,182 @@
+---  
+ title: 'List Cards for a Fingerprint'  
+ api: 'GET /v2.01/{ClientId}/cards/fingerprints/{Fingerprint}'  
+---  
+
+import Array_CardsResponse from '/snippets/response-parameters/Array_CardsResponse.mdx';
+import Fingerprint from '/snippets/path-parameters/Fingerprint.mdx';
+  
+
+This call returns all the cards with the same `Fingerprint` value. This can be useful to detect abnormal or fraudulent behavior.  
+<a href="#" class="btn Tertiary normal">Learn more about card fingerprint</a>  
+
+### Path parameters  
+
+<Fingerprint />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_CardsResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+    {
+        "ExpirationDate": "1229",
+        "Alias": "497010XXXXXX4329",
+        "CardType": "CB_VISA_MASTERCARD",
+        "CardProvider": "VISA",
+        "Country": "FRA",
+        "Product": "I",
+        "BankCode": "unknown",
+        "Active": true,
+        "Currency": "EUR",
+        "Validity": "UNKNOWN",
+        "UserId": "156671158",
+        "Id": "156672588",
+        "Tag": null,
+        "CreationDate": 1669111576,
+        "Fingerprint": "1ab7328005e4445dbfd38ac6cb49c3af"
+    },
+    {
+        "ExpirationDate": "1229",
+        "Alias": "497010XXXXXX4329",
+        "CardType": "CB_VISA_MASTERCARD",
+        "CardProvider": "VISA",
+        "Country": "FRA",
+        "Product": "I",
+        "BankCode": "unknown",
+        "Active": true,
+        "Currency": "EUR",
+        "Validity": "UNKNOWN",
+        "UserId": "156671912",
+        "Id": "156674899",
+        "Tag": null,
+        "CreationDate": 1669112263,
+        "Fingerprint": "1ab7328005e4445dbfd38ac6cb49c3af"
+    }
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $fingerprint = '36c74d2e60ba474eab6d6f6d46a642b0';
+
+    $response = $api->Cards->GetByFingerprint($fingerprint);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myCard = {
+  fingerprint: '48d63bbcfc2c47fcbc19df35e47b2f8d',
+}
+
+const listCardsFingerprint = async (fingerprint) => {
+  return await mangopay.Cards.getByFingerprint(fingerprint)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listCardsFingerprint(myCard.fingerprint)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listFingerprintCards(fingerprint)
+    begin
+        response = MangoPay::Card.get_by_fingerprint(fingerprint)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch cards for fingerprint: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCard = {
+    Fingerprint: '36c74d2e60ba474eab6d6f6d46a642b0',
+}
+
+listFingerprintCards(myCard[:Fingerprint])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Card
+
+fingerprint = '48d63bbcfc2c47fcbc19df35e47b2f8d'
+
+cards = Card.get_by_fingerprint(fingerprint)
+
+for card in cards:
+    pprint(vars(card))  
+```  
+
+  
+</RequestExample>

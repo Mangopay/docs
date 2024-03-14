@@ -1,0 +1,188 @@
+---  
+ title: 'View User EMoney'  
+ api: 'GET /v2.01/{ClientId}/users/{UserId}/emoney/{Year}/{Month}'  
+---  
+
+import DebitedEMoneyResponse from '/snippets/response-parameters/DebitedEMoneyResponse.mdx';
+import CreditedEMoneyResponse from '/snippets/response-parameters/CreditedEMoneyResponse.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import Currency13 from '/snippets/body-parameters/Currency13.mdx';
+import Month from '/snippets/path-parameters/Month.mdx';
+import Year from '/snippets/path-parameters/Year.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+The path parameters `Month` and `Year` are optional. If not given, this call returns all the credited and debited e-money since the user was created.  
+
+### Path parameters  
+
+<UserId />  
+
+<Year />  
+
+<Month />  
+
+### Body parameters  
+
+<Currency13 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<UserId2Response />  
+
+<CreditedEMoneyResponse />  
+
+<DebitedEMoneyResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "UserId": "156671912",
+    "CreditedEMoney": {
+        "Currency": "EUR",
+        "Amount": 2900
+    },
+    "DebitedEMoney": {
+        "Currency": "EUR",
+        "Amount": 1000
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId ='146476890';
+    $year = 2023;
+    $month = 6;
+
+    $response = $api->Users->GetEMoney($userId, $year, $month);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+}
+
+// timeframe is optional, if not given, returns all the credited and debited e-money since the user was created.
+let timeframe = {
+  Year: '2023',
+  Month: '04',
+}
+
+const viewClientWallet = async (userId, year, month) => {
+  return await mangopay.Users.getEMoney(userId, year, month)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewClientWallet(myUser.Id, timeframe.Year, timeframe.Month)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewUserEmoney(userId, year, month)
+    begin
+        response = MangoPay::User.emoney(userId, year, month)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch emoney: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '194338122'
+}
+
+# timeframe is optional, if not given, returns all the credited and debited e-money since the user was created.
+timeFrame = {
+    year: 2023,
+    month: 06
+}
+
+viewUserEmoney(myUser[:Id], timeFrame[:year], timeFrame[:month])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, EMoney
+
+natural_user = NaturalUser.get('213753890')
+
+view_user_emoney = natural_user.get_emoney()
+
+view_user_emoney = view_user_emoney.data[0]
+
+pprint(vars(view_user_emoney))  
+```  
+
+  
+</RequestExample>

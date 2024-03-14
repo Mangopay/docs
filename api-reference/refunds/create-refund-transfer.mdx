@@ -1,0 +1,300 @@
+---  
+ title: 'Create a Refund for a Transfer'  
+ api: 'POST /v2.01/{ClientId}/transfers/{TransferId}/refunds'  
+---  
+
+import RefundReasonResponse from '/snippets/response-parameters/RefundReasonResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
+import InitialTransactionNature1Response from '/snippets/response-parameters/InitialTransactionNature1Response.mdx';
+import InitialTransactionType1Response from '/snippets/response-parameters/InitialTransactionType1Response.mdx';
+import InitialTransactionId1Response from '/snippets/response-parameters/InitialTransactionId1Response.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees9Response from '/snippets/response-parameters/Fees9Response.mdx';
+import CreditedFunds5Response from '/snippets/response-parameters/CreditedFunds5Response.mdx';
+import DebitedFunds5Response from '/snippets/response-parameters/DebitedFunds5Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import AuthorId3Response from '/snippets/response-parameters/AuthorId3Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Fees6 from '/snippets/body-parameters/Fees6.mdx';
+import DebitedFunds7 from '/snippets/body-parameters/DebitedFunds7.mdx';
+import AuthorId3 from '/snippets/body-parameters/AuthorId3.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import TransferId from '/snippets/path-parameters/TransferId.mdx';
+  
+
+You can do a partial refund by providing a debited funds `Amount` value lower than the initial transaction amount. The debited funds amount must be 1 or more, if it is included.  
+
+### Path parameters  
+
+<TransferId />  
+
+### Body parameters  
+
+<Tag />  
+
+<AuthorId3 />  
+
+<DebitedFunds7 />  
+
+<Fees6 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorId3Response />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFunds5Response />  
+
+<CreditedFunds5Response />  
+
+<Fees9Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<InitialTransactionId1Response />  
+
+<InitialTransactionType1Response />  
+
+<InitialTransactionNature1Response />  
+
+<DebitedWalletIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<RefundReasonResponse /></Accordion><Accordion title="400 Incorrect AuthorId"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id":"155586343",
+    "Tag":"custom meta",
+    "CreationDate":1667916816,
+    "AuthorId":"146476890",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1100
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":1120
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":-20
+    },
+    "Status":"SUCCEEDED",
+    "ResultCode":"000000",
+    "ResultMessage":"Success",
+    "ExecutionDate":1667916816,
+    "Type":"TRANSFER",
+    "Nature":"REFUND",
+    "InitialTransactionId":"155585643",
+    "InitialTransactionType":"TRANSFER",
+    "InitialTransactionNature":"REGULAR",
+    "DebitedWalletId":"152161320",
+    "CreditedWalletId":"148968396",
+    "RefundReason":{
+        "RefundReasonMessage":null,
+        "RefundReasonType":"OTHER"
+    }
+}  
+
+ ```  
+
+```json 400 Incorrect AuthorId  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "7daa662f-0fe0-4ddf-8865-450fe0217798",
+    "Date": 1690287917.0,
+    "errors": {
+        "AuthorId": "Author of the refund is not the author of the initial transfer"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890"
+}
+  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $transferId = '199132726';
+
+    $refund = new \MangoPay\Refund();
+    $refund->AuthorId = '146476890';
+    $refund->DebitedFunds = new \MangoPay\Money();
+    $refund->DebitedFunds->Amount = 500;
+    $refund->DebitedFunds->Currency = 'EUR';
+    $refund->Fees = new \MangoPay\Money();
+    $refund->Fees->Amount = 0;
+    $refund->Fees->Currency = 'EUR';
+    $refund->Tag = 'Created using Mangopay PHP SDK';
+    
+    $response = $api->Transfers->CreateRefund($transferId, $refund);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myTransfer = {
+  Id: '180974208',
+}
+
+let myRefund = {
+  AuthorId: '170853400',
+  Tag: 'Created using Mangopay Node.js SDK',
+}
+
+const createRefund = async (transferId, refund) => {
+  return await mangopay.Transfers.createRefund(transferId, refund)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRefund(myTransfer.Id, myRefund)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createTransferRefund(transferId, refundObject)
+    begin
+        response = MangoPay::Transfer.refund(transferId, refundObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Refund: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myTransfer = {
+    Id: '194579950'
+  }
+
+myRefund = {
+    AuthorId: '194579896',
+    Tag: 'Created with Mangopay Ruby SDK'
+  }
+
+createTransferRefund(myTransfer[:Id], myRefund)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, TransferRefund, Transfer
+
+natural_user = NaturalUser.get('211918806')
+
+user_transfer = Transfer.get('214568995')
+
+transfer_refund = TransferRefund(
+    author = natural_user,
+    transfer = user_transfer
+)
+
+create_transfer_refund = transfer_refund.save()
+
+pprint(create_transfer_refund)  
+```  
+
+  
+</RequestExample>

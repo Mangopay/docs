@@ -1,0 +1,214 @@
+---  
+ title: 'Create a Deposit Preauthorized PayIn prior to complement'  
+ api: 'POST /v2.01/{ClientId}/payins/deposit-preauthorized/direct/capture-with-complement'  
+---  
+
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import Fees1Response from '/snippets/response-parameters/Fees1Response.mdx';
+import CreditedFunds2Response from '/snippets/response-parameters/CreditedFunds2Response.mdx';
+import DebitedFunds2Response from '/snippets/response-parameters/DebitedFunds2Response.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType2Response from '/snippets/response-parameters/PaymentType2Response.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import DepositIdResponse from '/snippets/response-parameters/DepositIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import Tag2 from '/snippets/body-parameters/Tag2.mdx';
+import DepositId from '/snippets/body-parameters/DepositId.mdx';
+import Fees1 from '/snippets/body-parameters/Fees1.mdx';
+import DebitedFunds2 from '/snippets/body-parameters/DebitedFunds2.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+This endpoint allows you to capture the preauthorized funds without closing the preauthorization deposit object. It can be used prior to capturing additional funds with the Create a Deposit Preauthorized PayIn complement endpoint.  
+
+<Note>  
+**Note – Pay-in prior to complement must be full capture** 
+  
+The pay-in requested on this endpoint (prior to complement) must be a full capture of the preauthorized amount - it can’t be partial.  
+</Note>  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds2 />  
+
+<Fees1 />  
+
+<DepositId />  
+
+<Tag2 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Succeeded">  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DepositIdResponse />  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<Status2Response />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<DebitedFunds2Response />  
+
+<CreditedFunds2Response />  
+
+<Fees1Response />  
+
+<TagResponse />  
+
+<StatementDescriptorResponse /></Accordion><Accordion title="400 Partial capture not possible "></Accordion><Accordion title="400 Attempting to capture a canceled deposit"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Succeeded  
+
+{
+    "AuthorId": "203063430",
+    "CreditedUserId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Id": "265d22b6-a3dc-48a4-a685-8655e5bcac6f",
+    "CreationDate": 1695114697,
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Status": "SUCCEEDED",
+    "ExecutionDate": 1695114698,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "PaymentType": "PREAUTHORIZED",
+    "ExecutionType": "DIRECT",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 20000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 19000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Tag": "Created using Mangopay API Postman Collection"
+}  
+
+ ```  
+
+```json 400 Partial capture not possible   
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c15a0451-5f23-46b9-b6ec-74f3a74f18c6",
+    "Date": 1699263395,
+    "errors": {
+        "DebitedFunds": "The value should be equal to 20000"
+    }
+}  
+
+ ```  
+
+```json 400 Attempting to capture a canceled deposit  
+
+{
+    "Message": "The deposit is not in the PreAuthorized status.",
+    "Type": "invalid_action",
+    "Id": "bc763733-37ca-4eb9-88bb-0829194652db",
+    "Date": 1695118133,
+    "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 20000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Tag": "Created using Mangopay API Postman Collection"
+}  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardPreAuthorizedDepositPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorized_deposit_payin = CardPreAuthorizedDepositPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    deposit_id = '3766b5f6-717b-4863-b0e9-aab4d174ad88',
+    debited_funds =  Money(amount=10, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorized_deposit_payin = preauthorized_deposit_payin.save()
+
+pprint(create_preauthorized_deposit_payin)  
+```  
+
+  
+</RequestExample>

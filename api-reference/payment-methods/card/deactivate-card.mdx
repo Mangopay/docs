@@ -1,0 +1,242 @@
+---  
+ title: 'Deactivate a Card'  
+ api: 'PUT /v2.01/{ClientId}/cards/{CardId}'  
+---  
+
+import FingerprintResponse from '/snippets/response-parameters/FingerprintResponse.mdx';
+import Tag6Response from '/snippets/response-parameters/Tag6Response.mdx';
+import Id4Response from '/snippets/response-parameters/Id4Response.mdx';
+import UserIdResponse from '/snippets/response-parameters/UserIdResponse.mdx';
+import ValidityResponse from '/snippets/response-parameters/ValidityResponse.mdx';
+import Currency2Response from '/snippets/response-parameters/Currency2Response.mdx';
+import Active2Response from '/snippets/response-parameters/Active2Response.mdx';
+import BankCodeResponse from '/snippets/response-parameters/BankCodeResponse.mdx';
+import ProductResponse from '/snippets/response-parameters/ProductResponse.mdx';
+import Country4Response from '/snippets/response-parameters/Country4Response.mdx';
+import CardProviderResponse from '/snippets/response-parameters/CardProviderResponse.mdx';
+import CardType1Response from '/snippets/response-parameters/CardType1Response.mdx';
+import AliasResponse from '/snippets/response-parameters/AliasResponse.mdx';
+import ExpirationDate1Response from '/snippets/response-parameters/ExpirationDate1Response.mdx';
+import Active1 from '/snippets/body-parameters/Active1.mdx';
+import CardId1 from '/snippets/path-parameters/CardId1.mdx';
+  
+
+This call updates the Card object to set it as inactive.   
+
+This action is irreversible but doesn’t prevent registering the card again with the Create a Card Registration endpoint.  
+
+<Warning>  
+**Warning – Implement card deactivation** 
+  
+Because card information cannot be kept without the end user's approval, you should implement a way to deactivate the end user’s card systematically when relevant.  
+</Warning>  
+
+### Path parameters  
+
+<CardId1 />  
+
+### Body parameters  
+
+<Active1 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<ExpirationDate1Response />  
+
+<AliasResponse />  
+
+<CardType1Response />  
+
+<CardProviderResponse />  
+
+<Country4Response />  
+
+<ProductResponse />  
+
+<BankCodeResponse />  
+
+<Active2Response />  
+
+<Currency2Response />  
+
+<ValidityResponse />  
+
+<UserIdResponse />  
+
+<Id4Response />  
+
+<Tag6Response />  
+
+<FingerprintResponse /></Accordion><Accordion title="400 Card is already deactivated"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "ExpirationDate": "0224",
+    "Alias": "497010XXXXXX4329",
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardProvider": "VISA",
+    "Country": "FRA",
+    "Product": "I",
+    "BankCode": "unknown",
+    "Active": false,
+    "Currency": "EUR",
+    "Validity": "VALID",
+    "UserId": "142036728",
+    "Id": "148795138",
+    "Tag": null,
+    "CreationDate": 1660121693,
+    "Fingerprint": "1ab7328005e4445dbfd38ac6cb49c3af"
+}  
+
+ ```  
+
+```json 400 Card is already deactivated  
+
+{
+    "Message": "The card has already been deactivated",
+    "Type": "card_already_not_active",
+    "Id": "8ebd2256-e596-4404-8c76-cd14b505d7a4",
+    "Date": 1690292341.0,
+    "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Active": false,
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $card = new \MangoPay\Card();
+
+    $card->Id = '198660883';
+    $card->Active = false;
+
+    $response = $api->Cards->Update($card);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myCard = {
+  Id: '156285393',
+  Active: false,
+}
+
+const deactivateCard = async (card) => {
+  return await mangopay.Cards.update(card)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+deactivateCard(myCard)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def deactivateCard(cardId, cardObject)
+    begin
+        response = MangoPay::Card.update(cardId, cardObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to deactivate card: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCard = {
+    Id: '194579926',
+    Active: false
+}
+
+deactivateCard(myCard[:Id], myCard)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Card
+
+user_card = Card(
+    id = '213601128',
+    active = False
+)
+
+deactive_card = user_card.save()
+
+pprint(deactive_card)
+  
+```  
+
+  
+</RequestExample>

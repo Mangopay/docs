@@ -1,0 +1,137 @@
+---  
+ title: 'List Refunds for a Repudiation'  
+ api: 'GET /v2.01/{ClientId}/repudiations/{RepudiationId}/refunds'  
+---  
+
+import Array_RefundsResponse from '/snippets/response-parameters/Array_RefundsResponse.mdx';
+import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
+import ResultCode from '/snippets/query-parameters/ResultCode.mdx';
+import Status from '/snippets/query-parameters/Status.mdx';
+  
+
+Repudiations are refunded when a dispute is won.   
+
+### Query parameters  
+
+<Status />  
+
+<ResultCode />  
+
+### Path parameters  
+
+<RepudiationId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_RefundsResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+    {
+        "Id":"155536343",
+        "Tag":"custom meta",
+        "CreationDate":1667916816,
+        "AuthorId":"146476890",
+        "CreditedUserId":null,
+        "DebitedFunds":{
+            "Currency":"EUR",
+            "Amount":1100
+        },
+        "CreditedFunds":{
+            "Currency":"EUR",
+            "Amount":1120
+        },
+        "Fees":{
+            "Currency":"EUR",
+            "Amount":-20
+        },
+        "Status":"SUCCEEDED",
+        "ResultCode":"000000",
+        "ResultMessage":"Success",
+        "ExecutionDate":1667916816,
+        "Type":"TRANSFER",
+        "Nature":"REFUND",
+        "InitialTransactionId":"155585643",
+        "InitialTransactionType":"TRANSFER",
+        "InitialTransactionNature":"REPUDIATION",
+        "DebitedWalletId":"152161320",
+        "CreditedWalletId":"148968396",
+        "RefundReason":{
+            "RefundReasonMessage":null,
+            "RefundReasonType":"OTHER"
+        }
+    }
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRepudiation = {
+  Id: '192775715',
+}
+
+const listRefunds = async (repudiationId) => {
+  return await mangopay.Repudiations.getRefunds(repudiationId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listRefunds(myRepudiation.Id)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Refund, Repudiation, NaturalUser
+
+natural_user = NaturalUser.get('213753890')
+
+natural_user_wallet_id = '215029593'
+
+my_repudition = Repudiation.get('215101203')
+
+payin_refund = Refund(
+    id = my_repudition.id,
+    author = natural_user
+)
+
+payin_refunds = Repudiation.get_refunds(self = payin_refund)
+
+for payin_refund in payin_refunds:
+    pprint(vars(payin_refund))  
+```  
+
+  
+</RequestExample>

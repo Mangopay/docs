@@ -1,0 +1,229 @@
+---  
+ title: 'List all Reports'  
+ api: 'GET /v2.01/{ClientId}/reports'  
+---  
+
+import Array_ReportsResponse from '/snippets/response-parameters/Array_ReportsResponse.mdx';
+import AfterDate3 from '/snippets/query-parameters/AfterDate3.mdx';
+import BeforeDate3 from '/snippets/query-parameters/BeforeDate3.mdx';
+  
+
+### Query parameters  
+
+<BeforeDate3 />  
+
+<AfterDate3 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Array_ReportsResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+[
+{
+    "Id": "146642145",
+    "CreationDate": 1658317704,
+    "Tag": "test doc july 2022",
+    "ReportDate": null,
+    "Status": "PENDING",
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "CallbackURL": null,
+    "ReportType": "TRANSACTIONS",
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658317644,
+        "AfterDate": 1655725644,
+        "Type": [],
+        "ResultCode": [],
+        "Status": [],
+        "Nature": [],
+        "WalletId": null,
+        "AuthorId": null,
+        "MinDebitedFundsAmount": null,
+        "MinDebitedFundsCurrency": null,
+        "MaxDebitedFundsAmount": null,
+        "MaxDebitedFundsCurrency": null,
+        "MinFeesAmount": null,
+        "MinFeesCurrency": null,
+        "MaxFeesAmount": null,
+        "MaxFeesCurrency": null
+   },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "ExecutionDate",
+        "AuthorId",
+        "CreditedUserId",
+        "DebitedFundsAmount",
+        "DebitedFundsCurrency",
+        "CreditedFundsAmount",
+        "CreditedFundsCurrency",
+        "FeesAmount",
+        "FeesCurrency",
+        "Status",
+        "ResultCode",
+        "ResultMessage",
+        "Type",
+        "Nature",
+        "CreditedWalletId",
+        "DebitedWalletId"
+    ],
+    "ResultCode": null,
+    "ResultMessage": null
+}
+{
+    "Id": "147284953",
+    "CreationDate": 1658838991,
+    "Tag": "This is my tag",
+    "ReportDate": null,
+    "Status": "PENDING",
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "CallbackURL": null,
+    "ReportType": "WALLETS",
+    "Sort": "CreationDate:ASC",
+    "Preview": false,
+    "Filters": {
+        "BeforeDate": 1658838931,
+        "AfterDate": 1656246931,
+        "OwnerId": null,
+        "Currency": null,
+        "MinBalanceAmount": null,
+        "MinBalanceCurrency": null,
+        "MaxBalanceAmount": null,
+        "MaxBalanceCurrency": null
+    },
+    "Columns": [
+        "Id",
+        "Tag",
+        "CreationDate",
+        "Owners",
+        "Description",
+        "BalanceAmount",
+        "BalanceCurrency",
+        "Currency",
+        "FundsType"
+    ],
+    "ResultCode": null,
+}
+]  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    
+    $response = $api->Reports->GetAll();
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+const listReports = async () => {
+  return await mangopay.Reports.getAll()
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listReports()  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listAllReports()
+    begin
+        begin
+            response = MangoPay::Report.fetch()
+            puts response
+            return response
+        rescue MangoPay::ResponseError => error
+            puts "Failed to fetch Reports: #{error.message}"
+            puts "Error details: #{error.details}"
+            return false
+        end
+    end
+end
+
+listAllReports()  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Report
+
+reports = Report.all()
+
+for report in reports:
+    pprint(report._data)
+    print()  
+```  
+
+  
+</RequestExample>

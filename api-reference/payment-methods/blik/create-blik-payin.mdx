@@ -1,0 +1,202 @@
+---  
+ title: 'Create a BLIK PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/payment-methods/blik'  
+---  
+
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/response-parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType3Response from '/snippets/response-parameters/PaymentType3Response.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees3Response from '/snippets/response-parameters/Fees3Response.mdx';
+import CreditedFunds4Response from '/snippets/response-parameters/CreditedFunds4Response.mdx';
+import DebitedFunds4Response from '/snippets/response-parameters/DebitedFunds4Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/body-parameters/ProfilingAttemptReference.mdx';
+import StatementDescriptor from '/snippets/body-parameters/StatementDescriptor.mdx';
+import ReturnURL from '/snippets/body-parameters/ReturnURL.mdx';
+import Fees3 from '/snippets/body-parameters/Fees3.mdx';
+import DebitedFunds4 from '/snippets/body-parameters/DebitedFunds4.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+<Note>  
+**Note – Timeout after 55 seconds** 
+  
+The payment session lasts for 55 seconds, at which point the pay-in fails automatically if no action has been taken by the user.  
+</Note>  
+
+<Note>  
+**Note – Minimum amount in Production** 
+  
+In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).  
+</Note>  
+
+### Body parameters  
+
+<AuthorId />  
+
+<Tag />  
+
+<CreditedWalletId />  
+
+<DebitedFunds4 />  
+
+<Fees3 />  
+
+<ReturnURL />  
+
+<StatementDescriptor />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Created">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds4Response />  
+
+<CreditedFunds4Response />  
+
+<Fees3Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<PaymentType3Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Created  
+
+{
+    "Id": "wt_b7640ff9-52f0-4644-8584-2e9a56789ea4",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1686304994,
+    "AuthorId": "6659843",
+    "DebitedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "CreditedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "Fees": {
+        "Currency": "PLN",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "6659844",
+    "PaymentType": "BLIK",
+    "ExecutionType": "DIRECT",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_b7640ff9-52f0-4644-8584-2e9a56789ea4",
+    "RedirectUrl": "https://r3.girogate.de/ti/dumbdummy?tx=140079915505&rs=lHq9N9ZjKZflFRUlkHFgnmu6xiXDfJFj&cs=2593558777c587470eca7dbf79063dd5ac83fd5157ba2b40b824e1df43905098",
+    "StatementDescriptor": "MGP"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId": "6659843",
+    "CreditedWalletId": "6659844",
+    "DebitedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "Fees": {
+        "Currency": "PLN",
+        "Amount": 0
+    },
+    "ReturnUrl": "https://www.mangopay.com/docs/please-ignore",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "StatementDescriptor": "MGP"
+}
+  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BlikPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+blik_payin = BlikPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = 'wlt_m_01HPS7PB7ZPT24KVYZSFJPBYKH',
+    debited_funds = Money(amount=1000, currency='PLN'),
+    fees = Money(amount=0, currency='PLN'),
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    tag = 'Created using Mangopay Python SDK',
+    statement_descriptor = 'MGP'
+)
+
+create_blik_payin = blik_payin.save()
+
+pprint(create_blik_payin)  
+```  
+
+  
+</RequestExample>

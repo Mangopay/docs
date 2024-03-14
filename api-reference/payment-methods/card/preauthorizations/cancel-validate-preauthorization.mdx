@@ -1,0 +1,552 @@
+---  
+ title: 'Cancel or validate a Preauthorization'  
+ api: 'PUT /v2.01/{ClientId}/preauthorizations/{PreauthorizationId}'  
+---  
+
+import CardInfoResponse from '/snippets/response-parameters/CardInfoResponse.mdx';
+import PreferredCardNetworkResponse from '/snippets/response-parameters/PreferredCardNetworkResponse.mdx';
+import Applied3DSVersionResponse from '/snippets/response-parameters/Applied3DSVersionResponse.mdx';
+import Requested3DSVersionResponse from '/snippets/response-parameters/Requested3DSVersionResponse.mdx';
+import Shipping2Response from '/snippets/response-parameters/Shipping2Response.mdx';
+import Billing1Response from '/snippets/response-parameters/Billing1Response.mdx';
+import IpAddressResponse from '/snippets/response-parameters/IpAddressResponse.mdx';
+import BrowserInfoResponse from '/snippets/response-parameters/BrowserInfoResponse.mdx';
+import MultiCaptureResponse from '/snippets/response-parameters/MultiCaptureResponse.mdx';
+import SecurityInfoResponse from '/snippets/response-parameters/SecurityInfoResponse.mdx';
+import Culture2Response from '/snippets/response-parameters/Culture2Response.mdx';
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType2Response from '/snippets/response-parameters/PaymentType2Response.mdx';
+import SecureModeNeededResponse from '/snippets/response-parameters/SecureModeNeededResponse.mdx';
+import SecureModeRedirectURLResponse from '/snippets/response-parameters/SecureModeRedirectURLResponse.mdx';
+import SecureModeReturnURLResponse from '/snippets/response-parameters/SecureModeReturnURLResponse.mdx';
+import CardId1Response from '/snippets/response-parameters/CardId1Response.mdx';
+import SecureModeResponse from '/snippets/response-parameters/SecureModeResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import PayInIdResponse from '/snippets/response-parameters/PayInIdResponse.mdx';
+import ExpirationDate3Response from '/snippets/response-parameters/ExpirationDate3Response.mdx';
+import PaymentStatus1Response from '/snippets/response-parameters/PaymentStatus1Response.mdx';
+import Status10Response from '/snippets/response-parameters/Status10Response.mdx';
+import AuthorizationDateResponse from '/snippets/response-parameters/AuthorizationDateResponse.mdx';
+import RemainingFundsResponse from '/snippets/response-parameters/RemainingFundsResponse.mdx';
+import DebitedFunds13Response from '/snippets/response-parameters/DebitedFunds13Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag5Response from '/snippets/response-parameters/Tag5Response.mdx';
+import Id3Response from '/snippets/response-parameters/Id3Response.mdx';
+import PaymentStatus from '/snippets/body-parameters/PaymentStatus.mdx';
+import PreauthorizationId from '/snippets/path-parameters/PreauthorizationId.mdx';
+  
+
+This call is used to manually close the preauthorization hold period before the `ExpirationDate`, thereby releasing the preauthorized funds.   
+
+The `PaymentStatus` can be set to:  
+-`CANCELED` when no preauthorized pay-ins have been made to capture funds. Trying to cancel a used preauthorization returns an error.  
+-`VALIDATED` when at least one preauthorized pay-in has been made to capture funds. Trying to validate an unused preauthorization returns an error.  
+
+<Warning>  
+**Caution – Canceling or validating a preauthorization is irreversible** 
+  
+A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.  
+</Warning>  
+
+### Path parameters  
+
+<PreauthorizationId />  
+
+### Body parameters  
+
+<PaymentStatus />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Canceled (no captures)">  
+
+<Id3Response />  
+
+<Tag5Response />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds13Response />  
+
+<RemainingFundsResponse />  
+
+<AuthorizationDateResponse />  
+
+<Status10Response />  
+
+<PaymentStatus1Response />  
+
+<ExpirationDate3Response />  
+
+<PayInIdResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<SecureModeResponse />  
+
+<CardId1Response />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<StatementDescriptorResponse />  
+
+<Culture2Response />  
+
+<SecurityInfoResponse />  
+
+<MultiCaptureResponse />  
+
+<BrowserInfoResponse />  
+
+<IpAddressResponse />  
+
+<Billing1Response />  
+
+<Shipping2Response />  
+
+<Requested3DSVersionResponse />  
+
+<Applied3DSVersionResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<CardInfoResponse /></Accordion><Accordion title="200 Validated following successful capture">  
+
+<Id3Response />  
+
+<Tag5Response />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds13Response />  
+
+<RemainingFundsResponse />  
+
+<AuthorizationDateResponse />  
+
+<Status10Response />  
+
+<PaymentStatus1Response />  
+
+<ExpirationDate3Response />  
+
+<PayInIdResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<SecureModeResponse />  
+
+<CardId1Response />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<StatementDescriptorResponse />  
+
+<Culture2Response />  
+
+<SecurityInfoResponse />  
+
+<MultiCaptureResponse />  
+
+<BrowserInfoResponse />  
+
+<IpAddressResponse />  
+
+<Billing1Response />  
+
+<Shipping2Response />  
+
+<Requested3DSVersionResponse />  
+
+<Applied3DSVersionResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<CardInfoResponse /></Accordion><Accordion title="400 Cancel attempted after capture"></Accordion><Accordion title="400 Validation attempted before capture"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Canceled (no captures)  
+
+{
+   "Id": "156686431",
+   "Tag": null,
+   "CreationDate": 1669116461,
+   "AuthorId": "156671912",
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 500
+   },
+   "RemainingFunds": {
+       "Currency": "EUR",
+       "Amount": 0
+   },
+   "AuthorizationDate": 1669116472,
+   "Status": "SUCCEEDED",
+   "PaymentStatus": "CANCELED",
+   "ExpirationDate": 1669678072,
+   "PayInId": null,
+   "ResultCode": "000000",
+   "ResultMessage": "Success",
+   "SecureMode": "FORCE",
+   "CardId": "156674899",
+   "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?preAuthorizationId=156686431",
+   "SecureModeRedirectURL": null,
+   "SecureModeNeeded": true,
+   "PaymentType": "CARD",
+   "ExecutionType": "DIRECT",
+   "StatementDescriptor": null,
+   "Culture": "EN",
+   "SecurityInfo": {
+       "AVSResult": "NO_CHECK"
+   },
+   "MultiCapture": true,
+   "BrowserInfo": {
+       "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+       "JavaEnabled": true,
+       "Language": "FR-FR",
+       "ColorDepth": 4,
+       "ScreenHeight": 1800,
+       "ScreenWidth": 400,
+       "TimeZoneOffset": 60,
+       "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+       "JavascriptEnabled": true
+   },
+   "IpAddress": "80.236.38.245",
+   "Billing": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Shipping": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Requested3DSVersion": null,
+   "Applied3DSVersion": "V2_1",
+   "PreferredCardNetwork": null,
+   "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}  
+
+ ```  
+
+```json 200 Validated following successful capture  
+
+{
+   "Id": "156686696",
+   "Tag": null,
+   "CreationDate": 1669116896,
+   "AuthorId": "156671912",
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 500
+   },
+   "RemainingFunds": {
+       "Currency": "EUR",
+       "Amount": 0
+   },
+   "AuthorizationDate": 1669116904,
+   "Status": "SUCCEEDED",
+   "PaymentStatus": "VALIDATED",
+   "ExpirationDate": 1669678504,
+   "PayInId": "156686722",
+   "ResultCode": "000000",
+   "ResultMessage": "Success",
+   "SecureMode": "FORCE",
+   "CardId": "156674899",
+   "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?preAuthorizationId=156686696",
+   "SecureModeRedirectURL": null,
+   "SecureModeNeeded": true,
+   "PaymentType": "CARD",
+   "ExecutionType": "DIRECT",
+   "StatementDescriptor": null,
+   "Culture": "EN",
+   "SecurityInfo": {
+       "AVSResult": "NO_CHECK"
+   },
+   "MultiCapture": true,
+   "BrowserInfo": {
+       "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+       "JavaEnabled": true,
+       "Language": "FR-FR",
+       "ColorDepth": 4,
+       "ScreenHeight": 1800,
+       "ScreenWidth": 400,
+       "TimeZoneOffset": 60,
+       "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+       "JavascriptEnabled": true
+   },
+   "IpAddress": "80.236.38.245",
+   "Billing": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Shipping": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Requested3DSVersion": null,
+   "Applied3DSVersion": "V2_1",
+   "PreferredCardNetwork": null,
+   "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}  
+
+ ```  
+
+```json 400 Cancel attempted after capture  
+
+{
+   "Message": "The Payment Status of the preauthorization does not allow for it to be edited",
+   "Type": "preauthorization_payment_status_can_not_be_canceled",
+   "Id": "a682bfc5-7dd6-4884-abee-9a6ff74fa21c#1669115406",
+   "Date": 1669115407,
+   "errors": null
+}  
+
+ ```  
+
+```json 400 Validation attempted before capture  
+
+{
+   "Message": "Can't validate a preauthorization with no successful payin.",
+   "Type": "invalid_action",
+   "Id": "ebe43430-6a43-4ef5-9e97-06b2a7e075f9#1669114162",
+   "Date": 1669114163,
+   "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+   "PaymentStatus": "CANCELED"
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+let myPreauthorization = {
+  Id: '192870038',
+  PaymentStatus: 'CANCELED',
+}
+
+const cancelPreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+cancelPreauthorization(myPreauthorization)
+
+// To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+let myPreauthorization = {
+  Id: '192870038',
+  PaymentStatus: 'VALIDATED',
+}
+
+const validatePreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+validatePreauthorization(myPreauthorization)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+
+# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+def validatePreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '195059241',
+    PaymentStatus: 'VALIDATED'
+  }
+
+validatePreauthorization(myPreauthorization[:Id], myPreauthorization)
+
+# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+def cancelPreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '198156939',
+    PaymentStatus: 'CANCELED'
+  }
+
+cancelPreauthorization(myPreauthorization[:Id], myPreauthorization)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+
+from mangopay.resources import PreAuthorization
+
+# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'VALIDATED'
+)
+
+validate_preauthorization = card_preauthorization.save()
+
+pprint(validate_preauthorization)
+
+
+# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'CANCEL'
+)
+
+cancel_preauthorization = card_preauthorization.save()
+
+pprint(cancel_preauthorization)  
+```  
+
+  
+</RequestExample>

@@ -1,0 +1,220 @@
+---  
+ title: 'View a UBO'  
+ api: 'GET /v2.01/{ClientId}/users/{UserId}/kyc/ubodeclarations/{UboDeclarationId}/ubos/{UboId}'  
+---  
+
+import IsActiveResponse from '/snippets/response-parameters/IsActiveResponse.mdx';
+import BirthplaceResponse from '/snippets/response-parameters/BirthplaceResponse.mdx';
+import Address4Response from '/snippets/response-parameters/Address4Response.mdx';
+import Nationality1Response from '/snippets/response-parameters/Nationality1Response.mdx';
+import Birthday1Response from '/snippets/response-parameters/Birthday1Response.mdx';
+import FirstName2Response from '/snippets/response-parameters/FirstName2Response.mdx';
+import LastName2Response from '/snippets/response-parameters/LastName2Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import UboId from '/snippets/path-parameters/UboId.mdx';
+import UboDeclarationId from '/snippets/path-parameters/UboDeclarationId.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+### Path parameters  
+
+<UserId />  
+
+<UboDeclarationId />  
+
+<UboId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<LastName2Response />  
+
+<FirstName2Response />  
+
+<Birthday1Response />  
+
+<Nationality1Response />  
+
+<Address4Response />  
+
+<BirthplaceResponse />  
+
+<IsActiveResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "158947898",
+    "CreationDate": 1672153693,
+    "LastName": "Wiza",
+    "FirstName": "Jess",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "Address": {
+        "AddressLine1": "669 Ratke Forge",
+        "AddressLine2": "Schamberger Walk",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Birthplace": {
+        "City": "Paris",
+        "Country": "FR"
+    },
+    "IsActive": true
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '198557165';
+    $uboDeclarationId = '198692872';
+    $uboId = '198693429';
+
+    $response = $api->UboDeclarations->GetUbo($userId, $uboDeclarationId, $uboId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+}
+
+let myUbo = {
+  Id: '180945113',
+}
+
+const getUbo = async (userId, uboDeclarationId, uboId) => {
+  return await mangopay.UboDeclarations.getUbo(userId, uboDeclarationId, uboId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getUbo(myUser.Id, myUboDeclaration.Id, myUbo.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewUbo(legalUserId, uboDeclarationId, uboId)
+    begin
+        response = MangoPay::Ubo.fetch(legalUserId, uboDeclarationId, uboId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch UBO: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+myUboDeclaration = {
+    Id: '194511216'
+}
+
+myUbo = {
+    Id: '194511740'
+}
+
+viewUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+
+legal_user = LegalUser(
+    id = '210602889'  
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210896999'
+)
+
+user_ubo = Ubo(
+    id = '210898223'
+)
+
+try:
+    view_ubo = Ubo.get(reference = user_ubo.id, user_id = legal_user.id, ubo_declaration_id = user_ubo_declaration.id) 
+    pprint(vars(view_ubo))
+except Ubo.DoesNotExist:
+    print('The UBO {} does not exist.'.format(user_ubo_declaration))  
+```  
+
+  
+</RequestExample>

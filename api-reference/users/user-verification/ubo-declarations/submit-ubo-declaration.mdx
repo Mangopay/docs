@@ -1,0 +1,198 @@
+---  
+ title: 'Submit a UBO Declaration'  
+ api: 'PUT /v2.01/{ClientId}/users/{UserId}/kyc/ubodeclarations/{UboDeclarationId}'  
+---  
+
+import UbosResponse from '/snippets/response-parameters/UbosResponse.mdx';
+import MessageResponse from '/snippets/response-parameters/MessageResponse.mdx';
+import ReasonResponse from '/snippets/response-parameters/ReasonResponse.mdx';
+import Status11Response from '/snippets/response-parameters/Status11Response.mdx';
+import ProcessDateResponse from '/snippets/response-parameters/ProcessDateResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import UserId2Response from '/snippets/response-parameters/UserId2Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Status5 from '/snippets/body-parameters/Status5.mdx';
+import UboDeclarationId from '/snippets/path-parameters/UboDeclarationId.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+Submitting a UBO Declaration consists in updating the object `Status` parameter value to `VALIDATION_ASKED`.  
+
+From there, Mangopay Compliance team will validate, indicate as incomplete, or reject the declaration.  
+
+### Path parameters  
+
+<UserId />  
+
+<UboDeclarationId />  
+
+### Body parameters  
+
+<Status5 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<UserId2Response />  
+
+<CreationDateResponse />  
+
+<ProcessDateResponse />  
+
+<Status11Response />  
+
+<ReasonResponse />  
+
+<MessageResponse />  
+
+<UbosResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "158947737",
+    "UserId": "158947634",
+    "CreationDate": 1672153298,
+    "ProcessedDate": null,
+    "Status": "VALIDATION_ASKED",
+    "Reason": null,
+    "Message": null,
+    "Ubos": [
+        {
+            "Id": "158947898",
+            "CreationDate": 1672153693,
+            "LastName": "Wiza",
+            "FirstName": "Jess",
+            "Birthday": 652117514,
+            "Nationality": "FR",
+            "Address": {
+                "AddressLine1": "669 Ratke Forge",
+                "AddressLine2": "Schamberger Walk",
+                "City": "Paris",
+                "Region": "Ile-de-France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "Birthplace": {
+                "City": "Paris",
+                "Country": "FR"
+            },
+            "IsActive": true
+        }
+    ]
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Status": "VALIDATION_ASKED",
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '199385330';
+    $uboDeclarationId = '199461371';
+
+    $response = $api->UboDeclarations->SubmitForValidation($userId, $uboDeclarationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-mangopay-client-id',
+  clientApiKey: 'your-mangopay-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+  Status: 'VALIDATION_ASKED',
+}
+
+const updateUboDeclaration = async (userId, uboDeclaration) => {
+  return await mangopay.UboDeclarations.update(userId, uboDeclaration)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateUboDeclaration(myUser.Id, myUboDeclaration)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import UboDeclaration, LegalUser
+
+legal_user = LegalUser(
+    id = '211158266'  
+)
+
+ubo_declaration = UboDeclaration(
+    id = '211651591', 
+    user = legal_user,
+    status = 'VALIDATION_ASKED'
+)
+
+submit_ubo_declaration = ubo_declaration.save()
+
+pprint(submit_ubo_declaration)  
+```  
+
+  
+</RequestExample>

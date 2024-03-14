@@ -1,0 +1,52 @@
+---  
+ title: 'Tokenize the card'  
+ api: 'POST {CardRegistrationURL}'  
+---  
+
+import cardCvx from '/snippets/body-parameters/cardCvx.mdx';
+import cardExpirationDate from '/snippets/body-parameters/cardExpirationDate.mdx';
+import cardNumber from '/snippets/body-parameters/cardNumber.mdx';
+import data from '/snippets/body-parameters/data.mdx';
+import accessKeyRef from '/snippets/body-parameters/accessKeyRef.mdx';
+  
+
+This call sends the necessary information to a PCI-DSS-compliant tokenization server without reaching Mangopay’s servers.  
+
+<Note>  
+**Note – Use CardRegistrationURL** 
+  
+The URL to use is returned by the Create a Card Registration call in the `CardRegistrationURL` parameter.
+The request must be made using the “application/x-www-form-urlencoded" content type.  
+</Note>  
+
+<Warning>  
+**Warning – Card details must never pass via your server** 
+  
+For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS-compliant tokenization server by using the endpoint provided.  
+</Warning>  
+
+### Body parameters  
+
+<accessKeyRef />  
+
+<data />  
+
+<cardNumber />  
+
+<cardExpirationDate />  
+
+<cardCvx />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 "></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+data=acIcnwwLleiAvlZUea5VxYT1eCIn3MER8jyZXr-p8Bzb4Rm8GIA0MQtPs2NL7zPzPO_I7EjQm-m92V909JUL6KT-PmPzJfAQZV_8PIz6wKvjorGNaNd8Mg1rqN6eBpS5Nx0xgKTVnyDj15oG8jR875  
+
+ ```  
+
+</ResponseExample>

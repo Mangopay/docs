@@ -1,0 +1,201 @@
+---  
+ title: 'View a Card Registration'  
+ api: 'GET /v2.01/{ClientId}/cardregistrations/{CardRegistrationId}'  
+---  
+
+import Status1Response from '/snippets/response-parameters/Status1Response.mdx';
+import Currency2Response from '/snippets/response-parameters/Currency2Response.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import CardRegistrationURLResponse from '/snippets/response-parameters/CardRegistrationURLResponse.mdx';
+import CardType1Response from '/snippets/response-parameters/CardType1Response.mdx';
+import CardIdResponse from '/snippets/response-parameters/CardIdResponse.mdx';
+import RegistrationDataResponse from '/snippets/response-parameters/RegistrationDataResponse.mdx';
+import PreregistrationDataResponse from '/snippets/response-parameters/PreregistrationDataResponse.mdx';
+import AccessKeyResponse from '/snippets/response-parameters/AccessKeyResponse.mdx';
+import UserIdResponse from '/snippets/response-parameters/UserIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag1Response from '/snippets/response-parameters/Tag1Response.mdx';
+import Id1Response from '/snippets/response-parameters/Id1Response.mdx';
+import CardRegistrationId from '/snippets/path-parameters/CardRegistrationId.mdx';
+  
+
+### Path parameters  
+
+<CardRegistrationId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<Id1Response />  
+
+<Tag1Response />  
+
+<CreationDateResponse />  
+
+<UserIdResponse />  
+
+<AccessKeyResponse />  
+
+<PreregistrationDataResponse />  
+
+<RegistrationDataResponse />  
+
+<CardIdResponse />  
+
+<CardType1Response />  
+
+<CardRegistrationURLResponse />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<Currency2Response />  
+
+<Status1Response /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id": "149333938",
+    "Tag": null,
+    "CreationDate": 1660737596,
+    "UserId": "146476890",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "S2mSVl8PLRVHgaMNATInMvj89Yq1mzIdDroMCDVpVe-N9s6Jm9QuXkzNk96K5-2o2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": "data=zaXL7u1LOFpPjYw4hCsZeOIe9iluWcnfOEMB9KwHmn1ObTIh_ICCIiYsaNfm8D8bnN1aM1h9ItsXjO_wR1mQydOmh-vDtkQob6nZTfk7FnIRxnHaHISav5XNqKU6GZ15KveYnfvMjBj-cRtzFqRcCA",
+    "CardId": "149334067",
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Currency": "EUR",
+    "Status": "VALIDATED"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardRegistrationId = '192900791';
+
+    $response = $api->CardRegistrations->Get($cardRegistrationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let userCardRegistration = {
+    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
+  }
+
+const viewCardRegistration = async (cardRegistrationId) => {
+    return await mangopay.CardRegistrations.get(cardRegistrationId)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+  }
+  
+viewCardRegistration(userCardRegistration.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewCardRegistration(cardRegistrationId)
+    begin
+        response = MangoPay::CardRegistration.fetch(cardRegistrationId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Card Registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCardRegistration = {
+    Id: '195067583'
+  }
+
+viewCardRegistration(myCardRegistration[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import CardRegistration
+
+card_registration = CardRegistration(
+    id = '213600973'
+)
+
+try:
+    view_card_registration = CardRegistration.get(card_registration.id) 
+    pprint(vars(view_card_registration))
+except CardRegistration.DoesNotExist:
+    print('Card registration {} does not exist.'.format(view_card_registration.id))  
+```  
+
+  
+</RequestExample>

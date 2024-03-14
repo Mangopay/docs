@@ -1,0 +1,489 @@
+---  
+ title: 'Update a Natural User'  
+ api: 'PUT /v2.01/{ClientId}/users/natural/{UserId}'  
+---  
+
+import UserStatusResponse from '/snippets/response-parameters/UserStatusResponse.mdx';
+import UserCategoryResponse from '/snippets/response-parameters/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/response-parameters/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/response-parameters/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/response-parameters/KYCLevelResponse.mdx';
+import Email2Response from '/snippets/response-parameters/Email2Response.mdx';
+import PersonTypeResponse from '/snippets/response-parameters/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import CapacityResponse from '/snippets/response-parameters/CapacityResponse.mdx';
+import ProofOfAddressResponse from '/snippets/response-parameters/ProofOfAddressResponse.mdx';
+import ProofOfIdentityResponse from '/snippets/response-parameters/ProofOfIdentityResponse.mdx';
+import IncomeRangeResponse from '/snippets/response-parameters/IncomeRangeResponse.mdx';
+import OccupationResponse from '/snippets/response-parameters/OccupationResponse.mdx';
+import CountryOfResidenceResponse from '/snippets/response-parameters/CountryOfResidenceResponse.mdx';
+import NationalityResponse from '/snippets/response-parameters/NationalityResponse.mdx';
+import BirthdayResponse from '/snippets/response-parameters/BirthdayResponse.mdx';
+import LastName1Response from '/snippets/response-parameters/LastName1Response.mdx';
+import FirstName1Response from '/snippets/response-parameters/FirstName1Response.mdx';
+import Address3Response from '/snippets/response-parameters/Address3Response.mdx';
+import UserCategory from '/snippets/body-parameters/UserCategory.mdx';
+import TermsAndConditionsAccepted from '/snippets/body-parameters/TermsAndConditionsAccepted.mdx';
+import Email2 from '/snippets/body-parameters/Email2.mdx';
+import Tag3 from '/snippets/body-parameters/Tag3.mdx';
+import IncomeRange from '/snippets/body-parameters/IncomeRange.mdx';
+import Occupation from '/snippets/body-parameters/Occupation.mdx';
+import CountryOfResidence from '/snippets/body-parameters/CountryOfResidence.mdx';
+import Nationality from '/snippets/body-parameters/Nationality.mdx';
+import Birthday from '/snippets/body-parameters/Birthday.mdx';
+import LastName1 from '/snippets/body-parameters/LastName1.mdx';
+import FirstName1 from '/snippets/body-parameters/FirstName1.mdx';
+import Address3 from '/snippets/body-parameters/Address3.mdx';
+import UserId from '/snippets/path-parameters/UserId.mdx';
+  
+
+<Warning>  
+**Caution – Modification may cause verification downgrade** 
+  
+Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+The impacted parameters are:  
+`FirstName`  
+`LastName`  
+`Birthday`  
+`Nationality`  
+See the Verification downgrade article for more information.  
+</Warning>  
+
+<Note>  
+**Note – Country-based restrictions apply to users** 
+  
+Due to Mangopay's <glossary:aml>AML rules</glossary>, it is not possible to create or modify users using blocked countries.  
+For Natural Users, the following parameters are concerned:  
+`Nationality`  
+`CountryOfResidence`  
+`Country` of the `Address`  
+For more information, see the Country restrictions article.  
+</Note>  
+
+### Path parameters  
+
+<UserId />  
+
+### Body parameters  
+
+<Address3 />  
+
+<FirstName1 />  
+
+<LastName1 />  
+
+<Birthday />  
+
+<Nationality />  
+
+<CountryOfResidence />  
+
+<Occupation />  
+
+<IncomeRange />  
+
+<Tag3 />  
+
+<Email2 />  
+
+<TermsAndConditionsAccepted />  
+
+<UserCategory />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Payer">  
+
+<Address3Response />  
+
+<FirstName1Response />  
+
+<LastName1Response />  
+
+<BirthdayResponse />  
+
+<NationalityResponse />  
+
+<CountryOfResidenceResponse />  
+
+<OccupationResponse />  
+
+<IncomeRangeResponse />  
+
+<ProofOfIdentityResponse />  
+
+<ProofOfAddressResponse />  
+
+<CapacityResponse />  
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<Email2Response />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusResponse /></Accordion><Accordion title="200 Owner">  
+
+<Address3Response />  
+
+<FirstName1Response />  
+
+<LastName1Response />  
+
+<BirthdayResponse />  
+
+<NationalityResponse />  
+
+<CountryOfResidenceResponse />  
+
+<OccupationResponse />  
+
+<IncomeRangeResponse />  
+
+<ProofOfIdentityResponse />  
+
+<ProofOfAddressResponse />  
+
+<CapacityResponse />  
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<Email2Response />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusResponse /></Accordion><Accordion title="400 Owner can't become Payer"></Accordion><Accordion title="400 Terms and conditions acceptance can't be revoked"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Payer  
+
+{
+    "Address":{
+        "AddressLine1":"3 rue des Plantes",
+        "AddressLine2":"Appartement 7",
+        "City":"Paris",
+        "Region":"Ile-de-France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "FirstName":"Hugo",
+    "LastName":"Garnier",
+    "Birthday":null,
+    "Nationality":null,
+    "CountryOfResidence":null,
+    "Occupation":null,
+    "IncomeRange":null,
+    "ProofOfIdentity":null,
+    "ProofOfAddress":null,
+    "Capacity":"NORMAL",
+    "Id":"158025358",
+    "Tag":"Created using MANGOPAY API Collection Postman",
+    "CreationDate":1670861869,
+    "PersonType":"NATURAL",
+    "Email":"email@test.com",
+    "KYCLevel":"LIGHT",
+    "TermsAndConditionsAccepted":false,
+    "TermsAndConditionsAcceptedDate":null,
+    "UserCategory":"PAYER",
+    "UserStatus": "ACTIVE"
+}  
+
+ ```  
+
+```json 200 Owner  
+
+{
+    "Address": {
+        "AddressLine1": "3 rue des Plantes",
+        "AddressLine2": "Appartement 7",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "FirstName": "Sophia",
+    "LastName": "Garnier",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "CountryOfResidence": "FR",
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "Id": "158025445",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1670862022,
+    "PersonType": "NATURAL",
+    "Email": "email@test.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": 1670862022,
+    "UserCategory": "OWNER",
+    "UserStatus": "ACTIVE"
+}  
+
+ ```  
+
+```json 400 Owner can't become Payer  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+    "Date": 1707907057.0,
+    "errors": {
+        "UserCategory": "A User OWNER can't be modified to a user PAYER"
+    }
+}  
+
+ ```  
+
+```json 400 Terms and conditions acceptance can't be revoked  
+
+{
+    "Message": "The user cannot revoke the terms and conditions acceptance",
+    "Type": "invalid_action",
+    "Id": "f3126c80-1e1f-4f89-a031-237bf997759f",
+    "Date": 1690290675.0,
+    "errors": null
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "Address":{
+        "AddressLine1":"3 rue des Plantes",
+        "AddressLine2":"Appartement 7",
+        "City":"Paris",
+        "Region":"Ile-de-France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "FirstName":"Hugo",
+    "LastName":"Garnier",
+    "Birthday":652117514,
+    "Nationality":"FR",
+    "CountryOfResidence":"FR",
+    "Occupation":null,
+    "IncomeRange":null,
+    "Tag":"Created using MANGOPAY API Collection Postman",
+    "Email":"email@test.com",
+    "TermsAndConditionsAccepted":false,
+    "UserCategory":"PAYER"
+}  
+```  
+
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '199260628';
+    $user = $api->Users->Get($userId);
+
+    $user->FirstName = 'Alex';
+    $user->LastName = 'Smith';
+    $user->Email = 'smithupdated@example.com';
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->Address = $address;
+    $user->Birthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->Nationality = 'FR';
+    $user->CountryOfResidence = 'FR';
+    
+    $user->Tag = 'Updated using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myNaturalUser = {
+  Id: '171666652',
+  Address: {
+    AddressLine1: '15 Edgeware Road',
+    AddressLine2: null,
+    City: 'Manchester',
+    Region: null,
+    PostalCode: 'M1 4HG',
+    Country: 'GB',
+  },
+  FirstName: 'Rupert',
+  LastName: 'Bear',
+  Birthday: 656640000,
+  Nationality: 'GB',
+  CountryOfResidence: 'GB',
+  Tag: 'Created using the Mangopay NodeJS SDK',
+  Email: 'rupert.bear@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const updateNaturalUser = async (user) => {
+  return await mangopay.Users.update(user)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateNaturalUser(myNaturalUser)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateNaturalUser(naturalUserId, naturalUserObject)
+    begin
+        response = MangoPay::NaturalUser.update(naturalUserId, naturalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myNaturalUser = {
+    Id: '194554499',
+    Tag: 'Updated using Mangopay Ruby SDK',
+    Email: 'john.ruby@test.com',
+    FirstName: 'John',
+    LastName: 'Doe',
+    Address: {
+        AddressLine1: '2795 Edgewood Road',
+        City: 'Little Rock',
+        Region: 'Arkansas',
+        PostalCode: '72212',
+        Country: 'US'
+    },
+    Birthday: 655772400,
+    Nationality: 'FR',
+    CountryOfResidence: 'US',
+    TermsAndConditionsAccepted: true,
+    UserCategory: 'OWNER'
+}
+
+updateNaturalUser(myNaturalUser[:Id], myNaturalUser)  
+```  
+
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+from mangopay.utils import Address
+
+natural_user = NaturalUser(
+    id = '210602976', # ID of natural user to update
+    address = Address( # Add elements with update details
+        address_line_1 = '2 Prince Street',
+        city = 'Leeds',
+        postal_code = 'LS1 3CA',
+        country = 'GB'
+    )
+)
+
+update_natural_user = natural_user.save()
+
+pprint(update_natural_user)  
+```  
+
+  
+</RequestExample>

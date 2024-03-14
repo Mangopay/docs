@@ -1,0 +1,135 @@
+---  
+ title: 'Look up metadata for a payment method'  
+ api: 'POST /v2.01/{ClientId}/payment-methods/metadata'  
+---  
+
+import TokenFormatResponse from '/snippets/response-parameters/TokenFormatResponse.mdx';
+import BinDataResponse from '/snippets/response-parameters/BinDataResponse.mdx';
+import CommercialIndicatorResponse from '/snippets/response-parameters/CommercialIndicatorResponse.mdx';
+import IssuingBankResponse from '/snippets/response-parameters/IssuingBankResponse.mdx';
+import IssuerCountryCodeResponse from '/snippets/response-parameters/IssuerCountryCodeResponse.mdx';
+import CardType2Response from '/snippets/response-parameters/CardType2Response.mdx';
+import Bin1Response from '/snippets/response-parameters/Bin1Response.mdx';
+import Type12Response from '/snippets/response-parameters/Type12Response.mdx';
+import Token from '/snippets/body-parameters/Token.mdx';
+import Bin1 from '/snippets/body-parameters/Bin1.mdx';
+import Type3 from '/snippets/body-parameters/Type3.mdx';
+  
+
+### Body parameters  
+
+<Type3 />  
+
+<Bin1 />  
+
+<Token />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 BIN - 6 digits">  
+
+<Type12Response />  
+
+<Bin1Response />  
+
+<CardType2Response />  
+
+<IssuerCountryCodeResponse />  
+
+<IssuingBankResponse />  
+
+<CommercialIndicatorResponse />  
+
+<BinDataResponse /></Accordion><Accordion title="200 BIN - 8 digits">  
+
+<Type12Response />  
+
+<Bin1Response />  
+
+<CardType2Response />  
+
+<IssuerCountryCodeResponse />  
+
+<IssuingBankResponse />  
+
+<CommercialIndicatorResponse />  
+
+<BinDataResponse /></Accordion><Accordion title="200 Google Pay">  
+
+<Type12Response />  
+
+<TokenFormatResponse />  
+
+<Bin1Response />  
+
+<CardType2Response />  
+
+<IssuerCountryCodeResponse />  
+
+<IssuingBankResponse />  
+
+<CommercialIndicatorResponse />  
+
+<BinDataResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 BIN - 6 digits  
+
+{
+    "Type": "BIN",
+    "Bin": "540006",
+    "CardType": "CREDIT",
+    "IssuerCountryCode": "US",
+    "IssuingBank": "FIRST NATIONAL BANK OF OMAHA",
+    "CommercialIndicator": "PERSONAL",
+    "BinData": [
+        {
+            "Subtype": "MIXED PRODUCT",
+            "Brand": "MASTERCARD"
+        }
+    ]
+}  
+
+ ```  
+
+```json 200 BIN - 8 digits  
+
+{
+    "Type": "BIN",
+    "Bin": "47929300",
+    "CardType": "CREDIT",
+    "IssuerCountryCode": "GB",
+    "IssuingBank": "SANTANDER UK PLC",
+    "CommercialIndicator": "COMMERCIAL",
+    "BinData": [
+        {
+            "Subtype": "B2B",
+            "Brand": "VISA"
+        }
+    ]
+}  
+
+ ```  
+
+```json 200 Google Pay  
+
+{
+    "Type": "GOOGLE_PAY",
+    "TokenFormat": "PAN_ONLY",
+    "Bin": "555555",
+    "CardType": "DEBIT",
+    "IssuerCountryCode": "BR",
+    "IssuingBank": "CIAGROUP",
+    "CommercialIndicator": "PERSONAL",
+    "BinData": [
+        {
+            "Subtype": "PREPAID",
+            "Brand": "MASTERCARD"
+        }
+    ]
+}  
+
+ ```  
+
+</ResponseExample>

@@ -1,0 +1,139 @@
+---  
+ title: 'View a PayIn (BLIK)'  
+ api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---  
+
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/response-parameters/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/response-parameters/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType3Response from '/snippets/response-parameters/PaymentType3Response.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees3Response from '/snippets/response-parameters/Fees3Response.mdx';
+import CreditedFunds4Response from '/snippets/response-parameters/CreditedFunds4Response.mdx';
+import DebitedFunds4Response from '/snippets/response-parameters/DebitedFunds4Response.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import PayInId from '/snippets/path-parameters/PayInId.mdx';
+  
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Succeeded">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds4Response />  
+
+<CreditedFunds4Response />  
+
+<Fees3Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<PaymentType3Response />  
+
+<ExecutionTypeResponse />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Succeeded  
+
+{
+    "Id": "wt_57b8f69d-cbcc-4202-9a4f-9a3f3668240b",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1686211211,
+    "AuthorId": "6659843",
+    "DebitedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "CreditedFunds": {
+        "Currency": "PLN",
+        "Amount": 500
+    },
+    "Fees": {
+        "Currency": "PLN",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "The transaction was successful",
+    "ExecutionDate": 1686211211,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "6659844",
+    "PaymentType": "BLIK",
+    "ExecutionType": "DIRECT",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_57b8f69d-cbcc-4202-9a4f-9a3f3668240b",
+    "RedirectUrl": "https://r3.girogate.de/ti/dumbdummy?tx=140079495229&rs=oHkl4WvsgwtWpMptWpqWlFa90j0EzzO9&cs=e43baf1ae4a556dfb823fd304acc408580c193e04c1a9bcb26699b4185393b05",
+    "StatementDescriptor": "MGP"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
+
+try:
+    view_payin = PayIn.get(payin_id)
+    pprint(view_payin._data)
+except PayIn.DoesNotExist:
+    print('PayIn {} does not exist.'.format(payin_id))  
+```  
+
+  
+</RequestExample>

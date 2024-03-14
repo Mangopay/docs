@@ -1,0 +1,397 @@
+---  
+ title: 'Create a Direct Direct-Debit PayIn'  
+ api: 'POST /v2.01/{ClientId}/payins/directdebit/direct'  
+---  
+
+import StatementDescriptor1Response from '/snippets/response-parameters/StatementDescriptor1Response.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import StatementDescriptorResponse from '/snippets/response-parameters/StatementDescriptorResponse.mdx';
+import MandateIdResponse from '/snippets/response-parameters/MandateIdResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import ExecutionTypeResponse from '/snippets/response-parameters/ExecutionTypeResponse.mdx';
+import PaymentType2Response from '/snippets/response-parameters/PaymentType2Response.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Fees4Response from '/snippets/response-parameters/Fees4Response.mdx';
+import DebitedFunds7Response from '/snippets/response-parameters/DebitedFunds7Response.mdx';
+import CreditedFunds5Response from '/snippets/response-parameters/CreditedFunds5Response.mdx';
+import DebitedWalletId1Response from '/snippets/response-parameters/DebitedWalletId1Response.mdx';
+import CreditedWalletIdResponse from '/snippets/response-parameters/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ChargeDateResponse from '/snippets/response-parameters/ChargeDateResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import CreditedUserIdResponse from '/snippets/response-parameters/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/response-parameters/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import ProfilingAttemptReference from '/snippets/body-parameters/ProfilingAttemptReference.mdx';
+import StatementDescriptor1 from '/snippets/body-parameters/StatementDescriptor1.mdx';
+import MandateId from '/snippets/body-parameters/MandateId.mdx';
+import Tag from '/snippets/body-parameters/Tag.mdx';
+import Fees10 from '/snippets/body-parameters/Fees10.mdx';
+import DebitedFunds11 from '/snippets/body-parameters/DebitedFunds11.mdx';
+import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
+import CreditedUserId from '/snippets/body-parameters/CreditedUserId.mdx';
+import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+  
+
+### Body parameters  
+
+<AuthorId />  
+
+<CreditedUserId />  
+
+<CreditedWalletId />  
+
+<DebitedFunds11 />  
+
+<Fees10 />  
+
+<Tag />  
+
+<MandateId />  
+
+<StatementDescriptor1 />  
+
+<ProfilingAttemptReference />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 ">  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<Status2Response />  
+
+<ExecutionDateResponse />  
+
+<ChargeDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletId1Response />  
+
+<CreditedFunds5Response />  
+
+<DebitedFunds7Response />  
+
+<Fees4Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<Tag2Response />  
+
+<MandateIdResponse />  
+
+<StatementDescriptorResponse /></Accordion><Accordion title="200 Failed due to invalid mandate status">  
+
+<IdResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<Status2Response />  
+
+<ExecutionDateResponse />  
+
+<ChargeDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletId1Response />  
+
+<CreditedFunds5Response />  
+
+<DebitedFunds7Response />  
+
+<Fees4Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<TagResponse />  
+
+<MandateIdResponse />  
+
+<StatementDescriptor1Response /></Accordion><Accordion title="400 Payment method not activated"></Accordion><Accordion title="400 Statement descriptor not available for BACS Direct Debit "></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200   
+
+{
+    "Id":"156622086",
+    "CreationDate":1669040874,
+    "AuthorId":"151452401",
+    "CreditedUserId":"151452401",
+    "Status":"CREATED",
+    "ExecutionDate":null,
+    "ChargeDate":1669248000,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"152161972",
+    "DebitedWalletId":null,
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":1188
+    },
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "ResultCode":null,
+    "ResultMessage":null,
+    "PaymentType":"DIRECT_DEBIT",
+    "ExecutionType":"DIRECT",
+    "Tag":null,
+    "MandateId":"156620699",
+    "StatementDescriptor":"sandbox test Nov2022"
+}  
+
+ ```  
+
+```json 200 Failed due to invalid mandate status  
+
+{
+    "Id":"152162063",
+    "CreationDate":1663916149,
+    "AuthorId":"151452401",
+    "CreditedUserId":"151452401",
+    "Status":"FAILED",
+    "ExecutionDate":null,
+    "ChargeDate":null,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"152161972",
+    "DebitedWalletId":null,
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":11988
+    },
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":12000
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "ResultCode":"001833",
+    "ResultMessage":"The Status of this Mandate does not allow for payments",
+    "PaymentType":"DIRECT_DEBIT",
+    "ExecutionType":"DIRECT",
+    "Tag":null,
+    "MandateId":"152162020",
+    "StatementDescriptor":"sandbox test Nov2022"
+}  
+
+ ```  
+
+```json 400 Payment method not activated  
+
+{
+    "Message":"Error this mean of payment for this asked currency has been disabled",
+    "Type":"disabled_mean_of_payment_for_currency",
+    "Id":"2c4253ca-dd49-4092-8997-65b20b467b45#1663145348",
+    "Date":1663145349.0,
+    "errors":{
+        "error":"The method payment DIRECT_DEBIT_GOCARDLESS with the ccy EUR is not active for the partner Sandboxtest"
+    }
+}  
+
+ ```  
+
+```json 400 Statement descriptor not available for BACS Direct Debit   
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "24e0f9e1-7f37-4a8b-b644-873cabc4ee97",
+    "Date": 1695374496.0,
+    "errors": {
+        "StatementDescriptor": "This field is only available for Mandates with the Scheme 'SEPA'"
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "AuthorId":"151452401",
+    "CreditedUserId":"151452401",
+    "CreditedWalletId":"152161972",
+    "DebitedWalletId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "Tag":"custom meta",
+    "MandateId":"156620699",
+    "StatementDescriptor":"Nov2022"
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  PaymentType: 'DIRECT_DEBIT',
+  ExecutionType: 'DIRECT',
+  AuthorId: '168935886',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '168935886',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '168935920',
+  MandateId: '193168736',
+  StatementDescriptor: 'Mangopay',
+}
+
+const createDirectDirectDebitPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createDirectDirectDebitPayIn(myPayIn)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDirectDirectDebitPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::DirectDebit::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    AuthorId:'195074410',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId:'195074410',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '195074411',
+    MandateId: '195074413',
+    StatementDescriptor: 'Mangopay',
+  }
+
+createDirectDirectDebitPayIn(myPayIn)  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, DirectDebitDirectPayIn, Money
+
+natural_user = NaturalUser.get('213753890')
+
+direct_debit_direct_payin = DirectDebitDirectPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    debited_funds = Money(amount='1000', currency='EUR'),
+    fees = Money(amount='100', currency='EUR'),
+    tag = 'Created using the Mangopay Python SDK',
+    mandate_id = '214224837',
+    statement_descriptor = 'Jan2024'
+)
+
+create_direct_debit_direct_payin = direct_debit_direct_payin.save()
+
+pprint(create_direct_debit_direct_payin)  
+```  
+
+  
+</RequestExample>

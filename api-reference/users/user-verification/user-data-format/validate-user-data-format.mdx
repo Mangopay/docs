@@ -1,0 +1,101 @@
+---  
+ title: 'Validate the format of User data'  
+ api: 'POST /v2.01/{ClientId}/users/data-formats/validation'  
+---  
+
+import CompanyNumber1Response from '/snippets/response-parameters/CompanyNumber1Response.mdx';
+import CompanyNumber1 from '/snippets/body-parameters/CompanyNumber1.mdx';
+  
+
+This call allows you to check the validity of the format of a piece of user data, and to retrieve the validation rules applied to it.  
+
+<Warning>  
+**Caution – Veracity of data checked during verification** 
+  
+This endpoint only checks that the format of the data corresponds to that which is expected. Whether or not the data is true and correct for the specific User is checked during the user verification process when documents are submitted.  
+</Warning>  
+
+### Body parameters  
+
+<CompanyNumber1 />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Valid format for the country">  
+
+<CompanyNumber1Response /></Accordion><Accordion title="400 Country code not recognized"></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Valid format for the country  
+
+{
+    "CompanyNumber": {
+        "CompanyNumber": "AB123456",
+        "CountryCode": "IT",
+        "IsValid": true,
+        "ValidationRules": [
+            "^[0-9]{11}$|^[a-z]{2}[0-9]{7}$|^[a-z]{2}[0-9]{6}$"
+        ]
+    }
+}  
+
+ ```  
+
+```json 400 Country code not recognized  
+
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "0421656b-5f32-4475-874c-561449f9ffbf",
+    "Date": 1697101284.0,
+    "errors": {
+        "CompanyNumber.CountryCode": "The requested value is not an ISO 3166-1 alpha-2 code which is expected."
+    }
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```json REST  
+
+{
+    "CompanyNumber": {
+        "CompanyNumber": "AB123456",
+        "CountryCode": "IT"
+    }
+}  
+```  
+
+  
+```python Python  
+
+import re
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import LegalUser
+
+legal_user = LegalUser(
+    id = '210602889'
+)
+
+company_number = str(legal_user.company_number)
+
+validation_regex = re.compile(r"^[0-9]{11}$|^[a-z]{2}[0-9]{7}$|^[a-z]{2}[0-9]{6}$")
+validate_it = validation_regex.match(company_number)
+
+print(bool(validate_it))  
+```  
+
+  
+</RequestExample>

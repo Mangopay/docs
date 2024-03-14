@@ -1,0 +1,303 @@
+---  
+ title: 'View a Payout'  
+ api: 'GET /v2.01/{ClientId}/payouts/{PayoutId}'  
+---  
+
+import BankWireRefResponse from '/snippets/response-parameters/BankWireRefResponse.mdx';
+import BankAccountIdResponse from '/snippets/response-parameters/BankAccountIdResponse.mdx';
+import PaymentType2Response from '/snippets/response-parameters/PaymentType2Response.mdx';
+import DebitedWalletIdResponse from '/snippets/response-parameters/DebitedWalletIdResponse.mdx';
+import CreditedWalletId1Response from '/snippets/response-parameters/CreditedWalletId1Response.mdx';
+import NatureResponse from '/snippets/response-parameters/NatureResponse.mdx';
+import TypeResponse from '/snippets/response-parameters/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/response-parameters/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/response-parameters/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/response-parameters/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/response-parameters/Status2Response.mdx';
+import Fees2Response from '/snippets/response-parameters/Fees2Response.mdx';
+import CreditedFunds3Response from '/snippets/response-parameters/CreditedFunds3Response.mdx';
+import DebitedFunds3Response from '/snippets/response-parameters/DebitedFunds3Response.mdx';
+import CreditedUserId1Response from '/snippets/response-parameters/CreditedUserId1Response.mdx';
+import AuthorId1Response from '/snippets/response-parameters/AuthorId1Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import TagResponse from '/snippets/response-parameters/TagResponse.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import PayoutId from '/snippets/path-parameters/PayoutId.mdx';
+  
+
+This call returns the information about a payout without any information about the payout mode.  
+
+### Path parameters  
+
+<PayoutId />  
+
+### Responses  
+
+<AccordionGroup><Accordion title="200 Standard: Succeeded">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorId1Response />  
+
+<CreditedUserId1Response />  
+
+<DebitedFunds3Response />  
+
+<CreditedFunds3Response />  
+
+<Fees2Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletId1Response />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentType2Response />  
+
+<BankAccountIdResponse />  
+
+<BankWireRefResponse /></Accordion><Accordion title="200 Standard: Succeeded 1 second after creation (GBP Faster Payment)">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorId1Response />  
+
+<CreditedUserId1Response />  
+
+<DebitedFunds3Response />  
+
+<CreditedFunds3Response />  
+
+<Fees2Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletId1Response />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentType2Response />  
+
+<BankAccountIdResponse />  
+
+<BankWireRefResponse /></Accordion></AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 Standard: Succeeded  
+
+{
+    "Id": "po_m_01HQMZSGSQPPXC51TZHDAYFAJF",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1709027672,
+    "AuthorId": "204069570",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5792
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 5213
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 579
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1709027738,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "204069727",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "204070675",
+    "BankWireRef": "ExampleInvoice1234"
+}  
+
+ ```  
+
+```json 200 Standard: Succeeded 1 second after creation (GBP Faster Payment)  
+
+{
+    "Id": "po_b_01HPM8PX3KJV245H409Q3XD0Z7",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1707929728,
+    "AuthorId": "204069570",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 4682
+    },
+    "CreditedFunds": {
+        "Currency": "GBP",
+        "Amount": 4635
+    },
+    "Fees": {
+        "Currency": "GBP",
+        "Amount": 47
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": 1707929729,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "204079063",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "204073517",
+    "BankWireRef": "Created using the Mangopay API Postman collection"
+}  
+
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payoutId = '199128145';
+
+    $response = $api->PayOuts->Get($payoutId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```  
+
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayout = {
+  Id: '174860560',
+}
+
+const viewPayout = async (payoutId) => {
+  return await mangopay.PayOuts.get(payoutId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewPayout(myPayout.Id)  
+```  
+
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewPayout(payoutid)
+    begin
+        response = MangoPay::PayOut::BankWire.get_bankwire(payoutid)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch payout: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayout = {
+  Id: '194252007'
+}
+
+viewPayout(myPayout[:Id])  
+```  
+
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankWirePayOut
+
+payout_id = '214655329'
+
+try:
+    view_payout = BankWirePayOut.get(payout_id)
+    pprint(vars(view_payout))
+except BankWirePayOut.DoesNotExist:
+    print('The PayOut {} does not exist.'.format(payout_id))  
+```  
+
+  
+</RequestExample>
