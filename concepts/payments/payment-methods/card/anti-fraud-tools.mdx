@@ -1,0 +1,44 @@
+---  
+ title: 'Anti-fraud tools'  
+ 'og:description': 'Learn about how to leverage Mangopay’s card anti-fraud features, including unique card fingerprints and an address verification system for enhanced security in only payments.'  
+---  
+
+## Card fingerprint  
+
+The card fingerprint is a unique identifier attached to each card on the platform, allowing you to spot unusual behavior.  
+
+The principle is as follows:  
+-A card is registered with the Card Registration endpoint  
+-Once the registration process is complete, the corresponding Card object is created  
+-This Card object comes with a unique `Fingerprint`.  
+
+The same card can be registered several times in Mangopay, and will each time get a different `CardId`. The fingerprint, however, remains unique and this even across platforms.  
+
+You can take advantage of the following endpoints to spot unusual behaviors:  
+
+<Card title="Endpoint">List Cards for a Fingerprint</Card>  
+
+<Card title="Endpoint">List Users for a Card Fingerprint</Card>  
+
+<Card title="Endpoint">List Transactions for a card fingerprint</Card>  
+
+## Address verification system  
+
+Address verification system (AVS) is an anti-fraud tool used in the UK, US, and Canada for online payments by Visa, Mastercard, and Amex.  
+
+The system checks with the <glossary:acquirer>acquiring</glossary> bank if the address of the cardholder matches the billing address (provided via the API in the pay-in call). The acquiring bank provides a score as a result of this verification.  
+
+Based on the score provided by the bank, Mangopay provides a specific value in the `AVSResult` parameter for you to act upon.TW please add the old table here  
+
+<Note>  
+**Best practice – Implement an AVS result-based payment flow** 
+  
+In order to make the most of this feature:  
+Make the user `Address` mandatory in your implementation  
+Adapt your flow by adding conditions dependent on the AVS result.  
+One of the ways to use the AVS feature is to rely on the preauthorized pay-in. Steps would be as follow:  
+Make a preauthorization  
+Check the `AVSResult`  
+Capture the preauthorized funds based on the AVS result  
+</Note>  
+<a href="#" class="btn Primary normal">Test AVS</a>

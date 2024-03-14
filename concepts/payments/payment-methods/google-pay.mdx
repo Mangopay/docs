@@ -1,0 +1,31 @@
+---  
+ title: 'Google Pay'  
+ 'og:description': 'How Google Pay works with Mangopay, allowing users to pay securely on Android apps and websites, including a flow diagram overview.'  
+---  
+
+Google Pay allows users to pay securely in Android apps and on websites using cards saved in their Google Wallet.  
+
+## How it works  
+
+The overall flow of a Google Pay payment is given in the diagram below.TW a workflow was visible here. Please add it.  
+-The user selects Google Pay at the checkout on your app or website and confirms payment  
+-Your app or website makes the payment request to Google Pay   
+-Google Pay returns the encrypted payment data token, which includes details about the purchase.  
+-Your app or website passes the payment data to your platform’s backend  
+-Your platform includes the payment data in it’s request to Mangopay  
+-Mangopay changes the status of the pay-in  
+-Your platform confirms the outcome or redirects the end user for 3DS authentication  
+
+The transaction is complete when the pay-in status changed from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome.   
+
+You should also set up hook notifications for the relevant event types:   
+-PAYIN_NORMAL_SUCCEEDED  
+-PAYIN_NORMAL_FAILED  
+
+## Related resources  
+
+<Card title="Payment method">Google Pay – Basic info and features</Card>  
+
+<Card title="Tutorial">How to process a Google Pay payment</Card>  
+
+<Card title="Endpoints">The Google Pay PayIn object</Card>

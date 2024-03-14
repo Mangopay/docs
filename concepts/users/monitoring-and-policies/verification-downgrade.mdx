@@ -1,0 +1,134 @@
+---  
+ title: 'Verification downgrade'  
+ 'og:description': 'Learn about the verification downgrade mechanism, the scenarios triggering a downgrade, and hook notifications for changes.'  
+---  
+
+## Introduction  
+
+The verification process consists in verifying the information a user declares against official documents, like a passport. Once their documents have been validated as being authentic and consistent with the data provided, the user is verified.  
+
+However, if the user’s details subsequently change so they are no longer consistent with the documents, then the documents are no longer adequate proof. The downgrade mechanism exists to identify these documents and mark them as outdated.  
+
+Without the downgrade mechanism, a user could be verified under one name, then change their name, and then make <glossary:payout>payouts</glossary> to a bank account in the altered name. This would present a clear risk of money laundering and terrorism financing.   
+
+## Documents and verification level  
+
+The focus of the downgrade mechanism is the documents that were validated. Because the verification level is based on validated documents, a downgraded document usually results in a user losing their verified status (i.e., `KYCLevel` changes from `REGULAR` to `LIGHT`) immediately after.  
+
+An identity document can also be downgraded before it is validated, when it has only been submitted. In this case there is no change of verification level because the user was not verified before the downgrade.  
+
+<Note>  
+**Note – Downgraded documents must be resubmitted** 
+  
+If a user loses their verified status as a result of the downgraded mechanism, they need to submit the documents again according to the verification process.  
+They will be unable to request a payout until they have regained verified status.  
+</Note>  
+
+## Relevant information fields  
+
+There are two scenarios in which the downgrade mechanism is applied. A change to the relevant fields triggers a downgrade of the types of documents indicated if they are in the corresponding status.  
+
+### 1. Change of identity details for natural persons  
+
+#### Natural user  
+
+If the following information is changed:  
+-`FirstName`  
+-`LastName`  
+-`Birthday`  
+-`Nationality`  
+
+Then the status of the `IDENTITY_PROOF` document changes to `OUT_OF_DATE` if it was previously `VALIDATED` or `VALIDATION_ASKED`.  
+
+#### Legal user  
+
+If the following information is changed:  
+-`LegalRepresentativeFirstName`  
+-`LegalRepresentativeLastName`  
+-`LegalRepresentativeBirthday`  
+-`LegalRepresentativeNationality`  
+
+Then the status of the `IDENTITY_PROOF` document changes to `OUT_OF_DATE` if it was previously `VALIDATED` or `VALIDATION_ASKED`.  
+
+And the status of the following documents changes to `OUT_OF_DATE` if it was previously `VALIDATED`:  
+-`REGISTRATION_PROOF`  
+-`ARTICLES_OF_ASSOCIATION`  
+-`SHAREHOLDER_DECLARATION`  
+
+In the case of a legal user, all of the documents are concerned by the downgrade mechanism because they are all associated with the identity of the legal representative.  
+
+#### Behavior with UserCategory  
+
+The `UserCategory` parameter is mandatory but remains technically optional while platforms integrate it in their onboarding flows. If it is not supplied, or if the user was created before May 2022 when `UserCategory` was introduced, then the user is categorized as Unknown.  
+
+If a user is Unknown, they will not be affected by the downgrade upon becoming an Owner. They will retain their `KYCLevel` of `REGULAR` regardless of the order in which the changes are made:  
+-Unknown → KYC validated → Payer → Owner  
+-Unknown → Payer → KYC validated → Owner  
+-Unknown → KYC validated → Owner  
+
+After the transition period, all legacy Unknown users will be categorized by Mangopay. If they are categorized as Payers, the exemption from the downgrade will still apply. Only users created as Payers (who never had the category Unknown) can be downgraded.  
+
+### 2. Change of legal entity type  
+
+#### Legal user  
+
+If the following information is changed:  
+-`LegalPersonType`  
+
+Then the status of the `REGISTRATION_PROOF` document (only) changes to `OUT_OF_DATE` if it was previously `VALIDATED`.  
+
+This downgrade mechanism applies regardless of the initial and final values of `LegalPersonType`.  
+
+<Note>  
+**Note – UBO Declaration not affected by downgrade** 
+  
+The information about beneficial owners provided via the UBO Declaration endpoint is not affected by the downgrade. However, the documents against which this information is verified – that is, the articles of association or the Shareholder Declaration signed by the legal representative – can be downgraded.  
+</Note>  
+
+## Notifications  
+
+The following hooks enable you to be notified in case of a user being downgraded.  
+
+### KYC_OUTDATED  
+
+The `KYC_OUTDATED` hook notifies you when a document status changes to `OUT_OF_DATE`.  
+
+The notification is sent to your URL with the query parameter, `EventType`, and date.  
+
+For example:<Info> https://example.com?EventType=KYC_OUTDATED&RessourceId=157757171&Date=1670582750</Info>  
+
+The `RessourceId` is the unique identifier of the KYC Document.  
+
+The View a KYC Document endpoint gives you the `UserId` based on this `KycDocumentId`:  
+```json Response example to obtain the <inline-code>UserId</inline-code>
+{
+   "Type": "IDENTITY_PROOF",
+   "UserId": "156671912",
+   "Flags": [],
+   "Id": "157757171",
+   "Tag": "Created using MANGOPAY API Collection Postman",
+   "CreationDate": 1670424076,
+   "ProcessedDate": 1670424186,
+   "Status": "OUT_OF_DATE",
+   "RefusedReasonType": null,
+   "RefusedReasonMessage": null
+}
+```  
+
+### USER_KYC_LIGHT  
+
+The `USER_KYC_LIGHT` hook notifies you when a user’s `KYCLevel` changes to `LIGHT`, meaning that they are no longer verified.  
+
+The notification is sent to your URL with the query parameter, `EventType`, and date.  
+
+For example:<Info> https://example.com?EventType=USER_KYC_LIGHT&RessourceId=156671912&Date=1670582750</Info>  
+
+The `RessourceId` is the unique identifier of the user.  
+
+## Related articles  
+
+<Card title="null">Requirements for natural persons</Card>  
+
+<Card title="Article">Requirements for legal users</Card>  
+
+<Card title="Tutorial">How to submit a KYC Document</Card>

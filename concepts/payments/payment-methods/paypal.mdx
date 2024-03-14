@@ -1,0 +1,119 @@
+---  
+ title: 'PayPal'  
+ 'og:description': 'How PayPal works with Mangopay: activation, approval, integration, and configuration for shipping and tracking.'  
+---  
+
+PayPal is a popular international payment method that allows users to pay by connecting to their PayPal account and using a connected card or bank account or their PayPal account balance.  
+
+To use this payment method, users must:  
+-Create a PayPal account  
+-Connect a card or bank account to their PayPal account  
+
+## User experience  
+-On your app or website, the user selects PayPal as the payment method during checkout  
+-The user is redirected to the PayPal payment page (`RedirectURL`)  
+-The user logs in to their PayPal account, selects a payment method, and confirms payment  
+-The user is returned to your app or website (on `ReturnURL`  
+
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome.   
+
+You should also set up hook notifications for the relevant event types:   
+-PAYIN_NORMAL_SUCCEEDED  
+-PAYIN_NORMAL_FAILED  
+
+## Activation  
+
+PayPal requires approval and integration with PayPal and activation by Mangopay. Contact the Mangopay Support team via the Hub to get started.  
+
+The activation process is as follows:   
+
+PayPal is only available for platforms that are:  
+-Based in the EU, UK, or Switzerland  
+-Not operating a crowdfunding business model  
+
+At this stage, Mangopay can activate Sandbox for your platform to begin testing.  
+
+This includes:   
+-Due diligence and business registration  
+-Pricing negotiation, on top of Mangopay’s commission  
+-Creation of the PayPal account  
+-Integration support (PayPal button etc.)  
+
+Upon activation, Mangopay provides you with an activation link.  
+
+Using the activation link provided at activation, you give approval to Mangopay to process payments on behalf of your PayPal Business account.  
+
+## Shipping preference  
+
+The `ShippingPreference` parameter allows you to specify the behavior of the shipping address on the PayPal payment page.   
+-SET_PROVIDED_ADDRESS - The address provided in the `Shipping` parameter is displayed and is not editable. If this value is sent, the `Shipping` parameter is required.  
+-GET_FROM_FILE – The `Shipping` parameter is ignored and the end user can choose from registered addresses.  
+-NO_SHIPPING – No shipping address section is displayed.  
+
+## Tracking information  
+
+PayPal allows you to upload tracking information for shipments of a transaction.  
+
+The tracking number provides evidence of shipping and delivery. For a dispute opened because the user claims they haven’t received the items, proof of shipping and delivery usually means the dispute is resolved in the platform’s favor.  
+
+To provide the tracking information for a transaction:   
+
+The carriers supported by PayPal are listed in the PayPal documentation.  
+
+There is no link between the line items and the shipments. If multiple line items are in the same shipment, you only need to add the tracking information once. You should add all the tracking numbers relating to all the line items.  
+
+If making multiple calls for the same transaction, notify the buyer on only one of the calls (for example, the first).  
+
+<Warning>  
+**Caution – Tracking information cannot be edited** 
+  
+Information for a tracking number can’t be edited once sent, including the email notification to the buyer.   
+You can only send a unique tracking number once.   
+</Warning>  
+
+## Refunds  
+
+<Warning>  
+**Warning – Trigger refunds via the API, not via PayPal** 
+  
+PayPal refunds must be triggered via the Create a Refund for a PayIn endpoint of the Mangopay API. Mangopay then informs PayPal of the refund, and the funds are returned to the user.  
+You must not request refunds from within the PayPal Resolution Center. This action may result in desynchronization errors, because the refund exists in PayPal without existing in Mangopay.  
+</Warning>  
+
+PayPal refunds can only be created within 180 days of the initial transaction.  
+
+Refunds cannot be created for transactions which are disputed on PayPal’s side, even if no Dispute object is created in the Mangopay API (which is the case for an inquiry or unresolved claim). If the transaction is disputed in PayPal, the error 005408 is returned when you attempt the refund.   
+
+## Disputes  
+
+If a user has an issue with a payment, they may raise it directly with PayPal, resulting in a PayPal inquiry which may escalate to a claim. A user may also object to a payment with their card issuer, resulting in a chargeback.  
+
+<Note>  
+**Note – Contest disputes in the PayPal Resolution Center** 
+  
+Use the PayPal Resolution Center to deal with all issues arising from payments. For PayPal payments, the only Dispute objects created in the Mangopay API are for cases already ruled against the platform, meaning their `ResultCode` is `LOST` (as explained below).  
+</Note>  
+
+#### Inquiry  
+
+If a user raises an issue with PayPal, the first phase allows the platform to reach an agreement with the user.  
+
+A PayPal inquiry is automatically closed after 20 days unless it is escalated to a claim. There is no Dispute object created in the Mangopay API.  
+
+#### Claim  
+
+If the inquiry is escalated to a claim, PayPal steps in to resolve the situation. PayPal may require you to submit evidence via the PayPal Resolution Center.   
+
+Without any action from either the user or platform after 30 days, the claim is ruled against the platform and the user is refunded.  
+
+In the case of a claim ruled against the platform, a lost Dispute object and a Repudiation object are created in the Mangopay API in order to withdraw funds from the platform’s repudiation wallet and return them to PayPal (to return to the user).  
+
+#### Chargebacks  
+
+If a user files a chargeback for a PayPal payment directly with their bank, then PayPal coordinates the response and requests evidence from you in the PayPal Resolution Center.   
+
+In the case of a chargeback ruled against the platform, a lost Dispute object and a Repudiation object are created in the Mangopay API in order to withdraw funds from the platform’s repudiation wallet and return them to PayPal (to return to the user).  
+
+## Related resources  
+
+<Card title="Endpoints">The PayPal PayIn object</Card>

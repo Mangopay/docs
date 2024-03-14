@@ -1,0 +1,114 @@
+---  
+ title: 'Direct debit'  
+ 'og:description': 'Learn about direct debits with Mangopay: how to create a bank account, set up a mandate and make a pay-in with BACS or SEPA schemes.'  
+---  
+
+## Introduction  
+
+Direct debit is a way of processing payments by pulling funds from the end user’s bank account directly to a <glossary:wallet>wallet</glossary>.  
+
+In order to process direct debits, Mangopay relies on a mandate, which is an agreement from the end user allowing a third party to collect the payment in the future.  
+
+This payment method is particularly popular for subscriptions for instance.  
+
+The following schemes are supported: 
+
+<CardGroup cols={2}>  
+<Card title="BACS">  
+ Scheme specific to the UK, which only supports GBP pay-ins. A GB-type Bank Account is required to create this mandate.  
+</Card>  
+<Card title="SEPA">  
+ Scheme specific to the Eurozone, which only supports EUR. An IBAN-type Bank Account is required to create this mandate.  
+</Card>  
+</CardGroup>  
+
+<Note>  
+**Note – Web direct-debit pay-ins** 
+  
+This article does not include direct debits which redirect the user to an online banking environment (Sofort, giropay). To know more about these payment methods, see the Web Direct-Debit PayIn endpoint documentation.  
+</Note>  
+
+<Note>  
+**Note – Payment method activation** 
+  
+Mandates and direct debit pay-ins are only available for certain business types and are not activated by default.   
+Please contact Mangopay’s Support team to activate this payment method.  
+</Note>  
+
+## Direct debit payment flow  
+
+### Process  
+
+Processing direct debit pay-ins requires three steps:  
+-Create a Bank Account object belonging either to the BACS network (GB-type Bank Account) or SEPA network (IBAN-type Bank Account).  
+-Create the Mandate object and have the end user confirm it.  
+-Make a Direct Direct-Debit PayIn once the mandate is active.  
+
+As agreed with the end user, until the mandate is either:  
+-Canceled – The end user or the platform has canceled the mandate. This results in the `Status` of the Mandate object being set to `FAILED`.  
+-Expired – No pay-ins were made against the mandate in the last 24 months, which makes it expire. This results in the `Status` of the Mandate object being set to `EXPIRED`.  
+
+<Note>  
+**Note – Mandate activation** 
+  
+Once the end user confirms the mandate, its `Status` changes to `SUBMITTED`, meaning that it has been submitted to the end user’s bank. It will become `ACTIVE`:  
+After a few days (usually 3) for the BACS scheme.  
+After the first direct debit pay-in for the SEPA scheme.  
+</Note>  
+
+### Pay-in processing time  
+
+Direct debit pay-ins are not instantaneous, there will always be a delay between the moment the transaction is `CREATED` until it reaches the `SUCCEEDED` status.  
+
+While such delays can vary, you can find in the table below the usual number of business days to reach each step of the pay-in process.TW please add the old table here  
+
+### BACS scheme specificities  
+
+When using a BACS scheme mandate, please note that:  
+-Confirmation pages and emails are only available in English, regardless of the `Culture` parameter value.  
+-When the mandate is confirmed, an email is automatically sent by Mangopay on the platform’s behalf.  
+-Natwest, RBS, HSBC, Metro, and Nationwide banks don’t show the platform trading name on bank statements; only Mangopay is displayed.  
+-Mandates can't be created on accounts where multiple signatures are required (e.g. business accounts).  
+
+## Late failures and chargebacks  
+
+Late failures can occur for direct debit due to the payment method flow: even if the direct debit pay-in was successful, the <glossary:issuer>issuing bank</glossary> can pull back the funds.  
+
+When a late failure happens, Mangopay automatically creates a Dispute object (as well as the corresponding Repudiation transaction) in the same way as for a regular <glossary:chargeback>chargeback</glossary>.  
+
+The Dispute `DisputeReasonType` parameter displays one of the late failure-related reasons:  
+-LATE_FAILURE_BANKACCOUNT_CLOSED  
+-LATE_FAILURE_BANKACCOUNT_INCOMPATIBLE  
+-LATE_FAILURE_BANKACCOUNT_INCORRECT  
+-LATE_FAILURE_CONTACT_USER  
+-LATE_FAILURE_INSUFFICIENT_FUNDS  
+<a href="#" class="btn Secondary normal">Learn more about disputes management</a>  
+
+<Note>  
+**Note – It is not possible to cumulate disputes and refunds** 
+  
+If a Refund was made on for the direct debit pay-in, no Dispute can be created for the pay-in as it was already refunded.  
+In the same way, if a Dispute has already been created for a direct debit pay-in, no Refund can be created.  
+</Note>  
+
+Usually, late failures occur:  
+-Within 2 or 3 days for the BACS scheme.  
+-Within 5 days for the SEPA scheme  
+
+Chargebacks are always non-contestable and are still possible:  
+-Indefinitely for the BACS scheme.  
+-Up to 8 weeks for the SEPA scheme.  
+
+<Note>  
+**Best practice – Make sure you wait prior to doing a refund** 
+  
+To avoid conflicts between a refund and a chargeback, we recommend waiting at least 8 business days following a successful transaction prior to processing a refund.   
+</Note>  
+
+## Related resources  
+
+<Card title="Tutorial">How to process a SEPA direct debit payment</Card>  
+
+<Card title="Endpoint">Direct Direct-Debit PayIn</Card>  
+
+<Card title="Dev Tools">Testing payment methods</Card>

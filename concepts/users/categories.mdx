@@ -1,0 +1,69 @@
+---  
+ title: 'Categories'  
+ 'og:description': 'How Mangopay’s system of Payers and Owners provides efficiency and security: what each category needs and what they can do.'  
+---  
+
+Your platform facilitates payments between two groups of users: those who only need to send money and those who receive it. Mangopay calls these groups Payers and Owners.  
+
+## Payers  
+
+The Payer category is designed for users who only need to make payments to other users – they don’t need to receive money. A Payer might be a buyer on a marketplace or someone donating to a crowdfunding project.  
+
+### Possible actions  
+
+The following table summarizes the actions a Payer can and can’t take:TW please add the old table here  
+
+### Required information  
+
+To create a Payer, you need to provide the following information:TW please add the old table hereTW please add the old table here  
+
+<Note>  
+**Note – Payers can become Owners** 
+  
+A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.  
+</Note>  
+
+## Owners  
+
+The Owner category is designed for users who need to receive funds from another user. A Owner might be a seller on a marketplace or someone organizing a crowdfunding project.  
+
+#### Possible actions  
+
+Owners can do everything Payers can. The following table summarizes the actions an Owner can and can’t take:TW please add the old table here  
+
+### Required information  
+
+To create an Owner, or modify an existing Payer into an Owner, you need to provide the following information:TW please add the old table hereTW please add the old table here  
+
+<Note>  
+**Note – Owners must accept our terms and conditions (T&Cs)** 
+  
+Mangopay's T&Cs apply to Owners on your platform. An Owner must accept the T&Cs and you must provide confirmation that they have accepted them when you create the Owner user.  
+The relevant T&Cs for your users are provided when your platform signs the contract with Mangopay.  
+</Note>  
+
+## Integration  
+
+In the API, whether a user is a Payer or an Owner is governed by the `UserCategory` parameter, which is available on both the natural and legal user objects and required for all users.  
+
+<Card title="Endpoints">The Natural User object</Card>  
+
+<Card title="Endpoints">The Legal User object</Card>  
+
+The `UserCategory` parameter has the following values:  
+-PAYER – User who can only make pay-ins to their wallet and transfers to other wallets.  
+-OWNER – User who can do everything a Payer can, plus receive transfers to their wallet. To request payouts, an Owner user’s `KYCLevel` must be `REGULAR`. For more information, see the Verification section.  
+
+The required information for Owners (outlined above) is required if `UserCategory` is `OWNER`. These parameters are returned `null` if the category is `PAYER`, even if they are sent.  
+
+<Note>  
+**Note – Users created before `UserCategory`** 
+  
+Users created before May 2022, when `UserCategory` was introduced, have the value `UNKNOWN`. If you have Unknown users, they must be modified to either Payer or Owner by sending the `UserCategory` (along with the required parameters if Owner).  
+</Note>  
+
+For guidance on adding the required information for Owners, see the following tutorials:  
+
+<Card title="Tutorial">How to turn a Payer into an Owner (natural users)</Card>  
+
+<Card title="Tutorial">How to turn a Payer into an Owner (legal users)</Card>

@@ -1,0 +1,67 @@
+---  
+ title: 'Recurring card payments'  
+ 'og:description': 'Understand recurring card payments and how they work, with customizable options for subscriptions and installments.'  
+---  
+
+## Introduction  
+
+Recurring card payments are when the <glossary:platform>platform</glossary> repeatedly charges the end user’s card at regular intervals for the goods and/or services provided.   
+
+This feature allows platforms to manage subscriptions and payment installments. Mangopay's solution provides the flexibility for you to set up custom recurring payments with no fixed amount or end date.  
+
+Recurring card payments have two phases: 
+
+<CardGroup cols={2}>  
+<Card title="Customer-initiated transaction (CIT)">  
+ An initial transaction in the presence of the cardholder, which will be subject to <glossary:sca>SCA</glossary>. No exemption is possible on a CIT.  
+</Card>  
+<Card title="Merchant-initiated transactions (MIT)">  
+ Subsequent transactions made in the absence of the cardholder, initiated by the platform. These transactions are not subject to SCA.  
+</Card>  
+</CardGroup>  
+<a href="#" class="btn Secondary normal">Learn more about 3DS and SCA</a>  
+
+<Note>  
+**Note – Recurring payment availability** 
+  
+Recurring payments are available for all Mangopay-supported currencies, and only for:  
+Registered cards  
+Payments to which the 3DS protocol applies  
+CB, Visa, and Mastercard card types  
+</Note>  
+
+### How it works  
+
+Prior to processing recurring payments, you need to have a card registered. For more information regarding the card registration, see the How to process a card payment article.  
+
+Recurring payments can then be processed in three steps:  
+
+<Steps> 
+<Step>Create the Recurring Registration object to store information about the future recurring payments.</Step> 
+<Step>Process the first recurring payment (CIT) within 24 hours of the card registration.</Step> 
+<Step>Process the subsequent recurring payments (MIT) at the defined intervals.</Step>  
+</Steps>  
+
+<Warning>  
+**Caution – CIT may be requested subsequently** 
+  
+Once the recurring payments have started, a new CIT may be necessary if:   
+The card of the recurring registration is changed  
+The issuer requests it for reasons of fraud prevention  
+</Warning>  
+
+### Free cycles  
+
+In some cases, you might want to automatically offer a free recurring pay-ins for your end user as an incentive while still registering and authenticating the payment card (e.g., “first month free” or “free trial” subscription offers).  
+
+By ensuring <glossary:sca>SCA</glossary> is completed prior to the first actual debit, free cycles benefit:  
+-The end users who get to try platform service for free  
+-The platform who is guaranteed to be able to charge the end user at the end of the free trial for instance.  
+
+Mangopay offers a way to automatically set up this payment model with the `FreeCycles` parameter. It makes it possible to indicate the number of initial recurring pay-ins which are going to be made without funds being debited or fees applied (i.e., passed at zero).  
+
+## Related resources  
+
+<Card title="Tutorial">How to process a reccuring card payment</Card>  
+
+<Card title="Endpoints">Recurring card payments</Card>

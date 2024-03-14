@@ -1,0 +1,155 @@
+---  
+ title: 'Preauthorization'  
+ 'og:description': 'Find out about Mangopay’s preauthorization features to reserve funds on a card to be captured later, with 7-day or 30-day options.'  
+---  
+
+## Introduction  
+
+### What is a preauthorization?  
+
+The preauthorization feature allows you to reserve funds on a card so they can be captured later. It’s a two-step process:  
+-Preauthorize the funds to hold them for a defined period  
+-Make the capture of the funds before the end of the hold period  
+
+Alternatively, you can cancel the preauthorization manually or let it reach its expiration date, at which point it is canceled automatically.  
+
+At Mangopay, two separate preauthorization holds are available:  
+-7 days (which also supports multiple captures)  
+-30 days  
+
+### When is preauthorization useful?  
+
+Preauthorization is the perfect process to manage delayed payments while making sure the funds will still be available at the end of the hold period.  
+
+It’s a great tool for platforms to seamlessly handle a lot of uses cases, such as:  
+-Platforms can wait until the service is provided or the order sent to charge the customer.  
+-Renters can secure a deposit for the duration of the rental.  
+
+### Important notes  
+
+#### End users charged prior to capture in some countries  
+
+In Italy, Greece, and Spain, the secured funds are directly debited from the end user’s bank account and held by their bank until they are captured or released.  
+
+This behavior is specific to some banks (of which an exhaustive list is not available). We strongly recommend you communicate this information clearly with your end users or avoid using the preauthorization feature for large amounts in these countries.  
+
+#### Partial captures not possible with Maestro  
+
+With the Maestro card, you cannot make a capture for less than the preauthorized amount.  
+
+#### Amount limits for some issuers  
+
+Some card <glossary:issuer>issuers</glossary> have different limits for preauthorizations as compared to other payments – some users may even need to contact their bank prior to preauthorizing very large amounts.  
+
+## 7-day preauthorization  
+
+Mangopay’s 7-day preauthorization works as follows:  
+-Secure the funds with the Create a Preauthorization endpoint  
+-Capture the funds (partially or all at once) with the Card Preauthorized PayIn  
+<a href="#" class="btn Secondary normal">How to process a 7-day preauthorization</a>  
+
+### Multiple partial captures  
+
+The multi-capture functionality allows you to make several partial captures of preauthorized funds.  
+
+<Note>  
+**Note** 
+  
+Multi-capture is only possible with CB, Visa, and Mastercard payment methods.  
+</Note>  
+
+Let’s take the example of a marketplace where buyers tend to have articles from multiple vendors in their baskets.  
+-Customers will make one single payment for all these articles (preauthorization)  
+-However, from the platform standpoint, you will make one partial capture (preauthorized pay-in) per vendor when the order is validated or shipped. If the order is not fulfilled, the remaining funds can be released.  
+
+Transferring the funds to the right seller and handling potential refunds becomes a lot easier this way.  
+
+<Warning>  
+**Caution – Idempotency key required for multi-capture** 
+  
+Unless accompanied by an idempotency key, two pay-ins are considered as duplicate if they are made:  
+Within 24 hours  
+For the same amount and currency  
+With the same `CardId`  
+</Warning>  
+
+## 30-day preauthorization  
+
+The basic flow of Mangopay’s 30-day preauthorization feature works as follows:  
+-Secure the funds with the Create a Deposit Preauthorization endpoint   
+-Capture the funds with the card Create a Preauthorized Deposit PayIn without complement endpoint   
+
+This scenario is described step by step in the tutorial:   
+<a href="#" class="btn Tertiary normal">How to process a 30-day preauthorization</a>  
+
+<Note>  
+**Note – 30-day preauthorization only available in EUR** 
+  
+The 30-day preauthorization feature is only available in the currency EUR.  
+</Note>  
+
+<Note>  
+**Note – Multi-capture not possible with 30-day preauthorization** 
+  
+Multi-capture is only available for 7-day preauthorization.  
+</Note>  
+
+### Complement features  
+
+30-day preauthorization also comes with additional functionalities: 
+
+<CardGroup cols={2}>  
+<Card title="Complement after pay-in">  
+ Capture more than the initial preauthorized amount.  
+</Card>  
+<Card title="Complement after no-show">  
+ Capture additional funds against an unused preauthorization.  
+</Card>  
+</CardGroup>  
+
+These features both involve charging a complementary amount in addition to the initially preauthorized amount. The preauthorized pay-in capture and the pay-in complement are both linked to the Deposit object in the `PayinsLinked` parameter.  
+
+For step-by-step guidance on all complement scenarios, see the tutorial:  
+<a href="#" class="btn Secondary normal">How to process a 30-day preauthorization</a>  
+
+#### Complement after pay-in  
+
+Platforms may want to capture more than the initially preauthorized amount – for example, if end users are benefiting from additional services or if damages have been incurred during a rental.  
+
+The steps are the following:  
+-Secure the funds with the Create a Preauthorization Deposit endpoint  
+-Capture the preauthorized funds, while also signaling the intent to capture an additional amount, using the dedicated Create a Deposit Preauthorized PayIn prior to complement endpoint  
+-Charge the card for the additional amount with the Create a Deposit Preauthorized PayIn complement endpoint  
+
+<Note>  
+**Note – Pay-in prior to complement must be full capture** 
+  
+The pay-in prior to a complement must be a full capture of the preauthorized amount - it can’t be partial.   
+</Note>  
+
+#### Complement after no-show  
+
+Platforms may want to capture additional funds if the initially preauthorized funds have not been captured. For example, this could be a penalty charged if end users cancel a reservation at the last minute.  
+
+The steps are the following:  
+-Secure the funds with the Create a Preauthorization Deposit endpoint  
+-Request the no-show (which also signals the intent to capture an additional amount) using the Cancel a Deposit Preauthorization or request a no-show endpoint  
+-Charge the card for the additional amount with the Create a Deposit Preauthorized PayIn complement endpoint  
+
+#### Behavior of complement pay-ins   
+
+Both the initial pay-in and the complement benefit from the authorization of the deposit preauthorization. The complement benefits from an exemption to 3DS.   
+
+The amount of the complement can be greater than the initially preauthorized amount, but the issuer has the right to refuse the complement if the amount (or timing) are not satisfactory.  
+
+If the complement pay-in is declined, you are able to retry it on the same endpoint.  
+
+## Related resources  
+
+<Card title="Tutorial">How to process a 30-day preauthorization</Card>  
+
+<Card title="Endpoints">The Deposit Preauthorization object</Card>  
+
+<Card title="Tutorial">How to process a 7-day preauthorization</Card>  
+
+<Card title="Endpoints">The Preauthorization object</Card>
