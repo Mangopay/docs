@@ -1,0 +1,80 @@
+---  
+ title: '001801'  
+---  
+
+
+                    | **Error message**     | The bank account has been closed                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The bank account for the mandate has been closed. |
+                    | **Categories**        | <div class="label">Mandate</div><div class="label">Direct debit</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the bank account to which the mandate is associated is closed, hence preventing any direct debit pay-ins.  
+
+#### What to do  
+
+In such cases, end users need to provide the new bank account details, ensuring they are correct. Then a new mandate can be created for this bank account.  
+
+#### Example  
+
+This error can be returned both on the Mandate object and the direct debit pay-ins made against this pay-in.  
+```json Mandate object
+{
+    "Scheme":"SEPA",
+    "BankAccountId":"456987123",
+    "BankReference":"123654",
+    "Culture":"EN"
+    "Id": "163263010",
+    "CreationDate": 1677515037,
+    "AuthorId": "157399076",
+    "CreditedUserId": "157399076",",
+    "DocumentURL":"https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/document",
+    "ReturnURL":"http://www.my-site.com/returnURL/?MandateId=163262377",
+    "RedirectURL":"https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/confirmation",
+    "Id":"1040379699",
+    "CreationDate":1593607447,
+    "Status":"FAILED",
+    "UserId":"1040374569",
+    "ExecutionType":"WEB",
+    "MandateType":"DIRECT_DEBIT",
+    "Tag":null,
+    "ResultCode":"001801",
+    "ResultMessage":"The bank account has been closed"
+}
+```  
+```json Direct Direct-Debit PayIn object
+{
+    "Id": "15563010",
+    "CreationDate": 1677515037,
+    "AuthorId": "14589076",
+    "CreditedUserId": "155499076",
+    "Status":"FAILED",
+    "ExecutionDate":null,
+    "ChargeDate":1677196800,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"456987123",
+    "DebitedWalletId":null,
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":5010
+    },
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":5010
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "ResultCode":"001801",
+    "ResultMessage":"The bank account has been closed",
+    "PaymentType":"DIRECT_DEBIT",
+    "ExecutionType":"DIRECT",
+    "Tag":null,
+    "MandateId":"14123659",
+    "StatementDescriptor":"Nov2020"
+}
+```

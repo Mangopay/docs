@@ -1,0 +1,106 @@
+---  
+ title: '101410'  
+---  
+
+
+                    | **Error message**     | The card is not active                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The card has been disabled on Mangopay and can no longer be used. |
+                    | **Categories**        | <div class="label">Card</div><div class="label">Pay-in</div>                         |
+                  
+
+#### Causes  
+
+This error is triggered when attempting to process a payment with an `Active` parameter set to `false`.  
+
+The card can be set to inactive if:  
+-The end user did not perform a successful pay-in within 24 hours after the registration.  
+-There is an implementation issue and the card was deactivated before the payment could be processed.  
+
+#### What to do  
+
+In such cases, end users need to register their card again on the platform.  
+
+#### Example  
+
+In the example below, a direct card pay-in was attempted with an inactive card.  
+```json API Response
+{
+    "Id": "156279887",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1668596490,
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 11000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 10900
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Status": "FAILED",
+    "ResultCode": "101410",
+    "ResultMessage": "This card is not active",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "148968396",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "FORCE",
+    "CardId": "156279265",
+    "SecureModeReturnURL": null,
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "FR",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "MANGOPAY",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "be60:c8d6:70ee:dc14:32ae:05fd:8cbc:dc14",
+    "Billing": {
+        "FirstName": "Nat",
+        "LastName": "Romanova",
+        "Address": {
+            "AddressLine1": "Avenger Tour",
+            "AddressLine2": "The Loop",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Nat",
+        "LastName": "Romanova",
+        "Address": {
+            "AddressLine1": "Avenger Tour",
+            "AddressLine2": "The Loop",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": null,
+    "RecurringPayinRegistrationId": null
+}
+```

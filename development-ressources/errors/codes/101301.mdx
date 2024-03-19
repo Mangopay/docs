@@ -1,0 +1,210 @@
+---  
+ title: '101301'  
+---  
+
+
+                    | **Error message**     | SecureMode: 3DSecure authentication has failed                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The 3DSecure authentication has failed. |
+                    | **Categories**        | <div class="label">3DSecure</div><div class="label">Pay-in</div><div class="label">Card</div>                         |
+                  
+
+#### Causes  
+
+This error may occur when:  
+-Disruptions on the ACS servers (strong authentication servers of the card issuing bank) are encountered.  
+-The end user is blocked by the bank after several failed strong authentication attempts.  
+-The end user leaves the 3DS page (which, as a result, expires).  
+-The end user clicks on a “cancel” button.  
+-The bank blocks the payment.  
+-The end user fails to strongly authenticate with their bank application.  
+
+#### What to do  
+
+In such cases, end users can:  
+-Contact their bank to have more information.  
+-Try again later and/or with another payment method.  
+
+#### Example  
+
+Please find below an example of direct card pay-in which has failed due to disruptions on the ACS server.  
+```json API Response
+{
+    "Id": "158514466",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1671518225,
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 25000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 24000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "FAILED",
+    "ResultCode": "101301",
+    "ResultMessage": "Secure mode: The 3DSecure authentication has failed",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "148968396",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "158514405",
+    "SecureModeReturnURL": "http://www.my-site.com/returnURL?transactionId=158514466",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "MANGOPAY",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "b7e1:aeb5:8b29:ea74:be61:ab4f:be77:0d5f",
+    "Billing": {
+        "FirstName": "Isaac",
+        "LastName": "Larson",
+        "Address": {
+            "AddressLine1": "1625 Ana Flats",
+            "AddressLine2": "Rutherford Hollow",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Celine",
+        "LastName": "D'Amore",
+        "Address": {
+            "AddressLine1": "8669 Kelli Fort",
+            "AddressLine2": "Piper Common",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null
+}
+```  
+
+### Testing  
+
+To reproduce this error, you can:  
+
+1) Register one of our testing cards (challenge flow) available in our testing payments documentation.  
+
+2) Make a direct card pay-in with this card (see Card Direct PayIn endpoint).  
+```json Request example
+{
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "CreditedWalletId": "148968396",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 25000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "SecureModeReturnURL": "http://www.my-site.com/returnURL",
+    "CardId": "158514405",
+    "StatementDescriptor": "MANGOPAY",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "Culture": "EN",
+    "IpAddress": "{{$randomIPV6}}",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true       
+    }
+}
+```  
+
+3) Upon clicking on the `SecureModeRedirectURL`, you’re redirected to a page providing multiple scenarios for 3DS authentication. Select No, Rejected, or Unavailable for the pay-in to fail with the 101301 error.  
+
+Upon viewing your pay-in (see View a PayIn endpoint), you will see that the error 101301 is returned in the `ResultCode` parameter.  
+```json Response example
+{
+    "Id": "158514466",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1671518225,
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 25000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 24000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "FAILED",
+    "ResultCode": "101301",
+    "ResultMessage": "Secure mode: The 3DSecure authentication has failed",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "148968396",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "158514405",
+    "SecureModeReturnURL": "http://www.my-site.com/returnURL?transactionId=158514466",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "MANGOPAY",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "b7e1:aeb5:8b29:ea74:be61:ab4f:be77:0d5f",
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null
+}
+```

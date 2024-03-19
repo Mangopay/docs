@@ -1,0 +1,76 @@
+---  
+ title: '001024'  
+---  
+
+
+                    | **Error message**     | Author is not the Mandate owner                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The pay-in failed because the author is not the mandate owner. |
+                    | **Categories**        | <div class="label">Mandate</div><div class="label">Direct debit</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the direct debit pay-in AuthorId is different from the UserId value of the corresponding Mandate.  
+
+#### What to do  
+
+In such cases, the platform has to check the integration. If they are calling the right mandate, then they need to make sure the author of the pay-in is the owner of the mandate.  
+
+#### Example  
+
+In the example below, find the API response when using the Create a Direct Direct-Debit PayIn endpoint to make a pay-in with an AuthorId different from the Mandate UserId.  
+```json API Response
+{
+    "Id": "163263010",
+    "CreationDate": 1677515037,
+    "AuthorId": "157399076",
+    "CreditedUserId": "157399076",
+    "Status": "FAILED",
+    "ExecutionDate": null,
+    "ChargeDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "157399408",
+    "DebitedWalletId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1188
+    },
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 12
+    },
+    "ResultCode": "001024",
+    "ResultMessage": "Author is not the Mandate owner",
+    "PaymentType": "DIRECT_DEBIT",
+    "ExecutionType": "DIRECT",
+    "Tag": null,
+    "MandateId": "163262377",
+    "StatementDescriptor": "Nov2016"
+}
+```  
+```json Mandate object
+{
+    "Scheme": "SEPA",
+    "BankAccountId": "151467634",
+    "BankReference": "MANGOPAY-9C9S6DQ4F",
+    "Culture": "EN",
+    "DocumentURL": "https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/document",
+    "ReturnURL": "http://www.my-site.com/returnURL/?MandateId=163262377",
+    "RedirectURL": "https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/confirmation",
+    "Id": "163262377",
+    "CreationDate": 1677514794,
+    "Status": "SUBMITTED",
+    "UserId": "151452401",
+    "ExecutionType": "WEB",
+    "MandateType": "DIRECT_DEBIT",
+    "Tag": null,
+    "ResultCode": null,
+    "ResultMessage": null
+}
+```

@@ -1,0 +1,128 @@
+---  
+ title: '001505'  
+---  
+
+
+                    | **Error message**     | The PayIn DebitedFunds can't be higher than the PreAuthorization remaining amount                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The captured funds amount cannot be higher than the preauthorization remaining amount. |
+                    | **Categories**        | <div class="label">Preauthorization</div><div class="label">Pay-in</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the preauthorized pay-in amount is higher than the preauthorization remaining funds amount.  
+
+#### What to do  
+
+In such cases, the platform needs to debit the relevant amount, whether it is the initial preauthorized funds for a full capture or the remaining funds in cases of multiple partial captures.  
+
+#### Example  
+
+In the example below, a preauthorized pay-in was made with a debited funds Amount higher than the Preauthorization remaining funds Amount.  
+```json Failed pay-in response
+{
+    "Id": "156684537",
+    "Tag": "custom meta",
+    "CreationDate": 1669115134,
+    "ResultCode": "001505",
+    "ResultMessage": "The PayIn DebitedFunds can't be higher than the PreAuthorization remaining amount",
+    "AuthorId": "156671158",
+    "CreditedUserId": "156671912",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 700
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 700
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "FAILED",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "156683554",
+    "DebitedWalletId": null,
+    "PaymentType": "PREAUTHORIZED",
+    "ExecutionType": "DIRECT",
+    "PreauthorizationId": "156679832"
+}
+```  
+```json Preauthorization object
+{
+    "Id": "156679832",
+    "Tag": null,
+    "CreationDate": 1669113387,
+    "AuthorId": "156671158",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "RemainingFunds": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "AuthorizationDate": 1669113494,
+    "Status": "SUCCEEDED",
+    "PaymentStatus": "VALIDATED",
+    "ExpirationDate": 1669675094,
+    "PayInId": "156683388",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "SecureMode": "FORCE",
+    "CardId": "156672588",
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?preAuthorizationId=156679832",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "MultiCapture": true,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "80.236.38.245",
+    "Billing": {
+        "FirstName": "Payer",
+        "LastName": "One",
+        "Address": {
+            "AddressLine1": "34 rue de Caulaincourt",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Payer",
+        "LastName": "One",
+        "Address": {
+            "AddressLine1": "34 rue de Caulaincourt",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1"
+}
+```

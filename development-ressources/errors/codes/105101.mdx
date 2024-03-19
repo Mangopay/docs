@@ -1,0 +1,138 @@
+---  
+ title: '105101'  
+---  
+
+
+                    | **Error message**     | Invalid card number                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The given card number doesn’t match the real number of the card. |
+                    | **Categories**        | <div class="label">Card input</div>                         |
+                  
+
+#### What to do  
+
+In such cases, end users need to check their card information and retry.  
+
+#### Example  
+```json API Response
+{
+    "Id":"33524724443",
+    "Tag":"Custom meta",
+    "CreationDate":1678195687,
+    "AuthorId":"21092444309",
+    "CreditedUserId":"2109233309",
+    "DebitedFunds":{
+        "Currency":"GBP",
+        "Amount":3649
+    },
+    "CreditedFunds":{
+        "Currency":"GBP",
+        "Amount":3649
+    },
+    "Fees":{
+        "Currency":"GBP",
+        "Amount":0
+    },
+    "Status":"FAILED",
+    "ResultCode":"105101",
+    "ResultMessage":"Invalid card number",
+    "ExecutionDate":null,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"2109274320",
+    "DebitedWalletId":null,
+    "PaymentType":"CARD",
+    "ExecutionType":"DIRECT",
+    "SecureMode":"DEFAULT",
+    "CardId":"2109274359",
+    "SecureModeReturnURL":"https://return url",
+    "SecureModeRedirectURL":null,
+    "SecureModeNeeded":false,
+    "Culture":"EN",
+    "SecurityInfo":{
+        "AVSResult":"NO_CHECK"
+    },
+    "StatementDescriptor":"Statement descriptor",
+    "BrowserInfo":{
+        "AcceptHeader":"*/*",
+        "JavaEnabled":false,
+        "Language":"en",
+        "ColorDepth":32,
+        "ScreenHeight":2532,
+        "ScreenWidth":1170,
+        "TimeZoneOffset":0,
+        "UserAgent":"useragent",
+        "JavascriptEnabled":true
+    },
+    "IpAddress":"IPV6",
+    "Requested3DSVersion":"V2_1",
+    "Applied3DSVersion":"V2_1",
+    "RecurringPayinRegistrationId":null
+}
+```  
+
+#### Testing  
+
+It is possible to test this error by using the `33314` value for the debited funds `Amount` parameter. After clicking on the `RedirectURL`, viewing the pay-in will display the 105101 error as in the example below.  
+```json Response example
+{
+    "Id": "193079564",
+    "Tag": "Created using Mangopay API Collection Postman",
+    "CreationDate": 1686210866,
+    "AuthorId": "192822811",
+    "CreditedUserId": "192822811",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 33314
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 32314
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "FAILED",
+    "ResultCode": "105101",
+    "ResultMessage": "Invalid card number",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "192822814",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=0cd00953969c4a6695a5950bd7b45229&transactionId=193079564&token=13AzdtcRUO0bkReu22921686210866240",
+    "ReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=193079564",
+    "TemplateURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=0cd00953969c4a6695a5950bd7b45229&transactionId=193079564",
+    "CardType": "CB_VISA_MASTERCARD",
+    "Culture": "EN",
+    "SecureMode": "DEFAULT",
+    "Billing": {
+        "FirstName": "Norval",
+        "LastName": "Gerlach",
+        "Address": {
+            "AddressLine1": "7973 Hayes Islands",
+            "AddressLine2": "Runolfsson Dale",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Norval",
+        "LastName": "Gerlach",
+        "Address": {
+            "AddressLine1": "7973 Hayes Islands",
+            "AddressLine2": "Runolfsson Dale",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "StatementDescriptor": null
+}
+```

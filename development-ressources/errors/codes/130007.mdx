@@ -1,0 +1,36 @@
+---  
+ title: '130007'  
+---  
+
+
+                    | **Error message**     | Destination Bank is not reachable                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The bank to which the payout is made is not reachable. |
+                    | **Categories**        | <div class="label">Instant payment</div><div class="label">Payout</div>                         |
+                  
+
+#### Additional information  
+
+Instant payouts have a fallback mechanism: when the payout cannot be processed as an instant payout, a standard one will be processed instead. This is what occurred when you encounter the 130007 error code.  
+
+#### Causes  
+
+This error occurs when the destination bank is not a participant of the SEPA Instant Credit Transfer scheme of the European Payments Council (EPC).  
+
+#### What to do  
+
+You can check if the bank is reachable beforehand by using the dedicated Check Instant Payout eligibility endpoint.  
+
+#### Example  
+
+When the bank is not reachable, the instant payment request is processed as a standard payout. Information about the error is returned in the `FallbackReason` parameter.  
+```json API Response
+{
+    "ModeRequested":"INSTANT_PAYMENT",
+    "ModeApplied":"STANDARD",
+    "FallbackReason":{
+        "ResultCode":"130007",
+        "ResultMessage":"Destination Bank is not reachable"
+    }
+}
+```
