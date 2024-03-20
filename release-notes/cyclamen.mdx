@@ -1,0 +1,29 @@
+---  
+title: 'API Release Cyclamen'  
+---  
+<span class="date">2022-05-04</span>  
+  
+  
+<div class="pill pill-green">Added</div>  
+  
+
+Setting the user `Birthday` or `LegalRepresentativeBirthday` parameter to a date falling after today’s date is no longer possible.  
+
+If such an update were to be attempted, the API would return a Status 400 error, stating that the `Birthday` cannot be in the future.  
+
+The following API endpoints have been updated to take this change into account:  
+-Create a Natural User  
+-Update a Natural User  
+-Create a Legal User  
+-Update a Legal User  
+-View a User  
+
+This enhancement aims at improving the overall data quality of the Mangopay API.  
+<div class="pill pill-purple">Changed</div>  
+  
+
+Attempting to create a KYC Document for a user that is not created yet now returns a Status 400 error, stating that the `UserID` value is invalid.  
+
+The platform should then retry to create the KYC Document, once the user creation has been completed.  
+
+This change aims at clarifying the API behavior.
