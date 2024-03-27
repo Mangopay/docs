@@ -47,14 +47,27 @@ RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1
 
 #### C. Call the OAuth token endpoint  
 
-Use the encoded string, preceded by “Basic” and a space, as your Authorization header (this is Basic Access authentication). Unlike most other calls to the API, this endpoint accepts the `x-www-form-urlencoded` Content-Type.TW please add the old table here  
+Use the encoded string, preceded by “Basic” and a space, as your Authorization header (this is Basic Access authentication). Unlike most other calls to the API, this endpoint accepts the `x-www-form-urlencoded` Content-Type.
+
+|                     |                                                                                                  |
+|---------------------|--------------------------------------------------------------------------------------------------|
+| **Endpoint**        | POST   `/v2.01/oauth/token`                                                                      |
+| **Authorization**   | Basic RXhhbXBsZU...J1aVBqbVFu                                                                    |
+| **Content-Type**    | application/x-www-form-urlencoded                                                                |
+| **Request body**    | grant_type=client_credentials                                                                    |
+
 ```json API response
 {
     "access_token": "094696b3724d4aa5a182eac360dcd537",
     "token_type": "bearer",
     "expires_in": 1199
 }
-```TW please add the old table here  
+```
+| Property       | Description                                                                                      |
+|----------------|--------------------------------------------------------------------------------------------------|
+| `access_token` | The access token to use to authenticate.                                                         |
+| `token_type`   | The type of token: Bearer.                                                                       |
+| `expires_in`   | The number of seconds until the access_token expires and a new token will need to be generated.  <br/><br/> **Default values:** 3600 (in Production), 1200 (in Sandbox) <br/><br/> **Note:** The value may differ from the default values, therefore you should not rely on hard-coded defaults but on the expires_in value returned.|
 
 <Note>  
 **Note – OAuth token endpoint supports Basic Access** 
@@ -66,7 +79,18 @@ The `/oauth/token` endpoint is the only route that supports Basic Access authent
 
 Now that you have your Bearer `access_token`, you can use it to access Mangopay API resources until it expires.  
 
-Use the token, preceded by “Bearer” and a space, as the Authorization header in your requests:TW please add the old table here  
+Use the token, preceded by “Bearer” and a space, as the Authorization header in your requests:
+
+|                    |                                  |
+|--------------------|----------------------------------|
+| **Authorization**  | 094696b3724d4aa5a182eac360dcd537 |  
+
+<table id="c-table">
+    <tr>
+        <td class="header">**Authorization**</td>
+        <td class="content">094696b3724d4aa5a182eac360dcd537</td>
+    </tr>
+</table>
 
 ### 3. Generate a new token before expiry  
 
