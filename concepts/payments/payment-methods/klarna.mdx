@@ -2,10 +2,12 @@
  title: 'Klarna'  
  'og:description': 'How users can pay with Klarna, a popular buy-now-pay-later (BNPL) payment method in Europe.'  
 ---  
+  
+  
 
-Klarna is a buy-now-pay-later (BNPL) service, providing a range of payment options for users.   
+Klarna is a buy-now-pay-later (BNPL) service, providing a range of payment options for users.  
 
-To use Klarna, your end users need to:   
+To use Klarna, your end users need to:  
 -Download the Klarna app and create an account  
 -Add a card or bank details  
 
@@ -37,12 +39,12 @@ For the user, they benefit from payment options that suit them, which can be esp
 #### PaymentMethod parameter  
 
 You can find out which payment option was chosen by the user in the API’s `PaymentMethod` parameter, which is returned in the pay-in once the transaction is successful (`Status` is `SUCCEEDED`). The values are:  
--Pay Now (Card) – Pay now by card.  
--Pay Now (Direct Bank Transfer) – Pay now by bank wire.  
--Pay Now (Direct Debit) – Pay now by direct debit.  
--Pay in 30 days (by card) – Pay within 30 days by card.  
--Slice it (X installments) – Pay in installments, where X is the number of installments (3 or 4 depending on region).  
--Slice it (Financing - X installments) – Pay via financing plan, where X is the number of monthly installments (6, 12, 24, or 36).  
+-Pay Now (Card) - Pay now by card.  
+-Pay Now (Direct Bank Transfer) - Pay now by bank wire.  
+-Pay Now (Direct Debit) - Pay now by direct debit.  
+-Pay in 30 days (by card) - Pay within 30 days by card.  
+-Slice it (X installments) - Pay in installments, where X is the number of installments (3 or 4 depending on region).  
+-Slice it (Financing - X installments) - Pay via financing plan, where X is the number of monthly installments (6, 12, 24, or 36).  
 <a href="#" class="btn Tertiary normal">See Klarna endpoints</a>  
 
 The options available and the specificities depend on the user's region.  
@@ -66,7 +68,7 @@ For platforms who have already integrated Sofort via Mangopay, a new integration
 For a limited period, platforms can continue using Mangopay’s legacy integration of Sofort in both Production and Sandbox.  
 
 <Note>  
-**Note – Sofort deprecation** 
+**Note - Sofort deprecation** 
   
 Klarna is deprecating the Sofort brand and technical solution. Platforms using Sofort are invited to integrate Klarna.  
 For a limited period, platforms can continue using Mangopay’s legacy integration of Sofort in both Production and Sandbox.  
@@ -75,7 +77,7 @@ For a limited period, platforms can continue using Mangopay’s legacy integrati
 #### New integrations  
 
 Platforms looking to offer Sofort are no longer able to do so. We invite you to consider the following similar options:  
--Klarna (coming soon) – recommended as it offers an identical flow to Sofort in Klarna pay now  
+-Klarna (coming soon) - recommended as it offers an identical flow to Sofort in Klarna pay now  
 -Bank wire  
 -SEPA Direct Debit  
 
@@ -88,7 +90,7 @@ To activate Klarna for your platform, contact Mangopay via the Hub.
 During activation, your Mangopay admin receives an email inviting them to activate their account in the Klarna Merchant Portal. This involves accepting Klarna’s T&Cs and setting up two-factor authentication (2FA).   
 
 <Warning>  
-**Caution – Activate within 7 days** 
+**Caution - Activate within 7 days** 
   
 Your Mangopay admin receives an email containing an activation link that must be used within 7 days. In case of any issue, contact the Mangopay Support team via the Hub.  
 </Warning>  
@@ -105,21 +107,27 @@ You can invite other users to the Klarna Merchant Portal.
 
 Klarna expects platforms to display messaging around their website to promote their payment options. For more information, see Klarna’s integration best practices.   
 
-Klarna provides a JavaScript library, available from the Klarna Merchant Portal, which you need to install and customize on your website. Follow Klarna’s tutorial for step-by-step guidance.   
+#### JavaScript Library  
+
+Klarna provides a JavaScript library, available from the Klarna Merchant Portal, which you need to install and customize on your website. Follow Klarna’s tutorial for step-by-step guidance.  
+
+#### Payment badge  
 
 Klarna's logo badge for your checkout is available in Klarna's merchant assets.   
+
+#### Payment descriptors  
 
 The payment descriptors for each locale are available below:TW please add the old table here  
 
 #### Sign in with Klarna  
 
-Klarna provides a single-sign-on (SSO) functionality that allows your users to log in to your platform using their Klarna account. For more information, visit Klarna’s documentation. This feature means users only need to sign in once at login, rather than at Checkout.   
+Klarna provides a single-sign-on (SSO) functionality that allows your users to log in to your platform using their Klarna account. For more information, visit Klarna’s documentation. This feature means users only need to sign in once at login, rather than at Checkout.  
 
 #### Klarna’s Mobile SDK for apps  
 
 When using Klarna in a mobile app, limitations relating to web views on both iOS and Android may result in a degraded experience for users. This commonly occurs during a redirection to a banking app or page as part of the payment or authentication process, but may also affect other cases, regardless of the region or payment option.  
 
-Klarna’s Mobile SDK is therefore required to overcome these limitations and handle the link between the web and native environments. You can use the SDK for a fully native app as well as one relying on web views, using a hybrid integration (see Klarna’s docs for more information).   
+Klarna’s <a href="">Mobile SDK</a> is therefore required to overcome these limitations and handle the link between the web and native environments. You can use the SDK for a fully native app as well as one relying on web views, using a hybrid integration<a href=""> (se</a>e Klarna’s docs for more information).  
 
 Klarna provides example apps of both integration types in GitHub. Start integrating with their step-by-step guides:  
 -iOS  
@@ -128,7 +136,7 @@ Klarna provides example apps of both integration types in GitHub. Start integrat
 The mobile SDK also contains everything needed for the rest of the payment experience, including on-site messaging and sign-in with Klarna.   
 
 <Note>  
-**Best practice – Integrate Klarna’s Mobile SDK for in-app experiences** 
+**Best practice - Integrate Klarna’s Mobile SDK for in-app experiences** 
   
 If you are offering Klarna in your mobile app, it is highly recommended to integrate Klarna’s Mobile SDK to provide the best experience to your users.  
 </Note>  
@@ -146,7 +154,7 @@ You should send the following objects in all cases:
 -`customer_account_info`  
 -`payment_history_full`, which is used for underwriting purposes to optimize acceptance rates. If not available, `payment_history_simple` should be sent instead.  
 
-If you offer goods delivery to pick-up points for self-collection, you should also send:   
+If you offer goods delivery to pick-up points for self-collection, you should also send:  
 -`other_delivery_address`  
 
 Other objects, such as the reservation details, may be necessary depending on your industry.  
@@ -158,14 +166,14 @@ Refunds with Klarna behave in the same way as other pay-in refunds. For more inf
 ## Disputes  
 
 <Warning>  
-**Caution – Where to take action** 
+**Caution - Where to take action** 
   
 Use the Klarna Merchant Portal to deal with all issues arising from payments. For Klarna payments, the only Dispute objects created in the Mangopay API are for cases already ruled against the platform, meaning their `ResultCode` is `LOST`.  
 </Warning>  
 
-When a user raises an issue with Klarna, they are invited to resolve it directly with the platform during an initial period called the Dispute Resolution Time lasting 21 days in most cases (see Klarna’s documentation). You can respond to these open disputes in the Klarna Merchant Portal.  
+When a user raises an issue with Klarna, they are invited to resolve it directly with the platform during an initial period called the **Dispute Resolution Time** lasting 21 days in most cases (see Klarn<a href="">a’s documenta</a>tion). You can respond to these open disputes in the Klarna Merchant Portal.  
 
-If a resolution is not found, the issue is escalated and Klarna’s team steps in to help resolve the situation.   
+If a resolution is not found, the issue is escalated and Klarna’s team steps in to help resolve the situation.  
 
 Once escalated, the platform must give a first response within the deadlines listed below to avoid the dispute being automatically ruled against them.  
 

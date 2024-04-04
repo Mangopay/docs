@@ -2,10 +2,15 @@
  title: 'Direct debit'  
  'og:description': 'Learn about direct debits with Mangopay: how to create a bank account, set up a mandate and make a pay-in with BACS or SEPA schemes.'  
 ---  
+  
+import Chargeback from '/snippets/glossary/chargeback.mdx';
+import Issuer from '/snippets/glossary/issuer.mdx';
+import Wallet from '/snippets/glossary/wallet.mdx';
+  
 
 ## Introduction  
 
-Direct debit is a way of processing payments by pulling funds from the end user’s bank account directly to a <glossary:wallet>wallet</glossary>.  
+Direct debit is a way of processing payments by pulling funds from the end user’s bank account directly to a <Wallet content="wallet" />.  
 
 In order to process direct debits, Mangopay relies on a mandate, which is an agreement from the end user allowing a third party to collect the payment in the future.  
 
@@ -23,15 +28,15 @@ The following schemes are supported:
 </CardGroup>  
 
 <Note>  
-**Note – Web direct-debit pay-ins** 
+**Note - Web direct-debit pay-ins** 
   
 This article does not include direct debits which redirect the user to an online banking environment (Sofort, giropay). To know more about these payment methods, see the Web Direct-Debit PayIn endpoint documentation.  
 </Note>  
 
 <Note>  
-**Note – Payment method activation** 
+**Note - Payment method activation** 
   
-Mandates and direct debit pay-ins are only available for certain business types and are not activated by default.   
+Mandates and direct debit pay-ins are only available for certain business types and are not activated by default.  
 Please contact Mangopay’s Support team to activate this payment method.  
 </Note>  
 
@@ -45,11 +50,11 @@ Processing direct debit pay-ins requires three steps:
 -Make a Direct Direct-Debit PayIn once the mandate is active.  
 
 As agreed with the end user, until the mandate is either:  
--Canceled – The end user or the platform has canceled the mandate. This results in the `Status` of the Mandate object being set to `FAILED`.  
--Expired – No pay-ins were made against the mandate in the last 24 months, which makes it expire. This results in the `Status` of the Mandate object being set to `EXPIRED`.  
+-Canceled - The end user or the platform has canceled the mandate. This results in the `Status` of the Mandate object being set to `FAILED`.  
+-Expired - No pay-ins were made against the mandate in the last 24 months, which makes it expire. This results in the `Status` of the Mandate object being set to `EXPIRED`.  
 
 <Note>  
-**Note – Mandate activation** 
+**Note - Mandate activation** 
   
 Once the end user confirms the mandate, its `Status` changes to `SUBMITTED`, meaning that it has been submitted to the end user’s bank. It will become `ACTIVE`:  
 After a few days (usually 3) for the BACS scheme.  
@@ -72,9 +77,9 @@ When using a BACS scheme mandate, please note that:
 
 ## Late failures and chargebacks  
 
-Late failures can occur for direct debit due to the payment method flow: even if the direct debit pay-in was successful, the <glossary:issuer>issuing bank</glossary> can pull back the funds.  
+Late failures can occur for direct debit due to the payment method flow: even if the direct debit pay-in was successful, the <Issuer content="issuing bank" /> can pull back the funds.  
 
-When a late failure happens, Mangopay automatically creates a Dispute object (as well as the corresponding Repudiation transaction) in the same way as for a regular <glossary:chargeback>chargeback</glossary>.  
+When a late failure happens, Mangopay automatically creates a Dispute object (as well as the corresponding Repudiation transaction) in the same way as for a regular <Chargeback content="chargeback" />.  
 
 The Dispute `DisputeReasonType` parameter displays one of the late failure-related reasons:  
 -LATE_FAILURE_BANKACCOUNT_CLOSED  
@@ -85,7 +90,7 @@ The Dispute `DisputeReasonType` parameter displays one of the late failure-relat
 <a href="#" class="btn Secondary normal">Learn more about disputes management</a>  
 
 <Note>  
-**Note – It is not possible to cumulate disputes and refunds** 
+**Note - It is not possible to cumulate disputes and refunds** 
   
 If a Refund was made on for the direct debit pay-in, no Dispute can be created for the pay-in as it was already refunded.  
 In the same way, if a Dispute has already been created for a direct debit pay-in, no Refund can be created.  
@@ -100,7 +105,7 @@ Chargebacks are always non-contestable and are still possible:
 -Up to 8 weeks for the SEPA scheme.  
 
 <Note>  
-**Best practice – Make sure you wait prior to doing a refund** 
+**Best practice - Make sure you wait prior to doing a refund** 
   
 To avoid conflicts between a refund and a chargeback, we recommend waiting at least 8 business days following a successful transaction prior to processing a refund.   
 </Note>  

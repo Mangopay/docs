@@ -2,14 +2,19 @@
  title: 'Disputes'  
  'og:description': 'Understand the dispute process: chargebacks, contesting disputes, and repudiation settlements.'  
 ---  
-
+  
+import Chargeback from '/snippets/glossary/chargeback.mdx';
+import RepudiationWallet from '/snippets/glossary/repudiation-wallet.mdx';
+  
 ## Introduction  
 
-Customers may question the validity of a transaction registered to their account and ask for a <glossary:chargeback>chargeback</glossary>. The issuing bank then withdraws the corresponding funds from Mangopay.  
+Customers may question the validity of a transaction registered to their account and ask for a <Chargeback content="chargeback" />. The issuing bank then withdraws the corresponding funds from Mangopay.  
 
 The platform may have the opportunity to contest the chargeback by providing proof prior to being requested to settle their credit to Mangopay.  
 
-Mangopay automatically creates a Dispute object when a chargeback occurs to handle proof submissions and settlement.<Accordion title="Examples of chargebacks">   
+Mangopay automatically creates a <a href="">**Dispute object**</a> when a chargeback occurs to handle proof submissions and settlement.
+
+<Accordion title="Examples of chargebacks">   
 
 Chargebacks can be requested for various reasons, whether it is about fraudulent transactions, disagreements between the merchant and the consumer, or processing issues.  
 
@@ -18,29 +23,31 @@ Here are a few examples:
 -Failure by the merchant to deliver merchandise  
 -Defective merchandise  
 -Dissatisfaction with the product(s) or service(s) received  
--Billing errors </Accordion>  
+-Billing errors 
+
+</Accordion>  
 
 ## Type of disputes  
 
 Mangopay offers three types of disputes depending on the kind of chargeback that occurred. 
 
 <CardGroup cols={2}>  
-<Card title="Contestable">  
- Platforms are given the opportunity to contest the dispute by providing proofs to the issuing bank that the transaction was legitimate.  
-</Card>  
-<Card title="Non-contestable">  
- Disputes are automatically closed after the creation. Platforms are required to settle their credit to Mangopay with a dedicated transfer.  
-</Card>  
-<Card title="Retrieval">  
- Specific dispute resulting from the bank issuing a warning regarding a future chargeback. In such cases, repudiation does not occur, but the dispute is still created for the platform to submit proofs.  
-</Card>  
+    <Card title="Contestable">  
+        Platforms are given the opportunity to contest the dispute by providing proofs to the issuing bank that the transaction was legitimate.  
+    </Card>  
+    <Card title="Non-contestable">  
+        Disputes are automatically closed after the creation. Platforms are required to settle their credit to Mangopay with a dedicated transfer.  
+    </Card>  
+    <Card title="Retrieval">  
+        Specific dispute resulting from the bank issuing a warning regarding a future chargeback. In such cases, repudiation does not occur, but the dispute is still created for the platform to submit proofs.  
+    </Card>  
 </CardGroup>  
 
 <Note>  
-**Note – Disputes and Refunds** 
-  
-Disputes cannot be created if a Refund already occurred on the transaction. In the same way, you cannot create a Refund for a transaction subject to a Dispute.  
-See the Refunds article to learn more.  
+    **Note - Disputes and Refunds** 
+    
+    Disputes cannot be created if a Refund already occurred on the transaction. In the same way, you cannot create a Refund for a transaction subject to a Dispute.  
+    See the Refunds article to learn more.  
 </Note>  
 
 ### Late failures  
@@ -56,24 +63,24 @@ The dispute process varies depending on the type of dispute and the outcome (whe
 For contestable disputes, the process can be broken down into the following steps:  
 
 <Steps> 
-<Step>A user asks for a chargeback: the issuing bank orders the reversal of a pay-in.</Step> 
-<Step>Mangopay creates a dispute and debits the disputed funds from the platform’s <glossary:repudiation-wallet>Repudiation Wallet</glossary>.</Step> 
-<Step>The platform sends proofs to justify the legitimacy of the transaction.</Step> 
-<Step>Depending on the issuing bank’s response, the platform either wins or loses the dispute. In case of a win, the funds are put back into the repudiation wallet (refund).</Step> 
-<Step>If the dispute is lost, the platform needs to make a Settlement Transfer from the user's wallet (or a direct bank wire pay-in) to the Repudiation Wallet.</Step>  
+    <Step>A user asks for a chargeback: the issuing bank orders the reversal of a pay-in.</Step> 
+    <Step>Mangopay creates a dispute and debits the disputed funds from the platform’s <RepudiationWallet content="Repudiation Wallet" />.</Step> 
+    <Step>The platform sends proofs to justify the legitimacy of the transaction.</Step> 
+    <Step>Depending on the issuing bank’s response, the platform either wins or loses the dispute. In case of a win, the funds are put back into the repudiation wallet (refund).</Step> 
+    <Step>If the dispute is lost, the platform needs to make a Settlement Transfer from the user's wallet (or a direct bank wire pay-in) to the Repudiation Wallet.</Step>  
 </Steps>  
 
 <Note>  
-**Best practice – Set up hooks for disputes** 
-  
-Due to the deadline to contest disputes, we strongly advise you to set up hooks to be notified as soon as a dispute is created. See the Disputes category of event types for the set of hooks allowing you to stay up to date throughout the process.  
+    **Best practice - Set up hooks for disputes** 
+    
+    Due to the deadline to contest disputes, we strongly advise you to set up hooks to be notified as soon as a dispute is created. See the Disputes category of event types for the set of hooks allowing you to stay up to date throughout the process.  
 </Note>  
 
 ### New dispute and repudiation  
 
 When a chargeback occurs, two objects are created on Mangopay’s side:  
--Dispute – You can view the Dispute by using the View a Dispute endpoint.  
--Repudiation – Refers to the withdrawal of funds from the platform’s Repudiation Wallet, resulting in a negative balance. You can view the Repudiation by using the View a Repudiation endpoint.  
+-Dispute - You can view the Dispute by using the View a Dispute endpoint.  
+-Repudiation - Refers to the withdrawal of funds from the platform’s Repudiation Wallet, resulting in a negative balance. You can view the Repudiation by using the View a Repudiation endpoint.  
 
 If the dispute is contestable, the next step is creating the Dispute Documents and submitting them before the `ContestDeadline` by using the following endpoints:  
 -Create a Dispute Document and Create a Dispute Document Page  
@@ -84,7 +91,7 @@ If the dispute is not contestable, the next step is to settle the dispute by usi
 -Create a Settlement Transfer  
 
 <Note>  
-**Note – Settling several disputes** 
+**Note - Settling several disputes** 
   
 You also have the opportunity to settle disputes by making a Direct Bank Wire PayIn to the platform’s repudiation wallet.  
 </Note>  
@@ -94,7 +101,7 @@ You also have the opportunity to settle disputes by making a Direct Bank Wire Pa
 When the dispute type is `CONTESTABLE` or `RETRIEVAL`, you can choose to either close it directly, or to contest it.  
 
 <Note>  
-**Note – Contesting partially the dispute** 
+**Note - Contesting partially the dispute** 
   
 Mangopay allows you to handle cases where the platform would want to contest only part of the dispute (e.g., only one of several goods were damaged). You can do so by taking advantage of the `ContestedFunds` parameter.  
 </Note>  
@@ -104,7 +111,7 @@ In order to contest a dispute, you need to complete the following steps before t
 -Submit the dispute to Mangopay teams so that they can relay the proofs to the issuing bank.  
 
 <Warning>  
-**Caution – Contesting multiple disputes for the same credit card** 
+**Caution - Contesting multiple disputes for the same credit card** 
   
 If the platform has multiple disputes for the same card, the platform needs to send proofs to justify the legitimacy of all the disputed transactions.  
 If only some of the transactions are contested, then banks will reject all of them, and all the disputes will be set as `LOST`.  
@@ -115,23 +122,26 @@ While documents might vary depending on the dispute reason, documents must alway
 -The date of the payment  
 -The nature of the payment (the name of the platform must be visible)  
 
-If the documents submitted are not in English, please include a simple translation of the main elements in English.<Accordion title="Common examples of evidence documents">   
--Invoices  
--Signed proofs of delivery  
--Certificates of authenticity  
--Terms and conditions on refund policy  
+If the documents submitted are not in English, please include a simple translation of the main elements in English.
 
-More information on which evidence to provide is available in the Dispute reasons section of this article. </Accordion>  
+<Accordion title="Common examples of evidence documents">   
+    -Invoices  
+    -Signed proofs of delivery  
+    -Certificates of authenticity  
+    -Terms and conditions on refund policy  
+
+    More information on which evidence to provide is available in the Dispute reasons section of this article. 
+</Accordion>  
 
 <Warning>  
-**Caution – Deadline set by the issuing bank** 
-  
-The `ContestDeadlineDate` is set by the issuing bank of the initial transaction and may usually vary between 7 to 18 days. Once the deadline passes, the dispute `Status` is automatically set to `CLOSED`.  
+    **Caution - Deadline set by the issuing bank** 
+    
+    The `ContestDeadlineDate` is set by the issuing bank of the initial transaction and may usually vary between 7 to 18 days. Once the deadline passes, the dispute `Status` is automatically set to `CLOSED`.  
 </Warning>  
 
 ### Settling the dispute  
 
-When losing disputes, platforms need to settle their debt towards Mangopay by resetting their Repudiation Wallet balance to zero.   
+When losing disputes, platforms need to settle their debt towards Mangopay by resetting their Repudiation Wallet balance to zero.  
 
 They need to use the dedicated Settlement Transfer endpoint to wire funds to the Repudiation Wallet.  
 
