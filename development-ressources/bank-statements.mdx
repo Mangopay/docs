@@ -1,0 +1,80 @@
+---  
+title: 'Customizing bank statement references'
+sidebarTitle: "Bank statements" 
+'og:description': 'Send custom text to appear on the user’s bank statement for a payment on your platform.'  
+---  
+
+The Mangopay API allows you to customize the text that appears on the bank statement of an end user.  
+
+You can do this by sending custom text in specific parameters of the API (depending on the transaction and payment method). This is entirely optional, but it can help your end users to identify a transaction made on your platform.  
+
+## What is the bank statement reference?  
+
+The string of text that appears on the bank statement to describe a transaction contains, in order:  
+-A reference to Mangopay (e.g., MGP)  
+-Your platform’s trading name (as opposed to the legal registered name)  
+-Additional custom text that you can define  
+
+Because the 3 elements appear on one line of the bank statement, space is very limited and the custom text may be truncated.  
+
+It is possible for your platform to change its trading name to make it shorter, but this is controlled by Mangopay’s teams as part of its verification obligations.  
+
+<Note>  
+**Note – Banks have ultimate control of the text displayed** 
+  
+Mangopay can supply a string of text for the bank statement but ultimately it is the user’s bank that decides if and how much of that information is displayed.  
+</Note>  
+
+## Pay-ins  
+
+### Card payments  
+
+Parameter to send custom text: `StatementDescriptor`  
+
+Format and max. length: 10 alphanumeric characters or spaces  
+
+Endpoints:  
+-Create a Direct Card PayIn  
+-Create a Web Card PayIn  
+-Create a Recurring PayIn (CIT)  
+-Create a Recurring PayIn (MIT)  
+-Create a Preauthorization  
+-Create a Deposit Preauthorization  
+
+Note that for preauthorizations, the parameter is sent at the creation of the preauthorization object, not the corresponding pay-in to capture the funds.  
+
+Structure of complete string sent:<Info> MGP* `TradingName` `StatementDescriptor`</Info>  
+
+### SEPA Direct Debit  
+
+Parameter to send custom text: `StatementDescriptor`  
+
+Format and max. length: 100 alphanumeric characters or spaces  
+
+**Endpoint:** <a href="">Create a Direct Direct-Debit PayIn</a>
+
+Structure of complete string sent: <Info> MGP* `TradingName` `StatementDescriptor`</Info>  
+
+Note that customization of the bank statement reference is not possible with BACS Direct Debits.  
+
+### Paypal  
+
+Parameter to send custom text: `StatementDescriptor`  
+
+Format and max. length: 10 alphanumeric characters or spaces  
+
+**Endpoint:** <a href="">Create a PayPal Web PayIn</a>
+
+Structure of string sent:<Info> MGP* `TradingName` `StatementDescriptor`</Info>  
+
+Note that for PayPal, the complete string sent is limited to 22 characters.  
+
+## Payouts  
+
+Parameter to send custom text: `BankWireRef`  
+
+Format and max. length: 12 alphanumeric characters or spaces  
+
+**Endpoint:** <a href="">Create a Payout</a>
+
+Structure of string sent: <Info> MGP* `TradingName` `BankWireRef`</Info>

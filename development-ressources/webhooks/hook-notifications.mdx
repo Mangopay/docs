@@ -1,0 +1,46 @@
+---  
+title: 'Hook notifications'  
+'og:description': 'Understand how webhook notifications work with the Mangopay API, with an example format and notes on retries.'  
+---  
+
+Mangopay provides a webhook feature to submit notifications to other applications whenever a specific event occurs.  
+
+When setting up the Hook for an event type, you define the URL to which the notification is sent.  
+<a href="#">List of event types</a>  
+
+The hook notification has the following format:
+
+<Info> https://www.example.com?EventType=`EventType`&RessourceId=`ResourceId`&Date=`Date`</Info>  
+
+Doing a GET call on the `ResourceId` allows you to check that the event is still relevant and ensure that the hook is authentic.  
+
+<Note>  
+**Note - SSL certificate use** 
+  
+You must use a trusted SSL certificate. Self-signed certificates are not supported.  
+</Note>  
+
+Hook notifications can fail. This means the hooked URL did not respond with a 200 status code within 2 seconds after the notification was sent.  
+
+If this happens, the Mangopay API will behave as follows:  
+- Every 10 failed notifications - You will receive an email warning you of the issue.  
+- After 1 successful notification - The counter is reset. Please note that changing the hook’s URL will not reset the failure count.  
+- After 100 consecutive failed notifications - The hook `Validity` will automatically be set to `INVALID` and its `Status` to `DISABLED`.  
+
+<Warning>  
+**Caution - Hook invalidity is irreversible** 
+  
+Once the hook is set as `INVALID`, you cannot restore it to `VALID`. You will have to create a new hook.  
+</Warning>  
+
+## Retry feature  
+
+Hook notifications come with a retry feature, which means that the Mangopay API will resubmit a failed notification until it reaches 100 consecutive failures.  
+
+To make sure the notification failures don’t lead to the hook being set to `INVALID` too quickly, the retries are spaced as follows:  
+-Every 10 minutes for the first hour  
+-Every 8 hours once the first hour is passed, and for the next 3 days 
+
+<Card title="ENDPOINTS">The Hook object</Card>  
+
+<Card title="ARTICLE">List of event types</Card>
