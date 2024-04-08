@@ -1,0 +1,385 @@
+---
+title: 'PCI-DSS-compliant card endpoints'
+'og:description': 'null'
+---
+
+<Warning>  
+**Warning - For PCI-DSS-compliant platforms only** 
+  
+Passing raw card data is only authorized for platforms that are compliant with Payment Card Industry Data Security Standards (PCI-DSS).  
+This feature is subject to validation from Mangopay. You must provide Mangopay with your SAQ D PCI-DSS certificate to use these endpoints.  
+</Warning>  
+
+## Introduction  
+
+The endpoints presented here are specifically for use by PCI-DSS-compliant platforms which have been authorized to process raw card data on their side, rather than relying on Mangopay’s Card Registration endpoints or SDKs.  
+
+PCI-DSS-compliant endpoints are available for the following features of the Mangopay API:  
+-Direct card pay-in - One-time card payment, authorizing and capturing the funds  
+-Preauthorization - Decoupled authorization and capture, with funds reserved for 7 days  
+-Card validation - Authorization without capture of funds  
+
+Besides the required parameters described below, the PCI-DSS-compliant versions of these endpoints function in the same way and with the same optional and required parameters as they do when using Mangopay’s Card Registration feature. The same Hooks are also available.  
+
+### Parameters required instead of the CardId  
+
+There are 2 required parameters in the PCI-DSS-compliant calls which replace the `CardId` (obtained through the card registration flow).   
+
+These parameters are not returned: only the `CardId` is present in the response.  
+
+#### 1. Card (required)
+
+TW please add the old table here  
+
+#### 2. CardType (required)
+
+TW please add the old table here  
+
+## Environments  
+
+The base URLs for these endpoints are different from the ones in the Mangopay API.  
+
+Mangopay’s test cards are available for use in the Sandbox.  
+
+<Card title="Developer tools">Test cards - Payment methods</Card>  
+
+## Direct card pay-in
+
+```json REST
+{
+    "Tag": "Custom meta",
+    "AuthorId": "198747225",
+    "CreditedUserId": "198747225",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "CreditedWalletId": "198747230",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "Culture": "EN",
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "b02a:7967:ecc2:d827:cdd0:67d3:6d2f:4fef",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Card":{
+        "Number":"4970105181818183",
+        "ExpirationDate":"1229",
+        "CVX":"123"
+    },
+    "CardType":"CB_VISA_MASTERCARD",
+    "PreferredCardNetwork":"VISA"
+}
+```
+
+```json Response
+{
+    "Id": "202635802",
+    "Tag": "Custom meta",
+    "CreationDate": 1694010888,
+    "AuthorId": "198747225",
+    "CreditedUserId": "198747225",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "198747230",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "198747233",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=202635802",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com:443/Redirect/ACSWithValidation?token=21d54a55bc0242bf8c86a4bc30a6c056&mgpsecureid=21d54a55bc0242bf8c86a4bc30a6c056",
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "b02a:7967:ecc2:d827:cdd0:67d3:6d2f:4fef",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "PreferredCardNetwork":"VISA"
+}
+```  
+
+## Preauthorization  
+
+This preauthorization call can be followed by the original Preauthorized PayIn call to capture the funds.
+
+```json REST
+{
+    "Tag": "Custom meta",
+    "AuthorId": "198747225",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "Culture": "EN",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "b02a:7967:ecc2:d827:cdd0:67d3:6d2f:4fef",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Card":{
+        "Number":"4970105181818183",
+        "ExpirationDate":"1229",
+        "CVX":"123"
+    },
+    "CardType":"CB_VISA_MASTERCARD",
+    "PreferredCardNetwork":"VISA"
+}
+```
+
+```json Response
+{
+    "Id": "202638925",
+    "Tag": "Custom meta",
+    "CreationDate": 1694011119,
+    "AuthorId": "198747225",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "RemainingFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "AuthorizationDate": null,
+    "Status": "CREATED",
+    "PaymentStatus": "WAITING",
+    "ExpirationDate": null,
+    "PayInId": null,
+    "ResultCode": null,
+    "ResultMessage": null,
+    "SecureMode": "DEFAULT",
+    "CardId": "198747233",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?preAuthorizationId=202638925",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com:443/Redirect/ACSWithoutValidation?token=9a99205ebe6c4b3f891677782b54512a&mgpsecureid=9a99205ebe6c4b3f891677782b54512a",
+    "SecureModeNeeded": true,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "MultiCapture": true,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "17f4:600a:2ebe:cddf:ec1f:78fa:a7eb:d56d",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "100 rue Rivoli",
+            "AddressLine2": null,
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "PreferredCardNetwork":"VISA"
+}
+``` 
+
+## Card validation  
+
+Card validation enables platforms to validate an end user's card without processing an actual payment.This means users can complete SCA prior to their first payment, which may help prevent fraud and provide better payment experience.
+
+```json REST
+{
+    "AuthorId": "198747225",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore/returnurl/?check=payin&env={{ENV}}",
+    "IpAddress": "b02a:7967:ecc2:d827:cdd0:67d3:6d2f:4fef",
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": "-120",
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+      },
+    "Tag": "Custom meta",
+    "Card":{
+        "Number":"4970105181818183",
+        "ExpirationDate":"1229",
+        "CVX":"123"
+    },
+    "CardType":"CB_VISA_MASTERCARD",
+    "PreferredCardNetwork":"VISA"
+}
+```
+
+```json Response
+{
+    "Id": "158aa411-6eaa-420c-82b5-bee7dab2e49c",
+    "AuthorId": "198747225",
+    "Status": "SUCCEEDED",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore/?check=payin&cardValidationId=158aa411-6eaa-420c-82b5-bee7dab2e49c",
+    "SecureModeRedirectURL": "https://api.mangopay.com/cardvalidation/Acs/Redirect?secureSessionToken=0ff144d4-caec-41a9-97dc-b211fd4b237f",
+    "SecureModeNeeded": true,
+    "IpAddress": "b02a:7967:ecc2:d827:cdd0:67d3:6d2f:4fef",
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "en-EN",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": -120,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "Validity": "VALID",
+    "CreationDate": 1687355222,
+    "AuthorizationDate": 1687355309,
+    "Type": "CARD_VALIDATION",
+    "Applied3DSVersion": "V2_1",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Tag": "Custom meta",
+    "PreferredCardNetwork":"VISA"
+}
+```

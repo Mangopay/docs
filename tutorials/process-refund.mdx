@@ -1,0 +1,186 @@
+---
+title: 'How to process a refund'
+'og:description': 'Step-by-step guide to processing full or partial refunds, including transfer and pay-in refunds to return funds to the user.'
+---
+
+## Introduction  
+
+This how-to guide will show you how to successfully process a refund when, following the pay-in to the Payer’s wallet, a transfer has already been made to the Owner’s wallet.  
+
+In a typical integration, the pay-in to the Payer’s wallet triggers a transfer to the Owner’s wallet. To process the refund, you need to refund the transfer first to make sure there are sufficient funds in the Payer’s wallet to refund the pay-in.  
+
+By default, Mangopay’s Refund object reimburses the full amount of the initial transaction’s `DebitedFunds` and any `Fees` taken. To do a partial refund, you need to specify these amounts.<a href="#" class="btn Tertiary normal">Learn more about Refunds</a>  
+
+<Note>  
+**Best practice - Partial transfer refund followed by partial pay-in refund** 
+  
+To ensure that there are sufficient funds in the relevant wallets, you should always precede a partial refund of a pay-in with partial refund of a transfer. Mixing full and partial refunds in your workflow may result in cash flow issues and discrepancies in reconciliation.   
+</Note>  
+
+### Notes on partial refunds  
+
+When doing multiple partial refunds, please note that:  
+-The refunded funds cannot exceed the initial transaction’s credited funds (and the same rule applies for the fees).  
+-The debited funds Amount must be at 1 or more; it can’t be zero.  
+
+<Note>  
+**Note - Handling fees** 
+  
+When creating partial refunds, you can either:  
+Refund the fees by setting a negative value (i.e., the initial value preceded by a -), or  
+Charge additional fees by setting a positive value (thus adding a cost for the refund)  
+</Note>  
+
+## 1/ Refund the transfer  
+
+### A. Full refund  
+
+Create a Refund for a Transfer by using the initial transaction’s `Id` as a path parameter, and by indicating the initial transaction’s `AuthorId`.  
+<CodeGroup>  
+
+```json REST
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myTransfer = {
+  Id: '180974208',
+}
+
+let myRefund = {
+  AuthorId: '170853400',
+  Tag: 'Created using Mangopay Node.js SDK',
+}
+
+const createRefund = async (transferId, refund) => {
+  return await mangopay.Transfers.createRefund(transferId, refund)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRefund(myTransfer.Id, myRefund)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createTransferRefund(transferId, refundObject)
+    begin
+        response = MangoPay::Transfer.refund(transferId, refundObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Refund: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myTransfer = {
+    Id: '194579950'
+  }
+
+myRefund = {
+    AuthorId: '194579896',
+    Tag: 'Created with Mangopay Ruby SDK'
+  }
+```  
+</CodeGroup>  
+
+### B. Partial refund  
+
+Create a Refund for a Transfer by using the initial transaction’s `Id` as a path parameter, and by indicating the initial transaction’s `AuthorId`.  
+
+To do a partial refund, specify the `DebitedFunds` and `Fees` parameters manually. If either of these parameters is present, the other one must also be.  
+```json REST
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1400
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":-14
+    }
+}
+```  
+
+## 2/ Refund the pay-in  
+
+Proceed with the pay-in refund once the transfer refund status is `SUCCEEDED`. You can be notified of a successful transfer refund by setting up the hook notification:  
+-TRANSFER_REFUND_SUCCEEDED  
+
+<Note>  
+**Note - Conditions for pay-in Refund** 
+  
+The amount value is 1 or above, regardless of the currency.  
+The initial transaction was made less than 11 months ago.  
+The initial transaction status is `SUCCEEDED`.  
+The initial transaction hasn’t been disputed.  
+</Note>  
+
+### A. Full refund  
+
+Create a Refund for a PayIn by using the initial transaction’s `Id` as a path parameter, and by indicating the initial transaction’s `AuthorId`.  
+```json REST
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890"
+}
+```  
+
+### B. Partial refund  
+
+Create a Refund for a PayIn by using the initial transaction’s `Id` as a path parameter, and by indicating the initial transaction’s `AuthorId`.  
+
+To do a partial refund, specify the `DebitedFunds` and `Fees` parameters manually. If either of these parameters is present, the other one must also be.  
+```json REST
+{
+    "Tag":"custom meta",
+    "AuthorId":"146476890",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1400
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":-14
+    }
+}
+```  
+
+<Note>  
+**Note - Repeat partial pay-in refunds of same amount** 
+  
+A waiting time of 24 hours is necessary when refunding the same amount of a single pay-in several times in a row. This is a safety mechanism to avoid unintended duplicate refunds.  
+</Note>  
+
+## Related resources  
+
+<Card title="Article">Refunds</Card>  
+
+<Card title="Endpoints">The Refund object</Card>

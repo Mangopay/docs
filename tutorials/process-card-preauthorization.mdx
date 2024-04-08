@@ -1,0 +1,937 @@
+---
+title: 'How to process a 7-day card preauthorization'
+'og:description': 'Step-by-step guide to preauthorizing funds on a card, then making one or multiple captures and releasing the hold on the remaining funds.'
+---
+## Introduction  
+
+This how-to guide will show you how to preauthorize funds on a card for 7 days and then debit the payment.  
+
+The preauthorization feature allows you to reserve funds on a card so they can be captured later. It’s a two-step process:  
+-Preauthorize the funds to hold them for a defined period  
+-Make the capture of the funds before the end of the hold period  
+
+This guide focuses on the 7-day preauthorization feature.<a href="#" class="btn Secondary normal">Learn more about preauthorizations</a>  
+
+## 1/ Secure the funds  
+
+Create a preauthorization to request to hold funds for 7 days.  
+
+### Make the request  
+<CodeGroup>  
+
+```json REST
+{
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Culture": "EN",
+    "CardId": "204068248",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "IpAddress": "036b:fb18:4568:4031:76a9:2aac:13c7:3cf0",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    }
+}
+```  
+
+```php 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardPreauthorization = new \MangoPay\CardPreAuthorization();
+    $cardPreauthorization->AuthorId = '204068024';
+    $cardPreauthorization->DebitedFunds = new \MangoPay\Money();
+    $cardPreauthorization->DebitedFunds->Currency = 'EUR';
+    $cardPreauthorization->DebitedFunds->Amount = 10000;
+    $cardPreauthorization->SecureMode = 'DEFAULT';
+    $cardPreauthorization->CardId = '204068248';
+    $cardPreauthorization->SecureModeReturnURL = 'https://mangopay.com/docs/please-ignore';
+    $cardPreauthorization->Tag = 'Created using Mangopay PHP SDK';
+    $cardPreauthorization->StatementDescriptor = 'Mangopay';
+
+    $cardPreauthorization->BrowserInfo = new \MangoPay\BrowserInfo();
+    $cardPreauthorization->BrowserInfo->AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8";;
+    $cardPreauthorization->BrowserInfo->JavaEnabled = true;
+    $cardPreauthorization->BrowserInfo->Language = "FR-FR";
+    $cardPreauthorization->BrowserInfo->ColorDepth = 4;
+    $cardPreauthorization->BrowserInfo->ScreenHeight = 1800;
+    $cardPreauthorization->BrowserInfo->ScreenWidth = 400;
+    $cardPreauthorization->BrowserInfo->TimeZoneOffset = 60;
+    $cardPreauthorization->BrowserInfo->UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+    $cardPreauthorization->BrowserInfo->JavascriptEnabled = true;
+
+    $cardPreauthorization->Culture = 'EN';
+    $cardPreauthorization->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = '4 rue des Plantes';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75009';
+    $address->Region = 'IDF';
+
+    $shipping = new \MangoPay\Shipping();
+    $shipping->FirstName = 'Alex';
+    $shipping->LastName = 'Smith';
+    $shipping->Address = $address;
+
+    $billing = new \MangoPay\Billing();
+    $billing->FirstName = 'Alex';
+    $billing->LastName = 'Smith';
+    $billing->Address = $address;
+
+    $response = $api->CardPreAuthorizations->Create($cardPreauthorization);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPreauthorization = {
+  PaymentType: 'CARD',
+  ExecutionType: 'DIRECT',
+  AuthorId: '146476890',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '192822811',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 10000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  CardId: '192822826',
+  CardType: 'CB_VISA_MASTERCARD',
+  Culture: 'EN',
+  SecureMode: 'FORCE',
+  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+  BrowserInfo: {
+    AcceptHeader:
+      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+    JavaEnabled: true,
+    Language: 'FR-FR',
+    ColorDepth: 4,
+    ScreenHeight: 1800,
+    ScreenWidth: 400,
+    TimeZoneOffset: 60,
+    UserAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    JavascriptEnabled: true,
+  },
+  IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  StatementDescriptor: 'Nov2023',
+}
+
+const createPreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.create(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPreauthorization(myPreauthorization)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPreauthorization(preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.create(preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    PaymentType: 'CARD',
+    ExecutionType: 'DIRECT',
+    AuthorId: '192822811',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId: '192822811',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '192822814',
+    CardId: '192822826',
+    CardType: 'CB_VISA_MASTERCARD',
+    Culture: 'EN',
+    SecureMode: 'FORCE',
+    SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+    BrowserInfo: {
+      AcceptHeader:
+        'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+      JavaEnabled: true,
+      Language: 'FR-FR',
+      ColorDepth: 4,
+      ScreenHeight: 1800,
+      ScreenWidth: 400,
+      TimeZoneOffset: 60,
+      UserAgent:
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+      JavascriptEnabled: true,
+    },
+    IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
+    Billing: {
+      FirstName: 'Alex',
+      LastName: 'Smith',
+      Address: {
+        AddressLine1: 'Rue des plantes',
+        AddressLine2: 'The Oasis',
+        City: 'Paris',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR',
+      },
+    },
+    Shipping: {
+      FirstName: 'Alex',
+      LastName: 'Smith',
+      Address: {
+        AddressLine1: 'Rue des plantes',
+        AddressLine2: 'The Oasis',
+        City: 'Paris',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR',
+      },
+    },
+    StatementDescriptor: 'Nov2023',
+}
+
+createPreauthorization(myPreauthorization)
+```  
+</CodeGroup>  
+
+In the information returned, make sure you keep the `Id` of the Preauthorization for the next steps.  
+```json API response
+{
+    "Id": "205734378",
+    "Tag": null,
+    "CreationDate": 1696847591,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "RemainingFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "AuthorizationDate": null,
+    "Status": "CREATED",
+    "PaymentStatus": "WAITING",
+    "ExpirationDate": null,
+    "PayInId": null,
+    "ResultCode": null,
+    "ResultMessage": null,
+    "SecureMode": "DEFAULT",
+    "CardId": "204068248",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?preAuthorizationId=205734378",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com:443/Redirect/ACSWithoutValidation?token=1fd1781c9a404280acbb94fa48d40a3f&mgpsecureid=1fd1781c9a404280acbb94fa48d40a3f",
+    "SecureModeNeeded": true,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "MultiCapture": true,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "036b:fb18:4568:4031:76a9:2aac:13c7:3cf0",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1"
+}
+```  
+
+### Redirect the user to 3DS protocol (if required)  
+
+Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
+
+You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
+
+For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of the How to process a card payment tutorial.  
+
+## 2/ Capture the funds  
+
+Once the Preauthorization `PaymentStatus` is `WAITING`, you can capture the funds with a preauthorized pay-in.  
+
+The preauthorized pay-in must be:  
+-For an amount equal or less than the preauthorized amount (full or partial capture)  
+-Done within 6.5 days of a successful authorization  
+
+Set up hook notifications for the following `EventType` in order to be notified when it is possible or too late to make a pay-in against a preauthorization:  
+-PREAUTHORIZATION_PAYMENT_WAITING  
+-PREAUTHORIZATION_PAYMENT_EXPIRED  
+
+In the following calls, use the `Id` of the Preauthorization obtained previously as the `PreauthorizationId`.  
+
+### Make a full capture  
+
+Use the Create a Preauthorized PayIn endpoint and make sure the `Amount` value of the `DebitedFunds` is equal to the preauthorized funds.  
+<CodeGroup>  
+
+```json REST
+{
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 10000
+   },
+   "Fees": {
+       "Currency": "EUR",
+       "Amount": 0
+   },
+   "CreditedWalletId": "204089031",
+   "PreauthorizationId": "205734378"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPreauthorizedPayIn = {
+  PaymentType: 'PREAUTHORIZED',
+  ExecutionType: 'DIRECT',
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '192822811',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 10000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  CreditedWalletId: '192822814',
+  PreauthorizationId: '205734378',
+}
+
+const createPreauthorizedPayin = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPreauthorizedPayin(myPreauthorizedPayIn)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPreauthorizedPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::PreAuthorized::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create preauthorized payin: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorizedPayIn = {
+    AuthorId: '192822811',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId: '192822811',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 10000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 0,
+    },
+    CreditedWalletId: '192822814',
+    PreauthorizationId: '205734378'
+  }
+
+createPreauthorizedPayIn(myPreauthorizedPayIn)
+```  
+</CodeGroup>  
+
+If the preauthorized pay-in is successful, the corresponding preauthorization is updated accordingly: it's `PaymentStatus` changes to `VALIDATED` as there are no `RemainingFunds` left to be captured.  
+
+Use the View a Preauthorization endpoint to see this:  
+```json API response
+{
+    "Id": "205734378",
+    "Tag": null,
+    "CreationDate": 1696847591,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "RemainingFunds": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "AuthorizationDate": 1696847611,
+    "Status": "SUCCEEDED",
+    "PaymentStatus": "VALIDATED",
+    "ExpirationDate": 1697409211,
+    "PayInId": "205736202",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "SecureMode": "DEFAULT",
+    "CardId": "204068248",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?preAuthorizationId=205734378",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "MultiCapture": true,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "036b:fb18:4568:4031:76a9:2aac:13c7:3cf0",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1"
+}
+```  
+
+### Make a partial capture  
+
+Use the Create a Preauthorized PayIn endpoint and specify the portion of the preauthorized funds you want to capture.  
+<CodeGroup>  
+
+```json REST
+{
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 5000
+   },
+   "Fees": {
+       "Currency": "EUR",
+       "Amount": 0
+   },
+   "CreditedWalletId": "204089031",
+   "PreauthorizationId": "205734378"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPreauthorizedPayIn = {
+  PaymentType: 'PREAUTHORIZED',
+  ExecutionType: 'DIRECT',
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '192822811',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 5000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  CreditedWalletId: '192822814',
+  PreauthorizationId: '205734378',
+}
+
+const createPreauthorizedPayin = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPreauthorizedPayin(myPreauthorizedPayIn)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPreauthorizedPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::PreAuthorized::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create preauthorized payin: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorizedPayIn = {
+    AuthorId: '192822811',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId: '192822811',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 5000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 0,
+    },
+    CreditedWalletId: '192822814',
+    PreauthorizationId: '205734378'
+  }
+
+createPreauthorizedPayIn(myPreauthorizedPayIn)
+```  
+</CodeGroup>  
+
+If the preauthorized pay-in is successful, the corresponding preauthorization is updated accordingly:  
+-The `RemainingFunds` equals the initial preauthorized funds minus de pay-in `DebitedFunds` and `Fees`.  
+-The `PaymentStatus` remains as `WAITING`, allowing you to make another capture for the remaining funds.  
+
+You can View a Preauthorization to see these details.   
+```json API response - View a Preauthorization
+{
+    "Id": "205734378",
+    "Tag": null,
+    "CreationDate": 1696847591,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "RemainingFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "AuthorizationDate": 1696847611,
+    "Status": "SUCCEEDED",
+    "PaymentStatus": "WAITING",
+    "ExpirationDate": 1697409211,
+    "PayInId": "205736202",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "SecureMode": "DEFAULT",
+    "CardId": "204068248",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?preAuthorizationId=205734378",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "MultiCapture": true,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "036b:fb18:4568:4031:76a9:2aac:13c7:3cf0",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Île-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1"
+}
+```  
+
+If the registered card `CardType` is `CB_VISA_MASTERCARD`, you can make as many partial captures as needed until you reach the preauthorized amount.  
+
+If you know that you won’t use the remaining preauthorized funds before the end of the hold period, you can release the funds manually to free them for the user (see Step 3).  
+
+Once the hold period is over:  
+-If at least one capture was made, the Preauthorization’s `PaymentStatus` changes to `VALIDATED`.  
+-If no capture was made, the Preauthorization’s `PaymentStatus` changes to `EXPIRED`.  
+
+## 3/ Release manually unused funds (recommended)  
+
+You can manually close the preauthorization hold period before the `ExpirationDate` to release the preauthorized funds for the user. If you don't do this, the funds will be released at the `ExpirationDate`  
+
+### Validate a partially used preauthorization  
+
+If at least one preauthorized pay-in has been made to capture funds (partial capture), you can release the remaining preauthorized funds by changing the `PaymentStatus` to `VALIDATED`.  
+<CodeGroup>  
+
+```json REST
+{
+   "PaymentStatus": "VALIDATED"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+let myPreauthorization = {
+  Id: '205734378',
+  PaymentStatus: 'VALIDATED',
+}
+
+const validatePreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+validatePreauthorization(myPreauthorization)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+
+# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+def validatePreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '205734378',
+    PaymentStatus: 'VALIDATED'
+  }
+
+validatePreauthorization(myPreauthorization[:Id], myPreauthorization)
+```  
+</CodeGroup>  
+
+Once this is done, no more captures can be made against the preauthorization.  
+
+### Cancel an unused preauthorization  
+
+If no preauthorized pay-in has been made to capture the funds, you can release the remaining funds by changing the `PaymentStatus` to `CANCELED`.  
+<CodeGroup>  
+
+```json REST
+{
+   "PaymentStatus": "CANCELED"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+let myPreauthorization = {
+  Id: '205734378',
+  PaymentStatus: 'CANCELED',
+}
+
+const cancelPreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+cancelPreauthorization(myPreauthorization)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+def cancelPreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '205734378',
+    PaymentStatus: 'CANCELED'
+  }
+
+cancelPreauthorization(myPreauthorization[:Id], myPreauthorization)
+```  
+</CodeGroup>  
+
+Once a preauthorization has been validated or canceled, no more captures can be made against it.  
+
+## Related resources  
+
+<Card title="Article">Preauthorization</Card>  
+
+<Card title="Endpoints">Preauthorizations</Card>  
+
+<Card title="Tutorial">How to process a card payment</Card>

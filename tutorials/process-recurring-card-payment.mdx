@@ -1,0 +1,617 @@
+---
+title: 'How to process a recurring card payment'
+'og:description': 'Step-by-step guide to processing recurring card payments, with flexible options for subscriptions and installments.'
+---
+
+import Sca from '/snippets/glossary/sca.mdx';
+import Issuer from '/snippets/glossary/issuer.mdx';
+
+This how-to guide will show you how to successfully process recurring payments with a registered card.  
+
+Setting up a recurring card payment is necessary when the platform repeatedly charges the end user at regular intervals, such as in subscription models or payments in installments.  
+
+A recurring card payment has two phases:  
+- Customer-initiated transaction (CIT) - An initial transaction in the presence of the cardholder, for which <Sca content="SCA" /> is required.  
+- Merchant-initiated transactions (MIT) - Subsequent transactions made in the absence of the cardholder, initiated by the platform (and not subject to SCA unless required by <Issuer content="issuer" />)
+
+<a href="#">Learn more about recurring card payments</a>  
+
+## 1/ Create the Recurring PayIn Registration  
+
+The Recurring PayIn Registration object will define key information about the recurring payments such as:  
+-The start and end date, as well as the frequency  
+-Whether the amount is the same for each payment  
+-Whether you want to offer zero-amount payments to your end user at the start of the recurrence (for example, during trial subscription offers)  
+
+For this guide, we'll define a fixed monthly amount but not provide an end date.   
+<CodeGroup>  
+
+```json REST
+{
+    "AuthorId": "197964043",
+    "CardId": "197964042",
+    "CreditedWalletId": "197964034",
+    "FirstTransactionDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "FirstTransactionFees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Frequency": "Monthly",
+    "FixedNextAmount": true
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringRegistration = {
+  PaymentType: 'CARD',
+  ExecutionType: 'DIRECT',
+  AuthorId: '197964043',
+  CardId: '197964042',
+  CreditedWalletId: '197964034',
+  FirstTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 10000,
+  },
+  FirstTransactionFees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: '6 rue de la Cité',
+      AddressLine2: 'Appartement 3',
+      City: 'Paris',
+      Region: 'Ile-de-France',
+      PostalCode: '75004',
+      Country: 'FR',
+    },
+  },
+  Frequency: 'Monthly',
+  FixedNextAmount: true,
+}
+
+const createRecurringRegistration = async (recurringRegistration) => {
+  return await mangopay.PayIns.createRecurringPayment(recurringRegistration)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRecurringRegistration(myRecurringRegistration)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createRecurringRegistration(recurringRegistrationObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::Recurring.create(recurringRegistrationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create recurring registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRecurringRegistration = {
+  AuthorId: '197964043',
+  CardId: '197964042',
+  CreditedWalletId: '197964034',
+  FirstTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 10000,
+  },
+  FirstTransactionFees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: '6 rue de la Cité',
+      AddressLine2: 'Appartement 3',
+      City: 'Paris',
+      Region: 'Ile-de-France',
+      PostalCode: '75004',
+      Country: 'FR',
+    },
+  },
+  Frequency: 'Monthly',
+  FixedNextAmount: true,
+}
+
+createRecurringRegistration(myRecurringRegistration)
+```  
+</CodeGroup>  
+
+In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
+```json API response
+{
+    "Id": "197964541",
+    "Status": "CREATED",
+    "CurrentState": {
+        "PayinsLinked": 0,
+        "CumulatedDebitedAmount": {
+            "Currency": "EUR",
+            "Amount": 0
+        },
+        "CumulatedFeesAmount": {
+            "Currency": "EUR",
+            "Amount": 0
+        },
+        "LastPayinId": null
+    },
+    "RecurringType": "CUSTOM",
+    "TotalAmount": null,
+    "CycleNumber": null,
+    "AuthorId": "197964023",
+    "CardId": "197964528",
+    "CreditedUserId": "197964030",
+    "CreditedWalletId": "197964034",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "Rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "Rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "EndDate": null,
+    "Frequency": "Monthly",
+    "FixedNextAmount": true,
+    "FractionedPayment": false,
+    "FreeCycles": 0,
+    "FirstTransactionDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "FirstTransactionFees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "NextTransactionDebitedFunds": null,
+    "NextTransactionFees": null,
+    "Migration": false
+}
+```  
+
+## 2/ Process the first recurring payment (CIT)  
+
+### Make the request  
+
+Request the first payment, linking it to the registration object by using the `Id` returned in the previous step as the `RecurringPayinRegistrationId`.  
+
+In our example, the first transaction amounts have been defined at the registration level. Because of this, we don’t need to define the `DebitedFunds` or `Fees` at the pay-in level.  
+<CodeGroup>  
+
+```json REST
+{
+    "RecurringPayinRegistrationId": "197964541",
+    "IpAddress": "e743:fceb:4443:82b6:b289:bd0d:0f60:ec64",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringPayinCIT = {
+  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+  BrowserInfo: {
+    AcceptHeader:
+      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+    JavaEnabled: true,
+    Language: 'FR-FR',
+    ColorDepth: 4,
+    ScreenHeight: 1800,
+    ScreenWidth: 400,
+    TimeZoneOffset: 60,
+    UserAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    JavascriptEnabled: true,
+  },
+  IpAddress: 'e743:fceb:4443:82b6:b289:bd0d:0f60:ec64',
+  RecurringPayiNRegistrationId: '197964541',
+}
+
+const createRecurringPayIn = async (recurringPayin) => {
+  return await mangopay.PayIns.createRecurringPayInRegistrationCIT(recurringPayin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRecurringPayIn(myRecurringPayinCIT)
+```  
+</CodeGroup>  
+```json API response
+{
+    "Id": "197964698",
+    "Tag": null,
+    "CreationDate": 1689659591,
+    "AuthorId": "197964023",
+    "CreditedUserId": "197964030",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "197964034",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": null,
+    "CardId": "197964665",
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=197964698",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com:443/Redirect/ACSWithValidation?token=75977e88cf584269bb8b678409856ff2&mgpsecureid=75977e88cf584269bb8b678409856ff2",
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "POSTMAN",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "e743:fceb:4443:82b6:b289:bd0d:0f60:ec64",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": "197964679"
+}
+```  
+
+### Redirect the user to 3DS protocol  
+
+The CIT transaction always requires 3DS (the `SecureModeNeeded` value is set to true), soyou need to redirect the end user to the `SecureModeRedirectURL` value to complete the authentication.  
+
+For more information on how to handle 3DS redirection, see Steps 6 and 7 of the How to process a card payment tutorial.  
+
+## 3/ Process the subsequent recurring payments (MIT) at the defined intervals  
+
+Once the first pay-in has been successfully authorized, the platform can initiate payments without the end user being present to authenticate (but note that, at any time, the issuer may request SCA - see Step 5).  
+
+Create the recurring pay-in at the set interval with the dedicated endpoint. Note that in our example, we didn’t define the next transaction amounts at the registration level. As a consequence, we need to pass the `DebitedFunds` and `Fees` parameters at the pay-in level.  
+<CodeGroup>  
+
+```json REST
+{
+    "RecurringPayinRegistrationId": "197964679",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    }   
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringPayinMIT = {
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 10000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  RecurringPayiNRegistrationId: '197964679',
+}
+
+const createRecurringPayIn = async (recurringPayin) => {
+  return await mangopay.PayIns.createRecurringPayInRegistrationMIT(recurringPayin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRecurringPayIn(myRecurringPayinMIT)
+```  
+</CodeGroup>  
+
+## 4/ Update the registration (if required)  
+
+Some information regarding the recurring registration may be modified during the recurrence:  
+-`CardId` - Changing this will require a new CIT for SCA  
+-`Billing` and `Shipping`  
+
+Use the Update a Recurring PayIn Registration endpoint to modify these details.  
+
+## 5/ Handle re-authentication (when required)  
+
+At any moment during the recurrence, the issuer may request that the end user authenticates again. This also occurs when changing the `CardId` in the Recurring PayIn Registration (see Step 4).  
+
+Set up a hook notification for the following `EventType` to be notified when re-authentication is needed:  
+-RECURRING_REGISTRATION_AUTH_NEEDED  
+
+In this case, you need to guide the end user through authentication during a new CIT in the same way as Step 2.  
+
+## 6/ Check the recurring payments' current state  
+
+The `CurrentState` of the Recurring PayIn Registration provides key information about the recurring payments:  
+-Number of pay-ins made against the registration  
+-Cumulated amounts of debited funds and fees  
+-Last pay-in made against the registration  
+
+Use View a Recurring PayIn Registration endpoint to get this information.  
+```json API response - Example of recurrence in progress
+{
+    "Id": "197964541",
+    "Status": "IN_PROGRESS",
+    "CurrentState": {
+        "PayinsLinked": 3,
+        "CumulatedDebitedAmount": {
+            "Currency": "EUR",
+            "Amount": 3700
+        },
+        "CumulatedFeesAmount": {
+            "Currency": "EUR",
+            "Amount": 30
+        },
+        "LastPayinId": "198257644"
+    },
+    "RecurringType": "CUSTOM",
+    "TotalAmount": null,
+    "CycleNumber": null,
+    "AuthorId": "197964023",
+    "CardId": "197964528",
+    "CreditedUserId": "197964030",
+    "CreditedWalletId": "197964034",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "Rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "Rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "EndDate": null,
+    "Frequency": "Monthly",
+    "FixedNextAmount": true,
+    "FractionedPayment": false,
+    "FreeCycles": 0,
+    "FirstTransactionDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "FirstTransactionFees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "NextTransactionDebitedFunds": null,
+    "NextTransactionFees": null,
+    "Migration": false
+}
+```  
+
+## 7/ End the recurring payments  
+
+Recurring payments may come to an end either automatically (when an `EndDate` was defined) or because the end user requests it.  
+
+To end the recurring payments manually, use the Update a Recurring Registration endpoint to change the `Status` to `ENDED`.  
+<CodeGroup>  
+
+```json REST
+{
+    "Status": "ENDED"   
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringRegistration = {
+  Id: '197964541',
+  Status: 'ENDED',
+}
+
+const updateRecurringRegistration = async (recurringRegistrationId,recurringRegistration) => {
+  return await mangopay.PayIns.updateRecurringPayin(recurringRegistrationId, recurringRegistration)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateRecurringRegistration(myRecurringRegistration.Id, myRecurringRegistration)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateRecurringRegistration(recurringRegistrationId, recurringRegistrationObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::Recurring.update(recurringRegistrationId, recurringRegistrationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create recurring registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRecurringRegistration = {
+  Id: '197964541',
+  Status: 'ENDED',
+}
+
+updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)
+```  
+</CodeGroup>  
+
+When you do this, no more recurring pay-ins can be created based on the registration.  
+
+Set up a hook notification for the following `EventType` to be notified when a registration is ended by the end user:  
+-RECURRING_REGISTRATION_ENDED  
+
+## Going further  
+
+<Card title="Article">Recurring card payments</Card>  
+
+<Card title="Endpoints">Recurring card pay-ins</Card>  
+
+<Card title="Tutorial">How to process a card payment</Card>

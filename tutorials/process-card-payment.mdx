@@ -1,0 +1,427 @@
+---
+title: 'How to process a card payment'
+'og:description': 'Step-by-step guide to processing one-time card payments, including 3DS redirection, and a flow diagram overview.'
+---
+## Introduction  
+
+This how-to guide will take you through the steps to successfully process a payment by card. With the Mangopay API, this consists in registering a card and making a direct card pay-in. See the flow diagram for an overview.   
+
+The Mangopay API provides two distinct card-related objects:  
+-Card Registration - The object to safely tokenize the card and create the Card object.  
+-Card - The tokenized version of the card, whose `CardId` will allow you to make payments.  
+
+## 1/ Create the Card Registration  
+
+In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.  
+
+You also need to define the currency and type of the card at this stage.  
+```json REST
+{
+    "UserId":"197111221",
+    "Currency":"EUR",
+    "CardType":"CB_VISA_MASTERCARD"
+}
+```  
+```json API response - Create card registration
+{
+    "Id": "198410142",
+    "Tag": null,
+    "CreationDate": 1690194754,
+    "UserId": "197111221",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": null,
+    "CardId": null,
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "Currency": "EUR",
+    "Status": "CREATED"
+}
+```  
+
+From this response, you will need to save the following values for the next step:  
+-`AccessKey`  
+-`PreregistrationData`  
+-`CardRegistrationURL`  
+
+## 2/ Send data to the tokenization server  
+
+Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
+
+<Note>  
+**Best practice - Use Mangopay Vault SDK** 
+  
+If you use the Vault SDK to send data to the tokenization server (Step 2), you won’t need to complete Step 3 because it handles the tokenization process for you to produce the `CardId`.  
+The Vault SDK is available for web, iOS, and Android.  
+</Note>  
+
+Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
+-Use `AccessKey` data for the `accessKeyRef` parameter  
+-Use `PreregistrationData` data for the `data` parameter  
+
+You also need the end user’s card details, entered on the payment page:TW please add the old table here  
+
+<Warning>  
+**Warning - Card details must never pass via your server** 
+  
+For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS compliant tokenization server as described below.  
+</Warning>  
+<CodeGroup>  
+
+```json REST
+{
+    "accessKeyRef":“1X0m87dmM2LiwFgxPLBJ”,
+    "data":"Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
+    "cardNumber":"4972485830400072",
+    "cardExpirationDate":"0230",
+    "cardCvx":"123"
+}
+```  
+
+```javascript 
+const cardInfoObject = {
+  cardNumber: '4970107111111119',
+  cardExpirationDate: '1127',
+  cardCvx: '123',
+};
+
+const preregistrationData = {
+  id: createCardRegistrationResult.Id,
+  cardRegistrationURL: createCardRegistrationResult.CardRegistrationURL,
+  accessKeyRef: createCardRegistrationResult.AccessKey,
+  data: createCardRegistrationResult.PreregistrationData,
+};
+```  
+
+```kotlin 
+// Define the callback to receive tokenization result
+private fun tokenizeCallbacks() = object: Mangopay.TokenizeCardResultCallback{
+        override fun success(result: CardRegistration?) {
+            // You can use result.cardId to process payments from your backend
+        }
+        override fun error(exception: MangopayException) {
+           // An error has occured
+        }
+}
+// Invoke tokenizeCard method
+MangopayVaultSdk.tokenizeCard(card, cardRegistration, this, tokenizeCallbacks())
+```  
+
+```swift 
+MangopayVault.tokenizeCard(
+  card: card,
+  cardRegistration: cardRegistration) { card, error in
+      guard let _ = card else {
+          self.showLoader(false)
+          self.showAlert(with: error?.localizedDescription ?? "", title: "Failed ❌")
+          return
+      }
+      self.showLoader(false)
+      self.showAlert(with: "", title: "Successful 🎉")
+  }
+```  
+</CodeGroup>  
+```json API response - Tokenize the card
+data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg
+```  
+
+Save the returned string for the next step (if you’re not using the Vault SDK).  
+
+## 3/ Update the Card Registration with tokenization data  
+
+<Note>  
+**Note - Not necessary if using Vault SDK** 
+  
+If you’re using the Vault SDK, this step is taken care of for you.  
+</Note>  
+
+Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`.  
+```json REST
+{
+    "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg"
+}
+```  
+```json API response - Update card registration
+{
+    "Id":"198410142",
+    "Tag":null,
+    "CreationDate":1690194754,
+    "UserId":"197111221",
+    "AccessKey":"1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData":"Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg",
+    "CardId":"198410181",
+    "CardType":"CB_VISA_MASTERCARD",
+    "CardRegistrationURL":"https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode":"000000",
+    "ResultMessage":"Success",
+    "Currency":"EUR",
+    "Status":"VALIDATED"
+}
+```  
+
+The card is now registered, and the response contains the `CardId` which can be used to process card payments.  
+
+<Warning>  
+**Caution - Card validation within 24 hours** 
+  
+A successful transaction (preauthorization, pay-in, or recurring) within 24 hours of the card registration is required to validate a card. Otherwise, the card remains invalid and a new card registration will be necessary to make a payment.  
+</Warning>  
+
+## 4/ Get the end user's session data  
+
+Besides the `CardId`, to process an online card payment, you need to capture information from your end user’s browsing session.  
+
+### IP address  
+
+You need to send the end user’s IP address in IPV4 or IPV6 format. You can collect this when the user requests the payment, or else use an IP lookup service such as Cloudfare or ipify.  
+
+### Browser information  
+
+You also need to collect data about the end user’s browser.  
+-On a website, this data can be obtained from the browser.  
+-In a mobile app, you need to open a webview to fetch data from the browser (in the same way as for a website).  
+```javascript Browser information - JavaScript example
+let browserInfo = {
+  acceptedHeader: navigator.languages,
+  javaEnabled: navigator.javaEnabled(),
+  language: navigator.language,
+  colorDepth: window.screen.colorDepth,
+  screenHeight: window.screen.height,
+  screenWidth: window.screen.width,
+  timeZoneOffset: new Date().getTimezoneOffset(),
+  userAgent: navigator.userAgent,
+  javascriptEnabled: true
+}
+
+console.log(browserInfo);
+```TW please add the old table here  
+
+## 5/ Request the payment (Direct Card PayIn)  
+
+<Note>  
+**Note - Recurring card payments and preauthorizations require other endpoints** 
+  
+The Direct Card PayIn object represents a one-time payment with a registered card.  
+For subscriptions and other recurring card payments, use the Recurring PayIn Registration object.  
+To reserve funds on a card for capture later, use the Preauthorization and Deposit Preauthorization objects.  
+</Note>  
+
+Create the pay-in request using:  
+-The `CardId`  
+-The IP address and browser information  
+-The `Id` of the User as the `AuthorId`  
+-The `Id` of the user’s Wallet as the `CreditedWalletId`  
+
+<Warning>  
+**Caution - Pay-in to the author’s wallet** 
+  
+When making a pay-in, the funds should arrive on the wallet of the user making the pay-in, before being transferred to another user.  
+</Warning>  
+
+When you make the payment request, you also need to:  
+-Be ready to handle 3DS authentication (Step 6)  
+-Specify the page to which the user will be returned after payment (Step 7)  
+
+Read these steps before continuing.  
+```json REST
+{
+    "AuthorId":"197111221",
+    "CreditedUserId":"197111221",
+    "CreditedWalletId":"197111249",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":10
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "SecureModeReturnURL":"https://mangopay.com/docs/please-ignore",
+    "CardId":"198410181",
+    "StatementDescriptor":"MANGOPAY",
+    "Billing":{
+        "FirstName":"Grant",
+        "LastName":"Batz",
+        "Address":{
+            "AddressLine1":"2878 Daron Unions",
+            "AddressLine2":"Crooks Brooks",
+            "City":"Paris",
+            "Region":"Ile-de-France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "Shipping":{
+        "FirstName":"Cristopher",
+        "LastName":"Macejkovic",
+        "Address":{
+            "AddressLine1":"6869 Koepp Villages",
+            "AddressLine2":"Abernathy Village",
+            "City":"Paris",
+            "Region":"Ile-de-France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "Tag":"Created using Mangopay API Collection Postman",
+    "Culture":"EN",
+    "IpAddress":"3fff:3e21:c1ef:e9b2:7691:05c6:94d8:8046",
+    "BrowserInfo":{
+        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled":true,
+        "Language":"FR-FR",
+        "ColorDepth":4,
+        "ScreenHeight":1800,
+        "ScreenWidth":400,
+        "TimeZoneOffset":60,
+        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled":true
+    }
+}
+```  
+```json REST
+{
+    "Id":"198410196",
+    "Tag":"Created using Mangopay API Collection Postman",
+    "CreationDate":1690194792,
+    "AuthorId":"197111221",
+    "CreditedUserId":"197111221",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":10
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":10
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"CREATED",
+    "ResultCode":null,
+    "ResultMessage":null,
+    "ExecutionDate":null,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"197111249",
+    "DebitedWalletId":null,
+    "PaymentType":"CARD",
+    "ExecutionType":"DIRECT",
+    "SecureMode":"DEFAULT",
+    "CardId":"198410181",
+    "SecureModeReturnURL":"https://mangopay.com/docs/please-ignore?transactionId=198410196",
+    "SecureModeRedirectURL":"https://api.sandbox.mangopay.com:443/Redirect/ACSWithValidation?token=971bc588ce9a46529fea66bc8a249b13&mgpsecureid=971bc588ce9a46529fea66bc8a249b13",
+    "SecureModeNeeded":true,
+    "Culture":"EN",
+    "SecurityInfo":{
+        "AVSResult":"NO_CHECK"
+    },
+    "StatementDescriptor":"MANGOPAY",
+    "BrowserInfo":{
+        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled":true,
+        "Language":"FR-FR",
+        "ColorDepth":4,
+        "ScreenHeight":1800,
+        "ScreenWidth":400,
+        "TimeZoneOffset":60,
+        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled":true
+    },
+    "IpAddress":"3fff:3e21:c1ef:e9b2:7691:05c6:94d8:8046",
+    "Billing":{
+        "FirstName":"Grant",
+        "LastName":"Batz",
+        "Address":{
+            "AddressLine1":"2878 Daron Unions",
+            "AddressLine2":"Crooks Brooks",
+            "City":"Paris",
+            "Region":"Ile-de-France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "Shipping":{
+        "FirstName":"Cristopher",
+        "LastName":"Macejkovic",
+        "Address":{
+            "AddressLine1":"6869 Koepp Villages",
+            "AddressLine2":"Abernathy Village",
+            "City":"Paris",
+            "Region":"Ile-de-France",
+            "PostalCode":"75001",
+            "Country":"FR"
+        }
+    },
+    "Requested3DSVersion":null,
+    "Applied3DSVersion":"V2_1",
+    "RecurringPayinRegistrationId":null
+}
+```  
+
+## 6/ Redirect the user to 3DS protocol (if required)  
+
+Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
+
+You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
+
+See the 3DS article for more information.  
+
+## 7/ Redirect the user after payment  
+
+After the payment, whether it includes 3DS or not and whatever the outcome, the end user is returned to the `SecureModeReturnURL` which you defined.  
+
+The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:<Info> http://example.com?transactionId=`Id`</Info>  
+
+Mangopay updates the `Status` of the pay-in to indicate a successful or failed payment depending on the outcome of the end user's authentication.  
+
+You should set up the following hooks to be notified of the outcome:  
+-PAYIN_NORMAL_CREATED  
+-PAYIN_NORMAL_SUCCEEDED  
+-PAYIN_NORMAL_FAILED  
+
+You should also view the pay-in (using its `Id`) to confirm the result of the transaction, allowing you to customize the end user’s experience after the payment.  
+
+<Card title="ARTICLE">Hook notifications</Card>  
+
+<Card title="ENDPOINT">View a PayIn</Card>  
+
+If the pay-in is successful, the card's `Validity` parameter is set to `Valid` and it can be used for other payments at a later stage.   
+
+<Warning>  
+**Warning - End user's approval needed to save card details** 
+  
+Under no circumstances should card information be kept without the end user's approval.   
+If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
+</Warning>  
+
+## 8/#Deactivate the card (if required)  
+
+Once the pay-in is successful, if the end user did not request to save their card for later, set the card’s `Active` parameter to false to deactivate the card. This action is irreversible.  
+
+<Note>  
+**Note - The card can be registered multiple times** 
+  
+Deactivating the card will not prevent the end user from making a payment with the same card in future. You will need to go through the card registration process again.  
+</Note>  
+```json REST
+{
+    "Active": false,
+}
+```  
+
+## Flow diagram  
+
+The overall flow of a card payment is given in the diagram below, indicating the numbered steps of this tutorial.TW a workflow was visible here. Please add it.  
+
+## Related resources  
+
+<Card title="Article">3DS</Card>  
+
+<Card title="Article">Recurring card payments</Card>  
+
+<Card title="Article">Preauthorized card payments</Card>

@@ -1,0 +1,100 @@
+---
+title: 'How to process a Google Pay payment'
+'og:description': 'Step-by-step guide to setting up Google Pay and processing payments.'
+---
+This how-to guide covers:   
+-Setting up your Google Pay integration for use with Mangopay  
+-Making payment requests.  
+
+For an overview of the data flows, see the Google Pay concepts article. To integrate Google Pay on your side, see the Google Pay documentation.  
+
+## 1/ Configure your Google Pay integration for Mangopay  
+
+When making payment requests to the Google Pay API, use the following values:  
+-`gateway` - The payment gateway used: in this case, `whenthen`.  
+-`gatewayMerchantId` - Your platform’s `ClientId` provided by Mangopay.  
+-`allowedAuthMethods` - The supported authentication methods: `PAN_ONLY`, meaning the card is registered in the user’s Google account and requires additional 3DS authentication; `CRYPTOGRAM_3DS`, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.  
+-`allowedCardNetworks` - The card networks supported by Mangopay on Google Pay: only `VISA` and `MASTERCARD`.  
+```json Google Pay configuration example
+{
+  "type": "CARD",
+  "parameters": {
+    "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+    "allowedCardNetworks": ["MASTERCARD", "VISA"]
+  },
+  "tokenizationSpecification": {
+    "type": "PAYMENT_GATEWAY",
+    "parameters": {
+      "gateway": "whenthen",
+      "gatewayMerchantId": "your-mangopay-client-id"
+    }
+  }
+}
+```  
+
+<Note>  
+**Note - Ensure readiness of the rest of your Google Pay integration** 
+  
+Further integration steps are necessary to be able to offer Google Pay in your app or website, including creating the Google Pay button in line with their guidance.   
+For more information, see the Google Pay documentation.  
+</Note>  
+
+## 2/ Include payment data in the pay-in call  
+
+Include the payment data received from Google Pay for the payment as the value for the `PaymentData` parameter in your request to the Create a Google Pay PayIn endpoint.  
+
+To be notified of the outcome, you can use the same webhook event types as for other pay-ins. The same pay-in functional errors are also possible.  
+```json REST
+{
+    "Id": "wt_586020a4-541b-475a-997e-9e74440ac75b",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1695641583,
+    "AuthorId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1695641585,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204089031",
+    "CreditedUserId": "204068024",
+    "PaymentType": "GOOGLE_PAY",
+    "ExecutionType": "DIRECT",
+    "StatementDescriptor": "Mangopay",
+    "SecureMode": "DEFAULT",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "SecurityInfo": null,
+    "BrowserInfo": {
+        "AcceptHeader": "application/json,text/javascript,*/*;q=0.01<",
+        "JavaEnabled": true,
+        "Language": "fr",
+        "ColorDepth": 32,
+        "ScreenHeight": 667,
+        "ScreenWidth": 375,
+        "TimeZoneOffset": -120,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "c973:1a07:9f3b:1b99:15ca:4faa:88fc:b0ee"
+}
+```  
+
+## Related resources  
+
+<Card title="Article">Google Pay - How it works</Card>  
+
+<Card title="Endpoints">The Google Pay PayIn object</Card>

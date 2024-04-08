@@ -1,0 +1,134 @@
+---
+title: 'How to turn a Payer into an Owner (natural users)'
+'og:description': 'Step-by-step guide to turning a Payer natural user into an Owner, including the information required and best practices.'
+---
+
+## Introduction  
+
+This how-to guide will take you through the steps to successfully turn a natural user that was created as a Payer into an Owner, therefore allowing them to receive funds from other users. Owners are also allowed to make payouts to their bank accounts once verified.  
+
+<Note>  
+**Note - Users created before `UserCategory`** 
+  
+Users created before May 2022, when `UserCategory` was introduced, were categorized as Unknown. You can still turn Unknown users into Owners by following the steps in this tutorial.  
+</Note>
+
+<a href="#">Learn more about user categories</a>  
+
+<Note>  
+**Note - Owners can’t become Payers** 
+  
+A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.  
+</Note>  
+
+## 1/ Collect the necessary information  
+
+Natural users categorized as Payers only need to provide the most basic information at their creation. You need more information for the Owner category.  
+
+### User information  
+
+Gather the following additional information about your users:  
+-Date of birth  
+-Nationality  
+-Country of residence  
+
+### Mangopay’s terms and conditions  
+
+Mangopay’s T&Cs apply to Owners on your platform. You need to ensure your end users have accepted them.  
+
+The relevant T&Cs for your users are provided when your platform signs the contract with Mangopay.  
+
+## 2/ Update the user object  
+
+Update the natural user object with the collected information as well as the new `UserCategory`.  
+<CodeGroup>  
+
+```json REST
+{
+  "Birthday":“1463496101”,
+  "Nationality":“GB”,
+  "CountryOfResidence":“FR”,
+  "TermsAndConditionsAccepted":true,
+  "UserCategory":”OWNER”
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myNaturalUser = {
+  Birthday: 656640000,
+  Nationality: 'GB',
+  CountryOfResidence: 'FR',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const updateNaturalUser = async (user) => {
+  return await mangopay.Users.update(user)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateNaturalUser(myNaturalUser)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateNaturalUser(naturalUserId, naturalUserObject)
+    begin
+        response = MangoPay::NaturalUser.update(naturalUserId, naturalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myNaturalUser = {
+    Id: '194554499',
+    Birthday: 655772400,
+    Nationality: 'FR',
+    CountryOfResidence: 'US',
+    TermsAndConditionsAccepted: true,
+    UserCategory: 'OWNER'
+}
+
+updateNaturalUser(myNaturalUser[:Id], myNaturalUser)
+```  
+</CodeGroup>  
+
+<Warning>  
+**Caution - Owners must be verified to make payouts** 
+  
+If your recategorized users intend to make payouts, they will need to successfully go through the verification process.   
+</Warning>  
+
+## Related resources  
+
+<Card title="Tutorial">How to turn a Payer into a Owner (legal users)</Card>  
+
+<Card title="Article">User categories</Card>  
+
+<Card title="Article">User verification process</Card>

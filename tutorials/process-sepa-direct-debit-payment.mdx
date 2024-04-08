@@ -1,0 +1,364 @@
+---
+title: 'How to process a SEPA Direct Debit payment'
+'og:description': 'Step-by-step guide to accepting SEPA Direct Debit payments: setting up the bank account, signing the mandate, and taking payments.'
+---
+
+## Introduction  
+
+This how-to guide will show you how to successfully process a direct direct-debit payment with the SEPA network.  
+
+Direct debit is a way of processing payments by pulling funds from the end user’s bank account directly to a wallet.  
+
+To process direct debits, Mangopay relies on a mandate, which is an agreement from the end user allowing a third party to collect the payment in the future.<a href="#" class="btn Tertiary normal">Learn more about direct debits</a>  
+
+## 1/ Create the user’s Bank Account  
+
+Create the Bank Account object from which the funds will be pulled.  
+
+Note that:  
+-You need to use the `UserId` of the user as a path parameter for the following steps to be successful.  
+-You can use Mangopay’s IBAN bank account available in the Testing payouts article.  
+
+<Warning>  
+**Caution - The bank account must belong to the SEPA network** 
+  
+Only IBAN-type Bank Accounts can be used for SEPA Direct Debits.  
+</Warning>
+
+<CodeGroup>  
+
+```json REST
+{
+    "OwnerAddress":{
+        "AddressLine1":"Rue des plantes",
+        "AddressLine2":"The Oasis",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "IBAN":"FR7630004000031234567890143",
+    "BIC":"BNPAFRPP",
+    "OwnerName":"Alex Smith"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '165863393',
+  Address: {
+    AddressLine1: 'Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'IDF',
+    PostalCode: '75000',
+    Country: 'FR',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+}
+
+let bankAccount = {
+  Type: 'IBAN',
+  OwnerName: user.FirstName + '' + user.LastName,
+  OwnerAddress: user.Address,
+  IBAN: 'FR7630004000031234567890143',
+  BIC: 'BNPAFRPP',
+}
+
+const createBankAccount = async (userId, bankAccount) => {
+  return await mangopay.Users.createBankAccount(userId, bankAccount)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankAccount(user.Id, bankAccount)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createIbanBankAccount(userId, ibanBankAccountObject)
+    begin
+        response = MangoPay::BankAccount.create(userId, ibanBankAccountObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '165863393'
+}
+
+myIbanBankAccount = {
+    Type: 'IBAN',
+    OwnerName: 'Alex Smith',
+    OwnerAddress: {
+        AddressLine1: 'Edgewood Road',
+        AddressLine2: 'Address line 2',
+        City: 'Little Rock',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR'
+    },
+    IBAN: 'FR7630004000031234567890143',
+    BIC: 'BNPAFRPP'
+}
+
+createIbanBankAccount(myUser[:Id], myIbanBankAccount)
+```  
+</CodeGroup>  
+
+You’ll need the returned Bank Account `Id` value for the next step.  
+
+## 2/ Create the Mandate  
+
+Create the Mandate for the IBAN Bank Account you’ve just created.  
+<CodeGroup>  
+
+```json REST
+{
+    "BankAccountId":"151453487",
+    "Culture":"EN",
+    "ReturnURL":"https://mangopay.com/docs/please-ignore"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myMandate = {
+  BankAccountId: '151467634',
+  Culture: 'EN',
+  ReturnUrl: 'https://mangopay.com/docs/please-ignore',
+}
+
+const createMandate = async (mandate) => {
+  return await mangopay.Mandates.create(mandate)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createMandate(myMandate)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createMandate(mandateObject)
+    begin
+        response = MangoPay::Mandate.create(mandateObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create mandate: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myMandate = {
+    BankAccountId:'151453487',
+    Culture:'EN',
+    ReturnURL:'https://mangopay.com/docs/please-ignore'
+}
+
+createMandate(myMandate)
+```  
+
+</CodeGroup>  
+
+You’ll need the returned Mandate `Id` value for some of the next steps.  
+
+## 3/ Make sure the end user confirms the mandate in due time  
+
+Mandates expire 1 hour after its `CreationDate`.  
+
+Provide the `RedirectURL` returned with the Mandate object to the end user. We advise you to indicate the expiration time as well.  
+
+Once the user has visited the page and clicked on the Confirm button, the Mandate `Status` becomes `SUBMITTED`.  
+
+<Note>  
+**Best practice - Rely on webhooks for mandate activation ** 
+  
+You can get notified when a Mandate turns active or expires by subscribing to the corresponding events:  
+MANDATE_EXPIRED  
+MANDATE_SUBMITTED  
+Learn more about Hook notifications and Event types.  
+</Note>  
+
+## 4/ Make the direct debit pay-in  
+
+Once your Mandate has a `Status` of `SUBMITTED`, you can make the direct debit pay-in.   
+<CodeGroup>  
+
+```json REST
+{
+    "AuthorId":"151452401",
+    "CreditedWalletId":"152161972",
+    "DebitedWalletId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "MandateId":"156620699"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  PaymentType: 'DIRECT_DEBIT',
+  ExecutionType: 'DIRECT',
+  AuthorId: '151452401',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '152161972',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  CreditedWalletId: '168935920',
+  MandateId: '156620699',
+  StatementDescriptor: 'Mangopay',
+}
+
+const createDirectDirectDebitPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createDirectDirectDebitPayIn(myPayIn)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDirectDirectDebitPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::DirectDebit::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    AuthorId:'151452401',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId:'195074410',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1200,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 12,
+    },
+    CreditedWalletId: '152161972',
+    MandateId: '156620699',
+    StatementDescriptor: 'Mangopay',
+  }
+
+createDirectDirectDebitPayIn(myPayIn)
+```  
+</CodeGroup>  
+
+If the pay-in is successful, the SEPA Mandates will become `ACTIVE`.  
+
+<Note>  
+**Note - 5-day processing time** 
+  
+Direct debit pay-ins are not instantaneous, there will always be a delay between the moment the transaction is `CREATED` until it reaches the `SUCCEEDED` status. For SEPA Mandates, it usually takes 5 business days.  
+</Note>  
+
+## 5/ Cancel the Mandate  
+
+Once you no longer need to make payment against the mandate, you need to cancel it.  
+
+Use the Cancel a Mandate endpoint to do so.  
+
+<Warning>  
+**Warning - Call requires `Content-Length` adjustment** 
+  
+For this call to succeed, you need to define the header `Content-Length` to `0`.  
+</Warning>  
+
+As a result, the Mandate `Status` turns to `FAILED`, and you can no longer make payments against it.  
+
+## Related resources  
+
+<Card title="Article">Direct debit</Card>  
+
+<Card title="Endpoints">Direct direct-debit pay-ins</Card>  
+
+<Card title="Testing">Payment methods</Card>

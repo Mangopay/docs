@@ -1,0 +1,381 @@
+---
+title: 'How to submit a UBO Declaration'
+'og:description': 'Step-by-step guide to submitting beneficial owner (UBO) declarations of beneficial owners, including managing outcomes and setting up webhooks.'
+---
+
+## Introduction  
+
+This how-to guide will show you how to successfully submit a UBO Declaration for validation by Mangopay.  
+
+The UBO Declaration object allows you to submit information concerning the beneficial owners of a legal user. Find out more about the process in the Beneficial owners article.  
+
+<Note>  
+**Best practice - Submit KYC Documents before UBO Declaration ** 
+  
+Because the information in the UBO Declaration is compared with the verification documents, it is necessary to submit all the required documents first before submitting the UBO Declaration.  
+</Note>
+
+<a href="#">How to submit a KYC Document</a>  
+
+## 1/ Create the UBO Declaration  
+
+Create the UBO Declaration with the `UserId`.
+
+<CodeGroup>  
+
+```json REST
+This request does not have a body.
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+const createUboDeclaration = async (userId) => {
+  return await mangopay.UboDeclarations.create(userId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUboDeclaration(myUser.Id)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createUboDeclaration(legalUserId)
+    begin
+        response = MangoPay::UboDeclaration.create(legalUserId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create UBO Declaration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+createUboDeclaration(myLegalUser[:Id])
+```  
+</CodeGroup>  
+
+The response shows the `Status` “CREATED” and contains an `Id`, which is the unique identifier of the UBO Declaration object. You need to save this for the next step.
+
+<hr />  
+
+## 2/ Create the first UBO  
+
+With the `Id` of the UBO Declaration as the `UboDeclarationId` path parameter, create the first UBO, entering the required information.  
+<CodeGroup>  
+
+```json REST
+{
+   "FirstName": "Marie",
+   "LastName": "Boulanger",
+   "Address": {
+       "AddressLine1": "16 rue de Paris",
+       "City": "Paris",
+       "Region": "Ile-de-France",
+       "PostalCode": "75001",
+       "Country": "FR"
+   },
+   "Nationality": "FR",
+   "Birthday": 652117514,
+   "Birthplace": {
+       "City": "Paris",
+       "Country": "FR"
+   }
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+}
+
+let myUbo = {
+  FirstName: 'Alex',
+  LastName: 'Smith',
+  Address: {
+    AddressLine1: '669 Ratke Forge',
+    AddressLine2: 'Schamberger Walk',
+    City: 'Paris',
+    Region: 'Ile-de-France',
+    PostalCode: '75001',
+    Country: 'FR',
+  },
+  Nationality: 'FR',
+  Birthday: 652117514,
+  Birthplace: {
+    City: 'Paris',
+    Country: 'FR',
+  },
+}
+
+const createUbo = async (userId, uboDeclarationId, ubo) => {
+  return await mangopay.UboDeclarations.createUbo(userId, uboDeclarationId, ubo)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUbo(myUser.Id, myUboDeclaration.Id, myUbo)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createUbo(legalUserId, uboDeclarationId, uboObject)
+    begin
+        response = MangoPay::Ubo.create(legalUserId, uboDeclarationId, uboObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create UBO: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+myUboDeclaration = {
+    Id: '194511216'
+}
+
+myUbo = {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+            AddressLine1: '669 Ratke Forge',
+            AddressLine2: 'Schamberger Walk',
+            City: 'Paris',
+            Region: 'Ile-de-France',
+            PostalCode: '75001',
+            Country: 'FR'
+        },
+    Nationality: 'FR',
+    Birthday: 652117514,
+    Birthplace: {
+        City: 'Paris',
+        Country: 'FR'
+    }
+}
+
+createUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo)
+```  
+</CodeGroup>
+
+<hr />  
+
+## 3/ Create additional UBOs as needed  
+
+Repeat Step 2 as many times as necessary. Your UBO Declaration can contain a minimum of 1 and a maximum of 15 UBOs.
+
+<hr />  
+
+## 4/ Submit the UBO Declaration  
+
+Once all UBOs are created and correctly declared, submit the declaration for review by Mangopay’s teams by changing the `Status` from `CREATED` to `VALIDATION_ASKED`.  
+<CodeGroup>  
+
+```json REST
+{
+   "Status": "VALIDATION_ASKED"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-mangopay-client-id',
+  clientApiKey: 'your-mangopay-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+  Status: 'VALIDATION_ASKED',
+}
+
+const updateUboDeclaration = async (userId, uboDeclaration) => {
+  return await mangopay.UboDeclarations.update(userId, uboDeclaration)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateUboDeclaration(myUser.Id, myUboDeclaration)
+```  
+</CodeGroup>
+
+<hr />  
+
+## 5/ Set up relevant hooks (recommended)  
+
+There are dedicated hooks to provide notifications of the outcome of the review by Mangopay:  
+-UBO_DECLARATION_VALIDATED, notifying that the UBO Declaration status has changed to `VALIDATED`.  
+-UBO_DECLARATION_REFUSED, notifying that the UBO Declaration status has changed to `REFUSED`.  
+-UBO_DECLARATION_INCOMPLETE, notifying that the UBO Declaration status has changed to `INCOMPLETE`.  
+
+<Note>  
+**Note - Only `INCOMPLETE` declarations can be reused** 
+  
+UBO Declarations can be resubmitted or not depending on their status:  
+`REFUSED` - The object can’t be re-submitted. You need to create a new declaration.  
+`INCOMPLETE` - The object can be modified and re-submitted.  
+For more information about why the declaration wasn’t validated, see the `Reason` and `Message` parameters returned by the View a UBO Declaration endpoint.   
+</Note>
+
+<hr />  
+
+## 6/ Simulate the response from Mangopay in Sandbox  
+
+The outcome of Mangopay’s review is indicated by the change of status of the declaration.  
+
+In the Dashboard, you can simulate the response from Mangopay:  
+-Go to the Sandbox operations section  
+-Select Process a UBO declaration  
+-Enter the identifiers of the declaration and the user, then select the action you want to simulate  
+-Click Submit to send the response
+
+<hr />  
+
+## 7/ If incomplete, take any remedial action  
+
+If the response from Mangopay is that the UBO Declaration is `INCOMPLETE`, check the View a UBO Declaration endpoint for information on why.  
+
+Take the necessary steps indicated by Mangopay in the `Reason` and `Message` parameters.  
+```json API Response example
+{
+   "Id": "160691001",
+   "UserId": "160686549",
+   "CreationDate": 1674491433,
+   "ProcessedDate": null,
+   "Status": "INCOMPLETE",
+   "Reason": "SHAREHOLDERS_DECLARATION_NEEDED",
+   "Message": null,
+   "Ubos": [
+       {
+           "Id": "160691407",
+           "CreationDate": 1674491528,
+           "LastName": "Boulanger",
+           "FirstName": "Marie",
+           "Birthday": 652117514,
+           "Nationality": "FR",
+           "Address": {
+               "AddressLine1": "16 rue de Paris",
+               "AddressLine2": null,
+               "City": "Paris",
+               "Region": "Ile-de-France",
+               "PostalCode": "75001",
+               "Country": "FR"
+           },
+           "Birthplace": {
+               "City": "Paris",
+               "Country": "FR"
+           },
+           "IsActive": true
+       }
+   ]
+}
+```  
+
+### If further documents required  
+
+It may be that additional documentary evidence is required, such as the Shareholder Declaration form or another verification document. Any additional documents should be submitted in a KYC Document object.<a href="#" class="btn Tertiary normal">How to submit a KYC Document</a>  
+
+### If UBO added in error  
+
+It may be that the declaration contains information about someone who is not in fact a beneficial owner. If this happens, change the `IsActive` parameter of the UBO object to false to have them disregarded from the declaration. This action is irreversible, but another UBO can be added in their place.  
+```json REST
+{
+   "Id": "160691407",
+   "CreationDate": 1674491528,
+   "LastName": "Boulanger",
+   "FirstName": "Marie",
+   "Birthday": 652117514,
+   "Nationality": "FR",
+   "Address": {
+       "AddressLine1": "16 rue de Paris",
+       "AddressLine2": null,
+       "City": "Paris",
+       "Region": "Ile-de-France",
+       "PostalCode": "75001",
+       "Country": "FR"
+   },
+   "Birthplace": {
+       "City": "Paris",
+       "Country": "FR"
+   },
+   "IsActive": false
+}
+```
+
+<hr />  
+
+## 8/ Once remediated, re-submit the UBO Declaration  
+
+Once the reason that the declaration was marked `INCOMPLETE` has been addressed, re-submit the UBO Declaration by changing the Status to `VALIDATED_ASKED` (as in Step 4).   
+
+<Warning>  
+**Caution - UBO Declaration must be consistent with documents** 
+  
+If additional documentary evidence was supplied to support the declaration, you must still ensure that the information in the UBO Declaration object is consistent with the documents before re-submitting.   
+</Warning>

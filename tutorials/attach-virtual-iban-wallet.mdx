@@ -1,0 +1,275 @@
+---
+title: 'How to attach a virtual IBAN to a Wallet'
+'og:description': 'Step-by-step guide to linking a virtual IBAN to a Mangopay wallet to simplify payments and reconciliation.'
+---
+## Introduction  
+
+This how-to guide will show you how to successfully associate a virtual IBAN to a Wallet.  
+
+Mangopay supports for its wallets the creation of a virtual bank account number.  
+
+Once a wallet is associated with a virtual IBAN, users can do a bank wire directly from their bank account to the wallet, as they would do for any other bank account to bank account transfer.<a href="#" class="btn Tertiary normal">Learn more about virtual IBAN</a>  
+
+## 1/ Create the wallet  
+
+Create the Wallet which is to be associated with a virtual IBAN. This wallet `Currency` must be `EUR`.  
+<CodeGroup>  
+
+```json REST
+{
+    "Owners": ["146476890"],
+    "Description": "Description of the user's wallet",
+    "Currency": "EUR"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key'
+})
+
+let userId = '165863393'
+
+let wallet = {
+    Owners: [userId],
+    Currency: 'EUR',
+    Description: 'Wallet in EUR',
+    Tag: 'Created using Mangopay NodeJS SDK'
+}
+
+const createWallet = async (walletObject) => {
+  return await mangopay.Wallets.create(wallet)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWallet(wallet)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createWallet(walletObject)
+    begin
+        response = MangoPay::Wallet.create(walletObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create wallet: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+}
+
+myWallet = {
+    Owners: [myUser[:Id]],
+    Currency: 'EUR',
+    Description: 'Wallet in EUR',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createWallet(myWallet)
+```  
+</CodeGroup>  
+
+## 2/ Create the wallet Virtual IBAN  
+
+Create the Banking Alias by using the previously created wallet `Id` as a path parameter.  
+
+Please note that:  
+-The `OwnerName` must be the first name and last name of the owner of the wallet.  
+-Only `LU`, `FR` countries are allowed for now.  
+<CodeGroup>  
+
+```json REST
+{
+    "OwnerName": "Alex Smith",
+    "Country": "FR"
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myBankingAlias = {
+  OwnerName: 'John',
+  Tag: 'Created with Mangopay NodeJS SDK',
+  Country: 'FR',
+  Type: 'IBAN',
+  WalletId: '172463559',
+}
+
+const createBankingAlias = async (bankingAlias) => {
+  return await mangopay.BankingAliases.create(bankingAlias)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankingAlias(myBankingAlias)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createBankingAlias(bankingAliasObject, walletId)
+    begin
+        response = MangoPay::BankingAliasesIBAN.create(bankingAliasObject, walletId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create banking alias: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+
+myBankingAlias = {
+    OwnerName: 'Alex Smith',
+    Tag: 'Created with Mangopay NodeJS SDK',
+    Country: 'FR',
+    Type: 'IBAN',
+    WalletId: '194311640'
+}
+
+myWallet = {
+    Id: '194311640'
+}
+
+createBankingAlias(myBankingAlias, myWallet[:Id])
+```  
+</CodeGroup>  
+
+The API then returns the Banking Alias object, which contains your virtual IBAN number. This IBAN can be used to make a bank wire directly from a bank account to the wallet, as they would do for any other bank account to bank account transfer.  
+```json API response
+{
+    "OwnerName": "Alex Smith",
+    "IBAN": "FR117452110000JIULYOYXT2D48",
+    "BIC": "MPAYFRP1PIN",
+    "CreditedUserId": "146476890",
+    "Country": "FR",
+    "Tag": "custom meta",
+    "CreationDate": 1670263006,
+    "Active": true,
+    "Type": "IBAN",
+    "Id": "157608228",
+    "WalletId": "157607922"
+}
+```  
+
+## 3/ Deactivate a virtual IBAN  
+
+If the virtual IBAN is no longer required, you’ll need to deactivate it.  
+
+<Warning>  
+**Caution - Deactivating a Banking Alias is irreversible** 
+  
+Once the Banking Alias object is deactivated, you cannot reactivate it. Any funds wired to this banking alias won’t be credited to the corresponding wallet.  
+If such cases arise, please get in touch with Mangopay teams via the Hub (Transactions in production > Pay-in bank wire or ibanisation).  
+</Warning>  
+<CodeGroup>  
+
+```json REST
+{
+    "Active": false
+}
+```  
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myBankingAlias = {
+  Id: '169741679',
+}
+
+const deactivateBankingAlias = async (bankingAliasId) => {
+  return await mangopay.BankingAliases.deactivate(bankingAliasId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+deactivateBankingAlias(myBankingAlias.Id)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def deactivateBankingAlias(bankingAliasId)
+    begin
+        response = MangoPay::BankingAliases.update(bankingAliasId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to deactivate banking alias: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myBankingAlias = {
+    Id: '194349049',
+    Active: false
+}
+
+deactivateBankingAlias(myBankingAlias[:Id])
+```  
+</CodeGroup>  
+
+## Related resources  
+
+<Card title="Article">Virtual IBAN</Card>  
+
+<Card title="Endpoints">Banking aliases</Card>

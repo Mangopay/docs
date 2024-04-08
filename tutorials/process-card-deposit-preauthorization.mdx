@@ -1,0 +1,401 @@
+---
+title: 'How to process a 30-day card preauthorization'
+'og:description': "Step-by-step guide to processing a 30-day card preauthorization, showing the flexibility of Mangopay's deposit preauthorization feature to capture an additional complement alongside the preauthorized funds."
+---
+
+## Introduction  
+
+This how-to guide will show you how to preauthorize funds on a card for 30 days and then debit the payment. The 30-day preauthorization feature gives flexibility for several use cases, and this guide shows you each of them.
+
+<a href="#">Learn more about preauthorizations</a>  
+
+## 1/ Secure the funds  
+
+Create a deposit preauthorization to hold funds for 30 days.  
+
+### Make the request  
+```json REST
+{
+    "AuthorId": "203063430",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 20000
+    },
+    "CardId": "203076791",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "StatementDescriptor": null,
+    "Culture": "EN",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "97d6:24d6:357a:8acc:5190:606b:91a2:f60c",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```  
+
+In the information returned, retain the `Id` of the Deposit Preauthorization for the next steps.  
+```json API response
+{
+   "Id": "524a7e9c-cad9-4df7-9fe3-03b8948930fe",
+   "CreationDate": 1669137219,
+   "ExpirationDate": 1671729219,
+   "AuthorId": "156671912",
+   "DebitedFunds": {
+       "Currency": "EUR",
+       "Amount": 500
+   },
+   "Status": "CREATED",
+   "PaymentStatus": "WAITING",
+   "PayinsLinked": {
+       "PayinCaptureId": null,
+       "PayinComplementId": null
+   },
+   "ResultCode": null,
+   "ResultMessage": null,
+   "CardId": "156674899",
+   "PreferredCardNetwork": null,
+   "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?depositId=524a7e9c-cad9-4df7-9fe3-03b8948930fe",
+   "SecureModeRedirectURL": "https://api.sandbox.mangopay.com/deposit-preauthorizations/Acs/Redirect?secureSessionToken=8bf75b26-01c1-4745-8f82-727e8a047dcb",
+   "SecureModeNeeded": true,
+   "PaymentType": "CARD",
+   "ExecutionType": "DIRECT",
+   "StatementDescriptor": null,
+   "Culture": "EN",
+   "BrowserInfo": {
+       "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+       "JavaEnabled": true,
+       "Language": "FR-FR",
+       "ColorDepth": 4,
+       "ScreenHeight": 1800,
+       "ScreenWidth": 400,
+       "TimeZoneOffset": 60,
+       "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+       "JavascriptEnabled": true
+   },
+   "IpAddress": "80.236.38.245",
+   "Billing": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Shipping": {
+       "FirstName": "Joe",
+       "LastName": "Bloggs",
+       "Address": {
+           "AddressLine1": null,
+           "AddressLine2": null,
+           "City": null,
+           "Region": null,
+           "PostalCode": null,
+           "Country": null
+       }
+   },
+   "Requested3DSVersion": null,
+   "Applied3DSVersion": "V2_1",
+   "Tag": "Custom meta",
+   "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}
+```  
+
+### Redirect the user to 3DS protocol (if required)  
+
+Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
+
+You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
+
+For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of the How to process a card payment tutorial.  
+
+## 2/ Use the deposit preauthorization  
+
+Once the Deposit Preauthorization's `PaymentStatus` is `WAITING`, you can use the hold on the funds in a number of ways.  
+
+Set up hook notifications for the following event types in order to be notified when a deposit preauthorization is ready to use, or when it has expired and can no longer be used:   
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_WAITING  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_EXPIRED  
+
+There are 3 ways you can use a Deposit Preauthorization and, if it won’t be used, you can cancel it manually to release the preauthorized funds for the user.  
+-A. Full or partial capture without complement  
+-B. Full capture with complement  
+-C. No-show with complement  
+-D. Cancel  
+
+In the following calls, use the `Id` of the Deposit Preauthorization obtained previously as the `DepositId`.  
+
+<Warning>  
+**Caution - All actions must be taken within 30 days** 
+  
+Any captures or complements must be requested within 30 days, whether or not they are preceded by a capture or no-show.  
+</Warning>  
+
+### A. FULL OR PARTIAL CAPTURE WITHOUT COMPLEMENT  
+
+This option involves only one step:  
+-Capture the preauthorized funds either in full or partially  
+
+<Note>  
+**Note - Multiple captures not possible** 
+  
+Capturing the preauthorized amount (without a complement) can only be done once. It is possible to do a partial capture (for an amount less than the preauthorized amount).  
+</Note>  
+
+To capture the preauthorized funds without taking advantage of the complement feature, use the dedicated Create a Deposit Preauthorized PayIn without complement endpoint.  
+
+Specify the `Amount` values of debited funds and fees. The amount of the `DebitedFunds` must be less than or equal to the preauthorized amount.  
+```json REST
+{
+    "AuthorId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 20000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```  
+
+If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.  
+
+You can set up a webhook for the following event type to be notified of the status change:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+
+Use the View a Deposit Preauthorization endpoint to see these details.  
+
+Once the `PaymentStatus` is `VALIDATED`, no further action is possible.  
+```json API response parameters - Capture without complement
+...
+    "PaymentStatus": "VALIDATED",
+    "PayinsLinked": {
+        "PayinCaptureId": "1719d157-5a97-4af3-91b0-7d660b34b21c",
+        "PayinComplementId": null
+    },
+...
+```  
+
+### B. FULL CAPTURE WITH COMPLEMENT  
+
+This option is a two-step process:  
+-Capture the full amount of the preauthorized funds  
+-Capture the complement  
+
+<Note>  
+**Note - Partial capture not possible** 
+  
+Capturing part of the initially preauthorized amount is not possible if it is followed by a complement.  
+</Note>  
+
+To capture the preauthorized funds and also capture an additional amount as a complement, use the dedicated Create a Deposit Preauthorized PayIn prior to complement endpoint.  
+```json REST
+{
+    "AuthorId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 20000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```  
+
+If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `TO_BE_COMPLETED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.  
+
+You can set up a webhook for the following event type to be notified of the status change:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_TO_BE_COMPLETED  
+
+Use the View a Deposit Preauthorization endpoint to see these details.  
+```json API response parameters - Capture prior to complement 
+...
+    "PaymentStatus": "TO_BE_COMPLETED",
+    "PayinsLinked": {
+        "PayinCaptureId": "265d22b6-a3dc-48a4-a685-8655e5bcac6f",
+        "PayinComplementId": null
+    },
+...
+```  
+
+To capture the complement, use the dedicated Create a Deposit Preauthorized PayIn complement endpoint:  
+```json REST
+{
+    "AuthorId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```  
+
+After a successful pay-in complement, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the complement is linked as the `PayinComplementId`.  
+
+You can set up a webhook for the following event type to be notified of the status change:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+
+Use the View a Deposit Preauthorization endpoint to see these details.  
+
+Once the `PaymentStatus` is `VALIDATED`, no further action is possible.  
+```json API response parameters - Capture and complement
+...
+    "PaymentStatus": "VALIDATED",
+    "PayinsLinked": {
+        "PayinCaptureId": "265d22b6-a3dc-48a4-a685-8655e5bcac6f",
+        "PayinComplementId": "0c267115-230a-4333-bcc1-2edac84c8224"
+    },
+...
+```  
+
+### C. NO-SHOW WITH COMPLEMENT  
+
+This option is a two step-process:  
+-Request a no-show, indicating that the preauthorized funds were not used  
+-Capture a complement, for example as penalty or other service charge  
+
+To request a no-show, change the `PaymentStatus` to `NO_SHOW_REQUESTED`.  
+```json REST
+{
+   "PaymentStatus": "NO_SHOW_REQUESTED"
+}
+```  
+
+If the request is successful, the `PaymentStatus` in the response is `NO_SHOW`.  
+```json API response parameters - No-show declared
+...
+    "PaymentStatus": "NO_SHOW",
+    "PayinsLinked": {
+        "PayinCaptureId": null,
+        "PayinComplementId": null
+    },
+...
+```  
+
+You can set up a webhook for the following event types to be notified of the status changes:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW_REQUESTED  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW  
+
+To capture the complement, use the dedicated Create a Deposit Preauthorized PayIn complement endpoint.  
+```json REST
+{
+    "AuthorId": "203063430",
+    "CreditedWalletId": "203063456",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "DepositId": "09d21294-f9ac-4797-b2b9-8cc7b4f05f1d",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```  
+
+After a successful pay-in complement, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the complement is linked as the `PayinComplementId`.  
+
+You can set up a webhook for the following event type to be notified of the status change:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+
+Use the View a Deposit Preauthorization endpoint to see these details.  
+```json API response parameters - No-show and complement
+...
+    "PaymentStatus": "VALIDATED",
+    "PayinsLinked": {
+        "PayinCaptureId": null,
+        "PayinComplementId": "7c89d633-2023-440c-843a-ac8ce2a683a4"
+    },
+...
+```  
+
+Once the `PaymentStatus` is `VALIDATED`, no further action is possible.  
+
+### D. CANCEL  
+
+If the Deposit Preauthorization won’t be used, either to capture the preauthorized funds or a complement, you can release the preauthorized funds by changing the `PaymentStatus` to `CANCELED`.  
+```json REST
+{
+   "PaymentStatus": "CANCELED"
+}
+```  
+
+Once the `PaymentStatus` is `CANCELED`, no further action is possible.  
+```json API response parameters - Canceled
+...
+    "PaymentStatus": "CANCELED",
+    "PayinsLinked": {
+        "PayinCaptureId": null,
+        "PayinComplementId": null
+    },
+...
+```  
+
+You can set up a webhook for the following event types to be notified of the status changes:  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED  
+-DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCELED  
+
+## Related resources  
+
+<Card title="Article">Preauthorization</Card>  
+
+<Card title="Endpoints">The Deposit Preauthorization object</Card>  
+
+<Card title="Dev tools">Event types</Card>
