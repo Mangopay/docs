@@ -1,0 +1,807 @@
+---  
+title: 'Checkout – Web'  
+'og:description': 'How to set up the Mangopay Checkout SDK on web browsers, including handling 3DS redirection, payment result verification, and offering Apple Pay and Google Pay.'  
+---
+
+This guide helps you get started with the Checkout SDK on web browsers.  
+
+<Card title="TW should set this">  
+-A Mangopay ClientId and API key (get a Sandbox API key for free)  
+-A User and their associated Wallet to complete the pay-in  
+-A card to register or payment method setup (see Testing - Payment methods for testing information)  
+
+Supported browsers: Chrome 117, Firefox 118, Safari 16
+</Card>  
+
+## Installation  
+
+You can install the Mangopay Checkout SDK using npm or yarn.
+
+```shell Install with npm
+npm install --save @mangopay/checkout-sdk
+```
+
+```shell Install with Yarn
+yarn add @mangopay/checkout-sdk
+```  
+
+#### Install via CDN  
+
+If you are using script tags to load files, include the Mangopay SDK script in your HTML:  
+```shell HTML script tags
+<script src="https://checkout.mangopay.com/sdk/checkout-sdk.min.js"></script>
+```  
+
+<Warning>  
+**Warning – Load script from Mangopay Checkout domain** 
+  
+To maintain PCI compliance, the script must be loaded directly from the Mangopay Checkout domain:  
+https://checkout.mangopay.com  
+The script must not be bundled or hosted on other domains. You must reference it directly from our domain.  
+</Warning>  
+
+### Content Security Policy (CSP)  
+
+<Warning>  
+**Caution - Allow policies if using CSP** 
+  
+If your web page is using the Content-Security-Policy response header, you need to allow the policies below.  
+</Warning>
+
+TW please add the old table here
+
+TW please add the old table here  
+
+## Initialization  
+
+Initialize the SDK and specify the configuration options.  
+```javascript Example - Initialization
+import { CheckoutSdk } from '@mangopay/checkout-sdk';
+
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options);
+```  
+
+### Initialization parameters
+
+TW please add the old table here  
+
+### options
+
+TW please add the old table here  
+
+## Configuration  
+
+Configure the MangopayCheckout parameters and delegates.  
+
+### Example - Vanilla JS   
+```shell HTML 
+<body>
+    <div id="checkoutForm">
+        <div id="container"></div>
+    </div>
+    <script src="/index.js"></script>
+</body>
+```  
+```javascript 
+window.addEventListener('load', async () => {
+    const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
+    if (!mangopaySdk) {
+        throw new Error('Failed to load MangopayCheckoutSdk');
+    }
+
+    mangopaySdk.on('error', (event: CustomEvent<ErrorEventDetails>) => console.error(event.detail));
+
+    mangopaySdk.on('tokenizationComplete', (event: CustomEvent<TokenizationCompleteEventDetails>) => {
+        // handle tokenization complete
+    });
+
+    mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetails>) => {
+        // handle payment complete
+    });
+});
+```  
+
+### Example - ReactJS
+
+```javascript 
+import { MangopayCheckout } from '@mangopay/checkout-sdk-react';
+const sdkRef = useRef(null);
+
+const onTokenizationComplete = () => {
+    /* Handle Card/GooglePay/ApplePay token here
+           e.g charge customer card using CardId
+    */
+};
+
+const onPaymentComplete = () => {
+    /* Handle Card/PayPal payment complete */
+};
+
+<MangopayCheckout
+    ref={sdkRef}
+    options={options}
+    disabled={disabled}
+    onError={onError}
+    onLoaded={onLoaded}
+    onChange={onChange}
+    onTokenizationComplete={onTokenizationComplete}
+    onPaymentComplete={onPaymentComplete}
+/>
+```  
+
+### MangopayCheckout parametersTW please add the old table here  
+
+## Handling redirection  
+
+<Warning>  
+**Warning – Use Mangopay Checkout domain as return URL** 
+  
+When making the pay-in request from your backend, use the Mangopay Checkout URL as the `SecureModeReturnURL` or `ReturnURL` (depending on the payment method):  
+https://checkout.mangopay.com  
+The user must be returned to this URL after redirection.  
+</Warning>  
+
+Some payment methods (card, Google Pay, PayPal) require or may require the user to be redirected to authorize or complete a transaction.  
+
+The Checkout SDK allows you to manage the entire payment flow seamlessly while retaining control over transaction logic in your backend. Once a payment method is selected and payment details are provided, use the `options.onCreatePayment` function to request the transaction from your backend.  
+
+Subsequently, and when necessary for the transaction type, the Checkout SDK seamlessly manages additional redirect actions for 3DS authorization or otherwise validating the payment.  
+
+To manage transaction redirects effectively with the SDK:  
+
+1. In your `paymentMethods` configurations, define an `options.onCreatePayment` attribute as a function.  
+
+2. Within your function:   
+-Request a transaction from your server and subsequently, Mangopay.  
+-Return the unaltered transaction response object to the SDK.  
+
+3. The SDK:   
+-Redirects the user to the payment authentication page when necessary.  
+-Manages payment provider redirects back to the SDK.  
+-Triggers the `onPaymentComplete` event with the ID and status of the transaction.  
+-Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
+-Presents the payment result to the user.  
+```javascript Redirection example
+paymentMethods: [
+    {
+        type: 'card | paypal',
+        onCreatePayment: function (event) {
+            // 1. implement server-side call to request a transaction.
+            // 2. return the card transaction object.
+        }
+    }
+]
+```  
+
+## Configuring card payments  
+
+To configure the card payment method, specify `card` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
+
+### options
+
+TW please add the old table here  
+
+### Card configuration example  
+```javascript 
+const options = {
+    clientId: 'MANGOPAY_CLIENT_ID',
+    environment: 'SANDBOX | PRODUCTION',
+    amount: {
+        value: 1000,
+        currency: "EUR"
+    },
+    paymentMethods: [
+        {
+            type: 'card',
+            onCreateCardRegistration: function (event) {
+                // 1. implement server-side call to create a card registration.
+                // 2. return the card registration.
+            },
+            onCreatePayment: function (event: paymentMethod) {
+                // 1. implement server-side call to request a card transaction.
+                // 2. return the card transaction object.
+                // 3. the SDK handles 3DS redirect for you.
+            }
+        }
+    ]
+};
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options);
+```  
+
+### Card tokenization  
+
+In the `options` for the card payment method, create a function to handle creation of Card Registration event handler in the `paymentMethods` object:  
+-Your `onCreateCardRegistration` function calls your server, and passes it the card brand of the user.  
+-Your server makes a request to Create a Card Registration.  
+-In response, your server receives a Card Registration object.  
+-In your `onCreateCardRegistration` function, return the unmodified Card Registration object to the SDK.  
+-The SDK tokenizes the card and updates the Card Registration object to create the `CardId` which is used for payment.  
+```javascript Card tokenization example
+// Vanilla JS
+mangopaySdk.on('tokenizationComplete', (event: CustomEvent<TokenizationCompleteEventDetails>) => {
+    // handle tokenization complete
+});
+
+mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetails>) => {
+    // handle payment complete
+});
+
+// React.js
+const onTokenizationComplete = () => {
+    // handle tokenization complete
+};
+
+const onPaymentComplete = () => {
+    // handle payment complete
+};
+
+<MangopayCheckout
+    ref={sdkRef}
+    options={options}
+    onTokenizationComplete={onTokenizationComplete}
+    onPaymentComplete={onPaymentComplete}
+/>
+```  
+
+### tokenizationComplete output  
+```json 
+{
+  "Id": "cardreg_m_01HQ0J6GB3JFZ1NC5EGCJBE4PB",
+  "Tag": null,
+  "CreationDate": 1708342329,
+  "UserId": "user_m_01HP6ZG0XXZ89V34GRZEY9HQCE",
+  "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+  "PreregistrationData": "YkgVxL1yNY4ZOfKtqEew_Zj34Eg4_H3r-UyvrLWB_MHYF1OqkWAtDMwDMZ0pSZfliRF4hvSrtJCvT7-9XAi0Xsj7Q1OS-vT4lpHzEztZoLs",
+  "RegistrationData": "data=iN_eoipU7i2AEuTss7wuoPRZYTuNVHlTvhc4dEXHczhSWquUg8N2vrbXU91rCDepo0Fw6rcqxRBK8KMWk8xhHGOBEuIr9_d-Xo64K6cr5w-lY2yXbTUOs7e-S6CpTShm",
+  "CardId": "card_m_01HQ0J6H02QXH3HATEYW0FMJKP",
+  "CardType": "CB_VISA_MASTERCARD",
+  "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+  "ResultCode": "000000",
+  "ResultMessage": "Success",
+  "Currency": "EUR",
+  "Status": "VALIDATED"
+  "ProfilingAttemptReference": "25e5c450-7f00-4805-af04-4330e4dc0cee"
+}
+```  
+
+### Managing cards  
+
+You can use the following endpoints to manage cards:  
+-View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+-Deactivate a Card allows you to irreversibly set the card as inactive  
+
+<Warning>  
+**Warning - End user's approval needed to save card details** 
+  
+Under no circumstances should card information be kept without the end user's approval.   
+If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
+</Warning>  
+
+### Requesting card payments  
+
+You can use a registered card (`CardId`) for requests with the following objects. In your request, ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+-The Card Validation object, to validate a card without debit  
+-The Direct Card PayIn object, for one-shot card payments  
+-The Recurring PayIn Registration object, for recurring card payments  
+-The Preauthorization object, for 7-day preauthorized card payments  
+-The Deposit Preauthorization object, for 30-day preauthorized card payments  
+
+## Configuring Apple Pay  
+
+<Note>  
+**Note - Apple Pay integration required** 
+  
+Offering Apple Pay requires additional setup by the platform, including certification and integration. For more information, see the How to process an Apple Pay payment tutorial.   
+</Note>  
+
+<Warning>  
+**Caution - Apple Pay on the Web availability** 
+  
+Apple Pay on the Web, using the JavaScript Checkout SDK, is only available on Safari browsers on Mac and iOS devices. Apple Pay on the Web also requires additional certification.  
+</Warning>  
+
+To configure the Apple Pay payment method, specify `apple_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.   
+
+### Apple Pay configuration parameters  
+
+#### paymentRequest
+
+TW please add the old table here  
+
+### Optional configuration parameters
+
+TW please add the old table here  
+
+#### Apple Pay Merchant Session
+
+TW please add the old table here  
+
+### Apple Pay configuration example  
+```javascript 
+const validateApplePayMerchant = (validationURL: string): Promise<ApplePayMerchantSession> => {
+    return HttpClient.request < ApplePayMerchantSession > (
+        'https://backend-api-url/get-apple-pay-session',
+        {
+            validationURL,
+            merchantIdentifier: 'merchant.com.example.mystore',
+            displayName: 'MyStore',
+            initiative: 'web',
+            initiativeContext: 'mystore.example.com'
+        }
+    );
+};
+
+const options = {
+    clientId: 'MANGOPAY_CLIENT_ID',
+    environment: 'SANDBOX | PRODUCTION',
+    paymentMethods: [
+        {
+            type: 'apple_pay',
+            options: {
+                paymentRequest: {
+                    countryCode: 'IE',
+                    currencyCode: 'EUR',
+                    merchantCapabilities: ['supports3DS'],
+                    supportedNetworks: ['visa', 'masterCard'],
+                    total: {
+                        label: 'Demo (Card is not charged)',
+                        type: 'final',
+                        amount: '20.00',
+                    },
+                    merchantIdentifier: 'merchant.com.example.mystore',
+                    merchantName: 'MyStore',
+                    onValidateMerchant: validateApplePayMerchant,
+                    requiredBillingContactFields: ['email'],
+                },
+            },
+        }
+    ]
+};
+
+// Vanilla JS
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```  
+
+### Requesting the merchantSession from your server  
+
+Displaying the Apple Pay payment sheet using the Mangopay Checkout SDK works as follows:  
+-You generate the merchant session from your server  
+-The SDK’s `onValidateMerchant` function calls your server and passes it the static hostname `apple-pay-gateway.apple.com` as the validation URL. In the China region, use `cn-apple-pay-gateway.apple.com`.  
+-Your server uses the validation URL to request a session from the Apple Pay server, as described in Requesting an Apple Pay Payment Session.  
+-In the response, your server receives an opaque merchant session object, `MerchantSession`.  
+-You pass the merchant session object to the `completeMerchantValidation` method of the SDK (see Apple Pay documentation for more information on this method).  
+
+  
+
+### Requesting Apple Pay pay-in  
+
+To request the payment, use the Create a Apple Pay PayIn endpoint and include the Apple Pay `PaymentData`.  
+
+## Configuring Google Pay  
+
+<Note>  
+**Note - Google Pay setup required** 
+  
+Offering Google Pay requires additional setup by the platform. For more information, see the How to process a Google Pay payment tutorial.   
+</Note>  
+
+To configure the Google Pay payment method, specify `google_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
+
+### Configuring Google Pay  
+
+#### merchantInfo
+
+TW please add the old table here  
+
+#### cardParameters
+
+TW please add the old table hereTW please add the old table here  
+
+### button
+
+TW please add the old table here  
+
+#### transactionInfo  
+
+Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the Google Pay documentation.
+  
+```javascript Google Pay configuration example
+const options = {
+    clientId: 'MANGOPAY_CLIENT_ID',
+    environment: 'SANDBOX | PRODUCTION',
+    paymentMethods: [
+        {
+            type: 'google_pay',
+            options: {
+                merchantInfo: {
+                    merchantId: 'test',
+                    merchantName: 'Test',
+                },
+                gateway: 'whenthen',
+                cardParameters: {
+                    allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                    allowedCardNetworks: ['VISA', 'MASTERCARD'],
+                },
+                transactionInfo: {
+                    totalPrice: '20.00',
+                    totalPriceStatus: 'FINAL',
+                    currencyCode: 'EUR',
+                    countryCode: 'DE', // required for EEA only
+                    transactionId: '123456789',
+                    totalPriceLabel: '20.00', // required if displayItems is provided
+                    displayItems: [
+                        {
+                            label: 'PS5',
+                            type: 'SUBTOTAL',
+                            price: '20.00',
+                        },
+                    ],
+                },
+                paymentData: {
+                    emailRequired: true,
+                },
+            },
+        }
+    ]
+};
+
+// Vanilla JS
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```  
+
+### Handling Google Pay authorization  
+
+The `onTokenizationComplete` function is called after the user approves the payment on the Google Pay form. The output contains the paymentData object (see Google Pay documentation) which is needed to request the Google Pay payment via the API from your backend.  
+
+### Requesting Google Pay pay-in  
+
+To request the payment, use the Create a Google Pay PayIn endpoint. Include the Google Pay `PaymentData` and ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+
+### Configuring PayPal  
+
+<Note>  
+**Note – PayPal setup required** 
+  
+Offering PayPal requires approval from PayPal and activation. For more information, see the PayPal article.  
+</Note>  
+
+To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.TW please add the old table here  
+```javascript PayPal configuration example
+const options = {
+    clientId: 'MANGOPAY_CLIENT_ID',
+    environment: 'SANDBOX | PRODUCTION',
+    amount: {
+        value: 1000,
+        currency: "EUR"
+    },
+    paymentMethods: [
+        {
+        type: "paypal",
+        options: {
+          //define delegate to call when Paypal button is clicked
+          onCreatePayment: (data) => createPayPalPayIn(data)
+            }
+        }
+    ]
+};
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options);
+
+//this event is triggered when redirect/payment is completed
+mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetails>) => {
+    //  verify payment result
+    //  unmount checkout and present payment result.
+});
+```  
+
+### Requesting PayPal pay-in  
+
+To request the payment, use the Create a PayPal PayIn endpoint. Ensure that the `ReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+
+## Verifying the payment result  
+
+Once `onPaymentComplete` is triggered, verify the status of the relevant Mangopay API object:  
+-View a PayIn  
+-View a Preauthorization  
+-View a Deposit Preauthorization  
+-View a Card Validation  
+
+<Warning>  
+**Caution – Check payment result from backend** 
+  
+You should confirm the transaction result returned by the Checkout SDK by calling the Mangopay API from your backend.  
+</Warning>  
+```javascript Verify payment result
+//This event is triggerd by the SDK when a full payment cycle is complete.
+mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetails>) => {
+
+    const { id } = event.details
+
+    // 1. Verify payment result using the transaction Id.
+    // 2. Present payment result to user.
+});
+```  
+
+## Showing and dismissing the loading spinner  
+
+When processing a token request, the SDK shows a loading spinner and retains it until the loading state is set to `false`. This provides a temporary state for the user until the full payment is complete, including calls from your platform's backend.  
+
+The `setLoading` method handles the loading state for displaying and dismissing the spinner.  
+```json setLoading example
+import { CheckoutSdk } from '@mangopay/checkout-sdk';
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
+// dismiss the  loader spinner
+mangopaySdk.setLoading(false);
+```  
+
+## Using Card Element  
+
+Card Element is a ready-made component that allows you to create your own card payment experience and tokenize card payment details. With Card Element, you can incorporate a custom pay button and have control over the tokenization process.  
+
+When using Card Element, you still benefit from real-time card data validation, and the ability to customize the payment form.  
+
+Initialize the `cardFormElement` with your `ClientId` and select your environment (Sandbox or Production).  
+```shell Initialization - cardFormElement
+import MangopaySdkLoader from '@mangopay/sdk-loader';
+
+const cardFormElement = await MangopaySdkLoader.loadCardFormElement(elementOrSelector, options);
+```  
+
+### cardFormElement-specific optionsTW please add the old table here  
+
+### Vanilla JS usage example  
+```shell HTML
+<body>
+    <form novalidate id="checkoutForm">
+        <div id="container"></div>
+        <button type="submit" id="submitButton">Pay now</button>
+    </form>
+    <script src="/index.js"></script>
+</body>
+```  
+```javascript 
+window.addEventListener('load', async () => {
+    const cardFormElement = await MangopaySdkLoader.loadCardFormElement('#container', options);
+    if (!cardFormElement) {
+        throw new Error('Failed to load MangopayCardFormElement');
+    }
+
+    const submitButton = document.querySelector('#submitButton');
+    if (!submitButton) {
+        throw new Error('Submit button is missing.');
+    }
+
+    submitButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        cardFormElement.disable();
+        try {
+            cardFormElement.completePayment();
+        } finally {
+            cardFormElement.enable();
+        }
+    });
+
+    cardFormElement.on('error', (event: CustomEvent<ErrorEventDetails>) => console.error(event.detail));
+
+    cardFormElement.on('tokenizationComplete', (event: CustomEvent<TokenizationCompleteEventDetails>) => {
+        // handle tokenization complete
+    });
+});
+```  
+
+### ReactJS usage example  
+```javascript 
+import { CardFormElement } from '@mangopay/checkout-sdk-react';
+const sdkRef = useRef(null);
+
+const onTokenizationComplete = () => {
+    /* Handle Card token here
+           e.g charge customer card using CardId
+    */
+};
+
+<>
+    <form noValidate>
+        <CardFormElement
+            ref={sdkRef}
+            options={options}
+            disabled={disabled}
+            onError={onError}
+            onLoaded={onLoaded}
+            onChange={onChange}
+            onTokenizationComplete={onTokenizationComplete}
+        />
+    </form>
+    <button onClick={handleCompletePayment} className="btn pay-btn">
+        Pay now
+    </button>
+</>
+```  
+
+## Branding  
+
+You can customize the appearance of the payment sheet using the `branding` object.  
+```javascript Branding example
+const options = {
+    branding: {
+        fontFamily: 'Helvetica Neue',
+        fontSize: {
+            primary: '14px',
+            secondary: '12px',
+        },
+        borderType: 'square', // 'square' | 'round' | 'bottom'
+        colors: {
+            primary: '#000000',
+            secondary: '#545A61',
+            accent: '#4E40EF',
+            accentContrast: '#FFFFFF',
+            border: '#E6E9EC',
+            borderFocused: '#000000',
+            error: '#EC0B43',
+        },
+        borderRadius: '0',
+        backgroundColor: '#ffffff',
+        textColor: '#000000',
+        lineHeight: '48px',
+        variables: undefined,
+        rules: undefined,
+    },
+},
+};
+
+// Vanilla JS
+const mangopaySdk = await MangopaySdkLoader.loadCheckoutSdk('#container', options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```  
+
+### Theme variables and rules  
+
+You can use the `rules` and `variables` objects for further customization.  
+
+#### Variables  
+
+Variables are CSS variables that you can declare and use in your theme rules.  
+```javascript 
+{
+    theme: {
+    ...,
+        variables: {
+            primaryColor: "#1D3557"
+            secondaryColor: "#457B9D"
+        }
+
+        rules: {
+            PayButton: `
+            backgroundColor: var(--primaryColor);
+            `
+        }
+    }
+}
+```  
+
+#### Rules  
+
+Rules allows you to apply CSS styles to Checkout SDK components. To do so, target components by class names, with or without the CSS class selector prefix (`FieldContainer` or `.FieldContainer`), and specify the styles to apply. The feature supports all native CSS properties and nesting.  
+```javascript 
+{
+    theme: {
+      ...,
+        variables: {
+            primaryColor: "#1D3557"
+            secondaryColor: "#457B9D"
+        }
+
+        rules: {
+            '.FieldContainer': `
+              height: 40px;
+              border-radius: 8px;
+              backgroundColor: var(--primaryColor);
+              
+              &:hover {
+                backgroundColor: var(--secondaryColor);
+              }
+          `
+        }
+    }
+}
+```  
+
+## Localization  
+
+Mangopay Checkout SDK has built-in support for English and French localization.  
+```javascript 
+const options = {
+    locale: 'en', // 'en' | 'fr' | Object
+};
+
+// Vanilla JS
+const mangopaySdk = await MangopaySdkLoader.loadCheckoutSdk('#container', options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```  
+
+You can customize labels, placeholder and success and error messages by providing a `customLanguage` object.  
+```javascript 
+const customLanguage = {
+
+    'card.number.placeholder': '1234 1234 1234 1234',
+    'card.number.aria-label': 'Card number',
+    'card.number.errors.required': 'Card number is required',
+    'card.number.errors.min-length': 'Minimum number of digits is 13',
+    'card.number.errors.invalid-number': 'Invalid card number',
+
+    'card.save.label': 'Save card',
+    'card.saved-cards.choose-card.label': 'Choose card',
+    'card.saved-cards.clear-card.label': 'Clear',
+    'card.saved-cards.saved-card.aria-label': 'The card ending in',
+
+    'card.billing-name.placeholder': 'Name on card',
+    'card.billing-name.aria-label': 'Name on card',
+    'card.billing-name.errors.required': 'Full name is required',
+    'card.billing-name.errors.min-length': 'Full name is too short',
+
+    'card.expiry.placeholder': 'MM / YY',
+    'card.expiry.aria-label': 'Card expiration',
+    'card.expiry.errors.required': 'Expiration date is required',
+    'card.expiry.errors.pattern': 'Expiration date format is not valid (MM/YY)',
+    'card.expiry.errors.expired': 'Your card is expired',
+
+    'card.cvc.placeholder': 'CVC',
+    'card.cvc.aria-label': 'Card CVC',
+    'card.cvc.errors.required': 'Security code is required',
+    'card.cvc.errors.min-length': 'Security code is too short',
+    'card.cvc.errors.max-length': 'Security code is too long',
+
+    'pay-button.label': 'Pay',
+    'pay-button.aria-label': 'Pay with card',
+
+
+    'payment-success-state.label': 'Payment Succeeded',
+
+    'error.invalid_cvc': 'Invalid CVC',
+    'error.authorization_required': 'Authorization Required',
+    'error.contact_card_issuer': 'Contact Card Issuer',
+    'error.unsupported_card': 'Unsupported Card',
+    'error.insufficient_funds': 'Insufficient Funds',
+    'error.unsupported_currency': 'Unsupported Currency',
+    'error.card_rejected': 'Card Rejected',
+    'error.expired_card': 'Expired Card',
+    'error.suspected_fraud': 'Suspected Fraud',
+    'error.general_decline': 'General Decline',
+    'error.incorrect_number': 'Incorrect Number',
+    'error.incorrect_pin': 'Incorrect Pin',
+    'error.invalid_address': 'Invalid Address',
+    'error.invalid_card_or_account': 'Invalid Card or Account',
+    'error.invalid_amount': 'Invalid Amount',
+    'error.invalid_date': 'Invalid Date',
+    'error.lost_restricted_or_stolen_card': 'Lost, Restricted or Stolen Card',
+    'error.blocked_list': 'Blocked List',
+    'error.not_permitted': 'Not Permitted',
+    'error.offline_or_online_pin_required': 'Offline or Online Pin Required',
+    'error.pin_retry_exceeded': 'Pin Retry Exceeded',
+    'error.processing_error': 'Processing Error',
+    'error.withdrawal_count_limit_exceeded': 'Withdrawal Count Limit Exceeded',
+    'error.unknown': 'Unknown error',
+    'error.fraud': 'Fraud',
+    'error.three_d_secure': '3DS Failed',
+    'error.custom_rule': 'Custom Rule',
+};
+
+const options = {
+    locale: customLanguage
+};
+
+// Vanilla JS
+const mangopaySdk = await MangopaySdkLoader.loadCheckoutSdk('#container', options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```

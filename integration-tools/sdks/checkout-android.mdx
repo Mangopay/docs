@@ -1,0 +1,396 @@
+---  
+title: 'Checkout - Android'  
+'og:description': 'How to set up the Mangopay Checkout SDK on Android, including handling 3DS redirection, payment result verification, and offering Google Pay.'  
+---   
+
+This guide helps you get started with the Checkout SDK on Android.  
+
+<Card title="TW should set this">  
+-A Mangopay ClientId and API key (get a Sandbox API key for free)  
+-A User and their associated Wallet to complete the pay-in  
+-A card to register or payment method setup (see Testing - Payment methods for testing information)  
+
+For Android:   
+-Android `minSdk = 21`
+</Card>  
+
+## Installation  
+
+The Mangopay Checkout SDK is published as a Maven artifact on Maven Central Repository.  
+
+Add the following code to your `app/build.gradle` file:  
+```kotlin 
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+   implementation("com.mangopay.android:checkout-sdk:<latest-version>")
+}
+```  
+
+## Creating a Card Registration  
+
+In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId` .  
+
+You must also define the currency and type of the card at this stage.  
+```json 
+{
+    "Tag": "Created with the Mangopay Checkout SDK",
+    "UserId": "142036728",
+    "CardType": "CB_VISA_MASTERCARD",
+    "Currency": "EUR"
+}
+```  
+```json API response
+{
+    "Id": "193020188",
+    "Tag": null,
+    "CreationDate": 1686147148,
+    "UserId": "193020185",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "XBDYiG8w9PrylPS01KmupZunmK2QRHKIC-yUF6il3aIpAnKba1TGkR9VJe5lHjHt2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": null,
+    "CardId": null,
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "Currency": "EUR",
+    "Status": "CREATED"
+}
+```  
+
+The data obtained in the response will be used in the `cardConfig` of the card payment method configured below.  
+
+## Initializing the SDK  
+
+Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).  
+```kotlin Initialization
+Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environment.SANDBOX)
+```  
+
+### Initialization parametersTW please add the old table here  
+
+## Configuring the checkout  
+
+### Create the payment tokenization handler  
+
+Create a method for `ActivityResultLauncher` to receive and handle `PaymentSheetResult`.  
+```kotlin Tokenization handler
+private var resultLauncher = registerForActivityResult(
+       ActivityResultContracts.StartActivityForResult()) { result ->
+    
+		when(val paymentSheetResult = MangopayCheckoutSdk
+            .handlePaymentSheetResult(resultCode = result.resultCode, intentResult = result.data)) {
+
+					is PaymentSheetResult.onTokenizationCompleted -> {
+                // Handle payment method tokenization
+          }
+					is PaymentSheetResult.onError -> {
+								// Handle sheet exceptions
+	        }
+					is PaymentSheetResult.onCancelled -> {
+                // Handle sheet closed event
+          }
+     }
+}
+```  
+
+### Payment sheet callbacksTW please add the old table here  
+
+The payment sheet automatically closes when events are emitted to prevent users from clicking again.  
+
+## Offering card payments  
+
+To offer card payments in the payment sheet:  
+-Build the `cardRegistration` using the values of the Card Registration object created previously.  
+-Define the `paymentMethodConfig` and add the `cardConfig`  
+-Create the `cardConfig` and add the `cardRegistration`  
+```kotlin Presenting the payment sheet
+val cardRegistration = CardRegistration.Builder()
+        .id(Id)
+        .userId(UserId)
+        .accessKey(AccessKey)
+        .preRegistrationData(PreregistrationData)
+        .cardRegistrationURL(CardRegistrationURL)
+        .build()
+
+val cardConfig = CardConfig.Builder()
+        .cardRegistration(cardRegistration)
+				.supportCardBrands(listOf(CardScheme.MasterCard, CardScheme.Visa))
+        .build()
+
+val paymentMethodConfig = PaymentMethodConfig.Builder()
+        .cardConfig(cardConfig)
+        .build();
+
+MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
+```  
+
+### Payment sheet propertiesTW please add the old table here  
+
+### Handling card tokenization  
+
+The SDK automatically handles the card tokenization, updating the Card Registration object to create the `CardId` which is used for payment.  
+
+### Managing cards  
+
+You can use the following endpoints to manage cards:  
+-View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+-Deactivate a Card allows you to irreversibly set the card as inactive  
+
+<Warning>  
+**Warning – End user's approval needed to save card details** 
+  
+Under no circumstances should card information be kept without the end user's approval.   
+If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
+</Warning>  
+
+### Requesting card pay-ins  
+
+You can use a registered card (`CardId`) for pay-ins with the following objects:  
+-The Direct Card PayIn object, for one-shot card payments  
+-The Recurring PayIn Registration object, for recurring card payments  
+-The Preauthorization object, for 7-day preauthorized card payments  
+-The Deposit Preauthorization object, for 30-day preauthorized card payments  
+
+<Note>  
+**Note – 3DS redirection required when requesting card payments** 
+  
+When you make a payment request, you need to be ready to handle 3DS redirection.  
+</Note>  
+
+## Handling 3DS redirection  
+
+When requesting a payment or other card authorization, you need to be able to handle 3DS redirection if it is required by the issuer. This is indicated by the `SecureModeNeeded` in the API response, and the `SecureModeRedirectURL` provides the redirection URL.  
+
+The Checkout SDK’s 3DS helper allows you to redirect users to authenticate securely and seamlessly.   
+```kotlin Create 3DS redirection event
+//Create threeds (3DS) instance 
+
+val threedsDialog = ThreedsBottomDialogFragment.newInstance()
+
+threedsDialog.handleThreeds(this, returnUrl = "returnUrl", 
+					redirectUrl = "redirectUrl", transactionType = TransactionType.CARD_DIRECT)
+```  
+```kotlin Handle the redirect result
+threedsDialog.handleThreeds(this,
+        returnUrl = "secureModeReturnURL", redirectUrl = "secureModeRedirectURL", transactionType = TransactionType.CARD_DIRECT,
+            listener = object : Mangopay.OnThreedsFinishedListener {
+                override fun success(transactionId: String, status: ResultCode) {
+                    // onSuccess response
+                }
+
+                override fun error(exception: MangopayException) {
+                    // onError response
+                }
+       }
+)
+```  
+
+### 3DS handler parametersTW please add the old table here  
+
+#### 3DS listener eventsTW please add the old table here  
+
+### Verifying the payment result`  
+
+<Note>  
+**Best practice – Check payment result from backend** 
+  
+It is highly recommended that you confirm the transaction result from your backend using the API endpoint.  
+</Note>  
+
+## Offering Google Pay  
+
+<Note>  
+**Note – Google Pay setup required** 
+  
+Offering Google Pay requires additional setup by the platform. For more information, see the How to process a Google Pay payment tutorial.   
+</Note>  
+
+To offer the Google Pay payment method, include the `googlePayConfig` in the `paymentMethodConfig`.  
+
+Create the `googlePayConfig` with the `googlePayObject`, containing Google Pay configuration parameters, card parameters, and transaction information.  
+```json Example - Google Pay
+
+val transactionInfo = TransactionInfo.Builder()
+        .currencyCode("EUR")
+        .countryCode("FI")
+        .totalPriceStatus(TotalPriceStatus.FINAL)
+        .totalPrice(5000.0)
+        .transactionId(UUID.randomUUID().toString())
+        .build()
+
+val cardParameters = CardParameters.Builder()
+       .allowedAuthMethods(listOf("PAN_ONLY", "CRYPTOGRAM_3DS"))
+       .allowedCardNetworks(listOf( "MASTERCARD", "VISA"))
+       .build()
+
+val googlePayObject = GooglePayObject.Builder()
+        .merchantName("Example Test")
+        .gatewayMerchantId("your-mangopay-client-id")  
+        .transactionInfo(transactionInfo)
+        .cardParameters(cardParameters)
+        .build()
+
+val googlePayConfig = GooglePayConfig.Builder()
+        .googlePayObject(googlePayObject)
+        .build()
+
+val paymentMethodConfig = PaymentMethodConfig.Builder()
+        .cardConfig(cardConfig)
+				.googlePayConfig(googlePayConfig) // OPTIONAL
+        .build()
+
+MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
+```  
+
+#### googlePayObjectTW please add the old table here  
+
+#### cardParametersTW please add the old table here  
+
+#### transactionInfo  
+
+Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the Google Pay documentation.   
+
+### Handling Google Pay result  
+```kotlin 
+private var resultLauncher = registerForActivityResult(
+       ActivityResultContracts.StartActivityForResult()) { result ->
+    
+		when(val paymentSheetResult = MangopayCheckoutSdk
+            .handlePaymentSheetResult(resultCode = result.resultCode, intentResult = result.data)) {
+
+					is PaymentSheetResult.onTokenizationCompleted -> {
+                // Handle payment method tokenization
+								when(val cardPaymentMethodResult = paymentSheetResult.paymentMethod){
+                    
+                    is PaymentMethod.GOOGLE_PAY -> {
+												// Get result token for testing
+                        Log.v(TAG, cardPaymentMethodResult.token)
+                    }
+                }
+          }
+     }
+}
+```  
+
+### Requesting Google Pay pay-in  
+
+To request the payment, use the Create a Google Pay PayIn endpoint and include the Google Pay `PaymentData`.  
+
+## Using Card Element  
+
+Card Element is a ready-made component that allows you to create your own card payment experience and tokenize card payment details. With Card Element, you can incorporate a custom pay button and have control over the tokenization process.  
+
+When using Card Element, you still benefit from real-time card data validation, and the ability to customize the payment form.  
+
+To use Card Element, proceed as follows:  
+
+#### 1. Add the payment form to the intended layout  
+```xml 
+<com.mangopay.android.checkout.view.PaymentFormView
+            android:id="@+id/payment_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mangopay_elementBorderLineType="rectangle" />
+
+
+<!-- Add custom pay button -->
+<Button
+            android:id="@+id/btn_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_below="@+id/payment_form"
+            android:layout_marginTop="50dp"
+            android:text="Pay" />
+```  
+
+#### 2. Create the Card Registration as described above  
+```kotlin 
+val cardRegistration = CardRegistration.Builder()
+        .id("Id")
+        .userId("UserId")
+        .accessKey("AccessKey")
+        .preRegistrationData("PreRegistration")
+        .cardRegistrationURL("CardRegistrationURL")
+        .build()
+```  
+
+#### 3. Tokenize the card with the paymentForm object  
+```kotlin 
+
+//Find and connect PaymentFormView from Java/Kotlin code
+val paymentForm = findViewById<PaymentFormView>(R.id.payment_form)
+val payButton = findViewById<PaymentFormView>(R.id.btn_pay)
+
+
+// tokenize card with the paymentForm object.
+ payButton.setOnClickListener {
+   
+	//check if the paymentForm passed validation
+	if(paymentForm.isComplete()){
+
+			MangopayCheckoutSdk.tokenizeCard(
+     paymentForm.toCardRequest(), cardRegistration,
+       this@PaymentFormActivity, object: Mangopay.CheckoutTokenizeCardResultCallback {
+
+             override fun success(result: CardResult?, attemptReference: String?) {
+                 //process payment in your backend
+             }
+             override fun error(exception: MangopayException) {
+                 //show error to shopper 
+             }
+           }
+        )
+	}
+ }
+```  
+
+## Branding  
+
+You can customize the appearance of the payment sheet by adding a theme.xml file to the `thePaymentFormView` object.TW please add the old table here  
+```xml Example – Theme
+<style name="Theme.ShuFitness" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/shopping_primary</item>
+        <item name="colorPrimaryVariant">@color/shopping_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="mangopay_elementTopLabelColor">@color/black</item>
+        <item name="mangopay_elementInputColor">@color/black</item>
+        <item name="mangopay_elementTopLabelSize">@dimen/top_label_size</item>
+        <item name="mangopay_elementInputHintColor">@color/black</item>
+        <item name="mangopay_progressBarColor">@color/shopping_secondary</item>
+    </style>
+```  
+
+You can add your theme to the `application` in `AndroidManifest.xml`.   
+```xml 
+<application
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:supportsRtl="true"
+    android:theme="@style/Theme.ShuFitness">
+```  
+
+### Configuring the Google Pay button  
+
+Configure the Google Pay button for your app in line with Google Pay’s brand guidelines.  
+```kotlin Example – Google Pay configuration
+val paymentMethods = JSONArray().put(PaymentsUtil.baseCardPaymentMethod())
+val gpayButtonOption = ButtonOptions.newBuilder()
+       .setButtonTheme(ButtonConstants.ButtonTheme.LIGHT)
+       .setButtonType(ButtonConstants.ButtonType.BUY)
+       .setAllowedPaymentMethods(paymentMethods.toString())
+       .setCornerRadius(10)
+       .build()
+```  
+
+## Localization  
+
+The Mangopay Checkout SDK allows you to localize language strings. TW please add the old table here

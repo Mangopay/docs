@@ -1,0 +1,641 @@
+---  
+title: 'PHP'  
+'og:description': 'null'  
+---  
+
+## Introduction  
+
+The Mangopay PHP SDK makes working with the Mangopay API easier in a PHP environment. This SDK is open-source and available on GitHub.  
+<a href="#" class="btn Primary normal">Mangopay PHP SDK</a>  
+
+<Card title="TW should set this">  
+
+Prerequisites  
+
+To run the Mangopay PHP SDK, you’ll need:  
+- A Mangopay `ClientId` and an API key (get a Sandbox API key for free)  
+- PHP 5.6 (or higher) 
+- cURL 
+- OpenSSL
+- psr/log 1.0  
+- Composer (optional but recommended for handling dependencies)
+</Card>  
+
+## Getting started  
+
+### 1/ Install the Mangopay package  
+
+#### Installation with Composer  
+
+1/ Install the Mangopay package  
+```shell 
+composer require mangopay/php-sdk-v2
+```  
+
+2/ Add the autoloader in your project  
+```php 
+require_once 'vendor/autoload.php';
+```  
+
+#### Installation without Composer  
+
+1/ Download the Mangopay package  
+
+Go to the <a href="">Releases page</a> and download the SourceCode.zip asset from the most recent release.  
+
+**2/ Uncompress the SourceCode.zip file and move it to your project folder**  
+
+3/ Include the autoloader in your project  
+```php 
+require_once 'mangopay2-php-sdk-[release number]/MangoPay/Autoload.php';
+```  
+
+### 2/ Initialize and configure the SDK  
+```php 
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+    
+$api = new MangoPayApi();
+    
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'your-temporary-folder-path';
+```  
+
+The configuration object of the SDK supports all the following properties:TW please add the old table here  
+
+## SDK usage  
+
+In the Mangopay documentation, you'll find detailed information of all endpoints paired with its corresponding PHP SDK method implementation example. Be sure to customize the provided code to suit your specific requirements.   
+
+### Idempotency support  
+
+To make a request with idempotency support, add `$idempotencyKey` parameter to your function.  
+
+For more information, see the Idempotency article.  
+```php Call - Create user with idempotency key
+<?php
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+    
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword ='your-api-key';
+    $api->Config->TemporaryFolder = 'your-temporary-folder-path';
+
+    try {
+        $user = new \MangoPay\UserNatural();
+    
+        $user->FirstName = 'Deborah';
+        $user->LastName = 'Smith';
+        $user->Email = "debbie.smith@example.com";
+        
+        $user->Address = new \MangoPay\Address();
+        $user->Address->AddressLine1 = 'Rue des plantes';
+        $user->Address->AddressLine2 = 'Building A';
+        $user->Address->City = 'Paris';
+        $user->Address->Country = 'FR';
+        $user->Address->PostalCode = '75000';
+        $user->Address->Region = 'IDF';
+        $user->Tag = 'Created using the Mangopay PHP SDK';
+        
+        $user->TermsAndConditionsAccepted = true;
+
+        $idempotencyKey = "fk7urhkW45kpTHf445608d";
+        
+        $response = $api->Users->Create($user, $idempotencyKey);
+    
+        print_r($response);
+
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }
+```  
+
+In order to retrieve the request made using the idempotency key:  
+```php Call - View API Response
+<?php
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+    
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-api-key';
+    $api->Config->TemporaryFolder = 'your-temporary-folder-path';
+
+    try {
+        $user = new \MangoPay\UserNatural();
+
+        $idempotencyKey = "fk7urhkW45kpTHf445608d";
+
+        $response = $api->Responses->Get($idempotencyKey);
+    
+        print_r($response);
+
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }
+```  
+```php Output
+   (
+        [StatusCode] => 200
+        [ContentLength] => 719
+        [ContentType] => application/json; charset=utf-8
+        [Date] => Mon, 25 Mar 2024 16:01:50 GMT
+        [RequestURL] => https://api.sandbox.mangopay.com/v2.01/your-client-id/users/natural
+        [Resource] => MangoPay\UserNatural Object
+            (
+                [Id] => user_m_01HSV5HEVH0RG33SY72W8GXM99
+                [Tag] => Created using the Mangopay PHP SDK
+                [CreationDate] => 1711382510
+                [PersonType] => NATURAL
+                [Email] => debbie.smith@example.com
+                [KYCLevel] => LIGHT
+                [TermsAndConditionsAccepted] => 1
+                [TermsAndConditionsAcceptedDate] => 1711382510
+                [UserCategory] => PAYER
+                [FirstName] => Deborah
+                [LastName] => Smith
+                [Address] => MangoPay\Address Object
+                    (
+                        [AddressLine1] => Rue des plantes
+                        [AddressLine2] => Building A
+                        [City] => Paris
+                        [Region] => IDF
+                        [PostalCode] => 75000
+                        [Country] => FR
+                    )
+    
+                [Birthday] => 
+                [Nationality] => 
+                [CountryOfResidence] => 
+                [Occupation] => 
+                [IncomeRange] => 
+                [ProofOfIdentity] => 
+                [ProofOfAddress] => 
+                [Capacity] => NORMAL
+            )
+    
+    )
+```  
+
+### Pagination and filtering  
+
+For endpoints that support <a href="">pagination</a> and <a href="">filtering</a>, you can use the `Pagination()` and `Sorting()` methods to specify these options:
+
+```php 
+<?php
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+    use MangoPay\Pagination;
+    use MangoPay\Sorting;
+    use MangoPay\SortDirection;
+    
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-api-key;
+    $api->Config->TemporaryFolder = 'your-temporary-folder-path';
+    $api->Config->DebugMode = false;
+    
+    try {    
+        $pagination = new Pagination(1, 100);
+        $sorting = new Sorting();
+        $sorting->AddField("CreationDate", SortDirection::DESC);
+
+        $list = $api->Users->GetAll($pagination);
+
+        print_r($list);
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }
+```  
+
+### Temporary folder  
+
+To ensure smooth authentication processes, it's important to manage the temporary token file effectively.  The temporary file, typically named MangoPaySdkStorage.tmp.php, stores authentication tokens and related temporary data during system operations.   
+
+We recommend creating a dedicated folder to store the generated temporary file within the root directory of your application. When initializing your SDK, include your temporary folder path in the configuration:  
+```php 
+$api->Config->TemporaryFolder = 'your-temporary-folder-path';
+```  
+
+If you experience problems with the authentication or the temporary token file, you may need to delete your temporary file that is located in the folder path that you specify with. This allows it to be regenerated correctly the next time it's needed.  
+
+### Logging  
+
+The Mangopay SDK can integrate the Symfony Logger component. To use this feature, you need to enable debug mode:  
+```php 
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key'; 
+$api->Config->TemporaryFolder = 'your-temporary-folder-path';
+$api->Config->DebugMode = true;
+
+...
+
+```  
+
+In debug mode, you will be able to see the logging response:  
+```php Output - View a user
+<pre>++++++++++++++++++++++ New request ++++++++++++++++++++++: <br/>-------------------------------</pre><pre>FullUrl: https://api.sandbox.mangopay.com/v2.01/your-client-id/users/210513027<br/>-------------------------------</pre><pre>RequestType: GET<br/>-------------------------------</pre><pre>HTTP Headers: Array
+(
+    [0] => Content-Type: application/json
+    [1] => User-Agent: MangoPay V2 SDK PHP 3.27.0
+    [2] => Authorization: bearer 6c2c0d1ee7d348afa1a7e69f648e739f
+)
+<br/>-------------------------------</pre><pre>Response JSON: {"Address":{"AddressLine1":"AddressLine1","AddressLine2":"AddressLine2","City":"City","Region":"Region","PostalCode":"11222","Country":"FR"},"FirstName":"Victor","LastName":"Hugo","Birthday":null,"Nationality":null,"CountryOfResidence":null,"Occupation":null,"IncomeRange":null,"ProofOfIdentity":"213918409","ProofOfAddress":null,"Capacity":"NORMAL","PhoneNumber":null,"PhoneNumberCountry":null,"OTPCodeSent":false,"Id":"210513027","Tag":"custom tag","CreationDate":1701775105,"PersonType":"NATURAL","Email":"victor@hugo.com","KYCLevel":"REGULAR","TermsAndConditionsAccepted":false,"TermsAndConditionsAcceptedDate":null,"UserCategory":"PAYER","UserStatus":"ACTIVE"}<br/>-------------------------------</pre><pre>Response object: stdClass Object
+(
+    [Address] => stdClass Object
+        (
+            [AddressLine1] => AddressLine1
+            [AddressLine2] => AddressLine2
+            [City] => City
+            [Region] => Region
+            [PostalCode] => 11222
+            [Country] => FR
+        )
+
+    [FirstName] => Victor
+    [LastName] => Hugo
+    [Birthday] => 
+    [Nationality] => 
+    [CountryOfResidence] => 
+    [Occupation] => 
+    [IncomeRange] => 
+    [ProofOfIdentity] => 213918409
+    [ProofOfAddress] => 
+    [Capacity] => NORMAL
+    [PhoneNumber] => 
+    [PhoneNumberCountry] => 
+    [OTPCodeSent] => 
+    [Id] => 210513027
+    [Tag] => custom tag
+    [CreationDate] => 1701775105
+    [PersonType] => NATURAL
+    [Email] => victor@hugo.com
+    [KYCLevel] => REGULAR
+    [TermsAndConditionsAccepted] => 
+    [TermsAndConditionsAcceptedDate] => 
+    [UserCategory] => PAYER
+    [UserStatus] => ACTIVE
+)
+<br/>-------------------------------</pre><pre>Response headers: Array
+(
+    [0] => HTTP/2 200 
+    [1] => date: Tue, 26 Mar 2024 12:34:59 GMT
+    [2] => content-type: application/json; charset=utf-8
+    [3] => content-length: 665
+    [4] => cache-control: no-cache
+    [5] => pragma: no-cache
+    [6] => expires: -1
+    [7] => x-ratelimit: 6
+    [8] => x-ratelimit-remaining: 2294
+    [9] => x-ratelimit-reset: 1711457340
+    [10] => x-ratelimit: 13
+    [11] => x-ratelimit-remaining: 4487
+    [12] => x-ratelimit-reset: 1711458240
+    [13] => x-ratelimit: 13
+    [14] => x-ratelimit-remaining: 8787
+    [15] => x-ratelimit-reset: 1711460040
+    [16] => x-ratelimit: 101
+    [17] => x-ratelimit-remaining: 105499
+    [18] => x-ratelimit-reset: 1711542780
+    [19] => server: APISIX{"Address":{"AddressLine1":"AddressLine1","AddressLine2":"AddressLine2","City":"City","Region":"Region","PostalCode":"11222","Country":"FR"},"FirstName":"Victor","LastName":"Hugo","Birthday":null,"Nationality":null,"CountryOfResidence":null,"Occupation":null,"IncomeRange":null,"ProofOfIdentity":"213918409","ProofOfAddress":null,"Capacity":"NORMAL","PhoneNumber":null,"PhoneNumberCountry":null,"OTPCodeSent":false,"Id":"210513027","Tag":"custom tag","CreationDate":1701775105,"PersonType":"NATURAL","Email":"victor@hugo.com","KYCLevel":"REGULAR","TermsAndConditionsAccepted":false,"TermsAndConditionsAcceptedDate":null,"UserCategory":"PAYER","UserStatus":"ACTIVE"}
+)
+<br/>-------------------------------</pre>MangoPay\UserNatural Object
+(
+    [Id] => 210513027
+    [Tag] => custom tag
+    [CreationDate] => 1701775105
+    [PersonType] => NATURAL
+    [Email] => victor@hugo.com
+    [KYCLevel] => REGULAR
+    [TermsAndConditionsAccepted] => 
+    [TermsAndConditionsAcceptedDate] => 
+    [UserCategory] => PAYER
+    [FirstName] => Victor
+    [LastName] => Hugo
+    [Address] => MangoPay\Address Object
+        (
+            [AddressLine1] => AddressLine1
+            [AddressLine2] => AddressLine2
+            [City] => City
+            [Region] => Region
+            [PostalCode] => 11222
+            [Country] => FR
+        )
+
+    [Birthday] => 
+    [Nationality] => 
+    [CountryOfResidence] => 
+    [Occupation] => 
+    [IncomeRange] => 
+    [ProofOfIdentity] => 213918409
+    [ProofOfAddress] => 
+    [Capacity] => NORMAL
+)
+```  
+
+You can also provide your own logger:  
+```json Call - View a user
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+try {
+    $api = new MangoPayApi();
+
+    $api->Config->ClientId = 'your-api-key';
+    $api->Config->ClientPassword = 'your-api-key';
+    $api->Config->TemporaryFolder = 'your-temporary-folder-path';
+    $api->Config->DebugMode = true;
+
+    $logger = new ConsoleLogger(new ConsoleOutput());
+    $api->setLogger($logger);
+
+    $userId = '210513027'; 
+    $user = $api->Users->Get($userId);
+
+    MangoPay\Libraries\Logs::Debug('USER DETAILS', $user);
+
+    print_r($user);
+} catch(MGPResponseException $e) {
+    // Log response exception
+    MangoPay\Libraries\Logs::Debug('MangoPay\ResponseException Code', $e->GetCode());
+    MangoPay\Libraries\Logs::Debug('Message', $e->GetMessage());
+    MangoPay\Libraries\Logs::Debug('Details', $e->GetErrorDetails());
+    // Output response exception
+    print_r($e);
+} catch(MGPException $e) {
+    // Log general exception
+    MangoPay\Libraries\Logs::Debug('MangoPay\Exception Message', $e->GetMessage());
+    // Output general exception
+    print_r($e);
+}
+```  
+
+```php Output
+<pre>++++++++++++++++++++++ New request ++++++++++++++++++++++: <br/>-------------------------------</pre><pre>FullUrl: https://api.sandbox.mangopay.com/v2.01/your-client-id/users/210513028<br/>-------------------------------</pre><pre>RequestType: GET<br/>-------------------------------</pre><pre>HTTP Headers: Array
+(
+    [0] => Content-Type: application/json
+    [1] => User-Agent: MangoPay V2 SDK PHP 3.27.0
+    [2] => Authorization: bearer 6c2c0d1ee7d348afa1a7e69f648e739f
+)
+<br/>-------------------------------</pre><pre>Response JSON: {"Message":"The ressource does not exist","Type":"ressource_not_found","Id":"4ebf333e-fcf7-4261-b301-4a7e2c452014","Date":1711456685.0,"errors":{"RessourceNotFound":"Cannot found the ressource User with the id=210513028 "}}<br/>-------------------------------</pre><pre>Response object: stdClass Object
+(
+    [Message] => The ressource does not exist
+    [Type] => ressource_not_found
+    [Id] => 4ebf333e-fcf7-4261-b301-4a7e2c452014
+    [Date] => 1711456685
+    [errors] => stdClass Object
+        (
+            [RessourceNotFound] => Cannot found the ressource User with the id=210513028 
+        )
+
+)
+<br/>-------------------------------</pre><pre>MangoPay\ResponseException Code: 404<br/>-------------------------------</pre><pre>Message: Not found. The ressource does not exist<br/>-------------------------------</pre><pre>Details: MangoPay\Libraries\Error Object
+(
+    [Message] => The ressource does not exist
+    [Errors] => stdClass Object
+        (
+            [RessourceNotFound] => Cannot found the ressource User with the id=210513028 
+        )
+
+    [Id] => 4ebf333e-fcf7-4261-b301-4a7e2c452014
+    [Date] => 1711456685
+    [Type] => ressource_not_found
+)
+<br/>-------------------------------</pre>MangoPay\Libraries\ResponseException Object
+(
+    [message:protected] => Not found. The ressource does not exist
+    [string:Exception:private] => 
+    [code:protected] => 404
+    [file:protected] => RestTool.php file path
+    [line:protected] => 393
+    [trace:Exception:private] => Array
+        (
+            [0] => Array
+                (
+                    [file] => RestTool.php file path
+                    [line] => 161
+                    [function] => CheckResponseCode
+                    [class] => MangoPay\Libraries\RestTool
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => 404
+                            [1] => stdClass Object
+                                (
+                                    [Message] => The ressource does not exist
+                                    [Type] => ressource_not_found
+                                    [Id] => 4ebf333e-fcf7-4261-b301-4a7e2c452014
+                                    [Date] => 1711456685
+                                    [errors] => stdClass Object
+                                        (
+                                            [RessourceNotFound] => Cannot found the ressource User with the id=210513028 
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [file] => ApiBase.php file path
+                    [line] => 318
+                    [function] => Request
+                    [class] => MangoPay\Libraries\RestTool
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => /users/210513028
+                            [1] => GET
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [file] => ApiUsers.php file path
+                    [line] => 57
+                    [function] => GetObject
+                    [class] => MangoPay\Libraries\ApiBase
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => users_get
+                            [1] => 
+                            [2] => 210513028
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [file] => current file path
+                    [line] => 23
+                    [function] => Get
+                    [class] => MangoPay\ApiUsers
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => 210513028
+                        )
+
+                )
+
+        )
+
+    [previous:Exception:private] => 
+    [_responseCodes:MangoPay\Libraries\ResponseException:private] => Array
+        (
+            [200] => OK
+            [204] => No Content
+            [206] => PartialContent
+            [400] => Bad request
+            [401] => Unauthorized
+            [403] => Prohibition to use the method
+            [404] => Not found
+            [405] => Method not allowed
+            [413] => Request entity too large
+            [422] => Unprocessable entity
+            [500] => Internal server error
+            [501] => Not implemented
+        )
+
+    [_errorInfo:MangoPay\Libraries\ResponseException:private] => MangoPay\Libraries\Error Object
+        (
+            [Message] => The ressource does not exist
+            [Errors] => stdClass Object
+                (
+                    [RessourceNotFound] => Cannot found the ressource User with the id=210513028 
+                )
+
+            [Id] => 4ebf333e-fcf7-4261-b301-4a7e2c452014
+            [Date] => 1711456685
+            [Type] => ressource_not_found
+        )
+
+    [_code:MangoPay\Libraries\ResponseException:private] => 404
+    [RequestUrl] => https://api.sandbox.mangopay.com/v2.01/your-client-id/users/210513028
+)
+```  
+
+### Rate limits status  
+
+The Mangopay PHP SDK provides a way of verifying how many API calls were made, how many are left and when the counter will be reset.   
+
+There are 4 groups of rate limits available:  
+-Last 15 minutes  
+-Last 30 minutes  
+-Last 60 minutes  
+-Last 24 hours  
+
+This rate limits status information is available from the `MangoPayApi` instance.  
+
+For more information, see the Rate limiting article.  
+```php 
+<?php
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+
+class MangoPayService
+{
+
+    /**
+    * @var MangoPay\MangoPayApi
+    */
+    private $mangoPayApi;
+
+    public function __construct()
+    {
+        $this->mangoPayApi = new MangoPay\MangoPayApi();
+        $this->mangoPayApi->Config->ClientId = 'your-client-id';
+        $this->mangoPayApi->Config->ClientPassword = 'your-client-password';
+        $this->mangoPayApi->Config->TemporaryFolder = 'your-temporary-folder-path';
+    }
+
+    public function verifyRateLimits()
+    {
+        // This is an array of 4 RateLimit objects.
+        $rateLimits = $this->mangoPayApi->RateLimits;
+        print "\nThere were " . $rateLimits[0]->CallsMade . " calls made in the last 15 minutes";
+        print "\nYou can do " . $rateLimits[0]->CallsRemaining . " more calls in the next 15 minutes";
+        print "\nThe 60 minutes counter will reset at " . date("Y-m-d\TH:i:s\Z", $rateLimits[0]->ResetTimeTimestamp);
+        print "\nThere were " . $rateLimits[2]->CallsMade . " calls made in the last 60 minutes";
+        print "\nYou can do " . $rateLimits[2]->CallsRemaining . " more calls in the next 60 minutes";
+        print "\nThe 60 minutes counter will reset at " . date("Y-m-d\TH:i:s\Z", $rateLimits[2]->ResetTimeTimestamp);
+    }
+}
+```  
+
+In debug mode, you can also see the response header in your output:  
+```php 
+...
+<br/>-------------------------------</pre><pre>Response headers: Array
+(
+    [0] => HTTP/2 200 
+    [1] => date: Tue, 26 Mar 2024 12:34:59 GMT
+    [2] => content-type: application/json; charset=utf-8
+    [3] => content-length: 665
+    [4] => cache-control: no-cache
+    [5] => pragma: no-cache
+    [6] => expires: -1
+    [7] => x-ratelimit: 6
+    [8] => x-ratelimit-remaining: 2294
+    [9] => x-ratelimit-reset: 1711457340
+    [10] => x-ratelimit: 13
+    [11] => x-ratelimit-remaining: 4487
+    [12] => x-ratelimit-reset: 1711458240
+    [13] => x-ratelimit: 13
+    [14] => x-ratelimit-remaining: 8787
+    [15] => x-ratelimit-reset: 1711460040
+    [16] => x-ratelimit: 101
+    [17] => x-ratelimit-remaining: 105499
+    [18] => x-ratelimit-reset: 1711542780
+    [19] => server: APISIX{"Address":{"AddressLine1":"AddressLine1","AddressLine2":"AddressLine2","City":"City","Region":"Region","PostalCode":"11222","Country":"FR"},"FirstName":"Victor","LastName":"Hugo","Birthday":null,"Nationality":null,"CountryOfResidence":null,"Occupation":null,"IncomeRange":null,"ProofOfIdentity":"213918409","ProofOfAddress":null,"Capacity":"NORMAL","PhoneNumber":null,"PhoneNumberCountry":null,"OTPCodeSent":false,"Id":"210513027","Tag":"custom tag","CreationDate":1701775105,"PersonType":"NATURAL","Email":"victor@hugo.com","KYCLevel":"REGULAR","TermsAndConditionsAccepted":false,"TermsAndConditionsAcceptedDate":null,"UserCategory":"PAYER","UserStatus":"ACTIVE"}
+)
+...
+```  
+
+### Unit tests  
+
+All tests are placed under /your-project-path/tests/.   
+
+You can also use any of the files in /tests/Cases folder to run a single test case.  
+<a href="#" class="btn Secondary normal">Report an issue</a>

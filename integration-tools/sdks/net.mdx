@@ -1,0 +1,319 @@
+---  
+title: '.NET'  
+'og:description': 'null'
+---
+
+## Introduction  
+
+The Mangopay .NET SDK makes working with the Mangopay API easier in a .NET environment. This SDK is open-source and available on GitHub.
+
+<a href="#" class="btn Primary normal">Mangopay .NET SDK</a>  
+
+<Card title="TW should set this">  
+
+Prerequisites  
+
+To run the Mangopay .NET SDK, you’ll need:  
+- A Mangopay `ClientId` and an API key (get a Sandbox API key for free).   
+- .NET Standard 2.0 or .NET 6.0  
+- Common.Logging library (version 3.4.1 or higher)  
+- Newtonsoft.Json (version 13.0.1 or higher)  
+- RestSharp (version 107.3.0 or higher)  
+- NETStandard.Library (version 2.0.3 or higher)
+</Card>  
+
+## Getting started  
+
+#### 1/ Install the Mangopay package  
+
+Installation from the .NET Package Manager Console 
+
+```shell 
+NuGet\Install-Package mangopay2-sdk 
+```  
+
+Installation with the .NET CLI  
+```shell 
+dotnet add package mangopay2-sdk
+```  
+
+#### 2/ Initialize and configure the SDK 
+
+```.net 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using System.Reflection;
+
+class Program {
+    static void Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+	  ...
+
+    }
+}
+```  
+
+The configuration object of the SDK supports all the following properties:TW please add the old table here  
+
+## SDK usage  
+
+In the Mangopay documentation, you'll find detailed information of all endpoints paired with its corresponding .NET SDK method implementation example. Be sure to customize the provided code to suit your specific requirements.   
+
+### Idempotency support  
+
+To make a request with idempotency support, add `idempotencyKey` parameter to your function.  
+
+For more information, see the Idempotency article.  
+```.net Call - Create user with idempotency key
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using System.Reflection;
+
+class CreateUser
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var myUser = new UserNaturalOwnerPostDTO
+        {
+            Tag = "Created using the Mangopay .NET SDK",
+            Email = "alice.smith@example.com",
+            FirstName = "Alice",
+            LastName = "Smith",
+            Address = new Address
+            {
+                AddressLine1 = "17 Rue de la République",
+                City = "Paris",
+                PostalCode = "75001",
+                Country = CountryIso.FR
+            },
+            Birthday = new DateTime(1985, 3, 15),
+            Nationality = CountryIso.FR,
+            CountryOfResidence = CountryIso.FR
+        };
+
+        var idempotencyKey = "pk7urhkW55KpTHf44567-d";
+
+        var createNaturalUser = await api.Users.CreateOwnerAsync(myUser, idempotencyKey);
+
+        foreach (PropertyInfo prop in createNaturalUser.GetType().GetProperties())
+        {
+            var propValue = prop.GetValue(createNaturalUser);
+            if (propValue != null)
+            {
+                Console.Write($"{prop.Name}: ");
+
+                if (prop.Name == "Address")
+                {
+                    var address = propValue as Address;
+                    if (address != null)
+                    {
+                        Console.WriteLine($"{address.AddressLine1}, {address.AddressLine2}, {address.City}, {address.PostalCode}, {address.Country}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(propValue);
+                }
+            }
+        }
+    }
+}
+```  
+
+In order to retrieve the request made using the idempotency key:  
+```.net Call - View API Response
+using MangoPay.SDK;
+using System.Reflection;
+
+class ViewResponse
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var idempotencyKey = "pk7urhkW55KpTHf44567-d";
+        
+        var result = await api.Idempotent.GetAsync(idempotencyKey);
+
+        foreach (PropertyInfo prop in result.GetType().GetProperties())
+        {
+            var propValue = prop.GetValue(result);
+            if (propValue != null)
+            {
+                Console.Write($"{prop.Name}: ");
+                Console.WriteLine(propValue);                   
+            }
+        }
+    }
+}
+```  
+```.net Output
+StatusCode: 200
+ContentLength: 717
+ContentType: application/json; charset=utf-8
+Date: Fri, 22 Mar 2024 14:13:38 GMT
+RequestURL: https://api.sandbox.mangopay.com/v2.01/your-client-id/users/natural
+Resource: MangoPay.SDK.Entities.GET.UserNaturalDTO
+CreationDate: 1/1/0001 12:00:00 AM
+```  
+
+### Pagination  
+
+For endpoints that support pagination, you can use the `Pagination` object.   
+
+In the object, you need to specify the page and items per page to return.  
+
+As a result, the answer will be paginated, and the total number of items and the total number of pages will be provided.  
+
+For example, with the List all Users endpoint
+:  
+```json 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using System.Reflection;
+
+class ListAllUsers {
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var myUsers = await api.Users.GetAllAsync(new Pagination(1, 100));
+
+        foreach (var user in myUsers)
+        {
+            foreach (PropertyInfo prop in user.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(user);
+                if (propValue != null)
+                {
+                    Console.Write($"{prop.Name}: ");
+                    Console.WriteLine(propValue);
+                }
+            }
+            Console.WriteLine();
+        }
+    }
+}
+```  
+
+### Rate limiting status  
+
+Rate limiting in Mangopay restricts the frequency of API requests a client can make over a defined period, automatically updating the limit with each request and blocking additional requests if the limit is exceeded until it resets. For more information, see the rate limiting article.  
+
+```.net Call - View a user
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using RestSharp;
+using System.Reflection;
+
+class ViewUser
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var myUser = await api.Users.GetNaturalAsync("user_m_01HRCAJT98VPWE4DHBTC8N8KA0");
+        var response = await Task.Run(() => api.LastRequestInfo);
+
+        Console.WriteLine($"Method: {response.Request.Method}");
+        Console.WriteLine($"Resource: {response.Request.Resource}");
+        Console.WriteLine("Headers:");
+        foreach (var header in response.Request.Parameters.Where(p => p.Type == ParameterType.HttpHeader))
+        {
+            Console.WriteLine($"{header.Name}: {header.Value}");
+        }
+        var requestBody = response.Request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody)?.Value;
+        if (!string.IsNullOrEmpty((string?)requestBody))
+        {
+            Console.WriteLine($"Body: {requestBody}");
+        }
+
+        // Display Response details
+        Console.WriteLine("\nResponse Details:");
+        Console.WriteLine($"Response type: {response.Response.GetType().FullName}");
+        foreach (PropertyInfo prop in response.GetType().GetProperties())
+        {
+            var propValue = prop.GetValue(response);
+            Console.Write($"{prop.Name}: ");
+            Console.WriteLine(propValue);
+        }
+
+        foreach (PropertyInfo prop in myUser.GetType().GetProperties())
+        {
+            var propValue = prop.GetValue(myUser);
+            if (propValue != null)
+            {
+                Console.Write($"{prop.Name}: ");
+
+                if (prop.Name == "Address")
+                {
+                    var address = propValue as Address;
+                    if (address != null)
+                    {
+                        Console.WriteLine($"{address.AddressLine1}, {address.AddressLine2}, {address.City}, {address.PostalCode}, {address.Country}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(propValue);
+                }
+            }
+        }
+    }
+}
+```  
+```.net Output
+Method: Get
+Resource: /v2.01/your-client-id/users/natural/user_m_01HRCAJT98VPWE4DHBTC8N8KA0
+Headers:
+User-Agent: MangoPay V2 SDK .NET 3.16.0.0
+Authorization: bearer f8cc4ce612524a11afac04abbf0798d6
+
+Response Details:
+Response type: RestSharp.RestResponse`1[[MangoPay.SDK.Entities.GET.UserNaturalDTO, MangoPay.SDK, Version=3.16.0.0, Culture=neutral, PublicKeyToken=null]]
+Request: RestSharp.RestRequest
+Response: RestSharp.RestResponse`1[MangoPay.SDK.Entities.GET.UserNaturalDTO]
+RateLimitingCallsAllowed: 
+RateLimitingCallsRemaining: 2294
+RateLimitingTimeTillReset: 1711642500
+FirstName: Alice
+LastName: Smith
+Address: 17 Rue de la République, , Paris, 75001, FR
+Birthday: 3/15/1985 12:00:00 AM
+Nationality: FR
+CountryOfResidence: FR
+TermsAndConditionsAccepted: False
+UserCategory: OWNER
+PersonType: NATURAL
+Email: alice.smith@example.com
+KYCLevel: LIGHT
+Id: user_m_01HRCAJT98VPWE4DHBTC8N8KA0
+Tag: Created using the Mangopay .NET SDK
+CreationDate: 3/7/2024 11:25:39 AM
+```  
+
+### Unit tests  
+
+All unit tests are placed under the MangoPay.SDK.Tests directory.  
+<a href="#" class="btn Secondary normal">Report and issue</a>

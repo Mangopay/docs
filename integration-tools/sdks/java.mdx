@@ -1,0 +1,346 @@
+---  
+title: 'Java'  
+'og:description': 'Learn all about Mangopay’s open-source Java SDK.'  
+---  
+
+## Introduction  
+
+The Mangopay Java SDK makes working with the Mangopay API easier in a Java environment. This SDK is open-source and available on GitHub.  
+<a href="#" class="btn Primary normal">Mangopay Java SDK</a>  
+
+<Card title="TW should set this">  
+
+Prerequisites  
+
+To run the Mangopay Java SDK, you’ll need:  
+- A Mangopay `ClientId` and an API key (get a Sandbox API key for free). 
+- Java 7.0+  
+- Your preferred build automation tools: Maven or Gradle
+</Card>  
+
+## Getting started  
+
+#### 1/ Install the Mangopay package  
+
+The SDK is published as an artifact on Mangopay’s Maven Central Repository and can be used with Gradle or Maven.  
+
+Installation with Gradle  
+
+Add the following to your build.gradle file:  
+```shell 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.mangopay:mangopay2-java-sdk:2.37.0'
+    // All of your other dependencies
+}
+```  
+
+Installation with Maven  
+
+Add the Mangopay dependency to your pom.xml file:  
+```xml 
+<dependency>
+    <groupId>com.mangopay</groupId>
+    <artifactId>mangopay2-java-sdk</artifactId>
+    <version>2.37.0</version>
+</dependency>
+```  
+
+#### 2/ Initialize and configure the SDK  
+```java 
+import com.mangopay.MangoPayApi;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        ...
+    }
+}
+```  
+
+The configuration object of the SDK supports all the following properties:TW please add the old table here  
+
+## SDK usage  
+
+In the Mangopay documentation, you'll find detailed information of all endpoints paired with its corresponding Java SDK method implementation example. Be sure to customize the provided code to suit your specific requirements.   
+
+### Idempotency support  
+
+To make a request with idempotency support, add `idempotencyKey` parameter to your function.
+For more information, see the Idempotency article.  
+```java Call - Create user with idempotency key
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+
+import java.lang.reflect.Field;
+
+public class CreateNaturalUserWithKey {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural user = new UserNatural();
+        Address address = new Address();
+
+        address.setAddressLine1("27 Rue de Rivoli");
+        address.setCity("Paris");
+        address.setRegion("Île-de-France");
+        address.setPostalCode("75001");
+        address.setCountry(CountryIso.FR);
+
+        user.setFirstName("Alex");
+        user.setLastName("Smith");
+        user.setEmail("alex.smith@mgp.com");
+        user.setAddress(address);
+        user.setBirthday(655772400);
+        user.setNationality(CountryIso.FR);
+        user.setCountryOfResidence(CountryIso.FR);
+        user.setTermsAndConditionsAccepted(true);
+        user.setTag("Created with the Mangopay Java SDK");
+        user.setUserCategory(UserCategory.PAYER);
+
+        var idempotencyKey = "pk7urhkW55-pTHf445678d";
+
+        User createUser = mangopay.getUserApi().create(idempotencyKey, user);
+        
+        System.out.println(createUser);
+    }
+}
+```  
+
+In order to retrieve the request made using this  idempotency:  
+```java Call - View API Response
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.IdempotencyResponse;
+
+import java.lang.reflect.Field;
+
+public class GetWithKey {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var idempotencyKey = "pk7urhkW55-pTHf445678d";
+
+        IdempotencyResponse respone = mangopay.getIdempotencyApi().get(idempotencyKey);
+
+        printObjectFields(respone);
+        System.out.println("resource: ");
+        printObjectFields(respone.getResource());
+       
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    Address address = (Address) value;
+                    System.out.println(field.getName() + ": " + address.getAddressLine1() + ", " +
+                                       address.getAddressLine2() + ", " +
+                                       address.getPostalCode() + " " +
+                                       address.getCity() + ", " +
+                                       address.getRegion() + ", " +
+                                       address.getCountry());
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+}
+```  
+```json Output
+statusCode: 200
+contentLength: 712
+contentType: application/json; charset=utf-8
+date: Fri, 22 Mar 2024 10:13:10 GMT
+resource: com.mangopay.entities.UserNatural@b2c5e07
+requestUrl: https://api.sandbox.mangopay.com/v2.01/your-client-id/users/natural
+resource: 
+firstName: Alex
+lastName: Smith
+address: 27 Rue de Rivoli, null, 75001 Paris, Île-de-France, FR
+birthday: 0
+birthplace: null
+nationality: null
+countryOfResidence: null
+occupation: null
+incomeRange: null
+proofOfIdentity: null
+proofOfAddress: null
+capacity: NORMAL
+```  
+
+### Pagination and filtering  
+
+For endpoints that support <a href="">pagination</a> and <a href="">filtering</a> , you can use the `Pagination` and `Sorting` objects. 
+
+In the `Pagination` object, you need to specify the page and items per page to return.  
+
+In the `Sorting` object, you need to use the `addField()` method to specify the sort direction.  
+
+As a result, the answer will be paginated, and the total number of items and the total number of pages will be provided.
+For example, with the List all Users endpoint:  
+```java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.User;
+import com.mangopay.core.Pagination;
+import com.mangopay.core.Sorting;
+import java.util.List;
+
+MangoPayApi api = new MangoPayApi();
+
+// get all users (with pagination and sorting)
+Pagination pagination = new Pagination(1, 8); // get 1st page, 8 items per page
+Sorting sort = new Sorting();
+sort.addField("SortingField", SortDirection.asc); // Sorting is an enum, its values: none, asc, desc
+List<User> users = api.getUserApi().getAll(pagination, sort);
+```  
+
+### Rate limiting status  
+
+Rate limiting in Mangopay restricts the frequency of API requests a client can make over a defined period, automatically updating the limit with each request and blocking additional requests if the limit is exceeded until it resets. For more information, see the rate limiting article.  
+```java Call - Test rate limiting
+import com.mangopay.entities.RateLimit;
+
+import java.lang.reflect.Field;
+
+public class TryRateLimiting {
+
+    private RateLimit rateLimit;
+
+    public static int callCounter = 1;
+
+    public TryRateLimiting(int intervalMinutes) {
+        this.rateLimit = new RateLimit(intervalMinutes);
+    }
+
+    public static void main(String[] args) {
+        // Rate limit with allowed calls equal to 10 for demonstration purposes)
+        TryRateLimiting example = new TryRateLimiting(1); 
+        example.rateLimit.setCallsRemaining(7); 
+        example.rateLimit.setResetTimeSeconds(System.currentTimeMillis() / 1000 + (example.rateLimit.getIntervalMinutes() * 60)); // Set initial reset time
+
+        var calls = 10;
+        // Simulate multiple API calls
+        for (int i = 0; i < calls; i++) {
+            example.makeAPICall();
+            callCounter++;
+        }
+    }
+    
+    // Simulate making an API call
+    public void makeAPICall() {
+
+        // Check if the current time has passed the reset time, if so reset the rate limit
+        long currentTimeSeconds = System.currentTimeMillis() / 1000;
+        if (currentTimeSeconds >= rateLimit.getResetTimeSeconds()) {
+            rateLimit.setCallsMade(0);
+            rateLimit.setCallsRemaining(rateLimit.getAllowedCalls());
+            rateLimit.setResetTimeSeconds(currentTimeSeconds + (rateLimit.getIntervalMinutes() * 60));
+        }
+
+        if (rateLimit.getCallsRemaining() > 0) {
+            System.out.println("Call #" + callCounter);
+            System.out.println("API Call made");
+
+            rateLimit.setCallsMade(rateLimit.getCallsMade() + 1);
+            rateLimit.setCallsRemaining(rateLimit.getCallsRemaining() - 1);
+
+            printObjectFields(rateLimit);
+        } else {
+            System.out.println("Call #" + callCounter);
+            System.out.println("Rate limit exceeded. ");
+        }
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```  
+```json Output
+Call #1
+API Call made
+intervalMinutes: 1
+callsMade: 1
+callsRemaining: 6
+resetTimeSeconds: 1711115417
+Call #2
+API Call made
+intervalMinutes: 1
+callsMade: 2
+callsRemaining: 5
+resetTimeSeconds: 1711115417
+Call #3
+API Call made
+intervalMinutes: 1
+callsMade: 3
+callsRemaining: 4
+resetTimeSeconds: 1711115417
+Call #4
+API Call made
+intervalMinutes: 1
+callsMade: 4
+callsRemaining: 3
+resetTimeSeconds: 1711115417
+Call #5
+API Call made
+intervalMinutes: 1
+callsMade: 5
+callsRemaining: 2
+resetTimeSeconds: 1711115417
+Call #6
+API Call made
+intervalMinutes: 1
+callsMade: 6
+callsRemaining: 1
+resetTimeSeconds: 1711115417
+Call #7
+API Call made
+intervalMinutes: 1
+callsMade: 7
+callsRemaining: 0
+resetTimeSeconds: 1711115417
+Call #8
+Rate limit exceeded. 
+Call #9
+Rate limit exceeded. 
+Call #10
+Rate limit exceeded. 
+```  
+
+### Unit tests  
+
+All JUnit tests are placed under the tests directory.   
+<a href="#" class="btn Secondary normal">Report an issue</a>

@@ -1,0 +1,361 @@
+---  
+title: 'Checkout - iOS'  
+'og:description': 'How to set up the Mangopay Checkout SDK on iOS, including handling 3DS redirection and offering Apple Pay.'  
+---
+
+This guide helps you get started with the Checkout SDK on iOS.  
+
+<Card title="TW should set this">  
+- A Mangopay ClientId and API key (get a Sandbox API key for free)  
+- A User and their associated Wallet to complete the pay-in  
+- A card to register or payment method setup (see Testing - Payment methods for testing information)  
+
+For iOS:  
+- iOS 13+  
+- Xcode 12.2  
+- Swift 5.3+
+</Card>  
+
+## Installation  
+
+Mangopay Checkout  
+
+### Swift Package Manager (recommended)  
+-Open your Xcode project and go to File > Swift Packages > Add Package Dependency  
+-In the prompted dialog, enter the repository URL https://github.com/Mangopay/mangopay-ios-sdk  
+-Select the checkout-ios-sdk package by checking the corresponding checkbox  
+-Follow the on-screen instructions to complete the installation  
+
+## Creating a Card Registration  
+
+In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId` .  
+
+You must also define the currency and type of the card at this stage.
+
+```json 
+{
+    "Tag": "Created with the Mangopay Checkout SDK",
+    "UserId": "142036728",
+    "CardType": "CB_VISA_MASTERCARD",
+    "Currency": "EUR"
+}
+```
+
+```json API response
+{
+    "Id": "193020188",
+    "Tag": null,
+    "CreationDate": 1686147148,
+    "UserId": "193020185",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "XBDYiG8w9PrylPS01KmupZunmK2QRHKIC-yUF6il3aIpAnKba1TGkR9VJe5lHjHt2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": null,
+    "CardId": null,
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "Currency": "EUR",
+    "Status": "CREATED"
+}
+```  
+
+The data obtained in the response will be used in the `options` of the card payment method configured below.  
+
+## Initializing the SDK  
+
+Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).
+
+```swift Initialization
+MangopayCheckoutSDK.initialize(clientId: "<client_id>", environment: .sandbox)
+```  
+
+### Initialization parametersTW please add the old table here  
+
+## Configuring the payment sheet  
+
+To configure the Checkout SDK’s payment sheet:   
+
+#### 1. Create a payment sheet instance in your view controller  
+```swift Payment sheet instance
+var checkout: MGPPaymentSheet!
+```  
+
+#### 2. Create callbacks to handle the payment  
+```swift Payment handler
+	let callback = CallBack(
+	     onPaymentMethodSelected: { paymentMethod in
+	     },
+	     onTokenizationCompleted: { cardRegistration in
+	     }, onPaymentCompleted: {
+	     }, onCancelled: {
+	     },
+	     onError: { error in
+	     },
+	     onSheetDismissed: {
+	     }
+	 )
+```  
+
+#### 3. Create the paymentMethodConfig object  
+```swift paymentMethodConfig
+let paymentConfig = PaymentMethodConfig(cardReg: cardRegObj)
+```  
+
+#### 4. Initialize the payment sheet  
+```swift Payment sheet initialization
+checkout = MGPPaymentSheet.create(
+       client: mgpClient,
+       paymentMethodConfig: paymentConfig,
+       handlePaymentFlow: false,
+       branding: PaymentFormStyle(),
+       callback: callback
+   )
+```  
+
+#### 5. Present the payment sheet  
+```swift Payment sheet presentation
+checkout.present(in: self)
+```  
+
+### paymentMethodConfig parameters TW please add the old table here  
+
+## Using Card Element  
+
+Card Element is a ready-made component that allows you to create your own card payment experience and tokenize card payment details. With Card Element, you can incorporate a custom pay button and have control over the tokenization process.  
+
+When using Card Element, you still benefit from real-time card data validation, and the ability to customize the payment form.  
+
+To use Card Element, proceed as follows:  
+
+### 1. Create an instance of the payment form  
+```swift Payment form
+lazy var elementForm: MGPPaymentForm = {
+        let form = MGPPaymentForm(
+            paymentFormStyle: PaymentFormStyle(),
+            supportedCardBrands: [.visa, .mastercard, .maestro]
+        )
+        return form
+    }()
+```  
+
+#### MGPPaymentFormTW please add the old table here  
+
+### 2. Add payment form to your parent view and add the appropriate layout constraints  
+```swift Payment form to parent view
+self.view.addSubview(elementForm)
+```  
+
+### 3. Create Card Registration object as described above  
+
+### 4. Call tokenizeCard() on user action  
+
+The example below is for the user clicking on the pay button.  
+```swift Example - tokenizeCard 
+	MangopayCoreiOS.tokenizeCard(
+	    form: elementForm,
+	    with: cardRegistration,
+	    presentIn: <presenting_view_controller>
+	) { respoonse, error in
+	        
+      if let res = respoonse {
+		    //do something
+      }
+      
+      if let err = error {
+          //do something
+      }
+  }
+```  
+
+#### MangopayCoreiOS.tokenizeCard()TW please add the old table here  
+
+#### TokenizedCardDataTW please add the old table here  
+
+#### FraudDataTW please add the old table here  
+
+### Managing cards  
+
+You can use the following endpoints to manage cards:  
+-View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+-Deactivate a Card allows you to irreversibly set the card as inactive  
+
+<Warning>  
+**Warning – End user's approval needed to save card details** 
+  
+Under no circumstances should card information be kept without the end user's approval.   
+If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
+</Warning>  
+
+### Requesting card pay-ins  
+
+You can use a registered card (`CardId`) for pay-ins with the following objects:  
+- The Direct Card PayIn object, for one-shot card payments  
+- The Recurring PayIn Registration object, for recurring card payments  
+- The Preauthorization object, for 7-day preauthorized card payments  
+- The Deposit Preauthorization object, for 30-day preauthorized card payments  
+
+<Note>  
+**Note - 3DS redirection required when requesting card payments** 
+  
+When you make a card payment request, you need to be ready to handle 3DS redirection.  
+</Note>  
+
+## Handling 3DS redirection  
+
+When requesting a payment or other card authorization, you need to be able to handle 3DS redirection if it is required by the issuer. This is indicated by the `SecureModeNeeded` in the API response, and the `SecureModeRedirectURL` provides the redirection URL.  
+
+The Checkout SDK’s 3DS helper allows you to redirect users to authenticate securely and seamlessly.   
+
+<Note>  
+**Note - Example project for 3DS handling** 
+  
+You can find an example of handling 3DS redirect flow using our SDK in the HandleThreedsActivity.tk file from the Mangopay iOS SDK examples.  
+</Note>
+
+```swift 
+let _3dsVC = ThreeDSController(
+      secureModeReturnURL: <"secure_mode_url">,
+      secureModeRedirectURL: "secure_mode_redirect_url",
+			transactionType: .cardDirect,
+      onComplete: { result in
+          switch result.status {
+          case .SUCCEEDED:
+							//do something
+          case .FAILED:
+							//do something
+          }
+      }) { error in
+      }
+
+viewController.present(_3dsVC)
+```  
+
+### 3DS helper parametersTW please add the old table here  
+
+#### _3DSTransactionTypeTW please add the old table here  
+
+#### _3DSResultTW please add the old table here  
+
+### Verifying the payment result  
+
+<Note>  
+**Best practice - Check payment result from backend** 
+  
+It is highly recommended that you confirm the transaction result from your backend using the API endpoint.  
+</Note>  
+
+### Presenting the payment result  
+```swift Payment result
+Checkout Screen  -> Payment sheet -> Confirmation screen 
+
+checkout = MGPPaymentSheet.create(
+           paymentMethodConfig: paymentConfig,
+           branding: PaymentFormStyle(),
+           callback: CallBack(
+               onTokenizationCompleted: { cardRegistration in
+									//dismiss the payment sheet
+									 self.checkout.teardown()
+									//present the confirmation screen
+               },
+               onError: { error in
+               },
+               onSheetDismissed: {
+               }
+           )
+       )
+
+       checkout.present(in: self)
+```  
+
+## Offering Apple Pay  
+
+<Note>  
+**Note - Apple Pay integration required** 
+  
+Offering Apple Pay requires additional setup by the platform, including certification and integration. For more information, see the How to process an Apple Pay payment tutorial.  
+</Note>  
+
+To offer the Apple Pay payment method, include the `MangopayApplePayConfig` object during initialization. This displays the Apple Pay button and handle Apple Pay payment events.
+
+```swift Apple Pay configuration
+let applePayConfig = MGPApplePayConfig(
+          amount: 1,
+          delegate: self,
+          merchantIdentifier: "<merchant_id>",
+          merchantCapabilities: .capability3DS,
+          currencyCode: "<currency_code",
+          countryCode: "<country_code",
+          supportedNetworks: [
+              .masterCard,
+              .visa
+          ]
+       )
+
+let paymentConfig = PaymentMethodConfig(cardReg: cardRegObj, applePayConfig: applePayConfig)
+
+checkout = MGPPaymentSheet.create(
+       client: mgpClient,
+       paymentMethodConfig: paymentConfig,
+       branding: PaymentFormStyle(),
+       callback: callback
+   )
+```  
+
+### Configuration parameters
+
+TW please add the old table here  
+
+### Optional parameters
+
+TW please add the old table here  
+
+### Handling the Apple Pay result
+
+```swift 
+extension ViewController: MGPApplePayHandlerDelegate {
+
+    func applePayContext(didSelect shippingMethod: PKShippingMethod, handler: @escaping (PKPaymentRequestShippingMethodUpdate) -> Void) {
+    }
+
+    func applePayContext(didCompleteWith status: MangoPayApplePay.PaymentStatus, error: Error?) {
+    }
+}
+```  
+
+### Requesting Apple Pay pay-in  
+
+To request the payment, use the Create a Apple Pay PayIn endpoint and include the Apple Pay `PaymentData`.  
+
+## Branding  
+
+You can customize the appearance of the payment sheet using the `PaymentFormStyle` object.
+
+```swift Example - Branding
+let branding = PaymentFormStyle(
+            font: .systemFont(ofSize: 12),
+            borderType: .round,
+            backgroundColor: .white,
+            textColor: .gray,
+            placeHolderColor: .darkGray,
+            borderColor: .black,
+            borderFocusedColor: .blue,
+            errorColor: .red,
+            checkoutButtonTextColor: .white,
+            checkoutButtonBackgroundColor: .black,
+            checkoutButtonDisabledBackgroundColor: .gray,
+            checkoutButtonText: "Checkout",
+            applePayButtonType: .plain,
+            applePayButtonStyle: .black,
+            applePayButtonCornerRadius: 8
+         )
+
+....
+
+checkout = MGPPaymentSheet.create(
+       client: mgpClient,
+       paymentMethodConfig: paymentConfig,
+       branding: branding,
+       callback: callback
+   )
+```TW please add the old table here

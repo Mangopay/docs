@@ -1,0 +1,140 @@
+---  
+title: 'Node.js'  
+'og:description': 'Learn all about Mangopay’s open-source Node.js SDK.'  
+---  
+
+## Introduction  
+
+The Mangopay Node.js SDK makes working with the Mangopay API easier in a Node.js environment. This SDK is open-source and available on GitHub.  
+
+<a href="#" class="btn Primary normal">Mangopay Node.js SDK</a>  
+
+<Card title="TW should set this">  
+
+Prerequisites  
+
+To run the Mangopay Node.js SDK, you’ll need:  
+- A Mangopay `ClientId` and an API key (get a Sandbox API key for free).  
+- Node.js installed (v.14 and higher)  
+- npm package manager installed
+</Card>  
+
+<Note>  
+**Note - Mangopay SDK compatibility** 
+  
+The Node.js SDK is only compatible with the v2.01 version of the Mangopay API.  
+</Note>  
+
+## Getting started  
+
+1/ Install the SDK  
+```nodejs 
+npm install mangopay2-nodejs-sdk --save 
+```  
+
+2/ Initialize the SDK  
+```nodejs 
+const mangopay = require('mangopay2-nodejs-sdk');
+
+const paymentApi = new mangopay({
+    clientId: 'your-mangopay-client-id',
+    clientApiKey: 'your-mangopay-api-key',
+    baseUrl: 'https://api.sandbox.mangopay.com'
+});
+```  
+
+The configuration object of the SDK supports all the following properties:TW please add the old table here  
+
+## SDK usage  
+
+All endpoints are documented with the related Node.js SDK method throughout the Mangopay documentation. The code examples provided should be adjusted for your usage.  
+
+### TypeScript  
+
+The SDK is compatible with TypeScript and provides a set of predefined models. They are available in the /lib/models/ GitHub folder.  
+
+### Using callbacks instead of promises  
+
+Across the Mangopay endpoint documentation, the usage of the SDK is documented with promises. If you prefer callbacks, here is an example on how to use them:  
+```nodejs 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '171602348',
+}
+
+mangopay.Users.get(user.Id, function(data, response, err){
+	console.log(data)
+	console.log(response)
+	console.log(err)
+})
+```  
+
+### Pagination and filtering  
+
+For endpoints that support <a href="">pagination</a> and <a href="">filtering</a>, you can use `options.parameters` to specify these options:
+
+```nodejs 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let parameters = {
+  // Options for pagination
+  per_page: 2,
+  page: 2,
+
+  // Options for Filters
+  BeforeDate: 1683129820,
+  AfterDate: 1682957020,
+  // Nature: REGULAR,
+  // Status: FAILED,
+  // Type: TRANSFER,
+};
+
+const indexEvents = async () => {
+  return await mangopay.Events.getAll({ parameters: parameters })
+    .then((response) => {
+      console.info(response)
+      return response;
+    })
+    .catch((err) => {
+      console.log(err)
+      return false;
+    });
+};
+
+indexEvents()
+```  
+
+### Accessing response headers  
+
+For reading the server response headers, you can use resolveWithFullResponse. This is useful to access information about the <a href="">pag<a href="">ination</a> o</a>r rate limiting.  
+```nodejs 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+const indexEvents = async () => {
+  return await mangopay.Events.getAll({ resolveWithFullResponse: true })
+    .then((response) => {
+      console.info(response.headers['x-number-of-pages'])
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    });
+};
+
+indexEvents()
+```  
+<a href="#" class="btn Secondary normal">Report an issue</a>

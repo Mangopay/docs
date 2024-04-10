@@ -1,0 +1,210 @@
+---  
+title: 'Python'  
+'og:description': 'Learn all about Mangopay’s open-source Python SDK.'  
+---  
+
+## Introduction  
+
+The Mangopay Python SDK makes working with the Mangopay API easier in a Python environment. This SDK is open-source and available on GitHub. 
+
+<a href="#" class="btn Primary normal">Mangopay Python SDK</a>  
+
+<Card title="TW should set this">  
+  Prerequisites  
+
+  To run the Mangopay Python SDK, you’ll need:  
+  - A Mangopay `ClientId` and an API key (get a Sandbox API key for free). 
+  - Python 3.2.5 (or any version until Python 3.11) installed  
+  - pip package manager  
+  - requests library  
+  - blinker library
+</Card>  
+
+## Getting started  
+
+#### 1/ Install the SDK  
+
+By installing this package with pip3, all dependencies are installed for you:  
+```python 
+pip3 install mangopaysdk
+```  
+
+#### 2/ Initialize and configure the SDK   
+```python 
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+```  
+
+The configuration object of the SDK supports all the following properties:TW please add the old table here  
+
+## SDK usage  
+
+All endpoints are documented with the related Python SDK method throughout the Mangopay documentation. You should adjust the code examples provided for your usage.  
+
+### API handler  
+
+When creating a new handler, there are multiple settings to specify depending on your needs.  
+
+#### Proxy support  
+
+You can use proxies for https, http and ftp protocols:  
+```python 
+http_proxy  = "http://10.10.1.10:3128"
+https_proxy = "https://10.10.1.11:1080"
+ftp_proxy   = "ftp://10.10.1.10:3128"
+
+proxyDict = {
+          "http": http_proxy,
+          "https": https_proxy,
+          "ftp": ftp_proxy
+            }
+
+ handler = APIRequest(sandbox=True, proxies=proxyDict)
+```  
+
+#### Storage strategy  
+
+There are two storage strategies that can be used for OAuth tokens:   
+-`StaticStorageStrategy()` saves the token in memory. If no storage strategy is specified, this method is used by default.  
+-`FileStorageStrategy()` saves the token in a temporary file.   
+```python 
+handler = APIRequest(sandbox=True, storage_strategy=FileStorageStrategy())
+```  
+
+#### Requests timeout  
+
+You can set the amount of time in seconds after that the requests will timeout:  
+```python 
+handler = APIRequest(sandbox=True, timeout=20.0)
+```  
+
+### Idempotency support  
+
+To make a request with idempotency support, add `idempotency_key` parameter to your function.  
+
+For more information, see the Idempotency article.  
+
+####   
+```python Call - Create a payout with an idempotency key
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankWirePayOut
+from mangopay.utils import Money
+
+natural_user_id = '213753890'
+
+natural_user_wallet_id = '213754077'
+
+payout = BankWirePayOut(
+    author_id = natural_user_id,
+    debited_funds = Money(amount=500, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    debited_wallet_id = natural_user_wallet_id,
+    bank_account_id = '214651521',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+key = 'ok7urhkW45-pTHf4456-8d'
+
+create_payout = payout.save(idempotency_key=key)
+
+pprint(create_payout)
+```  
+
+In order to retrieve the request made using this  idempotency:  
+```python Call - View an API response using idempotency key
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import IdempotencyResponse
+
+key = 'ok7urhkW45-pTHf4456-8d'
+
+idempotency_response = IdempotencyResponse.get(key)
+
+pprint(vars(idempotency_response))
+```  
+```python Output
+{'_data': {'content_length': '650',
+           'content_type': 'application/json; charset=utf-8',
+           'date': 'Thu, 15 Feb 2024 17:01:37 GMT',
+           'resource': {'AuthorId': '213753890',
+                        'BankAccountId': '214651521',
+                        'BankWireRef': None,
+                        'CreationDate': 1708016496,
+                        'CreditedFunds': {'Amount': 500, 'Currency': 'EUR'},
+                        'CreditedUserId': None,
+                        'CreditedWalletId': None,
+                        'DebitedFunds': {'Amount': 500, 'Currency': 'EUR'},
+                        'DebitedWalletId': '213754077',
+                        'EndToEndId': 'b9bf7c8bcb9c4748a9eb7c35a4499139',
+                        'ExecutionDate': None,
+                        'FallbackReason': None,
+                        'Fees': {'Amount': 0, 'Currency': 'EUR'},
+                        'Id': 'po_m_01HPPVEWB3NDWBYH0DMZJS4Z6Y',
+                        'ModeApplied': 'PENDING_RESPONSE',
+                        'ModeRequested': None,
+                        'Nature': 'REGULAR',
+                        'PaymentType': 'BANK_WIRE',
+                        'ResultCode': None,
+                        'ResultMessage': None,
+                        'Status': 'CREATED',
+                        'Tag': 'Created using Mangopay Python SDK',
+                        'Type': 'PAYOUT'},
+           'status': '200'},
+ '_handler': <mangopay.api.APIRequest object at 0x1061fb6e0>}
+```  
+
+### Pagination  
+
+<Note>  
+**Note - Listing elements** 
+  
+If you do not specify the `page` and the `per_page` parameters, only the first 10 elements will be displayed.   
+</Note>  
+
+For endpoints that support pagination, you can use an object containing the `page` and `per_page` keys.  
+
+As a result, the output is paginated, and the total number of items and the total number of pages is provided.  
+
+For example, with the List all Users endpoint:  
+```python 
+# Set per_page to however many users you want displayed
+users = User.all(page=1, per_page=50) # Set per_page as the minimum number of user you want to see.
+# users = User.all() # Only shows the first 10 users
+```  
+
+### Filtering  
+
+For endpoints that support filtering, you can use an object containing the filtering parameters.  
+
+For example, with the List Transaction for a Wallet endpoint:  
+```python 
+transactions = Transaction.all(
+                               user_id = legal_user.id,
+		  wallet_id = user_wallet.id,
+                               status='SUCCEEDED', # A specific filter
+                               sort='CreationDate:asc' # A sorting parameter
+) 
+```  
+<a href="#" class="btn Secondary normal">Report an issue</a>
