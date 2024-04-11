@@ -13,28 +13,26 @@ Once a virtual IBAN is attached to a wallet, any funds wired by the user to that
 
 ## How it works  
 
-The steps to use this feature are the following:  
+The steps to use this feature are the following:
 
-#### 1. The user chooses to pay via bank wire  
+<Steps>
+    <Step title="The user chooses to pay via bank wire" />
+    <Step title="You create a wallet for the user with the Create a Wallet endpoint (required once)" />
+    <Step title="You create a virtual IBAN attached to the wallet with the Create an IBAN Banking Alias endpoint (required once)">
+        Steps 2 and 3 are only required once per user. For subsequent payments by the same user, you can View a Banking Alias to retrieve the object already created.
+    </Step>
+    <Step title="In response, the API returns bank details that you must display to the user (`IBAN` and `BIC` or `LocalAccountDetails`)">
+        You can define a reference for the user to use, which can be unique to a single pay-in. 
+    </Step>
+    <Step title="The user sends funds to the banking alias’s bank details (using your defined reference)" />
+    <Step title="On receipt of the funds, Mangopay automatically creates an External Instruction Bank Wire PayIn">
+        You can be notified of this by setting up a <a href="/development-resources/webhooks/hook-notifications">hook notification</a> for the following <a href="/development-resources/webhooks/event-types">event type</a>:
 
-#### 2. You create a wallet for the user with the Create a Wallet endpoint (required once)  
+        - PAYIN_NORMAL_SUCCEEDED  
 
-#### 3. You create a virtual IBAN attached to the wallet with the Create an IBAN Banking Alias endpoint (required once)  
-
-Steps 2 and 3 are only required once per user. For subsequent payments by the same user, you can View a Banking Alias to retrieve the object already created.  
-
-#### 4. In response, the API returns bank details that you must display to the user (`IBAN` and `BIC` or `LocalAccountDetails`)  
-
-You can define a reference for the user to use, which can be unique to a single pay-in.  
-
-#### 5. The user sends funds to the banking alias’s bank details (using your defined reference)  
-
-#### 6. On receipt of the funds, Mangopay automatically creates an External Instruction Bank Wire PayIn  
-
-You can be notified of this by setting up a <a href="">hook notification</a> for<a href=""> the follo</a>wing event type:  
--PAYIN_NORMAL_SUCCEEDED  
-
-You can use the View a PayIn endpoint to confirm the payment and retrieve the `WireReference`.  
+        You can use the View a PayIn endpoint to confirm the payment and retrieve the `WireReference`. 
+    </Step>
+</Steps>
 
 For a step-by-step guide to integration, see the tutorial:  
 
@@ -66,9 +64,9 @@ You should communicate this to them to avoid confusion.
 </Note>  
 
 ## Constraints  
--Only one banking alias can be created per wallet, even if it has been deactivated.  
--Deactivating a banking alias is irreversible.  
--Fees cannot be taken on pay-ins made to a virtual IBAN.  
+- Only one banking alias can be created per wallet, even if it has been deactivated.  
+- Deactivating a banking alias is irreversible.  
+- Fees cannot be taken on pay-ins made to a virtual IBAN.  
 
 <Note>  
 **Note - Activation and contract amendment required** 
@@ -82,4 +80,4 @@ A contract amendment to specify the BIC to use for your platform
 
 <Card title="Tutorial">How to process a pay-in bank wire to wallet virtual IBAN</Card>  
 
-<Card title="Endpoints">Banking aliases</Card>
+<Card title="Endpoints" href="/api-reference/payment-methods/banking-alias/banking-alias-object">Banking aliases</Card>

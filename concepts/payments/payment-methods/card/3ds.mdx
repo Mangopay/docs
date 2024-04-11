@@ -17,56 +17,45 @@ import Platform from '/snippets/glossary/platform.mdx';
 3D Secure (3DS) is an authentication protocol for online card payments developed by major card networks. It reduces the risk of fraud by ensuring the card is used by its true holder through multi-factor authentication.  
 
 This protocol involves the following actors:  
--The cardholder - The end user initiating the online payment by card.  
--The merchant - In the case of Mangopay, the <Platform content="platform" /> through which the funds are transiting.  
--The issuer - The bank or PSP of the cardholder who determines whether or not to authorize the payment based on the information received.  
+- The cardholder : The end user initiating the online payment by card.  
+- The merchant : In the case of Mangopay, the <Platform content="platform" /> through which the funds are transiting.  
+- The issuer : The bank or PSP of the cardholder who determines whether or not to authorize the payment based on the information received.  
 
 ## Benefits  
 
-  
-
 The 3DS2 protocol benefits all the actors of an online transaction. It contributes to:  
--A safer, smoother online payment experience for the cardholder, resulting in less checkout abandonment.  
--Reduced risk of fraud and instances of false decline which strengthens the end user’s confidence in the platform. When SCA is applied, the platform may also benefit from a liability shift to the card issuer in case of a fraudulent transaction.  
--A better process to determine the legitimacy of the transaction for the issuer, which means higher approval rates and fewer fraudulent transactions.  
+- A safer, smoother online payment experience for the cardholder, resulting in less checkout abandonment.  
+- Reduced risk of fraud and instances of false decline which strengthens the end user’s confidence in the platform. When SCA is applied, the platform may also benefit from a liability shift to the card issuer in case of a fraudulent transaction.  
+- A better process to determine the legitimacy of the transaction for the issuer, which means higher approval rates and fewer fraudulent transactions.  
 
 The second version (3DS2) facilitates strong customer authentication (SCA) to meet the regulatory technical standards of the European Union's revised Payments Services Directive (PSD2).  
-
-  
 
 ## Scope  
 
 SCA applies to online payments in Europe. The following conditions must be met:  
 - <Cit content="Customer-initiated transaction (CIT)" /> - This means that the user is online when the payment is made (as opposed to an <Mit content="MIT" />).  
--Within Europe - The <Issuer content="issuer" /> and <Acquirer content="acquirer" /> are both in the <Eea content="European Economic Area (EEA)" />, the UK, or Switzerland.  
+- Within Europe - The <Issuer content="issuer" /> and <Acquirer content="acquirer" /> are both in the <Eea content="European Economic Area (EEA)" />, the UK, or Switzerland.  
 
 At Mangopay, this means <PayIn content="pay-ins" /> with cards from major networks (CB, Visa, Mastercard, Maestro, AMEX, etc.) that meet these conditions, as well as card validations.  
 
-<Card title="Endpoint">Direct card pay-in</Card>  
-
-<Card title="Endpoint">Preauthorized pay-in</Card>  
-
-<Card title="Endpoint">Recurring pay-in (CIT)</Card>  
-
-<Card title="Endpoint">Card validation</Card>  
+<Card title="Endpoint" href="/api-reference/payment-methods/">Direct card pay-in</Card>  
+<Card title="Endpoint" href="/api-reference/payment-methods/">Preauthorized pay-in</Card>  
+<Card title="Endpoint" href="/api-reference/payment-methods/">Recurring pay-in (CIT)</Card>  
+<Card title="Endpoint" href="/api-reference/payment-methods/">Card validation</Card>  
 
 ### Out of scope  
 
 SCA doesn’t apply in some cases:  
--Merchant-initiated transactions (MIT), for example during recurring card payments  
--Anonymous transactions, for example with anonymous cards)  
--Mail-order and telephone-order (MOTO) transactions  
+- Merchant-initiated transactions (MIT), for example during recurring card payments  
+- Anonymous transactions, for example with anonymous cards)  
+- Mail-order and telephone-order (MOTO) transactions  
 
 ### MOTO transactions  
 
 Platforms can process MOTO transactions with Mangopay by setting the `PaymentCategory` parameter to `TelephoneOrder` (otherwise `ECommerce` by default). The feature requires activation by Mangopay and is available on the following endpoints:  
--Create a Card Validation  
--Create a Direct Card PayIn  
--Create a Preauthorization  
-
-  
-
-##   
+- Create a Card Validation  
+- Create a Direct Card PayIn  
+- Create a Preauthorization  
 
 <Warning>  
 **Caution - Liability with platform for MOTO transactions** 
@@ -88,9 +77,9 @@ When the platform’s app or website starts processing the payment, the followin
 </CardGroup>  
 
 SCA is triggered when:  
--The platform defines the `SecureMode` parameter of the pay-in to `FORCE`.  
--Mangopay automatically switches the `SecureMode` parameter to `FORCE`. This may be because the transaction amount exceeds the platform’s <Mfa content="Maximum Frictionless Amount" /> or due to Mangopay's analysis of the fraud risk.  
--The issuer applies SCA, regardless of the `SecureMode` value or if the parameter is not present.  
+- The platform defines the `SecureMode` parameter of the pay-in to `FORCE`.  
+- Mangopay automatically switches the `SecureMode` parameter to `FORCE`. This may be because the transaction amount exceeds the platform’s <Mfa content="Maximum Frictionless Amount" /> or due to Mangopay's analysis of the fraud risk.  
+- The issuer applies SCA, regardless of the `SecureMode` value or if the parameter is not present.  
 
 <Warning>  
 **Caution - The issuer decides when SCA is applied** 
@@ -106,8 +95,8 @@ For more information about how to handle 3DS, see the How to process a card paym
 ### SCA exemptions  
 
 Acquirers may request exemptions to <Sca content="SCA" /> for some <Cit content="customer-initiated transactions" />. These exemptions are based on the transactional data collected thanks to 3DS2. Issuers can then either:  
--Challenge the transaction and force SCA or,  
--Allow a frictionless flow for the end user.  
+- Challenge the transaction and force SCA or,  
+- Allow a frictionless flow for the end user.  
 
 <Note>  
 **Note - No exemption for recurring pay-ins (CIT)** 
@@ -116,8 +105,10 @@ Strong customer authentication is always applicable for CITs when making a recur
 </Note>  
 
 Exemptions:  
--Are not automatic, but requested and justified with sufficient information.  
--Are always requested by acquirers and issuers, not the platform.  
--Can only be requested once per transaction.  
+- Are not automatic, but requested and justified with sufficient information.  
+- Are always requested by acquirers and issuers, not the platform.  
+- Can only be requested once per transaction.  
 
-The following transaction types may be exempted from SCA if accepted by the issuer:TW please add the old table here
+The following transaction types may be exempted from SCA if accepted by the issuer:
+
+TW please add the old table here
