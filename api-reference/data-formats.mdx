@@ -3,4 +3,65 @@ title: 'Data formats'
 'og:description': 'See common data formats used in the Mangopay API for dates, times, amounts, currencies, and countries.'
 ---
 
-The Mangopay API follows the standards below regarding the data formats it returns and accepts. TW please add the old table here
+The Mangopay API follows the standards below regarding the data formats it returns and accepts. 
+
+<table id="dataFormatsTable">
+    <tbody>
+        <tr>
+            <td class="header">**Dates**</td>
+            <td class="content">Dates and times are returned as **timestamps**, which are integers representing the number of seconds since the Unix Epoch (January 1, 1970, 00:00:00 UTC).</td>
+        </tr>
+        <tr>
+            <td class="header">**Object IDs**</td>
+            <td class="content">
+                The unique identifier returned for an object (its `Id`) is a **string** and should be handled as such. The maximum length that will be returned is **128 characters**.
+
+                Several variants exist for the value of this string. The newly adopted standard is a [ULID](https://github.com/ulid/spec) (universally unique lexicographically sortable identifier) with one or more prefixes separated by an underscore:
+
+                - `cvr_01HN0FR5371TCNEF305P97D8Q9`
+                - `po_b_02HMVJH4ZJWX9E5K66KTN9H118`
+                
+                Examples of legacy variants:
+
+                - `wt_5a175522-04c3-4115-88ef-3b1b3446c4c6` – prefixed UUID (universally unique identifier, also called a globally unique identifier or GUID)
+                - `2774fac1-d33f-4c5a-8e21-88b772ec2943` – UUID without prefix
+                - `4659626451` – string containing only digits
+            </td>
+        </tr>
+        <tr>
+            <td class="header">**Amounts**</td>
+            <td class="content">
+                All monetary amounts are integers of the currency’s **minor unit** (the smallest sub-division).
+
+                So for example: 
+
+                - EUR 12.60 is represented as `1260`
+                - JPY 12 is represented as `12`
+            </td>
+        </tr>
+        <tr>
+            <td class="header">**Currencies**</td>
+            <td class="content">
+                Currency codes follow the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) format (three letters).
+
+                The full list of possible values is: AED, AUD, CAD, CHF, CZK, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, USD, and ZAR.
+
+                The available currencies vary across payment methods, cards, wallets, and payouts, and according to your contract. 
+
+                For more information, see the [Currencies](https://mangopay.com/docs/concepts/payments/currencies) article.
+            </td>
+        </tr>
+        <tr>
+            <td class="header">**Countries**</td>
+            <td class="content">
+                Country codes follow the [ISO 3166-1 alpha-2](https://www.iso.org/iso-3166-country-codes.html) format (two letters, e.g. US, GB, FR; the three-letter format is used exceptionally).
+
+                Accepted values are the following: AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW.
+            </td>
+        </tr>
+        <tr>
+            <td class="header">**Languages**</td>
+            <td class="content">Language codes follow the [ISO 639-1 alpha-2](https://www.iso.org/iso-639-language-code) format (two letters, e.g. EN, FR).</td>
+        </tr>
+    </tbody>
+</table>
