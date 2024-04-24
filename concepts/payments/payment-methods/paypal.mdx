@@ -2,10 +2,54 @@
 title: 'PayPal'  
 'og:description': 'How PayPal works with Mangopay: activation, approval, integration, and configuration for shipping and tracking.'  
 ---
-  
-  
+
+## About
 
 PayPal is a popular international payment method that allows users to pay by connecting to their PayPal account and using a connected card or bank account or their PayPal account balance.  
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="content">
+                International
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="content">
+                CHF, EUR, GBP, USD
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/concepts/payments/refunds)</th>
+            <td class="content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Disputes</th>
+            <td class="content">
+                Users authenticate directly with their bank, so there is no dispute process and a low risk of unrecognized or fraudulent payments.
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring payments</th>
+            <td class="content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+
+## User prerequisites
 
 To use this payment method, users must:  
 -Create a PayPal account  
@@ -15,7 +59,9 @@ To use this payment method, users must:
 -On your app or website, the user selects PayPal as the payment method during checkout  
 -The user is redirected to the PayPal payment page (`RedirectURL`)  
 -The user logs in to their PayPal account, selects a payment method, and confirms payment  
--The user is returned to your app or website (on `ReturnURL`  
+-The user is returned to your app or website (on `ReturnURL`)
+
+### Outcome
 
 The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome.  
 
@@ -29,35 +75,36 @@ PayPal requires approval and integration with PayPal and activation by Mangopay.
 
 The activation process is as follows:  
 
-#### 1. Mangopay checks your platform’s eligibility  
+<Steps>
+    <Step title="Mangopay checks your platform’s eligibility  ">
+        PayPal is only available for platforms that are:  
+        - Based in the EU, UK, or Switzerland  
+        - Not operating a crowdfunding business model  
+    </Step>
+    <Step title="Mangopay refers your platform to PayPal">
+        At this stage, Mangopay can activate Sandbox for your platform to begin testing.
+    </Step>
+    <Step title="PayPal approves your request">
+        
+    </Step>
+    <Step title="PayPal accompanies your platform in setting up a PayPal Business account">
+        This includes:  
+        - Due diligence and business registration
+        - Pricing negotiation, on top of Mangopay’s commission
+        - Creation of the PayPal account
+        - Integration support (PayPal button etc.)  
 
-PayPal is only available for platforms that are:  
--Based in the EU, UK, or Switzerland  
--Not operating a crowdfunding business model  
-
-#### 2. Mangopay refers your platform to PayPal  
-
-At this stage, Mangopay can activate Sandbox for your platform to begin testing.  
-
-#### 3. PayPal approves your request  
-
-#### 4. PayPal accompanies your platform in setting up a PayPal Business account  
-
-This includes:  
--Due diligence and business registration  
--Pricing negotiation, on top of Mangopay’s commission  
--Creation of the PayPal account  
--Integration support (PayPal button etc.)  
-
-#### 5. PayPal notifies Mangopay that your platform is ready to go live  
-
-#### 6. Mangopay activates PayPal in Production  
-
-Upon activation, Mangopay provides you with an activation link.  
-
-#### 7. You approve Mangopay in PayPal  
-
-Using the activation link provided at activation, you give approval to Mangopay to process payments on behalf of your PayPal Business account.  
+    </Step>
+    <Step title="PayPal notifies Mangopay that your platform is ready to go live">
+        
+    </Step>
+    <Step title="Mangopay activates PayPal in Production">
+        Upon activation, Mangopay provides you with an activation link.
+    </Step>
+    <Step title="You approve Mangopay in PayPal">
+        Using the activation link provided at activation, you give approval to Mangopay to process payments on behalf of your PayPal Business account.
+    </Step>
+</Steps>
 
 ## Shipping preference  
 
@@ -74,17 +121,17 @@ The tracking number provides evidence of shipping and delivery. For a dispute op
 
 To provide the tracking information for a transaction:  
 
-#### 1. Obtain the shipment’s tracking number from the carrier  
-
-The carriers supported by PayPal are listed in the PayPal documentation.  
-
-#### 2. Add the tracking number and carrier using the Add tracking information to a PayPal PayIn endpoint  
-
-There is no link between the line items and the shipments. If multiple line items are in the same shipment, you only need to add the tracking information once. You should add all the tracking numbers relating to all the line items.  
-
-#### 3. Optionally, trigger an email from PayPal to the buyer by setting `NotifyBuyer` to `true`  
-
-If making multiple calls for the same transaction, notify the buyer on only one of the calls (for example, the first).  
+<Steps>
+    <Step title="Obtain the shipment’s tracking number from the carrier">
+        The carriers supported by PayPal are listed in the PayPal documentation.
+    </Step>
+    <Step title="Add the tracking number and carrier using the Add tracking information to a PayPal PayIn endpoint">
+        There is no link between the line items and the shipments. If multiple line items are in the same shipment, you only need to add the tracking information once. You should add all the tracking numbers relating to all the line items.
+    </Step>
+    <Step title="Optionally, trigger an email from PayPal to the buyer by setting `NotifyBuyer` to `true`">
+        If making multiple calls for the same transaction, notify the buyer on only one of the calls (for example, the first).
+    </Step>
+</Steps>
 
 <Warning>  
 **Caution - Tracking information cannot be edited** 
@@ -139,3 +186,4 @@ In the case of a chargeback ruled against the platform, a lost Dispute object an
 ## Related resources  
 
 <Card title="Endpoints">The PayPal PayIn object</Card>
+<Card title="Testing">Testing - Payment methods</Card>

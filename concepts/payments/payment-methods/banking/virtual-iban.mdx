@@ -1,17 +1,17 @@
 ---
-title: 'Virtual IBAN'  
-'og:description': 'Learn about creating a dedicated virtual IBAN for a wallet, making it easy for users to wire funds to a wallet and for you to reconcile them.'  
+title: "Virtual IBAN"
+"og:description": "Learn about creating a dedicated virtual IBAN for a wallet, making it easy for users to wire funds to a wallet and for you to reconcile them."
 ---
-  
-import Wallet from '/snippets/glossary/wallet.mdx';
 
-## Introduction  
+import Wallet from "/snippets/glossary/wallet.mdx";
 
-Mangopay supports for its <Wallet content="wallets" /> the creation of a virtual IBAN. The Mangopay API relies on the Banking Alias object to create and link an IBAN to a wallet.  
+## Introduction
 
-Once a virtual IBAN is attached to a wallet, any funds wired by the user to that IBAN can be credited automatically to the associated wallet.  
+Mangopay supports for its <Wallet content="wallets" /> the creation of a virtual IBAN. The Mangopay API relies on the Banking Alias object to create and link an IBAN to a wallet.
 
-## How it works  
+Once a virtual IBAN is attached to a wallet, any funds wired by the user to that IBAN can be credited automatically to the associated wallet.
+
+## How it works
 
 The steps to use this feature are the following:
 
@@ -28,56 +28,65 @@ The steps to use this feature are the following:
     <Step title="On receipt of the funds, Mangopay automatically creates an External Instruction Bank Wire PayIn">
         You can be notified of this by setting up a <a href="/development-resources/webhooks/hook-notifications">hook notification</a> for the following <a href="/development-resources/webhooks/event-types">event type</a>:
 
-        - PAYIN_NORMAL_SUCCEEDED  
+        - PAYIN_NORMAL_SUCCEEDED
 
-        You can use the View a PayIn endpoint to confirm the payment and retrieve the `WireReference`. 
+        You can use the View a PayIn endpoint to confirm the payment and retrieve the `WireReference`.
     </Step>
+
 </Steps>
 
-For a step-by-step guide to integration, see the tutorial:  
+For a step-by-step guide to integration, see the tutorial:
 
-<Card title="Tutorials">How to process a pay-in bank wire to wallet virtual IBAN</Card>  
+<Card title="Tutorials">
+    How to process a pay-in bank wire to wallet virtual IBAN
+</Card>
 
-## IBAN countries and currencies  
+## IBAN countries and currencies
 
-Mangopay offers virtual IBANs for the following countries (specified in the `Country` parameter of the Banking Alias). The IBAN country must be attached to a wallet of the corresponding currency:TW please add the old table here  
+Mangopay offers virtual IBANs for the following countries (specified in the `Country` parameter of the Banking Alias). The IBAN country must be attached to a wallet of the corresponding currency:TW please add the old table here
 
-<Note>  
-**Note - Sandbox only for DK, DE, ES, GB, and PL** 
-  
-Banking alias creation for DK, DE, ES, GB, and PL is only currently available in Sandbox, to enable testing.  
-</Note>  
+<Note>
+    **Note - Sandbox only for DK, DE, ES, GB, and PL** Banking alias creation
+    for DK, DE, ES, GB, and PL is only currently available in Sandbox, to enable
+    testing.
+</Note>
 
-### Local account details  
+### Local account details
 
-For the relevant countries, the `LocalAccountDetails` parameter returns the bank details in a local format for users.  
+For the relevant countries, the `LocalAccountDetails` parameter returns the bank details in a local format for users.
 
-#### UK  
+#### UK
 
-On GB banking aliases, `LocalAccountDetails` contains the `AccountNumber` and `SortCode`.  
+On GB banking aliases, `LocalAccountDetails` contains the `AccountNumber` and `SortCode`.
 
-<Note>  
-**Note - Payee confirmation in the UK** 
-  
-When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is displayed as the account holder name.   
-You should communicate this to them to avoid confusion.  
-</Note>  
+<Note>
+    **Note - Payee confirmation in the UK** When the user sets up the payee with
+    their bank, Mangopay UK or Mangopay SA is displayed as the account holder
+    name. You should communicate this to them to avoid confusion.
+</Note>
 
-## Constraints  
-- Only one banking alias can be created per wallet, even if it has been deactivated.  
-- Deactivating a banking alias is irreversible.  
-- Fees cannot be taken on pay-ins made to a virtual IBAN.  
+## Constraints
 
-<Note>  
-**Note - Activation and contract amendment required** 
-  
-The virtual IBAN feature is regulated and therefore requires:  
-Activation by Mangopay, including in Sandbox (contact our teams via the Hub)  
-A contract amendment to specify the BIC to use for your platform   
-</Note>  
+-   Only one banking alias can be created per wallet, even if it has been deactivated.
+-   Deactivating a banking alias is irreversible.
+-   Fees cannot be taken on pay-ins made to a virtual IBAN.
 
-## Related resources  
+<Note>
+    **Note - Activation and contract amendment required** The virtual IBAN
+    feature is regulated and therefore requires: Activation by Mangopay,
+    including in Sandbox (contact our teams via the Hub) A contract amendment to
+    specify the BIC to use for your platform
+</Note>
 
-<Card title="Tutorial">How to process a pay-in bank wire to wallet virtual IBAN</Card>  
+## Related resources
 
-<Card title="Endpoints" href="/api-reference/payment-methods/banking-alias/banking-alias-object">Banking aliases</Card>
+<Card title="Tutorial">
+    How to process a pay-in bank wire to wallet virtual IBAN
+</Card>
+
+<Card
+    title="Endpoints"
+    href="/api-reference/payment-methods/banking-alias/banking-alias-object"
+>
+    Banking aliases
+</Card>
