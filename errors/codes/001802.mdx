@@ -1,0 +1,76 @@
+---
+title: '001802'  
+---
+
+
+                    | **Error message**     | The bank details supplied were incorrect                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The mandate cannot be created because the bank account is incorrect. |
+                    | **Categories**        | <div class="pill">Mandate</div><div class="pill">Direct debit</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the bank account details provided for the Bank Account object linked to the mandate were incorrect.  
+
+#### What to do  
+
+In such cases, end users need to provide the new bank account details, ensuring they are correct. Then a new mandate can be created for this bank account.  
+
+#### Example  
+
+This error can be returned both on the Mandate object and the direct debit pay-ins made against this pay-in.  
+```json Mandate object
+{
+    "Scheme":"SEPA",
+    "BankAccountId":"654789321",
+    "BankReference":"456258",
+    "Culture":"FR",
+    "DocumentURL":"https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/document",
+    "ReturnURL":"http://www.my-site.com/returnURL/?MandateId=163262377",
+    "RedirectURL":"https://api.sandbox.mangopay.com/public/mandates/e8a73d/d276ab3002fd4093bcfc567f79035db5/confirmation",
+    "Id":"654821397",
+    "CreationDate":1676755397,
+    "Status":"FAILED",
+    "UserId":"456328971",
+    "ExecutionType":"WEB",
+    "MandateType":"DIRECT_DEBIT",
+    "Tag":null,
+    "ResultCode":"001802",
+    "ResultMessage":"The bank details supplied were incorrect"
+}
+```  
+```json Direct Direct-Debit PayIn object
+{
+    "Id":"123654789",
+    "CreationDate":1676755459,
+    "AuthorId":"6549873211",
+    "CreditedUserId":"211117246",
+    "Status":"FAILED",
+    "ExecutionDate":null,
+    "ChargeDate":1677110400,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"32971128737",
+    "DebitedWalletId":null,
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":50360
+    },
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":50360
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "ResultCode":"001802",
+    "ResultMessage":"The bank details supplied were incorrect",
+    "PaymentType":"DIRECT_DEBIT",
+    "ExecutionType":"DIRECT",
+    "Tag":"custom meta",
+    "MandateId":"654821397",
+    "StatementDescriptor":null
+}
+```

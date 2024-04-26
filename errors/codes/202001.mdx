@@ -1,0 +1,102 @@
+---
+title: '202001'  
+---
+
+
+                    | **Error message**     | AdditionalData format error                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The AdditionalData value is not the expected format, not complete, or not present. |
+                    | **Categories**        | <div class="pill">Pay-in</div>                         |
+                  
+
+#### Causes  
+
+This error occurs because the value of the `AdditionalData` parameter doesn't correspond to the serialized JSON object expected by Klarna for the extra merchant data.  
+
+#### What to do  
+
+Ensure the data you are sending is in line with:  
+-The guidance provided in the Klarna article about which objects to include  
+-The example structure provided in Klarna’s documentation  
+
+#### Example  
+
+In the example below, the Create a Klarna PayIn request was attempted with a valid JSON format for `AdditionalData`, but not the serialized object expected by Klarna:   
+```json 
+{
+    "Id": "wt_48f83ecc-e0e1-46bf-ab41-30c934bd2ad8",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1706798077,
+    "AuthorId": "213407540",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1500
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 300
+    },
+    "Status": "FAILED",
+    "ResultCode": "202001",
+    "ResultMessage": "AdditionalData format error",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "213407543",
+    "CreditedUserId": "213407540",
+    "PaymentType": "KLARNA",
+    "ExecutionType": "WEB",
+    "ReturnURL": "http://www.mangopay.com/docs/please-ignore?transactionId=wt_48f83ecc-e0e1-46bf-ab41-30c934bd2ad8",
+    "StatementDescriptor": "Mangopay",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-france",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "Rue de la Fourche 26",
+            "AddressLine2": "Appartement 3",
+            "City": "Bruxelles",
+            "Region": "Bruxelles-Capitale",
+            "PostalCode": "1000",
+            "Country": "BE"
+        }
+    },
+    "LineItems": [
+        {
+            "Name": "Running shoes",
+            "Quantity": 2,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 1"
+        },
+        {
+            "Name": "Walking shoes",
+            "Quantity": 1,
+            "UnitAmount": 400,
+            "TaxAmount": 100,
+            "Description": "ID of Seller 2"
+        }
+    ],
+    "Country": "FR",
+    "Culture": "FR",
+    "Email": "alex.smith@example.com",
+    "Phone": "[+33][689854321]",
+    "AdditionalData": "333333",
+    "Reference": "1234"
+}
+```

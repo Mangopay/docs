@@ -1,0 +1,165 @@
+---
+title: '101102'  
+---
+
+
+                    | **Error message**     | Transaction refused by the bank (Amount limit)                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The card has reached the amount limit set by the issuing bank. |
+                    | **Categories**        | <div class="pill">Refused transaction</div>                         |
+                  
+
+#### Causes  
+
+This error may occur when:  
+-There aren’t sufficient funds on the bank account.  
+-The maximum amount to authorize preauthorizations is reached on the bank’s side. This limit is specific to preauthorizations.  
+-The maximum amount spent per month has been reached on this card.  
+-The maximum amount spent on the internet per month has been reached on this card.  
+
+#### What to do  
+
+In such cases, end users can:  
+-Retry the transaction.  
+-Check their bank limits.  
+-Contact their bank for more information regarding the refusal.  
+
+### Testing  
+
+It is possible to test this error by using the `33351` value for the debited funds `Amount` parameter.  
+```json Request exemple
+{
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "CreditedWalletId": "148968396",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 33351
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore",
+    "CardId": "156285393",
+    "StatementDescriptor": "MANGOPAY",
+    "Billing": {
+        "FirstName": "{{$randomFirstName}}",
+        "LastName": "{{$randomLastName}}",
+        "Address": {
+            "AddressLine1": "{{$randomStreetAddress}}",
+            "AddressLine2": "{{$randomStreetName}}",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "{{$randomFirstName}}",
+        "LastName": "{{$randomLastName}}",
+        "Address": {
+            "AddressLine1": "{{$randomStreetAddress}}",
+            "AddressLine2": "{{$randomStreetName}}",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "Culture": "EN",
+    "IpAddress": "{{$randomIPV6}}",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true       
+    }
+}
+```  
+```json API Response
+{
+    "Id": "160736297",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1674555251,
+    "AuthorId": "146476890",
+    "CreditedUserId": "146476890",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 33351
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 33351
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "FAILED",
+    "ResultCode": "101102",
+    "ResultMessage": "Transaction refused by the bank (Amount limit)",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "148968396",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "156285393",
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=160736297",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "MANGOPAY",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "a9f5:2bc8:ba4d:3e25:7663:b03b:6b89:c357",
+    "Billing": {
+        "FirstName": "Alba",
+        "LastName": "Adams",
+        "Address": {
+            "AddressLine1": "802 Douglas River",
+            "AddressLine2": "Schoen Points",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Golden",
+        "LastName": "Barton",
+        "Address": {
+            "AddressLine1": "7408 Lambert Centers",
+            "AddressLine2": "Bergnaum Extensions",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null
+}
+```

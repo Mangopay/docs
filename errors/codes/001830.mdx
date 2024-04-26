@@ -1,0 +1,64 @@
+---
+title: '001830'  
+---
+
+
+                    | **Error message**     | There are insufficient funds in the bank account                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The pay-in failed due to insufficient funds in the bank account. |
+                    | **Categories**        | <div class="pill">Mandate</div><div class="pill">Direct debit</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the end user’s bank account doesn’t hold sufficient funds in order for the direct-debit to be processed.  
+
+#### What to do  
+
+In such cases, the platform needs to contact its customers and ask them to either:  
+-Add the necessary funds  
+-Use another payment method.  
+
+#### Testing  
+
+In order to trigger this error in your Sandbox, please follow the following steps:  
+-Create a user whose `FirstName` is “Penniless”  
+-Make sure to create a Bank Account and a Wallet for this user.  
+-Create the Mandate for this User and confirm it using the `RedirectURL`  
+-Make a Direct Direct-Debit PayIn using all the previous information.  
+
+The resulting pay-in fails with the `001830` result code returned:  
+```json API Response
+{
+    "Id": "157399478",
+    "CreationDate": 1669966558,
+    "AuthorId": "157399076",
+    "CreditedUserId": "157399076",
+    "Status": "FAILED",
+    "ExecutionDate": null,
+    "ChargeDate": 1670371200,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "157399408",
+    "DebitedWalletId": null,
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1188
+    },
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1200
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 12
+    },
+    "ResultCode": "001830",
+    "ResultMessage": "There are insufficient funds in the bank account",
+    "PaymentType": "DIRECT_DEBIT",
+    "ExecutionType": "DIRECT",
+    "Tag": null,
+    "MandateId": "157399114",
+    "StatementDescriptor": "Nov2016"
+}
+```
