@@ -1,0 +1,143 @@
+---
+title: '009199'  
+---
+
+
+                    | **Error message**     | PSP technical error                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The pay-in failed due to a technical error linked to the PSP. |
+                    | **Categories**        | <div class="pill">Pay-in</div>                         |
+                  
+
+#### Causes  
+
+This error may occur when:  
+-Card is not supported by Mangopay  
+-Amount is higher than the maximum amount per transaction  
+-Operation doesn’t fit the platform’s Mangopay account settings  
+-Use of a non-3DSecure test card for a payment that requires 3DSecure  
+-The Client's technical email is more than 40 characters long.  
+
+#### Example  
+```json API Response
+{
+    "Id":"334555553",
+    "Tag":"Custom meta",
+    "CreationDate":1678085370,
+    "AuthorId":"2046884555",
+    "CreditedUserId":"2046884555",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":2010
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":2010
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"FAILED",
+    "ResultCode":"009199",
+    "ResultMessage":"PSP technical error",
+    "ExecutionDate":null,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"2046886666",
+    "DebitedWalletId":null,
+    "PaymentType":"CARD",
+    "ExecutionType":"DIRECT",
+    "SecureMode":"DEFAULT",
+    "CardId":"3347333299",
+    "SecureModeReturnURL":"https://return url",
+    "SecureModeRedirectURL":null,
+    "SecureModeNeeded":false,
+    "Culture":"FR",
+    "SecurityInfo":{
+        "AVSResult":"NO_CHECK"
+    },
+    "StatementDescriptor":"542514449",
+    "BrowserInfo":{
+        "AcceptHeader":"*/*",
+        "JavaEnabled":false,
+        "Language":"fr-FR",
+        "ColorDepth":32,
+        "ScreenHeight":2177,
+        "ScreenWidth":1080,
+        "TimeZoneOffset":60,
+        "UserAgent":"user agent",
+        "JavascriptEnabled":true
+    },
+    "IpAddress":"IPV6",
+    "Requested3DSVersion":"V2_1",
+    "Applied3DSVersion":"V2_1",
+    "RecurringPayinRegistrationId":null
+}
+```  
+
+#### Testing  
+
+This error can be tested in Sandbox by using the `33394` value for the debited funds `Amount` parameter. After clicking on the `RedirectURL`, viewing the pay-in will display the 009199 error as in the example below.  
+```json API response
+{
+    "Id": "193083958",
+    "Tag": "Created using Mangopay API Collection Postman",
+    "CreationDate": 1686214068,
+    "AuthorId": "192822811",
+    "CreditedUserId": "192822811",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 33394
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 32394
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "FAILED",
+    "ResultCode": "009199",
+    "ResultMessage": "PSP technical error",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "192822814",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=9e1a7f4a393743808403412017f486da&transactionId=193083958&token=1XFzi05OPIWB9tmvd3221686214069109",
+    "ReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=193083958",
+    "TemplateURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=9e1a7f4a393743808403412017f486da&transactionId=193083958",
+    "CardType": "CB_VISA_MASTERCARD",
+    "Culture": "EN",
+    "SecureMode": "DEFAULT",
+    "Billing": {
+        "FirstName": "Norval",
+        "LastName": "Gerlach",
+        "Address": {
+            "AddressLine1": "7973 Hayes Islands",
+            "AddressLine2": "Runolfsson Dale",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Norval",
+        "LastName": "Gerlach",
+        "Address": {
+            "AddressLine1": "7973 Hayes Islands",
+            "AddressLine2": "Runolfsson Dale",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "StatementDescriptor": null
+}
+```

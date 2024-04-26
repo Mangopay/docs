@@ -1,0 +1,118 @@
+---
+title: '008700'  
+---
+
+
+                    | **Error message**     | User blocked by Fraud policy                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The user has been blocked because he/she doesn't comply with Mangopay’s anti-fraud rules. |
+                    | **Categories**        | <div class="pill">Fraud policy</div>                         |
+                  
+
+#### Causes  
+
+This error occurs when the end user was blocked by Mangopay’s team because a fraudulent behavior or a compliance risk is suspected.  
+
+#### What to do  
+
+Take advantage of the View a User Regulatory Status endpoint to get the `ActionCode` for the blocked user. From there, you can refer to the Blocked users article to know what to do next.  
+
+#### Examples  
+
+If a transaction fails because the user is blocked, the corresponding `ResultCode` and `ResultMessage` will be available in the response.  
+
+  
+```json Pay-in failed due to a blocked user
+{
+    "Id":"6662123",
+    "Tag":"create a payin card web",
+    "CreationDate":1672714878,
+    "AuthorId":"6662060",
+    "CreditedUserId":"6662060",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":100
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":100
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"FAILED",
+    "ResultCode":"008700",
+    "ResultMessage":"User blocked by Fraud policy",
+    "ExecutionDate":null,
+    "Type":"PAYIN",
+    "Nature":"REGULAR",
+    "CreditedWalletId":"6662065",
+    "DebitedWalletId":null,
+    "PaymentType":"CARD",
+    "ExecutionType":"WEB",
+    "RedirectURL":null,
+    "ReturnURL":"http://mango.hb.com/returnurl/?check=payin&transactionId=6662123",
+    "TemplateURL":"https://test-api.mangopay.com/Content/PaylineTemplateWidget?rp=e01839198a6b4cb08121eca61f7b601c&transactionId=6662123",
+    "CardType":"CB_VISA_MASTERCARD",
+    "Culture":"FR",
+    "SecureMode":"DEFAULT",
+    "Billing":{
+        "FirstName":"John",
+        "LastName":"Doe",
+        "Address":{
+            "AddressLine1":"3 rue de Mangopay",
+            "AddressLine2":null,
+            "City":"Paris",
+            "Region":"Ile de France",
+            "PostalCode":"75009",
+            "Country":"FR"
+        }
+    },
+    "Shipping":{
+        "FirstName":"John",
+        "LastName":"Doe",
+        "Address":{
+            "AddressLine1":"3 rue de Mangopay",
+            "AddressLine2":null,
+            "City":"Paris",
+            "Region":"Ile de France",
+            "PostalCode":"75009",
+            "Country":"FR"
+        }
+    },
+    "StatementDescriptor":"invoice 1"
+}
+```  
+```json Payout failed due to a blocked user
+{
+    "Id":"6662096",
+    "Tag":null,
+    "CreationDate":1672714845,
+    "AuthorId":"6661948",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":100
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":100
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"FAILED",
+    "ResultCode":"008700",
+    "ResultMessage":"User blocked by Fraud policy",
+    "ExecutionDate":null,
+    "Type":"PAYOUT",
+    "Nature":"REGULAR",
+    "CreditedWalletId":null,
+    "DebitedWalletId":"6661978",
+    "PaymentType":"BANK_WIRE",
+    "BankAccountId":"6662077",
+    "BankWireRef":"[Block User] Block on transaction types"
+}
+```

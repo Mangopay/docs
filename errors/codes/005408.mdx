@@ -1,0 +1,54 @@
+---
+title: '005408'  
+---
+
+
+                    | **Error message**     | Due to repudiations against this transaction, you can not refund this amount.                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The refund failed because the pay-in is already being disputed. |
+                    | **Categories**        | <div class="pill">Refund</div><div class="pill">Dispute</div>                         |
+                  
+
+#### Causes  
+
+This error may occur when attempting to refund a pay-in which is already subject to a dispute.  
+
+More specifically, the dispute has been canceled (`VOID`) and created again for this error to be triggered.  
+
+#### Example  
+```json API Response
+{
+    "Id":"334444519",
+    "Tag":"Custom meta",
+    "CreationDate":1678092440,
+    "AuthorId":"283444453",
+    "CreditedUserId":null,
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":10425
+    },
+    "CreditedFunds":{
+        "Currency":"EUR",
+        "Amount":10425
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":0
+    },
+    "Status":"FAILED",
+    "ResultCode":"005408",
+    "ResultMessage":"Due to repudiations against this transaction, you can not refund this amount.",
+    "ExecutionDate":null,
+    "Type":"PAYOUT",
+    "Nature":"REFUND",
+    "InitialTransactionId":"324444606",
+    "InitialTransactionType":"PAYIN",
+    "InitialTransactionNature":"REGULAR",
+    "DebitedWalletId":"32444427",
+    "CreditedWalletId":null,
+    "RefundReason":{
+        "RefundReasonMessage":null,
+        "RefundReasonType":"INITIALIZED_BY_CLIENT"
+    }
+}
+```

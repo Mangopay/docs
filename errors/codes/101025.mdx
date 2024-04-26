@@ -1,0 +1,65 @@
+---
+title: '101025'  
+---
+
+
+                    | **Error message**     | The banking alias is not active                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The pay-in to the ibanized wallet failed because the Banking Alias is not active. |
+                    | **Categories**        | <div class="pill">Bank wire pay-in</div><div class="pill">Refused transaction</div>                         |
+                  
+
+#### Causes  
+
+This error is triggered when the user attempts to make a pay-in for a Wallet whose Banking Alias `Active` parameter is set to `false`.  
+
+#### What to do  
+
+In such cases, the end user can retry to make a pay-in to another wallet whose Banking Alias is active.  
+
+As a platform, you can also contact the recipient of the transaction to create a new banking alias for the Wallet (as setting a banking alias `Active` parameter to `false` is irreversible).  
+
+#### Example  
+
+In the example below, find the API response for a failed Bank Wire External Instruction PayIn due to an inactive banking alias.  
+```json API Response
+{
+    "CreditedUserId": "145397183",
+    "AuthorId": "145397183",
+    "CreditedWalletId": "157685105",
+    "DebitedBankAccount": {
+        "IBAN": "FR7630004000031234567890143",
+        "BIC": "BNPAFRPP",
+        "AccountNumber": null,
+        "Country": null,
+        "OwnerName": "Nat Romanova",
+        "Type": "IBAN"
+    },
+    "BankingAliasId": "157685114",
+    "Type": "PAYIN",
+    "Status": "FAILED",
+    "ResultCode": "101025",
+    "ResultMessage": "The banking alias is not active",
+    "Nature": "REGULAR",
+    "CreationDate": 1674555770,
+    "ExecutionDate": null,
+    "WireReference": "Test101125",
+    "PaymentType": "BANK_WIRE",
+    "ExecutionType": "EXTERNAL_INSTRUCTION",
+    "DebitedWalletId": null,
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Id": "160738049",
+    "Tag": null
+}
+```

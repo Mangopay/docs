@@ -1,0 +1,51 @@
+---
+title: '004801'  
+---
+
+
+                    | **Error message**     | Conversion could not be debited from wallet                   |
+                    |-----------------------|--------------------------------------------|
+                    | **Short description** | The funds could not be withdrawn from the debited wallet. |
+                    | **Categories**        | <div class="pill">FX</div>                         |
+                  
+
+#### More information  
+
+This error usually occurs when there are conflicting attempts to access the wallet funds.  
+
+#### Causes  
+
+This error may be caused by two transactions attempted simultaneously (e.g. two conversions, a transfer and conversion).  
+
+#### What to do  
+
+In such cases, use the endpoints List Transactions for a Wallet and View a Wallet on the `DebitedWalletId` to understand the recent activity. Retrying the conversion may be possible if there are sufficient funds still in the wallet.  
+
+#### Example  
+
+In the following example, two conversions were triggered the same second, causing the debit to fail.   
+```json API response - Create an Instant Conversion
+{
+    "Id": "cvr_01HARVG05AZX46TT4FD4AXQKT1",
+    "Type": "CONVERSION",
+    "Nature": "REGULAR",
+    "CreationDate": 1695198740,
+    "Status": "FAILED",
+    "AuthorId": "203819421",
+    "DebitedWalletId": "203819423",
+    "CreditedWalletId": "203819422",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 79
+    },
+    "CreditedFunds": {
+        "Currency": "GBP",
+        "Amount": null
+    },
+    "ResultCode": "004801",
+    "ResultMessage": "Conversion could not be debited from wallet",
+    "ExecutionDate": null,
+    "ConversionRateResponse": null,
+    "Tag": "Created using the Mangopay API Postman collection"
+}
+```
