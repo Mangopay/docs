@@ -8,30 +8,30 @@ title: 'Vault – iOS'
 The Mangopay Vault SDK allows you to securely tokenize an end user’s payment card for use in your application. A tokenized card is a virtual and secure version of the card that can be used for payment.  
 
 It is very highly recommended that you use the Mangopay Vault SDK, rather than integrating the API endpoints directly. By doing so, you:  
--Avoid sensitive card details transiting your system  
--Benefit from PCI-DSS compliance  
--Receive ongoing support and updates  
+- Avoid sensitive card details transiting your system  
+- Benefit from PCI-DSS compliance  
+- Receive ongoing support and updates  
 
-<Card title="TW should set this">  
+<Info>  
 
 To use the Mangopay Vault SDK (iOS), you’ll need:  
 - A Mangopay `ClientId` and API key (get a Sandbox API key for free)  
-- A User to register the card for (see Testing - Payment methods for test cards)  
+- A User to register the card for (see [Testing - Payment methods](https://mangopay.com/docs/dev-tools/testing/payment-methods) for test cards)  
 - iOS 13+  
 - Xcode 12.2  
 - Swift 5.3+
 
-</Card>  
+</Info>  
 
 ## Installation  
 
 ### Swift Package Manager (recommended)  
 
 Follow these steps to integrate the package into your Xcode project with Swift Package Manager:  
--Open your Xcode project and go to File > Swift Packages > Add Package Dependency  
--In the prompted dialog, enter the repository URL https://github.com/Mangopay/mangopay-ios-vault-sdk  
--Select MangopayVault package by checking the corresponding checkbox  
--Follow the on-screen instructions to complete the installation  
+- Open your Xcode project and go to File > Swift Packages > Add Package Dependency  
+- In the prompted dialog, enter the repository URL https://github.com/Mangopay/mangopay-ios-vault-sdk  
+- Select MangopayVault package by checking the corresponding checkbox  
+- Follow the on-screen instructions to complete the installation  
 
 ### CocoaPod  
 
@@ -97,10 +97,43 @@ MangopayVault.initialize(clientId: clientId, environment: SANDBOX | PRODUCTION )
 ## Providing data for tokenization  
 
 The SDK requires the following information to tokenize the card:  
--The Card Registration data (`CardRegistration`) previously returned by the Mangopay API  
--The end user’s card details (`Card`) entered in the app (see Testing - Payment methods for test cards)  
+- The Card Registration data (`CardRegistration`) previously returned by the Mangopay API  
+- The end user’s card details (`Card`) entered in the app (see Testing - Payment methods for test cards)  
 
-### CardRegistrationTW please add the old table here  
+### CardRegistration
+ 
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`id`</td>
+            <td class="content">string</td>
+            <td class="content">The unique identifier of the Card Registration object.</td>
+        </tr>
+        <tr>
+            <td class="content">`accessKey`</td>
+            <td class="content">string</td>
+            <td class="content">The secure value used when tokenizing the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardRegistrationURL`</td>
+            <td class="content">string</td>
+            <td class="content">The URL to which the card details are sent to be tokenized.</td>
+        </tr>
+        <tr>
+            <td class="content">`preregistrationData`</td>
+            <td class="content">string</td>
+            <td class="content">A specific value passed to the `CardRegistrationURL`.</td>
+        </tr>
+    </tbody>
+</table>
+
 ```swift CardRegistration
 let cardRegistration  = CardRegistration(
     id: id,
@@ -110,7 +143,34 @@ let cardRegistration  = CardRegistration(
 )
 ```  
 
-### CardTW please add the old table here  
+### Card
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`cardNumber `</td>
+            <td class="content">string</td>
+            <td class="content">The card number to be tokenized, without any separators.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardExpirationDate`</td>
+            <td class="content">string (Format: “MMYY”)</td>
+            <td class="content">The expiration date of the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardCvx `</td>
+            <td class="content">string</td>
+            <td class="content">The card verification code (on the back of the card, usually 3 digits).</td>
+        </tr>
+    </tbody>
+</table>
+
 ```kotlin Card
 let cardInfo = CardInfo(
     cardNumber: "4970107111111119",
@@ -141,8 +201,8 @@ MangopayVault.tokenizeCard(
 ## Managing cards  
 
 You can use the following endpoints to manage cards:  
--View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
--Deactivate a Card allows you to irreversibly set the card as inactive  
+- View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+- Deactivate a Card allows you to irreversibly set the card as inactive  
 
 <Warning>  
 **Warning – End user's approval needed to save card details** 
@@ -154,10 +214,10 @@ If you don’t have the end user’s approval, you need to deactivate the card s
 ## Making card payments  
 
 You can use a registered card (`CardId`) for pay-ins with the following objects:   
--The Direct Card PayIn object, for one-shot card payments  
--The Recurring PayIn Registration object, for recurring card payments  
--The Preauthorization object, for 7-day preauthorized card payments  
--The Deposit Preauthorization object, for 30-day preauthorized card payments  
+- The Direct Card PayIn object, for one-shot card payments  
+- The Recurring PayIn Registration object, for recurring card payments  
+- The Preauthorization object, for 7-day preauthorized card payments  
+- The Deposit Preauthorization object, for 30-day preauthorized card payments  
 
 <Warning>  
 **Caution – Card validation within 24 hours** 

@@ -15,9 +15,9 @@ This feature is subject to validation from Mangopay. You must provide Mangopay w
 The endpoints presented here are specifically for use by PCI-DSS-compliant platforms which have been authorized to process raw card data on their side, rather than relying on Mangopay’s Card Registration endpoints or SDKs.  
 
 PCI-DSS-compliant endpoints are available for the following features of the Mangopayapi:  
--Direct card pay-in - One-time card payment, authorizing and capturing the funds  
--Preauthorization - Decoupled authorization and capture, with funds reserved for 7 days  
--Card validation - Authorization without capture of funds  
+- Direct card pay-in - One-time card payment, authorizing and capturing the funds  
+- Preauthorization - Decoupled authorization and capture, with funds reserved for 7 days  
+- Card validation - Authorization without capture of funds  
 
 Besides the required parameters described below, the PCI-DSS-compliant versions of these endpoints function in the same way and with the same optional and required parameters as they do when using Mangopay’s Card Registration feature. The same Hooks are also available.  
 
@@ -29,11 +29,62 @@ These parameters are not returned: only the `CardId` is present in the response.
 
 #### 1. Card (required)
 
-TW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Parameter</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`Card`</td>
+            <td class="content">object</td>
+            <td class="content">Information about the card to use for the transaction.</td>
+        </tr>
+        <tr>
+            <td class="content">`Number`</td>
+            <td class="content">string</td>
+            <td class="content">The number of the card (on the front, usually 16 digits).</td>
+        </tr>
+        <tr>
+            <td class="content">`ExpirationDate`</td>
+            <td class="content">string</td>
+            <td class="content">The expiration date of the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`CVX`</td>
+            <td class="content">string</td>
+            <td class="content">The card verification code (CVC) of the card (on the back, usually 3 digits).</td>
+        </tr>
+    </tbody>
+</table>
 
 #### 2. CardType (required)
 
-TW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Parameter</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`CardType`</td>
+            <td class="content">string</td>
+            <td class="content">
+                **Allowed values:* CB_VISA_MASTERCARD, AMEX, MAESTRO
+
+                **Default values:** CB_VISA_MASTERCARD
+
+                The type of the card. If not supplied, the default value will be taken into account.
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 ## Environments  
 

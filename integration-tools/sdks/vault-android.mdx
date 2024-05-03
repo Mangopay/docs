@@ -8,17 +8,17 @@ title: 'Vault - Android'
 The Mangopay Vault SDK allows you to securely tokenize an end user’s payment card for use in your application. A tokenized card is a virtual and secure version of the card that can be used for payment.  
 
 It is very highly recommended that you use the Mangopay Vault SDK, rather than integrating the API endpoints directly. By doing so, you:  
--Avoid sensitive card details transiting your system  
--Benefit from PCI-DSS compliance  
--Receive ongoing support and updates  
+- Avoid sensitive card details transiting your system  
+- Benefit from PCI-DSS compliance  
+- Receive ongoing support and updates  
 
-<Card title="TW should set this">  
+<Info>  
 
 To use the Mangopay Vault SDK (Android), you’ll need:  
 - A Mangopay `ClientId` and API key (get a Sandbox API key for free)  
-- A User to register the card for (see Testing - Payment methods for test cards)  
+- A User to register the card for (see [Testing - Payment methods](https://mangopay.com/docs/dev-tools/testing/payment-methods) for test cards)  
 - Android `minSdk = 21`
-</Card>  
+</Info>  
 
 ## Installation  
 
@@ -34,7 +34,43 @@ Initialize the SDK with your `ClientId` and select your environment (Sandbox or 
 MangopayVaultSdk.initialize(clientId = "your-mangopay-client-id", environment = MangopayEnvironment.SANDBOX)
 ```  
 
-### Optional initialization parametersTW please add the old table here  
+### Optional initialization parameters
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Argument</th>
+            <th class="header">Data-type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`logLevel `</td>
+            <td class="content">LogLevel</td>
+            <td class="content">
+                Use this to specify HTTP request and response log. We recommend `LogLevel.None` for Production build.
+
+                **Default value:** `LogLevel.None`
+
+                **Allowed values:** `LogLevel.None`, `LogLevel.Basic`
+            </td>
+        </tr>
+        <tr>
+            <td class="content">`environment `</td>
+            <td class="content">Environment</td>
+            <td class="content">
+                Expected backend environment.
+
+                **Default value:** `Environment.SANDBOX`
+
+                **Allowed values:** `Environment.SANDBOX`, `Environment.PRODUCTION`
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
 
 ## Creating the Card Registration  
 
@@ -76,7 +112,40 @@ The SDK requires the following information to tokenize the card:
 -The end user’s card details (`CardRegistration</inline-code) entered in the app (see Testing - Payment methods for test cards)  
 -The Card Registration data (`Card`) previously returned by the Mangopay API  
 
-### CardRegistrationTW please add the old table here  
+### CardRegistration
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`Id`</td>
+            <td class="content">string</td>
+            <td class="content">The unique identifier of the Card Registration object.</td>
+        </tr>
+        <tr>
+            <td class="content">`AccessKey`</td>
+            <td class="content">string</td>
+            <td class="content">The secure value used when tokenizing the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`PreregistrationData`</td>
+            <td class="content">string</td>
+            <td class="content">A specific value passed to the `CardRegistrationURL`.</td>
+        </tr>
+        <tr>
+            <td class="content">`CardRegistrationURL`</td>
+            <td class="content">string</td>
+            <td class="content">The URL to which the card details are sent to be tokenized.</td>
+        </tr>
+    </tbody>
+</table>
+
 ```kotlin CardRegistration
 val cardRegistration = CardRegistration.Builder()
             .id(Id)
@@ -86,7 +155,35 @@ val cardRegistration = CardRegistration.Builder()
             .build()
 ```  
 
-### CardTW please add the old table here  
+### Card
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`number`</td>
+            <td class="content">string</td>
+            <td class="content">The card number to be tokenized, without any separators.</td>
+        </tr>
+        <tr>
+            <td class="content">`expirationDate`</td>
+            <td class="content">string (Format: “MMYY”)</td>
+            <td class="content">The expiration date of the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`cvv`</td>
+            <td class="content">string</td>
+            <td class="content">The card verification code (on the back of the card, usually 3 digits).</td>
+        </tr>
+    </tbody>
+</table>
+
 ```kotlin Card
 val card = Card.Builder()
      .number("4970107111111119")
@@ -117,8 +214,8 @@ MangopayVaultSdk.tokenizeCard(card, cardRegistration, this, tokenizeCallbacks())
 ## Managing cards  
 
 You can use the following endpoints to manage cards:  
--View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
--Deactivate a Card allows you to irreversibly set the card as inactive  
+- View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+- Deactivate a Card allows you to irreversibly set the card as inactive  
 
 <Warning>  
 **Warning – End user's approval needed to save card details** 
@@ -130,10 +227,10 @@ If you don’t have the end user’s approval, you need to deactivate the card s
 ## Making card payments  
 
 You can use a registered card (`CardId`) for pay-ins with the following objects:   
--The Direct Card PayIn object, for one-shot card payments  
--The Recurring PayIn Registration object, for recurring card payments  
--The Preauthorization object, for 7-day preauthorized card payments  
--The Deposit Preauthorization object, for 30-day preauthorized card payments  
+- The Direct Card PayIn object, for one-shot card payments  
+- The Recurring PayIn Registration object, for recurring card payments  
+- The Preauthorization object, for 7-day preauthorized card payments  
+- The Deposit Preauthorization object, for 30-day preauthorized card payments  
 
 <Warning>  
 **Caution – Card validation within 24 hours** 
