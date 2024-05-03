@@ -11,6 +11,15 @@ Alternatively - and particularly if the card is not going to be used within 24 h
 
 This guide focuses on how to perform a card validation.  
 
+<Info>
+**Prerequisites**
+
+- A `ClientId` and an API key ([get a Sandbox account for free](https://hub.mangopay.com/))
+- A User object created for your end user 
+- A `CardId` for the end user’s card (`CardType` must be `CB_VISA_MASTERCARD`), obtained through the card registration flow or returned by the Mangopay [Vault SDK or Checkout SDK](https://mangopay.com/docs/sdk) – in Sandbox, we recommend you use the [challenge test card](https://mangopay.com/docs/dev-tools/testing/payment-methods)
+- The URL of a page on your platform to return the end user to after authentication
+</Info>
+
 ## 1/ Request the card validation  
 
 Using the User’s `Id` as the `AuthorId`, use the Create a Card Validation endpoint to make the request for validation without a payment.  
@@ -106,7 +115,34 @@ The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the card va
 
 Mangopay updates the `Status` of the card validation to indicate the outcome of the end user's authentication.  
 
-You can set up the following hooks to be notified of the outcome:TW please add the old table here  
+You can set up the following hooks to be notified of the outcome:
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Name</th>
+            <th class="header">ResourceId</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">CARD_VALIDATION_CREATED</td>
+            <td class="content">CardValidationId</td>
+            <td class="content">The Card Validation object has been created and the card is pending validation.</td>
+        </tr>
+        <tr>
+            <td class="content">CARD_VALIDATION_FAILED</td>
+            <td class="content">CardValidationId</td>
+            <td class="content">The Card Validation has failed, setting the corresponding card as invalid.</td>
+        </tr>
+        <tr>
+            <td class="content">CARD_VALIDATION_SUCCEEDED</td>
+            <td class="content">CardValidationId</td>
+            <td class="content">The Card Validation has succeeded, setting the corresponding card as valid.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Handling errors  
 
