@@ -6,9 +6,19 @@ title: 'How to process a card payment'
 
 This how-to guide will take you through the steps to successfully process a payment by card. With the Mangopay API, this consists in registering a card and making a direct card pay-in. See the flow diagram for an overview.   
 
+<Info>
+**Prerequisites**
+
+- A `ClientId` and an API key ([get a Sandbox account for free](https://hub.mangopay.com/))
+- A User object created for your end userr, and their associated Wallet
+- The end user’s card with which to pay ([use our test cards](https://mangopay.com/docs/dev-tools/testing/payment-methods))
+- The URL of a page on your platform to return the end user to after authentication
+</Info>
+
 The Mangopay API provides two distinct card-related objects:  
--Card Registration - The object to safely tokenize the card and create the Card object.  
--Card - The tokenized version of the card, whose `CardId` will allow you to make payments.  
+- **Card Registration** - The object to safely tokenize the card and create the Card object.  
+- **Card** - The tokenized version of the card, whose `CardId` will allow you to make payments.  
+
 
 ## 1/ Create the Card Registration  
 
@@ -42,9 +52,9 @@ You also need to define the currency and type of the card at this stage.
 ```  
 
 From this response, you will need to save the following values for the next step:  
--`AccessKey`  
--`PreregistrationData`  
--`CardRegistrationURL`  
+- `AccessKey`  
+- `PreregistrationData`  
+- `CardRegistrationURL`  
 
 ## 2/ Send data to the tokenization server  
 
@@ -61,7 +71,34 @@ Make a request to the `CardRegistrationURL` using the previously saved `AccessKe
 -Use `AccessKey` data for the `accessKeyRef` parameter  
 -Use `PreregistrationData` data for the `data` parameter  
 
-You also need the end user’s card details, entered on the payment page:TW please add the old table here  
+You also need the end user’s card details, entered on the payment page:
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`cardNumber `</td>
+            <td class="content">string</td>
+            <td class="content">The card number to be tokenized, without any separators.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardExpirationDate `</td>
+            <td class="content">string (Format: “MMYY”)</td>
+            <td class="content">The expiration date of the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardCvx `</td>
+            <td class="content">string</td>
+            <td class="content">The card verification code (on the back of the card, usually 3 digits).</td>
+        </tr>
+    </tbody>
+</table>
 
 <Warning>  
 **Warning - Card details must never pass via your server** 
@@ -181,8 +218,8 @@ You need to send the end user’s IP address in IPV4 or IPV6 format. You can col
 ### Browser information  
 
 You also need to collect data about the end user’s browser.  
--On a website, this data can be obtained from the browser.  
--In a mobile app, you need to open a webview to fetch data from the browser (in the same way as for a website).  
+- On a website, this data can be obtained from the browser.  
+- In a mobile app, you need to open a webview to fetch data from the browser (in the same way as for a website).  
 ```javascript Browser information - JavaScript example
 let browserInfo = {
   acceptedHeader: navigator.languages,
@@ -197,7 +234,74 @@ let browserInfo = {
 }
 
 console.log(browserInfo);
-```TW please add the old table here  
+```
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">API child parameter</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+            <th class="header">JavaScript example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`AcceptHeader`</td>
+            <td class="content">string</td>
+            <td class="content">The exact content of the HTTP accept headers as sent to the platform from the end user’s browser.</td>
+            <td class="content">None, collected server-side</td>
+        </tr>
+        <tr>
+            <td class="content">`JavaEnabled`</td>
+            <td class="content">boolean</td>
+            <td class="content">Whether or not the end user’s browser has the ability to execute Java.</td>
+            <td class="content">`navigator.javaEnabled()`</td>
+        </tr>
+        <tr>
+            <td class="content">`Language`</td>
+            <td class="content">string (Max. length: 6 characters)</td>
+            <td class="content">The browser language, made up of the language code and the country (e.g., “en-US”).</td>
+            <td class="content">`navigator.language` or `navigator.userLanguage`</td>
+        </tr>
+        <tr>
+            <td class="content">`ColorDepth`</td>
+            <td class="content">integer (Allowed values: 1, 4, 8, 15, 16, 24, 30, 32, 48)</td>
+            <td class="content">The value representing the depth of the screen’s color palette for displaying images, in bits per pixel.</td>
+            <td class="content">`window.screen.colorDepth`</td>
+        </tr>
+        <tr>
+            <td class="content">`ScreenHeight`</td>
+            <td class="content">integer (Max. length: 6 characters)</td>
+            <td class="content">The height of the screen in pixels.</td>
+            <td class="content">`window.screen.height`</td>
+        </tr>
+        <tr>
+            <td class="content">`ScreenWidth`</td>
+            <td class="content">integer (Max. length: 6 characters)</td>
+            <td class="content">The width of the screen in pixels.</td>
+            <td class="content">`window.screen.width`</td>
+        </tr>
+        <tr>
+            <td class="content">`TimeZoneOffset`</td>
+            <td class="content">integer</td>
+            <td class="content">The difference in minutes between the browser’s timezone and UTC.</td>
+            <td class="content">`new Date().getTimezoneOffset()`</td>
+        </tr>
+        <tr>
+            <td class="content">`UserAgent`</td>
+            <td class="content">string (Max. length: 255 characters)</td>
+            <td class="content">The exact content of the HTTP User-Agent header. Max. length: 255 characters.</td>
+            <td class="content">`navigator.userAgent`</td>
+        </tr>
+        <tr>
+            <td class="content">`JavascriptEnabled`</td>
+            <td class="content">boolean</td>
+            <td class="content">Whether or not the end user’s browser has the ability to execute JavaScript.</td>
+            <td class="content">`true`</td>
+        </tr>
+    </tbody>
+</table>
 
 ## 5/ Request the payment (Direct Card PayIn)  
 
@@ -210,10 +314,10 @@ To reserve funds on a card for capture later, use the Preauthorization and Depos
 </Note>  
 
 Create the pay-in request using:  
--The `CardId`  
--The IP address and browser information  
--The `Id` of the User as the `AuthorId`  
--The `Id` of the user’s Wallet as the `CreditedWalletId`  
+- The `CardId`  
+- The IP address and browser information  
+- The `Id` of the User as the `AuthorId`  
+- The `Id` of the user’s Wallet as the `CreditedWalletId`  
 
 <Warning>  
 **Caution - Pay-in to the author’s wallet** 
@@ -222,8 +326,8 @@ When making a pay-in, the funds should arrive on the wallet of the user making t
 </Warning>  
 
 When you make the payment request, you also need to:  
--Be ready to handle 3DS authentication (Step 6)  
--Specify the page to which the user will be returned after payment (Step 7)  
+- Be ready to handle 3DS authentication (Step 6)  
+- Specify the page to which the user will be returned after payment (Step 7)  
 
 Read these steps before continuing.  
 ```json REST
@@ -380,9 +484,9 @@ The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in 
 Mangopay updates the `Status` of the pay-in to indicate a successful or failed payment depending on the outcome of the end user's authentication.  
 
 You should set up the following hooks to be notified of the outcome:  
--PAYIN_NORMAL_CREATED  
--PAYIN_NORMAL_SUCCEEDED  
--PAYIN_NORMAL_FAILED  
+- PAYIN_NORMAL_CREATED  
+- PAYIN_NORMAL_SUCCEEDED  
+- PAYIN_NORMAL_FAILED  
 
 You should also view the pay-in (using its `Id`) to confirm the result of the transaction, allowing you to customize the end user’s experience after the payment.  
 
@@ -399,7 +503,7 @@ Under no circumstances should card information be kept without the end user's ap
 If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
 </Warning>  
 
-## 8/#Deactivate the card (if required)  
+## 8/ Deactivate the card (if required)  
 
 Once the pay-in is successful, if the end user did not request to save their card for later, set the card’s `Active` parameter to false to deactivate the card. This action is irreversible.  
 
