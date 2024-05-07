@@ -1,0 +1,738 @@
+---
+title: "Make a pay-in"
+description: "Make a card payment to get funds into a Mangopay e-wallet"
+---
+
+## Introduction
+
+This how-to guide will take you through the steps to successfully process a payment by card. With the Mangopay API, this consists in registering a card and making a direct card pay-in. 
+
+### 1. Create a Natural User
+  
+   Natural users categorized as Payers only need to provide the most basic information at their creation:
+   - First and last name
+   - Email
+   - If they've accepted the terms and conditions
+   - User category as Payer
+
+```json POST /v2.01/{ClientId}/users/natural
+{
+    "Address": {
+        "AddressLine1": "54588 John Ports",
+        "AddressLine2": "Walter Village",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "FirstName": "Emil",
+    "LastName": "Klein",
+    "Tag":"Created using MANGOPAY API Collection Postman",
+    "Email":"alfreda.hirthe24@yahoo.com",
+    "TermsAndConditionsAccepted":true,
+    "UserCategory":"PAYER"
+}
+
+ ```  
+   <Accordion title="See parameter details">
+    #### Path parameters  
+      <IdResponse />
+
+    #### Body parameters  
+
+      <Address3 />  
+
+      <FirstName1 />  
+
+      <LastName1 />  
+
+      <Birthday />  
+
+      <Nationality />  
+
+      <CountryOfResidence />  
+
+      <Occupation />  
+
+      <IncomeRange />  
+
+      <Tag3 />  
+
+      <Email2 />  
+
+      <TermsAndConditionsAccepted />  
+
+      <UserCategory />  
+        
+    #### Response
+
+      <Address3Response />  
+
+      <FirstName1Response />  
+
+      <LastName1Response />  
+
+      <BirthdayResponse />  
+
+      <NationalityResponse />  
+
+      <CountryOfResidenceResponse />  
+
+      <OccupationResponse />  
+
+      <IncomeRangeResponse />  
+
+      <ProofOfIdentityResponse />  
+
+      <ProofOfAddressResponse />  
+
+      <CapacityResponse />  
+
+      <IdResponse />  
+
+      <Tag2Response />  
+
+      <CreationDateResponse />  
+
+      <PersonTypeResponse />  
+
+      <Email2Response />  
+
+      <KYCLevelResponse />  
+
+      <TermsAndConditionsAcceptedResponse />  
+
+      <TermsAndConditionsAcceptedDateResponse />  
+
+      <UserCategoryResponse />    
+
+  </Accordion>
+
+ ``` json Response
+{
+    "Address": {
+        "AddressLine1": "54588 John Ports",
+        "AddressLine2": "Walter Village",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "FirstName": "Emil",
+    "LastName": "Klein",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "OTPCodeSent": false,
+    "Id": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1714052925,
+    "PersonType": "NATURAL",
+    "Email": "alfreda.hirthe24@yahoo.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": 1714052925,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+ ```
+### 2. Create a Wallet for the User
+  
+Create a wallet for your user to add funds into.
+While Mangopay authorizes you to create as many wallets as required, we recommend you create one wallet per user and currency.
+
+```json POST /v2.01/{ClientId}/wallets
+{
+    "Owners": ["user_m_01HWAR82HD4D8CQ67J02YMKM82"],
+    "Description": "E-Money wallet",
+    "Currency": "EUR",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+
+ ```  
+ <Accordion title="See parameter details">
+ 
+ ### Path parameters
+
+ <IdResponse />  
+
+ #### Body parameters  
+
+<Description1 />  
+
+<Owners />  
+
+<Currency21 />  
+
+<Tag6 />  
+
+ #### Response
+
+ <Description1Response />  
+
+<OwnersResponse />  
+
+<BalanceResponse />  
+
+<Currency23Response />  
+
+<FundsTypeResponse />  
+
+<IdResponse />  
+
+<Tag7Response />  
+
+<CreationDate1Response />
+  
+</Accordion>
+
+ ```json Response
+{
+    "Description": "E-Money wallet",
+    "Owners": [
+        "user_m_01HWAR82HD4D8CQ67J02YMKM82"
+    ],
+    "Balance": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Currency": "EUR",
+    "FundsType": "DEFAULT",
+    "Id": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1714052929
+}
+
+ ``` 
+
+### 3. Create a Card Registration
+  In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.
+
+You also need to define the currency and type of the card at this stage.
+
+``` json POST /v2.01/{ClientId}/cardregistrations
+{
+    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "Currency": "EUR",
+    "CardType": "CB_VISA_MASTERCARD"
+}
+```
+
+<Accordion title="See parameter details">
+  #### Body parameters
+  <UserId />  
+
+  <CardType />  
+
+  <Currency2 />  
+
+  <Tag1 />  
+
+  #### Response
+  <Id1Response />  
+
+  <Tag1Response />  
+
+  <CreationDateResponse />  
+
+  <AccessKeyResponse />  
+
+  <PreregistrationDataResponse />  
+
+  <RegistrationDataResponse />  
+
+  <CardIdResponse />  
+
+  <CardTypeResponse />  
+
+  <CardRegistrationURLResponse />  
+
+  <ResultCodeResponse />  
+
+  <ResultMessageResponse />  
+
+  <Currency2Response />  
+
+  <Status1Response />
+</Accordion>
+
+``` json Response
+{
+    "Id": "cardreg_m_01HWAR88VG9K1PVN6EH07ZHTHT",
+    "Tag": null,
+    "CreationDate": 1714052932,
+    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": null,
+    "CardId": null,
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "Currency": "EUR",
+    "Status": "CREATED"
+}
+```
+
+From this response, you will need to save the following values for the next step:
+
+-`AccessKey`
+-`PreregistrationData`
+-`CardRegistrationURL`
+
+### 4. Tokenize the Card
+  Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
+
+Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
+- Use `AccessKey` data for the `accessKeyRef` parameter  
+- Use `PreregistrationData` data for the `data` parameter  
+
+You also need the end user’s card details, entered on the payment page:TW please add the old table here  
+
+```json POST CardRegistrationURL
+{
+    "accessKeyRef":“1X0m87dmM2LiwFgxPLBJ”,
+    "data":"Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
+    "cardNumber":"4972485830400072",
+    "cardExpirationDate":"0230",
+    "cardCvx":"123"
+}
+```
+
+<Accordion title="See parameter details">
+#### Body parameters  
+
+<accessKeyRef />  
+
+<data />  
+
+<cardNumber />  
+
+<cardExpirationDate />  
+
+<cardCvx />  
+</Accordion>
+
+``` json Response
+data=R7hxMYui4h4rBkaNwbiH1C52oyBEPsNQqJWhStf8lRp-qFm87Xjc6eMmalQEBwCL8iAjp5-yMYx2KX5HaewKbrR7SzblGS3JYA-uOAwvnl9GWCA1bf83AsB4aEx48yIyNx0xgKTVnyDj15oG8jR88g
+```
+
+### 5. Update the Card Registration
+
+  Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`.  
+
+```json PUT /v2.01/{ClientId}/cardregistrations/CardRegistrationId
+{
+    "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg"
+}
+```  
+
+<Accordion>
+### Path parameters  
+
+<CardRegistrationId />  
+
+### Body parameters  
+
+<RegistrationData />  
+
+### Responses  
+        <Id1Response />  
+        <Tag1Response />  
+        <CreationDateResponse />  
+        <UserIdResponse />  
+        <AccessKeyResponse />  
+        <PreregistrationDataResponse />  
+        <RegistrationDataResponse />  
+        <CardIdResponse />  
+        <CardType1Response />  
+        <CardRegistrationURLResponse />  
+        <ResultCodeResponse />  
+        <ResultMessageResponse />  
+        <Currency2Response />  
+        <Status1Response />
+</Accordion>
+
+``` json Response
+{
+    "Id": "cardreg_m_01HWAR88VG9K1PVN6EH07ZHTHT",
+    "Tag": null,
+    "CreationDate": 1714052932,
+    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": "data=R7hxMYui4h4rBkaNwbiH1C52oyBEPsNQqJWhStf8lRp-qFm87Xjc6eMmalQEBwCL8iAjp5-yMYx2KX5HaewKbrR7SzblGS3JYA-uOAwvnl9GWCA1bf83AsB4aEx48yIyNx0xgKTVnyDj15oG8jR88g",
+    "CardId": "card_m_01HWAR8MKKS3MHN5W7KGRKT40Q",
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Currency": "EUR",
+    "Status": "VALIDATED"
+}
+```
+### 6. Create a Direct Card PayIn
+Now that the card is validated, we can create a direct card pay-in.
+
+Don't forget to click on the link provided by `SecureModeRedirectURL` parameter in the response
+
+``` json POST /v2.01/{ClientId}/payins/card/direct
+{
+    "AuthorId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "CreditedUserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "CreditedWalletId": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "CardId": "card_m_01HWAR8MKKS3MHN5W7KGRKT40Q",
+    "StatementDescriptor": "Mangopay",
+    "Billing": {
+      "FirstName": "Emil",
+      "LastName": "Klein",
+        "Address": {
+          "AddressLine1": "54588 John Ports",
+          "AddressLine2": "Walter Village",
+          "City": "Paris",
+          "Region": "Ile-de-France",
+          "PostalCode": "75001",
+          "Country": "FR"
+        }
+    },
+    "Shipping": {
+      "FirstName": "Emil",
+      "LastName": "Klein",
+        "Address": {
+          "AddressLine1": "54588 John Ports",
+          "AddressLine2": "Walter Village",
+          "City": "Paris",
+          "Region": "Ile-de-France",
+          "PostalCode": "75001",
+          "Country": "FR"
+        }
+    },
+    "Tag": "Created using Mangopay API Postman Collection",
+    "Culture": "EN",
+    "IpAddress": "bd11:9b7a:7b40:d5ba:5687:6952:81fb:9b04",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    }
+}
+```
+  <Accordion title="See parameter details">
+#### Body parameters  
+
+<Tag />  
+
+<AuthorId />  
+
+<CreditedUserId />  
+
+<DebitedFunds9 />  
+
+<Fees9 />  
+
+<CreditedWalletId />  
+
+<SecureMode />  
+
+<CardId />  
+
+<SecureModeReturnURL />  
+
+<Culture3 />  
+
+<StatementDescriptor />  
+
+<BrowserInfo />  
+
+<IpAddress />  
+
+<Billing2 />  
+
+<Shipping2 />  
+
+<PreferredCardNetwork />  
+
+<ProfilingAttemptReference />  
+
+#### Responses  
+
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFunds11Response />  
+
+<CreditedFunds9Response />  
+
+<Fees12Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletId1Response />  
+
+<PaymentType2Response />  
+
+<ExecutionTypeResponse />  
+
+<SecureModeResponse />  
+
+<CardId1Response />  
+
+<SecureModeReturnURLResponse />  
+
+<SecureModeRedirectURLResponse />  
+
+<SecureModeNeededResponse />  
+
+<Culture6Response />  
+
+<SecurityInfoResponse />  
+
+<StatementDescriptorResponse />  
+
+<BrowserInfoResponse />  
+
+<IpAddressResponse />  
+
+<Billing1Response />  
+
+<Shipping2Response />  
+
+<Requested3DSVersionResponse />  
+
+<Applied3DSVersionResponse />  
+
+<RecurringPayinRegistrationIdResponse />  
+
+<PreferredCardNetworkResponse />  
+
+<CardInfoResponse />  
+
+</Accordion>
+``` json Response
+{
+    "Id": "payin_m_01HWAR8SGASQJWBG9C55ZX9THJ",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1714052950,
+    "AuthorId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "CreditedUserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 9000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "card_m_01HWAR8MKKS3MHN5W7KGRKT40Q",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=payin_m_01HWAR8SGASQJWBG9C55ZX9THJ",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com/mvc/eu/Redirect/ACSWithValidation?token=048e3d444bef4ef9b09a82527b8195c4&mgpsecureid=048e3d444bef4ef9b09a82527b8195c4",
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "bd11:9b7a:7b40:d5ba:5687:6952:81fb:9b04",
+    "Billing": {
+      "FirstName": "Emil",
+      "LastName": "Klein",
+        "Address": {
+          "AddressLine1": "54588 John Ports",
+          "AddressLine2": "Walter Village",
+          "City": "Paris",
+          "Region": "Ile-de-France",
+          "PostalCode": "75001",
+          "Country": "FR"
+        }
+    },
+    "Shipping": {
+      "FirstName": "Emil",
+      "LastName": "Klein",
+        "Address": {
+          "AddressLine1": "54588 John Ports",
+          "AddressLine2": "Walter Village",
+          "City": "Paris",
+          "Region": "Ile-de-France",
+          "PostalCode": "75001",
+          "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null,
+    "PreferredCardNetwork": null,
+    "PaymentCategory": "ECommerce",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}
+```
+### 7. View the PayIn
+
+``` json Response
+{
+    "Id": "payin_m_01HWAR8SGASQJWBG9C55ZX9THJ",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1714052950,
+    "AuthorId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "CreditedUserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 9000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1714052964,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "card_m_01HWAR8MKKS3MHN5W7KGRKT40Q",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=payin_m_01HWAR8SGASQJWBG9C55ZX9THJ",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "bd11:9b7a:7b40:d5ba:5687:6952:81fb:9b04",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null,
+    "PreferredCardNetwork": null,
+    "PaymentCategory": "ECommerce",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
+}
+```
+
+
+
