@@ -12,6 +12,12 @@ import Fees2 from '/snippets/body-parameters/Fees2.mdx';
 import DebitedFunds3 from '/snippets/body-parameters/DebitedFunds3.mdx';
 import AuthorId1 from '/snippets/body-parameters/AuthorId1.mdx';
 import PayoutModeRequested1 from '/snippets/body-parameters/PayoutModeRequested1.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 This call is used to check whether or not the destination bank is eligible for instant payout.  
@@ -34,19 +40,33 @@ This call is used to check whether or not the destination bank is eligible for i
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Bank is reachable">  
+<AccordionGroup>
+
+<Accordion title="200 - Bank is reachable">  
 
 <IsReachableResponse />  
 
-<UnreachableReasonResponse /></Accordion><Accordion title="200 Bank is unreachable">  
+<UnreachableReasonResponse />
+
+</Accordion><Accordion title="200 - Bank is unreachable">  
 
 <IsReachableResponse />  
 
-<UnreachableReasonResponse /></Accordion><Accordion title="400 Instant payment disabled "></Accordion></AccordionGroup>  
+<UnreachableReasonResponse />
+
+</Accordion><Accordion title="400 - Instant payment disabled ">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Bank is reachable  
+```json 200 - Bank is reachable  
 
 {
     "InstantPayout": {
@@ -57,7 +77,7 @@ This call is used to check whether or not the destination bank is eligible for i
 
  ```  
 
-```json 200 Bank is unreachable  
+```json 200 - Bank is unreachable  
 
 {
     "InstantPayout":{
@@ -71,7 +91,7 @@ This call is used to check whether or not the destination bank is eligible for i
 
  ```  
 
-```json 400 Instant payment disabled   
+```json 400 - Instant payment disabled   
 
 {
     "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",

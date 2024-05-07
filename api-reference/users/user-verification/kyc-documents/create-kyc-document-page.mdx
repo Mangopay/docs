@@ -6,13 +6,18 @@ api: 'POST /v2.01/{ClientId}/users/{UserId}/kyc/documents/{KycDocumentId}/pages'
 import File from '/snippets/body-parameters/File.mdx';
 import KycDocumentId from '/snippets/path-parameters/KycDocumentId.mdx';
 import UserId from '/snippets/path-parameters/UserId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
   
 
 The KYC Document Page is a file attached to the KYC Document for Mangopay's teams to review.  
 
 To be able to create a KYC Document Page:  
--The corresponding KYC Document `Status` must be `CREATED`  
--The `File` must be Base64 encoded and abide by the format and size constraints.  
+- The corresponding KYC Document `Status` must be `CREATED`  
+- The `File` must be Base64 encoded and abide by the format and size constraints.  
 
 Only 5 KYC Document Pages can be created for a KYC Document.  
 
@@ -28,11 +33,33 @@ Only 5 KYC Document Pages can be created for a KYC Document.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="204 No content (upload successful)"></Accordion><Accordion title="400 Base64 file invalid length"></Accordion><Accordion title="400 Maximum of 5 files (KYC document pages) per KYC document"></Accordion></AccordionGroup>  
+<AccordionGroup>
+
+<Accordion title="200 - No content (upload successful)">
+No response parameters
+</Accordion>
+
+<Accordion title="400 - Base64 file invalid length">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - Maximum of 5 pages">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 400 Base64 file invalid length  
+```json 400 - Base64 file invalid length  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -46,7 +73,7 @@ Only 5 KYC Document Pages can be created for a KYC Document.
 
  ```  
 
-```json 400 Maximum of 5 files (KYC document pages) per KYC document  
+```json 400 - Maximum of 5 KYC Document Pages (files) per KYC Document  
 
 {
     "Message": "Maximum number of pages exceeded. You can only add up to 5 pages to this document",

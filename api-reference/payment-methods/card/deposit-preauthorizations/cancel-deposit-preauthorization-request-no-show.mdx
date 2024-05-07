@@ -32,11 +32,17 @@ import CreationDateResponse from '/snippets/response-parameters/CreationDateResp
 import Id2Response from '/snippets/response-parameters/Id2Response.mdx';
 import PaymentStatus1 from '/snippets/body-parameters/PaymentStatus1.mdx';
 import DepositId from '/snippets/path-parameters/DepositId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 This endpoints allows you to take one of two actions against a deposit preauthorization, in both cases provided that no preauthorized pay-ins have been made to capture funds:  
--Cancel it manually by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can’t be used for any further action.  
--Request a no-show by setting the `PaymentStatus` to `NO_SHOW_REQUESTED`. If successful, the `PaymentStatus` `NO_SHOW` indicates that you can use the Create a Deposit Preauthorized PayIn complement endpoint to capture additional funds.  
+- Cancel it manually by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can’t be used for any further action.  
+- Request a no-show by setting the `PaymentStatus` to `NO_SHOW_REQUESTED`. If successful, the `PaymentStatus` `NO_SHOW` indicates that you can use the Create a Deposit Preauthorized PayIn complement endpoint to capture additional funds.  
 
 ### Path parameters  
 
@@ -48,7 +54,7 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200">  
 
 <Id2Response />  
 
@@ -102,7 +108,19 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
 <TagResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="400 Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW"></Accordion></AccordionGroup>  
+<CardInfoResponse />
+
+</Accordion>
+
+<Accordion title="400 - Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -185,8 +203,7 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
  ```  
 
-```json 400 Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW  
-
+```json 400 - Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW  
 {
     "Message": "The capture has a success status.",
     "Type": "invalid_action",
@@ -194,15 +211,13 @@ This endpoints allows you to take one of two actions against a deposit preauthor
     "Date": 1699264645.0,
     "errors": null
 }  
-
- ```  
+```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
-```json REST  
-
+```json REST
 {
    "PaymentStatus": "CANCELED"
 }  

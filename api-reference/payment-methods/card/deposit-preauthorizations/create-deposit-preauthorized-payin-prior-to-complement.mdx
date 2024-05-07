@@ -28,6 +28,11 @@ import Fees1 from '/snippets/body-parameters/Fees1.mdx';
 import DebitedFunds2 from '/snippets/body-parameters/DebitedFunds2.mdx';
 import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
 import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
   
 
 This endpoint allows you to capture the preauthorized funds without closing the preauthorization deposit object. It can be used prior to capturing additional funds with the Create a Deposit Preauthorized PayIn complement endpoint.  
@@ -54,7 +59,7 @@ The pay-in requested on this endpoint (prior to complement) must be a full captu
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Succeeded">  
+<AccordionGroup><Accordion title="200 - Succeeded">  
 
 <AuthorIdResponse />  
 
@@ -92,7 +97,27 @@ The pay-in requested on this endpoint (prior to complement) must be a full captu
 
 <TagResponse />  
 
-<StatementDescriptorResponse /></Accordion><Accordion title="400 Partial capture not possible "></Accordion><Accordion title="400 Attempting to capture a canceled deposit"></Accordion></AccordionGroup>  
+<StatementDescriptorResponse />
+
+</Accordion>
+
+<Accordion title="400 - Partial capture not possible ">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - Attempting to capture a canceled deposit">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -130,7 +155,7 @@ The pay-in requested on this endpoint (prior to complement) must be a full captu
 
  ```  
 
-```json 400 Partial capture not possible   
+```json 400 - Partial capture not possible   
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -144,7 +169,7 @@ The pay-in requested on this endpoint (prior to complement) must be a full captu
 
  ```  
 
-```json 400 Attempting to capture a canceled deposit  
+```json 400 - Attempting to capture a canceled deposit  
 
 {
     "Message": "The deposit is not in the PreAuthorized status.",

@@ -5,6 +5,12 @@ api: 'POST /v2.01/{ClientId}/users/data-formats/validation'
 
 import CompanyNumber1Response from '/snippets/response-parameters/CompanyNumber1Response.mdx';
 import CompanyNumber1 from '/snippets/body-parameters/CompanyNumber1.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 This call allows you to check the validity of the format of a piece of user data, and to retrieve the validation rules applied to it.  
@@ -21,13 +27,25 @@ This endpoint only checks that the format of the data corresponds to that which 
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Valid format for the country">  
+<AccordionGroup>
 
-<CompanyNumber1Response /></Accordion><Accordion title="400 Country code not recognized"></Accordion></AccordionGroup>  
+<Accordion title="200 - Valid format for the country">  
+<CompanyNumber1Response />
+</Accordion>
+
+<Accordion title="400 - Country code not recognized">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Valid format for the country  
+```json 200 - Valid format for the country  
 
 {
     "CompanyNumber": {
@@ -42,7 +60,7 @@ This endpoint only checks that the format of the data corresponds to that which 
 
  ```  
 
-```json 400 Country code not recognized  
+```json 400 - Country code not recognized  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",

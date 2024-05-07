@@ -25,6 +25,12 @@ import Fees4 from '/snippets/body-parameters/Fees4.mdx';
 import DebitedFunds5 from '/snippets/body-parameters/DebitedFunds5.mdx';
 import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 ### Path parameters  
@@ -41,7 +47,7 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200 - Succeeded">  
 
 <IdResponse />  
 
@@ -75,7 +81,7 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 <DebitedWalletIdResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="200 Failed">  
+<RepudiationIdResponse /></Accordion><Accordion title="200 - Failed">  
 
 <IdResponse />  
 
@@ -109,11 +115,30 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 <DebitedWalletIdResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="400 Settlement DebitedFunds exceed the initial transaction DebitedFunds"></Accordion><Accordion title="400 Settlement Fees exceed the initial transaction Fees"></Accordion></AccordionGroup>  
+<RepudiationIdResponse />
+</Accordion>
+
+<Accordion title="400 - Settlement DebitedFunds exceed the initial transaction DebitedFunds">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - Settlement Fees exceed the initial transaction Fees">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
+```json 200 - Succeeded
 
 {
     "Id": "159220385",
@@ -146,7 +171,7 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
  ```  
 
-```json 200 Failed  
+```json 200 - Failed  
 
 {
     "Id": "159220127",
@@ -179,7 +204,7 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
  ```  
 
-```json 400 Settlement DebitedFunds exceed the initial transaction DebitedFunds  
+```json 400 - Settlement DebitedFunds exceed the initial transaction DebitedFunds  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -193,7 +218,7 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
  ```  
 
-```json 400 Settlement Fees exceed the initial transaction Fees  
+```json 400 - Settlement Fees exceed the initial transaction Fees  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",

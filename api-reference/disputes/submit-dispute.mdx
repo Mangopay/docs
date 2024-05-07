@@ -22,6 +22,12 @@ import InitialTransactionTypeResponse from '/snippets/response-parameters/Initia
 import InitialTransactionIdResponse from '/snippets/response-parameters/InitialTransactionIdResponse.mdx';
 import ContestedFunds from '/snippets/body-parameters/ContestedFunds.mdx';
 import DisputeId from '/snippets/path-parameters/DisputeId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 This call is used both for the initial submission of the dispute and any resubmission made afterwards (in case more documents are required for instance).  
@@ -36,7 +42,7 @@ This call is used both for the initial submission of the dispute and any resubmi
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200">  
 
 <InitialTransactionIdResponse />  
 
@@ -70,11 +76,39 @@ This call is used both for the initial submission of the dispute and any resubmi
 
 <ClosedDateResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="400 ContestedFunds required"></Accordion><Accordion title="400 ContestedFunds higher than DisputedFunds"></Accordion><Accordion title="400 ContestDeadlineDate in the past"></Accordion></AccordionGroup>  
+<RepudiationIdResponse />
+
+</Accordion>
+
+<Accordion title="400 - ContestedFunds required">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - ContestedFunds higher than DisputedFunds">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - ContestDeadlineDate in the past">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
+```json 200
 
 {
     "InitialTransactionId": "158596153",
@@ -107,7 +141,7 @@ This call is used both for the initial submission of the dispute and any resubmi
 
  ```  
 
-```json 400 ContestedFunds required  
+```json 400 - ContestedFunds required  
 
 {
     "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -121,7 +155,7 @@ This call is used both for the initial submission of the dispute and any resubmi
 
  ```  
 
-```json 400 ContestedFunds higher than DisputedFunds  
+```json 400 - ContestedFunds higher than DisputedFunds  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -135,7 +169,7 @@ This call is used both for the initial submission of the dispute and any resubmi
 
  ```  
 
-```json 400 ContestDeadlineDate in the past  
+```json 400 - ContestDeadlineDate in the past  
 
 {
     "Message": "The ContestDeadlineDate has now passed and this Dispute is no longer contestable",

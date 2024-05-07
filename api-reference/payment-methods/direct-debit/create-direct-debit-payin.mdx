@@ -35,6 +35,12 @@ import DebitedFunds11 from '/snippets/body-parameters/DebitedFunds11.mdx';
 import CreditedWalletId from '/snippets/body-parameters/CreditedWalletId.mdx';
 import CreditedUserId from '/snippets/body-parameters/CreditedUserId.mdx';
 import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 ### Body parameters  
@@ -59,7 +65,7 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200">  
 
 <IdResponse />  
 
@@ -101,7 +107,12 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 <MandateIdResponse />  
 
-<StatementDescriptorResponse /></Accordion><Accordion title="200 Failed due to invalid mandate status">  
+<StatementDescriptorResponse />
+
+</Accordion>
+
+
+<Accordion title="200 - Failed due to invalid mandate status">  
 
 <IdResponse />  
 
@@ -143,7 +154,27 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 <MandateIdResponse />  
 
-<StatementDescriptor1Response /></Accordion><Accordion title="400 Payment method not activated"></Accordion><Accordion title="400 Statement descriptor not available for BACS Direct Debit "></Accordion></AccordionGroup>  
+<StatementDescriptor1Response />
+
+</Accordion>
+
+<Accordion title="400 - Payment method not activated">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - Statement descriptor not available for BACS Direct Debit ">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -221,7 +252,7 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
  ```  
 
-```json 400 Payment method not activated  
+```json 400 - Payment method not activated  
 
 {
     "Message":"Error this mean of payment for this asked currency has been disabled",
@@ -235,7 +266,7 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
  ```  
 
-```json 400 Statement descriptor not available for BACS Direct Debit   
+```json 400 - Statement descriptor not available for BACS Direct Debit   
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",

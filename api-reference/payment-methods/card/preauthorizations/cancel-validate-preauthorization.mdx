@@ -37,7 +37,12 @@ import Tag5Response from '/snippets/response-parameters/Tag5Response.mdx';
 import Id3Response from '/snippets/response-parameters/Id3Response.mdx';
 import PaymentStatus from '/snippets/body-parameters/PaymentStatus.mdx';
 import PreauthorizationId from '/snippets/path-parameters/PreauthorizationId.mdx';
-  
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
 
 This call is used to manually close the preauthorization hold period before the `ExpirationDate`, thereby releasing the preauthorized funds.   
 
@@ -61,7 +66,7 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Canceled (no captures)">  
+<AccordionGroup><Accordion title="200 - Canceled (no captures)">  
 
 <Id3Response />  
 
@@ -125,7 +130,7 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
 <PreferredCardNetworkResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="200 Validated following successful capture">  
+<CardInfoResponse /></Accordion><Accordion title="200 - Validated following successful capture">  
 
 <Id3Response />  
 
@@ -189,7 +194,27 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
 <PreferredCardNetworkResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="400 Cancel attempted after capture"></Accordion><Accordion title="400 Validation attempted before capture"></Accordion></AccordionGroup>  
+<CardInfoResponse />
+
+</Accordion>
+
+<Accordion title="400 - Cancel attempted after capture">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+<Accordion title="400 - Validation attempted before capture">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -365,7 +390,7 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
  ```  
 
-```json 400 Cancel attempted after capture  
+```json 400 - Cancel attempted after capture  
 
 {
    "Message": "The Payment Status of the preauthorization does not allow for it to be edited",
@@ -377,7 +402,7 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
  ```  
 
-```json 400 Validation attempted before capture  
+```json 400 - Validation attempted before capture  
 
 {
    "Message": "Can't validate a preauthorization with no successful payin.",

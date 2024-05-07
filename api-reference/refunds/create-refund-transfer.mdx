@@ -28,6 +28,12 @@ import DebitedFunds7 from '/snippets/body-parameters/DebitedFunds7.mdx';
 import AuthorId3 from '/snippets/body-parameters/AuthorId3.mdx';
 import Tag from '/snippets/body-parameters/Tag.mdx';
 import TransferId from '/snippets/path-parameters/TransferId.mdx';
+import ErrorReport_Message from '/snippets/response-parameters/ErrorReport_Message.mdx';
+import ErrorReport_Type from '/snippets/response-parameters/ErrorReport_Type.mdx';
+import ErrorReport_Id from '/snippets/response-parameters/ErrorReport_Id.mdx';
+import ErrorReport_Date from '/snippets/response-parameters/ErrorReport_Date.mdx';
+import ErrorReport_errors from '/snippets/response-parameters/ErrorReport_errors.mdx';
+
   
 
 You can do a partial refund by providing a debited funds `Amount` value lower than the initial transaction amount. The debited funds amount must be 1 or more, if it is included.  
@@ -48,7 +54,9 @@ You can do a partial refund by providing a debited funds `Amount` value lower th
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -88,7 +96,19 @@ You can do a partial refund by providing a debited funds `Amount` value lower th
 
 <CreditedWalletIdResponse />  
 
-<RefundReasonResponse /></Accordion><Accordion title="400 Incorrect AuthorId"></Accordion></AccordionGroup>  
+<RefundReasonResponse />
+
+</Accordion>
+
+<Accordion title="400 - Incorrect AuthorId">
+<ErrorReport_Message />
+<ErrorReport_Type />
+<ErrorReport_Id />
+<ErrorReport_Date />
+<ErrorReport_errors />
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -131,7 +151,7 @@ You can do a partial refund by providing a debited funds `Amount` value lower th
 
  ```  
 
-```json 400 Incorrect AuthorId  
+```json 400 - Incorrect AuthorId  
 
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
