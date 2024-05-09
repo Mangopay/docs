@@ -5,7 +5,9 @@ title: 'Checkout - iOS'
 
 This guide helps you get started with the Checkout SDK on iOS.  
 
-<Card title="TW should set this">  
+<Info> 
+**Prerequisites**
+
 - A Mangopay ClientId and API key (get a Sandbox API key for free)  
 - A User and their associated Wallet to complete the pay-in  
 - A card to register or payment method setup (see Testing - Payment methods for testing information)  
@@ -14,7 +16,7 @@ For iOS:
 - iOS 13+  
 - Xcode 12.2  
 - Swift 5.3+
-</Card>  
+</Info>  
 
 ## Installation  
 
@@ -44,17 +46,17 @@ You must also define the currency and type of the card at this stage.
 ```json API response
 {
     "Id": "193020188",
-    "Tag": null,
+    "Tag": ,
     "CreationDate": 1686147148,
     "UserId": "193020185",
     "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
     "PreregistrationData": "XBDYiG8w9PrylPS01KmupZunmK2QRHKIC-yUF6il3aIpAnKba1TGkR9VJe5lHjHt2ddFLVXdicolcUIkv_kKEA",
-    "RegistrationData": null,
-    "CardId": null,
+    "RegistrationData": ,
+    "CardId": ,
     "CardType": "CB_VISA_MASTERCARD",
     "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
-    "ResultCode": null,
-    "ResultMessage": null,
+    "ResultCode": ,
+    "ResultMessage": ,
     "Currency": "EUR",
     "Status": "CREATED"
 }
@@ -70,7 +72,33 @@ Initialize the SDK with your `ClientId` and select your environment (Sandbox or 
 MangopayCheckoutSDK.initialize(clientId: "<client_id>", environment: .sandbox)
 ```  
 
-### Initialization parametersTW please add the old table here  
+### Initialization parameters
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`clientId`</td>
+            <td class="content">String</td>
+            <td class="content">The unique identifier associated with the Mangopay API key, giving access to the Mangopay API.</td>
+        </tr>
+        <tr>
+            <td class="content">`environment`</td>
+            <td class="content">Environment</td>
+            <td class="content">
+                The Mangopay environment.  
+                **Allowed values:** SANDBOX, PRODUCTION\
+                **Default values:** SANDBOX
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 ## Configuring the payment sheet  
 
@@ -118,7 +146,34 @@ checkout = MGPPaymentSheet.create(
 checkout.present(in: self)
 ```  
 
-### paymentMethodConfig parameters TW please add the old table here  
+### paymentMethodConfig parameters 
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`card`</td>
+            <td class="content">MGPCardInfo</td>
+            <td class="content">Information about the card used for the payment.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardReg`</td>
+            <td class="content">MGPCardRegistration</td>
+            <td class="content">Information obtained from the Mangopay Card Registration object.</td>
+        </tr>
+        <tr>
+            <td class="content">`applePayConfig`</td>
+            <td class="content">MangopayApplePayConfig</td>
+            <td class="content">The configuration options for Apple Pay.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Using Card Element  
 
@@ -139,7 +194,30 @@ lazy var elementForm: MGPPaymentForm = {
     }()
 ```  
 
-#### MGPPaymentFormTW please add the old table here  
+#### MGPPaymentForm
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`paymentFormStyle`</td>
+            <td class="content">PaymentFormStyle</td>
+            <td class="content">Property for styling the payment form.</td>
+        </tr>
+        <tr>
+            <td class="content">`supportedCardBrands`</td>
+            <td class="content">Array</td>
+            <td class="content">The card networks displayed to the user.\
+                **Allowed values:** visa, mastercard, maestro</td>
+        </tr>
+    </tbody>
+</table> 
 
 ### 2. Add payment form to your parent view and add the appropriate layout constraints  
 ```swift Payment form to parent view
@@ -168,11 +246,87 @@ The example below is for the user clicking on the pay button.
   }
 ```  
 
-#### MangopayCoreiOS.tokenizeCard()TW please add the old table here  
+#### MangopayCoreiOS.tokenizeCard()
 
-#### TokenizedCardDataTW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`form`</td>
+            <td class="content">`MangopayCheckoutForm`</td>
+            <td class="content">The Mangopay payment form.</td>
+        </tr>
+        <tr>
+            <td class="content">`with`</td>
+            <td class="content">`MGPCardRegistration`</td>
+            <td class="content">The Mangopay API Card Registration object.</td>
+        </tr>
+        <tr>
+            <td class="content">`presentIn`</td>
+            <td class="content">`UIViewController`</td>
+            <td class="content"></td>
+        </tr>
+        <tr>
+            <td class="content">`callBack`</td>
+            <td class="content">`typealias MangoPayTokenizedCallBack = ((TokenizedCardData?, MGPError?) -> ())`</td>
+            <td class="content">A callback that handles events of the payment form tokenization process.</td>
+        </tr>
+    </tbody>
+</table>
 
-#### FraudDataTW please add the old table here  
+#### TokenizedCardData
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`card`</td>
+            <td class="content">`CardRegistration`</td>
+            <td class="content">The tokenized Card Registration object with `CardId`.</td>
+        </tr>
+        <tr>
+            <td class="content">`fraud`</td>
+            <td class="content">`FraudData`</td>
+            <td class="content">Data regarding fraud risk management.</td>
+        </tr>
+    </tbody>
+</table>
+
+#### FraudData
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`provider`</td>
+            <td class="content">String</td>
+            <td class="content">Fraud risk management data provider: Nethone.</td>
+        </tr>
+        <tr>
+            <td class="content">`profilingAttemptReference`</td>
+            <td class="content">String</td>
+            <td class="content">Profiling attempt reference provided by Nethone.</td>
+        </tr>
+    </tbody>
+</table> 
 
 ### Managing cards  
 
@@ -231,11 +385,108 @@ let _3dsVC = ThreeDSController(
 viewController.present(_3dsVC)
 ```  
 
-### 3DS helper parametersTW please add the old table here  
+### 3DS helper parameters
 
-#### _3DSTransactionTypeTW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`secureModeRedirectURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are redirected to authenticate with 3DS (if required).</td>
+        </tr>
+        <tr>
+            <td class="content">`secureModeReturnURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are returned after the payment, whether a 3DS challenge was triggered or not and whatever the transaction outcome.</td>
+        </tr>
+        <tr>
+            <td class="content">`transactionType`</td>
+            <td class="content">_3DSTransactionType</td>
+            <td class="content">The type of the authorization request.</td>
+        </tr>
+        <tr>
+            <td class="content">`onComplete`</td>
+            <td class="content">(_3DSResult) -&gt; ()</td>
+            <td class="content">Callback to handle successful or failed authentication requests.</td>
+        </tr>
+        <tr>
+            <td class="content">`onError`</td>
+            <td class="content">(Error?) -&gt; ()</td>
+            <td class="content">Callback to handle 3DS redirection errors.</td>
+        </tr>
+    </tbody>
+</table> 
 
-#### _3DSResultTW please add the old table here  
+#### _3DSTransactionType
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`cardDirect`</td>
+            <td class="content">A [Direct Card PayIn](/api-reference/payment-methods/card/direct-card-pay-ins/direct-card-payin-object).</td>
+        </tr>
+        <tr>
+            <td class="content">`preauthorized`</td>
+            <td class="content">A card [Preauthorization](/api-reference/payment-methods/card/preauthorizations/preauthorization-object).</td>
+        </tr>
+        <tr>
+            <td class="content">`cardValidated `</td>
+            <td class="content">A [Card Validation](/api-reference/payment-methods/card/card-validations/card-validation-object).</td>
+        </tr>
+    </tbody>
+</table>
+
+#### _3DSResult
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`secureModeRedirectURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are redirected to authenticate with 3DS (if required).</td>
+        </tr>
+        <tr>
+            <td class="content">`secureModeReturnURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are returned after the payment, whether a 3DS challenge was triggered or not and whatever the transaction outcome.</td>
+        </tr>
+        <tr>
+            <td class="content">`transactionType`</td>
+            <td class="content">_3DSTransactionType</td>
+            <td class="content">The type of the authorization request.</td>
+        </tr>
+        <tr>
+            <td class="content">`onComplete`</td>
+            <td class="content">(_3DSResult) -&gt; ()</td>
+            <td class="content">Callback to handle successful or failed authentication requests.</td>
+        </tr>
+        <tr>
+            <td class="content">`onError`</td>
+            <td class="content">(Error?) -&gt; ()</td>
+            <td class="content">Callback to handle 3DS redirection errors.</td>
+        </tr>
+    </tbody>
+</table> 
 
 ### Verifying the payment result  
 
@@ -304,12 +555,102 @@ checkout = MGPPaymentSheet.create(
 
 ### Configuration parameters
 
-TW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`amount`</td>
+            <td class="content">Double</td>
+            <td class="content">The amount being paid.</td>
+        </tr>
+        <tr>
+            <td class="content">`delegate`</td>
+            <td class="content">MGPApplePayHandlerDelegate</td>
+            <td class="content">The event handler.</td>
+        </tr>
+        <tr>
+            <td class="content">`merchantIdentifier`</td>
+            <td class="content">String</td>
+            <td class="content">Your platform’s Apple Pay Merchant ID.</td>
+        </tr>
+        <tr>
+            <td class="content">`merchantCapabilities`</td>
+            <td class="content">PKMerchantCapability</td>
+            <td class="content">Information about the card types and authentication protocols you support (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/1916123-merchantcapabilities)).</td>
+        </tr>
+        <tr>
+            <td class="content">`currencyCode`</td>
+            <td class="content">String</td>
+            <td class="content">One of the [Mangopay-supported currencies](/api-reference/data-formats) in the ISO_4217 format.</td>
+        </tr>
+        <tr>
+            <td class="content">`countryCode`</td>
+            <td class="content">String</td>
+            <td class="content">The platform’s two-letter ISO 3166 country code.</td>
+        </tr>
+        <tr>
+            <td class="content">`supportedNetworks`</td>
+            <td class="content">Array</td>
+            <td class="content">The card networks supported by Mangopay: **VISA** and **MASTERCARD**.\
+                **Allowed values:** VISA, MASTERCARD</td>
+        </tr>
+    </tbody>
+</table>  
 
 ### Optional parameters
 
-TW please add the old table here  
-
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`requiredBillingContactFields`</td>
+            <td class="content">Array</td>
+            <td class="content">The billing information to fulfill the order.</td>
+        </tr>
+        <tr>
+            <td class="content">`requiredShippingContactFields`</td>
+            <td class="content">Set</td>
+            <td class="content">The shipping information to fulfill the order.</td>
+        </tr>
+        <tr>
+            <td class="content">`billingContact`</td>
+            <td class="content">PKContact</td>
+            <td class="content">The billing contact information for the user.</td>
+        </tr>
+        <tr>
+            <td class="content">`shippingContact`</td>
+            <td class="content">PKContact</td>
+            <td class="content">The shipping contact information for the user.</td>
+        </tr>
+        <tr>
+            <td class="content">`shippingType`</td>
+            <td class="content">PKShippingType</td>
+            <td class="content"></td>
+        </tr>
+        <tr>
+            <td class="content">`shippingMethods`</td>
+            <td class="content">Array</td>
+            <td class="content"></td>
+        </tr>
+        <tr>
+            <td class="content">`applicationData`</td>
+            <td class="content">Data</td>
+            <td class="content"></td>
+        </tr>
+    </tbody>
+</table>
 ### Handling the Apple Pay result
 
 ```swift 
@@ -358,4 +699,91 @@ checkout = MGPPaymentSheet.create(
        branding: branding,
        callback: callback
    )
-```TW please add the old table here
+```
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`font`</td>
+            <td class="content">UIFont</td>
+            <td class="content">The font of the text fields and labels.</td>
+        </tr>
+        <tr>
+            <td class="content">`borderType`</td>
+            <td class="content">BorderType</td>
+            <td class="content">The border type of the text fields.\
+                **Allowed values:** `square`, `round`</td>
+        </tr>
+        <tr>
+            <td class="content">`textColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">Color of the text in the text fields.</td>
+        </tr>
+        <tr>
+            <td class="content">`placeHolderColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the placeholder text in the text fields.</td>
+        </tr>
+        <tr>
+            <td class="content">`borderColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the text field borders.</td>
+        </tr>
+        <tr>
+            <td class="content">`borderFocusedColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the text field borders when highlighted.</td>
+        </tr>
+        <tr>
+            <td class="content">`errorColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the error labels.</td>
+        </tr>
+        <tr>
+            <td class="content">`checkoutButtonTextColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the text on the confirmation button.</td>
+        </tr>
+        <tr>
+            <td class="content">`checkoutButtonBackgroundColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the background of the confirmation button.</td>
+        </tr>
+        <tr>
+            <td class="content">`checkoutButtonDisabledBackgroundColor`</td>
+            <td class="content">UIColor</td>
+            <td class="content">The color of the background of the confirmation button when disabled.</td>
+        </tr>
+        <tr>
+            <td class="content">`checkoutButtonText`</td>
+            <td class="content">String</td>
+            <td class="content">The text of the confirmation button.</td>
+        </tr>
+        <tr>
+            <td class="content">`checkoutTitleText`</td>
+            <td class="content">String</td>
+            <td class="content">The text of the payment form title.</td>
+        </tr>
+        <tr>
+            <td class="content">`applePayButtonType`</td>
+            <td class="content">PKPaymentButtonType</td>
+            <td class="content">The Apple Pay button type.</td>
+        </tr>
+        <tr>
+            <td class="content">`applePayButtonStyle`</td>
+            <td class="content">PKPaymentButtonStyle</td>
+            <td class="content">The Apple Pay button style.</td>
+        </tr>
+        <tr>
+            <td class="content">`applePayButtonCornerRadius`</td>
+            <td class="content">CGFloat</td>
+            <td class="content">The corner radius of the Apple Pay button.</td>
+        </tr>
+    </tbody>
+</table>
