@@ -110,6 +110,31 @@ The configuration object of the SDK supports all the following properties:
 
 All endpoints are documented with the related Ruby SDK method throughout the Mangopay documentation. You should adjust the code examples provided for your usage.  
 
+### Multi configurations
+
+The Ruby SDK offers the option to create multiple configuration objects tailored to your specific needs:
+
+``` ruby
+config = MangoPay::Configuration.new
+config.client_id = 'your-client-id'
+config.client_apiKey = 'your-api-key'
+config.preproduction = true
+```
+
+Once configured, you can the use the `add_config` method to add the new configuration:
+
+``` ruby
+MangoPay.add_config('config1', config)
+```
+
+When you need to use a specific configuration, you can retrieve the needed configuration by using the `get_config` and `apply_configuration` methods:
+
+``` ruby
+MangoPay.get_config('config1').apply_configuration
+```
+
+
+
 ### Pagination  
 
 For endpoints that support pagination, you can use an object containing the `page` and `per_page` keys.  
