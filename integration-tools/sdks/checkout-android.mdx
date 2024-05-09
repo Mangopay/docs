@@ -5,14 +5,16 @@ title: 'Checkout - Android'
 
 This guide helps you get started with the Checkout SDK on Android.  
 
-<Card title="TW should set this">  
--A Mangopay ClientId and API key (get a Sandbox API key for free)  
--A User and their associated Wallet to complete the pay-in  
--A card to register or payment method setup (see Testing - Payment methods for testing information)  
+<Info>  
+**Prerequisites**
+
+- A Mangopay ClientId and API key (get a Sandbox API key for free)  
+- A User and their associated Wallet to complete the pay-in  
+- A card to register or payment method setup (see Testing - Payment methods for testing information)  
 
 For Android:   
 -Android `minSdk = 21`
-</Card>  
+</Info>  
 
 ## Installation  
 
@@ -70,7 +72,38 @@ Initialize the SDK with your `ClientId` and select your environment (Sandbox or 
 Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environment.SANDBOX)
 ```  
 
-### Initialization parametersTW please add the old table here  
+### Initialization parameters
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`clientId`</td>
+            <td class="content">String</td>
+            <td class="content">The unique identifier associated with the Mangopay API key, giving access to the Mangopay API.</td>
+        </tr>
+        <tr>
+            <td class="content">`environment`</td>
+            <td class="content">Environment</td>
+            <td class="content">The Mangopay environment.\
+**Allowed values:** SANDBOX, PRODUCTION\
+**Default values:** SANDBOX</td>
+        </tr>
+        <tr>
+            <td class="content">`logLevel`</td>
+            <td class="content">LogLevel</td>
+            <td class="content">The specification of the HTTP request and response log. We recommend `None` for Production build.\
+**Allowed values:** None, Basic\
+**Default values:** None</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Configuring the checkout  
 
@@ -97,7 +130,30 @@ private var resultLauncher = registerForActivityResult(
 }
 ```  
 
-### Payment sheet callbacksTW please add the old table here  
+### Payment sheet callbacks
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Callback</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`onTokenizationCompleted`</td>
+            <td class="content">When tokenization of the payment method is successful.</td>
+        </tr>
+        <tr>
+            <td class="content">`onError`</td>
+            <td class="content">When there is an error, the exception is propagated and can be accessed.</td>
+        </tr>
+        <tr>
+            <td class="content">`onCancelled`</td>
+            <td class="content">When the payment is canceled by the user (either by pressing the back button or the cancel button from the appbar).</td>
+        </tr>
+    </tbody>
+</table>
 
 The payment sheet automatically closes when events are emitted to prevent users from clicking again.  
 
@@ -128,7 +184,45 @@ val paymentMethodConfig = PaymentMethodConfig.Builder()
 MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
 ```  
 
-### Payment sheet propertiesTW please add the old table here  
+### Payment sheet properties
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`launcher`</td>
+            <td class="content">ActivityResultLauncher</td>
+            <td class="content">Activity result handler created previously.</td>
+        </tr>
+        <tr>
+            <td class="content">`context`</td>
+            <td class="content">Context</td>
+            <td class="content">Activity or fragment context.</td>
+        </tr>
+        <tr>
+            <td class="content">`paymentMethodConfig`</td>
+            <td class="content">PaymentMethodConfig</td>
+            <td class="content">The configuration options of the payment method.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardRegistration`</td>
+            <td class="content">CardRegistration</td>
+            <td class="content">The card registration information.</td>
+        </tr>
+        <tr>
+            <td class="content">`supportCardBrands`</td>
+            <td class="content">SupportedCard</td>
+            <td class="content">The card networks displayed to the user.\
+**Allowed values:** CardScheme.MasterCard, CardScheme.Visa</td>
+        </tr>
+    </tbody>
+</table> 
 
 ### Handling card tokenization  
 
@@ -189,9 +283,66 @@ threedsDialog.handleThreeds(this,
 )
 ```  
 
-### 3DS handler parametersTW please add the old table here  
+### 3DS handler parameters
 
-#### 3DS listener eventsTW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`SecureModeRedirectURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are redirected to authenticate with 3DS (if required).</td>
+        </tr>
+        <tr>
+            <td class="content">`SecureModeReturnURL`</td>
+            <td class="content">String</td>
+            <td class="content">The URL to which users are returned after the payment, whether a 3DS challenge was triggered or not and whatever the transaction outcome.</td>
+        </tr>
+        <tr>
+            <td class="content">`TransactionType`</td>
+            <td class="content">TransactionType</td>
+            <td class="content">The type of the authorization request.\
+                **Allowed values:** CARD_DIRECT, PREAUTHORIZE, CARD_VALIDATION</td>
+        </tr>
+        <tr>
+            <td class="content">`listener`</td>
+            <td class="content">Mangopay.OnThreedsFinishedListener</td>
+            <td class="content"></td>
+        </tr>
+        <tr>
+            <td class="content">`context`</td>
+            <td class="content">[Context](https://developer.android.com/reference/android/content/Context)</td>
+            <td class="content"></td>
+        </tr>
+    </tbody>
+</table>
+
+#### 3DS listener events
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Event</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`complete`</td>
+            <td class="content">The 3DS authentication was completed and the status indicates whether SUCCEEDED or FAILED. In this case, the SDK provides the unique identifier of the transaction.</td>
+        </tr>
+        <tr>
+            <td class="content">`error`</td>
+            <td class="content">An error occurred during the 3DS redirection request.</td>
+        </tr>
+    </tbody>
+</table>
 
 ### Verifying the payment result`  
 
@@ -246,9 +397,65 @@ val paymentMethodConfig = PaymentMethodConfig.Builder()
 MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
 ```  
 
-#### googlePayObjectTW please add the old table here  
+#### googlePayObject
 
-#### cardParametersTW please add the old table here  
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`merchantName`</td>
+            <td class="content">String</td>
+            <td class="content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”. More information.</td>
+        </tr>
+        <tr>
+            <td class="content">`gatewayMerchantId`</td>
+            <td class="content">String</td>
+            <td class="content">Your Mangopay `ClientId`.</td>
+        </tr>
+        <tr>
+            <td class="content">`transactionInfo`</td>
+            <td class="content">TransactionInfo</td>
+            <td class="content">Information about the transaction. For more information on this object parameter, see the Google Pay documentation.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardParameters`</td>
+            <td class="content">CardParameters</td>
+            <td class="content">Information about the card used for the payment.</td>
+        </tr>
+    </tbody>
+</table>
+
+#### cardParameters
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`allowedAuthMethods`</td>
+            <td class="content">List</td>
+            <td class="content">The supported authentication methods: **PAN_ONLY**, meaning the card is registered in the user’s Google account and requires additional authentication; **CRYPTOGRAM_3DS**, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.\
+                **Allowed values:** PAN_ONLY, CRYPTOGRAM_3DS</td>
+        </tr>
+        <tr>
+            <td class="content">`allowedCardNetworks`</td>
+            <td class="content">List</td>
+            <td class="content">The card networks supported by Mangopay: VISA and MASTERCARD.\
+                **Allowed values:** VISA, MASTERCARD</td>
+        </tr>
+    </tbody>
+</table> 
 
 #### transactionInfo  
 
