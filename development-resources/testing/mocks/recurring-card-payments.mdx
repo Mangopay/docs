@@ -13,12 +13,49 @@ The recurring card payments feature is testable in Sandbox and a specific set of
 You can use the mock for a customer-initiated or a merchant-initiated transaction.  
 
 To do so, you may use the Create a Recurring PayIn Registration endpoint, and use the `33501` value in one of the following `Amount` parameters in the body of the request:  
--`FirstTransactionDebitedFunds` to test an MIT  
--`NextTransactionDebitedFunds` to test a CIT  
+- `FirstTransactionDebitedFunds` to test an MIT  
+- `NextTransactionDebitedFunds` to test a CIT  
 
 ## 2/ Choose the error to simulate in the recurring registration  
 
-You can use the value below in the `AddressLine2` parameter of the `Billing` object in your recurring pay-in registration body.TW please add the old table here  
+You can use the value below in the `AddressLine2` parameter of the `Billing` object in your recurring pay-in registration body.
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">`AddressLine2` value</th>
+            <th class="header">Simulated case</th>
+            <th class="header">Returned error code</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">01100</td>
+            <td class="content">Failed pay-in</td>
+            <td class="content">[101101](/development-resources/errors/codes/101101)</td>
+        </tr>
+        <tr>
+            <td class="content">01116</td>
+            <td class="content">Failed due to card limit reached</td>
+            <td class="content">[101199](/development-resources/errors/codes/101199)</td>
+        </tr>
+        <tr>
+            <td class="content">01125</td>
+            <td class="content">Failed due to inactive card</td>
+            <td class="content">[101106](/development-resources/errors/codes/101106)</td>
+        </tr>
+        <tr>
+            <td class="content">01131</td>
+            <td class="content">Reauthentication request from the bank (MIT only)</td>
+            <td class="content">[101305](/development-resources/errors/codes/101305)</td>
+        </tr>
+        <tr>
+            <td class="content">03022</td>
+            <td class="content">Failed SCA (CIT only)</td>
+            <td class="content">[101301](/development-resources/errors/codes/101301)</td>
+        </tr>
+    </tbody>
+</table>
 
 ## 3/ Make the recurring pay-in  
 
@@ -27,9 +64,9 @@ Make the pay-in (MIT or CIT) with the Create a Recurring PayIn endpoint with the
 ## Example  
 
 In this example, we simulate a failed merchant-initiated transaction due to an inactive card by following these steps:  
--Create a Recurring PayIn Registration with the mock values  
--Create an initial CIT for the authentication  
--Create an MIT which will fail, returning the 101106 error.  
+- Create a Recurring PayIn Registration with the mock values  
+- Create an initial CIT for the authentication  
+- Create an MIT which will fail, returning the 101106 error.  
 
 <Note>  
 **Note - Mocks available in Postman Collection** 
