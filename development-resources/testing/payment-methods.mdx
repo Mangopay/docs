@@ -3,10 +3,211 @@ title: 'Payment methods'
 'og:description': 'Test cards and info for all payment methods for use in Sandbox testing: Visa, Mastercard, Google Pay, Apple Pay, and direct debit (SDD and BACS), plus MB WAY, Multibanco, and iDEAL.'  
 ---
 
+import Sca from '/snippets/glossary/sca.mdx';
+
 Mangopay provides test cards and account details for you to simulate transactions in your Sandbox environment.  
 
 <Warning>  
-**Warning – For Sandbox only** 
+**Warning - For Sandbox only** 
   
 All cards and account details available on this page are for testing purposes in the Sandbox environment only. Supported currencies and specific values to use are detailed in each section.  
 </Warning>
+
+## Cards
+
+### CB/Visa/Mastercard
+
+The following card triggers a 3DS2 frictionless flow, where <Sca content="SCA"/> is not required. You need to set the `SecureMode` to `DEFAULT` or `NO_CHOICE`.
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**Card number**</th>
+            <td class="content">4970107111111119</td>
+        </tr>
+        <tr>
+            <th class="header">**Expiry date**</th>
+            <td class="content">Any future date (month/year)</td>
+        </tr>
+        <tr>
+            <th class="header">**CVC**</th>
+            <td class="content">Any three digits</td>
+        </tr>
+        <tr>
+            <th class="header">**Currencies**</th>
+            <td class="content">AED, AUD, CAD, CHF, CZK, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, TWD, USD, and ZAR.</td>
+        </tr>
+    </tbody>
+</table>
+
+The following card triggers a 3DS2 challenge flow, where <Sca content="SCA"/> is required. You need to set the `SecureMode` to `FORCE` or `NO_CHOICE`.
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**Card number**</th>
+            <td class="content">4970105181818183</td>
+        </tr>
+        <tr>
+            <th class="header">**Expiry date**</th>
+            <td class="content">Any future date (month/year)</td>
+        </tr>
+        <tr>
+            <th class="header">**CVC**</th>
+            <td class="content">Any three digits</td>
+        </tr>
+        <tr>
+            <th class="header">**Currencies**</th>
+            <td class="content">AED, AUD, CAD, CHF, CZK, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, TWD, USD, and ZAR.</td>
+        </tr>
+    </tbody>
+</table>
+
+### Maestro/Bancontact
+
+The following card triggers a 3DS2 challenge flow, where <Sca content="SCA"/> is required. You need to set the `SecureMode` to `FORCE`.
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**Card number**</th>
+            <td class="content">5033951000000004</td>
+        </tr>
+        <tr>
+            <th class="header">**Expiry date**</th>
+            <td class="content">Any future date (month/year)</td>
+        </tr>
+        <tr>
+            <th class="header">**CVC**</th>
+            <td class="content">Any three digits</td>
+        </tr>
+        <tr>
+            <th class="header">**Currencies**</th>
+            <td class="content">EUR</td>
+        </tr>
+    </tbody>
+</table>
+
+### AMEX
+
+The following card triggers a 3DS2 challenge flow, where <Sca content="SCA"/> is required. You need to set the `SecureMode` to `FORCE`.
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**Card number**</th>
+            <td class="content">375989111111119</td>
+        </tr>
+        <tr>
+            <th class="header">**Expiry date**</th>
+            <td class="content">Any future date (month/year)</td>
+        </tr>
+        <tr>
+            <th class="header">**CVC**</th>
+            <td class="content">1234</td>
+        </tr>
+        <tr>
+            <th class="header">**Currencies**</th>
+            <td class="content">EUR</td>
+        </tr>
+    </tbody>
+</table>
+
+## Banking
+
+### Mandates
+
+For mandates testing, you can set a specific value for the `FirstName` parameter of the user who owns the bank account for the mandate.
+
+- `Successful` - Results in an active mandate. You must do a pay-in with this mandate for the Status to be updated.
+- `Invalid` - Results in a failed mandate due to incorrect bank account information. This only works for mandates in the BACS scheme.
+- `Penniless` - Results in a failed pay-in due to lack of funds. Please refer to the 001805 error for all the testing steps.
+- `Fickle` - Results in a successful pay-in which is disputed by the user and hence a dispute is created.
+
+### SEPA Direct Debit
+
+The following IBAN bank account information can be used for testing:
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**`IBAN`**</th>
+            <td class="content">FR7630004000031234567890143</td>
+        </tr>
+        <tr>
+            <th class="header">**`BIC`**</th>
+            <td class="content">BNPAFRPP</td>
+        </tr>
+    </tbody>
+</table>
+
+
+### BACS Direct Debit
+
+The following GB bank account information can be used for testing:
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**`AccountNumber`**</th>
+            <td class="content">55779911</td>
+        </tr>
+        <tr>
+            <th class="header">**`SortCode`**</th>
+            <td class="content">200000</td>
+        </tr>
+    </tbody>
+</table>
+
+## Other
+
+### Apple Pay
+
+To test Apple Pay, [create a sandbox Apple ID](https://developer.apple.com/help/app-store-connect/test-in-app-purchases-main/create-sandbox-apple-ids) and then use this ID to log in on your device. Once logged in as a sandbox tester, [add an Apple Pay test card](https://developer.apple.com/apple-pay/sandbox-testing/) to your Apple wallet to test your integration on your device.
+
+### BLIK
+
+To test BLIK, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
+
+### Giropay
+
+To test Giropay, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
+
+### Google Pay
+
+You can use Google Pay's [test card suite](https://developers.google.com/pay/api/android/guides/resources/test-card-suite) to test your Google Pay integration with Mangopay. Once you have joined the test card suite group, you can use the following cards in Sandbox:
+
+- **4111111111111111** - The Visa card triggers a challenge flow (requiring 3DS redirection)
+- **5555555555554444** - The Mastercard card triggers a frictionless flow (not requiring 3DS redirection)
+
+### iDEAL
+
+To test iDEAL, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
+
+### Klarna
+
+To test Klarna, follow the `RedirectURL` returned in Sandbox to access Klarna’s simulator. 
+
+Klarna’s [Sample customer data](https://docs.klarna.com/resources/test-environment/sample-customer-data/) allows you to test successful and failed payment scenarios. The sample data relating to disputes is available but can’t be used to simulate disputes on the Klarna’s sandbox Merchant Portal.
+
+**Note:** If you use data other than the samples provided, it will be used to create a new Klarna account during the payment process.
+
+### MB WAY
+
+To test MB WAY, enter your phone number in the `Phone` parameter to receive an SMS containing a link to Mangopay’s simulator.
+
+### Multibanco
+
+To test Multibanco, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
+
+### PayPal
+
+When PayPal is activated in Sandbox, Mangopay provides you with credentials to a PayPal account that can be used for testing. 
+
+To test PayPal, follow the `RedirectURL` in the API response to access the PayPal payment page and log in using the test account provided.
+
+### Satispay
+
+To test Satispay, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
+
+
