@@ -1,0 +1,152 @@
+---
+title: "How to integrate the fraud prevention profiler on websites"
+sidebarTitle: "Fraud prevention - web"
+'og:description': "Step-by-step guide to integrating the fraud prevention profiler on websites."
+description: "This how-to guide covers integrating the profiler on your website."
+---
+
+[Learn about fraud prevention]()
+
+<Note>
+    **Note – Not necessary if using Checkout SDK**
+
+    Mangopay’s [Checkout SDK](integration-tools/sdks/checkout) has the profiler built in, generating and returning the ProfilingAttemptReference for a transaction.
+</Note>
+
+<Info>
+    **Prerequisites**
+
+    Fraud prevention activated for your environment (Sandbox or Production) – contact Support [via the Hub](https://hub.mangopay.com/) to get started
+</Info>
+
+## 1/ Get your platform’s profiler URL
+
+Once fraud prevention is activated by Mangopay (in Production or Sandbox): 
+
+1. In the Hub, navigate to _Fraud prevention_.
+2. Select the _Integration_ status tab on the left.
+3. Note the URL provided in _API CREDENTIALS_ > _WEB PROFILER URL_.
+
+## 2/ Integrate the profiler to your platform’s website
+
+Insert the following initialization sample in the code of your website checkout page, after any other scripts and just before the closing _body_ tag. 
+
+Add the following information:
+
+- `src` – The URL retrieved in Step 1.
+- `attemptReference` – Identifier used to match the user’s profiling session to the pay-in call made by your platform’s backend to the Mangopay API. You must generate a unique value upon every form view. You must not use the prefix `mznx-` for web attempt references, because this prefix is added by the mobile SDKs to identify mobile attempt references. Max. length: 128 characters.
+
+```javascript Initialization example
+<script
+  type="text/javascript"
+  id="SCRIPT_TAG_ID"
+  crossorigin="use-credentials"
+  src="https://profiler_url"
+  async
+></script>
+
+
+<script>
+  var scriptID = "SCRIPT_TAG_ID"
+  var options = {
+    attemptReference: "${attempt_reference}", // inserted by the backend
+    sensitiveFields: [],
+    secretFields: [],
+  }
+
+
+  if (window.dftp) {
+    dftp.init(options)
+  } else {
+    var el = document.getElementById(scriptID)
+    el.addEventListener("load", function () {
+      dftp.init(options)
+    })
+  }
+</script>
+```
+
+<Note>  
+**Best practice – Avoid customization** 
+
+Keep as close as possible to the initialization sample given above to avoid integration errors.
+</Note>  
+
+## 3/ Define sensitive and secret fields (recommended)
+
+Still in the initialization code, indicate sensitive fields by their ID property for which data shouldn’t be collected:
+
+- `sensitiveFields` – Not sent to the fraud prevention solution but the other behavioral data linked to these fields is still gathered.
+- `secretFields` – Not sent to the fraud prevention solution and no behavioral data linked to the fields is gathered.
+
+<Note>
+**Best practice – Indicate the card number and CVC as sensitive fields**
+
+Always indicate the card verification code (`cvv`) and card number (`cnn`) as sensitive fields.
+</Note>
+
+``` json Initialization of sensitive and secret fields
+<script
+  type="text/javascript"
+  id="SCRIPT_TAG_ID"
+  crossorigin="use-credentials"
+  src="profiler_url"
+  async
+></script>
+
+
+<script>
+  var scriptID = "SCRIPT_TAG_ID"
+  var options = {
+    attemptReference: "${attempt_reference}", // inserted by the backend
+    sensitiveFields: ["ccn", "cvv"],
+    secretFields: ["password"],
+  }
+
+
+  if (window.dftp) {
+    dftp.init(options)
+  } else {
+    var el = document.getElementById(scriptID)
+    el.addEventListener("load", function () {
+      dftp.init(options)
+    })
+  }
+</script>
+```
+
+## 4/ Make sure all the profiling data is collected (optional)
+
+Use the `dftp.profileCompleted` function to ensure that all the profiling data is collected prior to the pay-in call.
+
+This function returns a `Promise` object that is resolved when processing is complete, thereby indicating that it's safe to do the pay-in.
+
+``` json dftp.profileCompleted
+try {
+ await dftp.profileCompleted()
+} catch (err) {
+ console.error("Profiling failed with err: " + err)
+}
+doWorkAfterProfiling()
+```
+
+```json dftp usage with promise
+dftp
+ .profileCompleted()
+ .catch((err) => console.error("Profiling failed with err: " + err))
+ .finally(doWorkAfterProfiling)
+```
+
+The `doWorkAfterProfiling` can be used to submit form data and trigger the pay-in call to the Mangopay API, including the `ProfilingAttemptReference`.
+
+## Note on browser support
+
+The web profiler aims to provide the highest level browser compatibility and data interpretation performance. This is divided into 3 levels: 
+
+1. Full support for modern versions of Firefox, Safari, and Chromium-based browsers (Chrome, Edge, Opera, etc).  These comprise 95% of web browser internet traffic.
+2. Best-effort support for other browsers.
+3. Explicit lack of support for retired browsers: Internet Explorer (0.6% of traffic).
+
+## Related resources
+
+<Card title="Article">Fraud prevention - Overview</Card>
