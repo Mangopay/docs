@@ -1,6 +1,6 @@
----
+---  
 title: 'API Release New API version v2.01'  
----
+---  
 <span class="date">2015-06-05</span>  
   
   
@@ -12,53 +12,11 @@ This minor API version relates to having more detailed addresses for Users and B
 ### Changes to API objects  
 
 An address is currently used in the following objects:  
--Natural User – Address  
--Legal User – LegalRepresentativeAddress and HeadquartersAddress  
--BankAccounts – OwnerAddress  
+-Natural User – Address  
+-Legal User – LegalRepresentativeAddress and HeadquartersAddress  
+-BankAccounts – OwnerAddress  
 
-In each case, the previous string format is no longer accepted, and a more detailed array of information is required. Further information is available below:
-
-<table class="html-table">
-    <thead>
-        <tr>
-            <th class="header">Property</th>
-            <th class="header">Type</th>
-            <th class="header">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="content">`AddressLine1`</td>
-            <td class="content">String</td>
-            <td class="content"></td>
-        </tr>
-        <tr>
-            <td class="content">`AddressLine2`</td>
-            <td class="content">String</td>
-            <td class="content">This is optional</td>
-        </tr>
-        <tr>
-            <td class="content">`City`</td>
-            <td class="content">String</td>
-            <td class="content">null</td>
-        </tr>
-        <tr>
-            <td class="content">`Region`</td>
-            <td class="content">String</td>
-            <td class="content">Optional unless Country is "MX", "CA" or "US"</td>
-        </tr>
-        <tr>
-            <td class="content">`PostalCode`</td>
-            <td class="content">String</td>
-            <td class="content">Must be be alphanumeric (or spaces) – not required if the Country is one of "AO", "AG", "AW", "BS", "BZ", "BJ", "BW", "BF", "BI", "CM", "CF", "KM", "CG", "CD", "CK", "CI", "DJ", "DM", "GQ", "ER", "FJ", "TF", "GM", "GH", "GD", "GN", "GY", "HK", "IE", "JM", "KE", "KI", "MO", "MW", "ML", "MR", "MU", "MS", "NR", "AN", "NU", "KP", "PA", "QA", "RW", "KN", "LC", "ST", "SA", "SC", "SL", "SB", "SO", "ZA", "SR", "SY", "TZ", "TL", "TK", "TO", "TT", "TV", "UG", "AE", "VU", "YE", "ZW "</td>
-        </tr>
-        <tr>
-            <td class="content">`Country`</td>
-            <td class="content">String</td>
-            <td class="content">Must be an ISO 3166-1 alpha-2 code</td>
-        </tr>
-    </tbody>
-</table>
+In each case, the previous string format is no longer accepted, and a more detailed array of information is required. Further information is available below:TW please add the old table here  
 
 As with the previous address fields for the User, it is still optional to provide the address information when creating a User, however if you do provide at least one of the new address fields, you must provide a complete address (except AddressLine2).  
 ```json Example request for POST /v2.01/ClientId/users/natural
@@ -82,18 +40,18 @@ As with the previous address fields for the User, it is still optional to provid
 
 #### POST /users/UserId/bankaccounts  
 
-The OwnerAddress field no longer accepts a string, but instead an array of fields, as detailed above. This sub-object is still a required property when creating a Bank Account  
+The OwnerAddress field no longer accepts a string, but instead an array of fields, as detailed above. This sub-object is still a required property when creating a Bank Account  
 
 #### POST and PUT /users/natural/  
 
-The Address field no longer accepts a string, but instead an array of fields, as detailed above. This sub-object is still optional when creating a User.  
+The Address field no longer accepts a string, but instead an array of fields, as detailed above. This sub-object is still optional when creating a User.  
 
 #### POST and PUT /users/legal/  
 
-The LegalRepresentativeAddress and HeadquartersAddress fields no longer accept a string, but instead an array of fields, as detailed above. These sub-objects are still optional when creating a User.  
+The LegalRepresentativeAddress and HeadquartersAddress fields no longer accept a string, but instead an array of fields, as detailed above. These sub-objects are still optional when creating a User.  
 
 ### Updating historical data  
 
-In v2.01 it is impossible to obtain the address you added with v2 – you are therefore advised to migrate this information between the two versions (in the meantime, an address added in v2 will be shown as null in v2.01).  
+In v2.01 it is impossible to obtain the address you added with v2 – you are therefore advised to migrate this information between the two versions (in the meantime, an address added in v2 will be shown as null in v2.01).  
 
 You can use the PUT method to update the additional address info for previously created Users. However, there is no PUT method to update Bank Accounts (due to compliance and traceability issues), which means you will have to create a new Bank Account with the additional address info and stop using any previously created Bank Accounts.
