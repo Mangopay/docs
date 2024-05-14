@@ -1,0 +1,85 @@
+---
+title: 'Company number'  
+'og:description': 'Manage the company numbers of legal users effectively, and see all expected formats per country, to accelerate the KYB verification process.'  
+---
+
+The company number is the legal registration number of an entity provided by the relevant national authority in the country where it is registered.  
+
+The company number is one of the elements checked during the user verification process. The number is required for Business-type legal users, and recommended for Soletraders and Organizations if it exists. Therefore, for Business-type users, it is important to ensure that the format of the number is correct beforehand.  
+
+## Process  
+
+### 1. Submit the required information for the Business  
+
+Business-type legal users need to provide the required information described in the Requirements for legal users, and this includes the company number.  
+
+The `CompanyNumber` must be in the correct format for their country of registration, as determined by the `Country` of the `HeadquartersAddress`. An incorrect format will block the verification process.   
+
+You can set up <a href="">hook notifications</a> for<a href=""> the follow</a>ing event types to be notified when a user’s number corresponds or not to the expected format:  
+- LEGAL_COMPANY_NUMBER_VALIDATION_SUCCEEDED  
+- LEGAL_COMPANY_NUMBER_VALIDATION_FAILED  
+
+These hooks can be triggered on the following calls:  
+- Create a Legal User  
+- Update a Legal User  
+
+You can also use the following endpoint to check the format of the number and retrieve the validation rules applied for a given country:  
+
+<Card title="Endpoint" href="/api-reference/">Validate the format of User data</Card>  
+
+<Warning>  
+**Caution - Veracity of company number checked later** 
+  
+The endpoint and hooks above only check that the format of the company number is as expected. Whether or not the data is true and correct for the specific user is checked during verification when documents are submitted.  
+</Warning>  
+
+### 2. Submit the required verification documents  
+
+Once all the data is present and correct, and the company number is in a valid format, you can proceed with submitting the necessary documents.  
+- For the accepted documents in the user’s country, see the Requirements for legal users  
+- For more about how to submit a verification document, see How to submit a KYC Document  
+
+### 3. Submit the declaration of beneficial ownership  
+
+Once the documents have been submitted, you can proceed with submitting information about the beneficial owners.  
+- For more information, see the Beneficial owners article  
+- For more about how to submit a declaration, see the How to submit a UBO Declaration tutorial  
+
+## Accepted format by country  
+
+The countries in the table below have rules in place regarding a valid format for their country number. Countries not in the list have no formatting rules in place - the number format should match the verification documents.  
+
+The regular expressions for the accepted formats are returned on the Validate the format of User data endpoint.  
+
+<Note>  
+**Note - Only alphanumeric characters assessed** 
+  
+The company number formatting rules only evaluate alphanumeric characters. Any other characters, like dashes or spaces, in the `CompanyNumber` string are removed beforehand.  
+</Note>
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Pay-ins</th>
+            <th class="header">Users</th>
+            <th class="header">Bank accounts</th>
+            <th class="header">Payouts</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">Refused</td>
+            <td class="content">Blocked</td>
+            <td class="content">Blocked</td>
+            <td class="content">Blocked</td>
+        </tr>
+    </tbody>
+</table>
+
+## Related resources  
+
+<Card title="Endpoints">Validate the format of User data</Card>  
+
+<Card title="Endpoints">The Legal User object</Card>  
+
+<Card title="Dev tools">Event types</Card>

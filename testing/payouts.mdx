@@ -1,0 +1,132 @@
+---
+title: 'Payouts'  
+'og:description': 'How to test payouts with Mangopay: test bank accounts for IBAN and GB, as well as instant payouts and error cases.'  
+---  
+
+## General testing  
+
+To test payouts, you need to create a valid Bank Account and create a Payout to it. You can use these test accounts:   
+
+#### IBAN test account  
+- `IBAN` - FR7630004000031234567890143
+- `BIC` - BNPAFRPP
+
+#### GB test account  
+- `AccountNumber` - 55779911
+- `SortCode` - 200000
+
+You can then use the _**Sandbox operations**_ view of the Dashboard to process the payout.  
+
+## Instant payout testing  
+
+To simulate the fallback to a standard payout from an instant payout due to a banking error, you can use the following IBAN account:  
+- `IBAN` - FR541558929750ZZZZZZAC01915 
+- `BIC` - CMBRFR2BXXX
+
+```json Request example
+{
+    "AuthorId": "145397183",
+    "Tag": "IP banking error",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 10
+    },
+    "BankAccountId": "158988175",
+    "DebitedWalletId": "145397873",
+    "BankWireRef": "Postman",
+    "PayoutModeRequested":"INSTANT_PAYMENT"
+}
+```  
+
+When viewing the payout, the API returns a fallbacked payout (i.e., the `STANDARD` mode was applied).
+
+```json Response example
+{
+    "ModeRequested": "INSTANT_PAYMENT",
+    "ModeApplied": "STANDARD",
+    "FallbackReason": {
+        "Code": "001999",
+        "Message": "Generic Operation error"
+    },
+    "EndToEndId": "77a7f37820fd4e49910e6bd3c04c919c",
+    "Id": "158988302",
+    "Tag": "IP banking error",
+    "CreationDate": 1672235391,
+    "AuthorId": "145397183",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 990
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 10
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1672235391,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "145397873",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "158988175",
+    "BankWireRef": "Postman"
+}
+```  
+
+To simulate a non-reachable bank account, use the `IP1070` value for the `BankWireRef` parameter.
+
+```json Request example
+{
+    "AuthorId":"142036728",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1260
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "BankAccountId":"151986981",
+    "DebitedWalletId":"145389978",
+    "BankWireRef":"IP1070",
+    "PayoutModeRequested":"INSTANT_PAYMENT"
+}
+```  
+
+```json Response
+{
+    "InstantPayout": {
+        "IsReachable": false,
+        "UnreachableReason": {
+            "Code": "130010",
+            "Message": "Generic operation error"
+        }
+    }
+}
+```  
+
+The following unreachable reasons can be returned:  
+- 130006 - technical error, please try again later  
+- 130007 - Destination Bank is not reachable  
+- 130008 - Duplicate transaction identified  
+- 130009 - The destination IBAN is not valid  
+- 130010 - Generic operation error  
+
+## Related resources  
+
+<Card title="Endpoints">Payouts - Endpoints</Card>  
+
+<Card title="Tutorial">How to process an Instant Payout</Card>  
+
+<Card title="Article">Payouts - Core concepts</Card>

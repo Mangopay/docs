@@ -1,0 +1,173 @@
+---
+title: 'Dealing with refusals'
+sidebarTitle: "Refusals" 
+'og:description': ''  
+---
+
+If Mangopay doesn’t validate a document, you may be able to obtain more information about the reason why with the View a KYC Document endpoint.  
+
+Two returned parameters may prove useful:  
+- `Flags` - One or several codes which give more information about the identity proof document. See the Flags list below for more information.  
+- `RefusedReasonType` - Information about the refusal reason for all types of documents. See the list of refused reason types below for more information.  
+
+Once the reason for refusal is identified, you can create a new KYC Document and resubmit it to Mangopay.  
+
+<Note>  
+**Note - RefusedReasonType hierarchy** 
+  
+Because a refused document can have multiple flags, `RefusedReasonType` values are given a hierarchy to display the most relevant flags first. The order of criticality is as follows:  
+1. DOCUMENT_FALSIFIED  
+2. DOCUMENT_HAS_EXPIRED  
+3. DOCUMENT_NOT_ACCEPTED  
+4. DOCUMENT_UNREADABLE  
+5. DOCUMENT_INCOMPLETE  
+6. DOCUMENT_DO_NOT_MATCH_USER_DATA  
+7. UNDERAGE_PERSON  
+</Note>  
+
+## Flags list
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Reason</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">009000</td>
+            <td class="content">
+                The document is suspected to be fraudulent, which means:
+                - The user will be blocked until reception of a valid identity proof (document with better visual quality or a different accepted identity proof)
+                - Mangopay’s team will check all related transactions
+            </td>
+        </tr>
+        <tr>
+            <td class="content">009001</td>
+            <td class="content">The fonts analyzed don’t match those expected for the kind of identity proof submitted (e.g. for a French national identity card).</td>
+        </tr>
+        <tr>
+            <td class="content">009002</td>
+            <td class="content">The picture of the person is altered.</td>
+        </tr>
+        <tr>
+            <td class="content">009003</td>
+            <td class="content">The document is partially or totally covered.</td>
+        </tr>
+        <tr>
+            <td class="content">009004</td>
+            <td class="content">The document is blurred.</td>
+        </tr>
+        <tr>
+            <td class="content">009005</td>
+            <td class="content">The document is cut off: piece of information missing, machine-readable zone (MRZ) not readable, etc.</td>
+        </tr>
+        <tr>
+            <td class="content">009006</td>
+            <td class="content">The document is not readable due a glare on the photo.</td>
+        </tr>
+        <tr>
+            <td class="content">009007</td>
+            <td class="content">The incorrect side of the document was submitted.</td>
+        </tr>
+        <tr>
+            <td class="content">009008</td>
+            <td class="content">Two different documents were uploaded at the same time.</td>
+        </tr>
+        <tr>
+            <td class="content">009009</td>
+            <td class="content">The document is not accepted (deprecated since June 13th, 2022). Please contact the Mangopay Support team.</td>
+        </tr>
+        <tr>
+            <td class="content">009010</td>
+            <td class="content">There is no document in the image.</td>
+        </tr>
+        <tr>
+            <td class="content">009011</td>
+            <td class="content">The photo of the document is too dark.</td>
+        </tr>
+        <tr>
+            <td class="content">009012</td>
+            <td class="content">The document is damaged.</td>
+        </tr>
+        <tr>
+            <td class="content">009013</td>
+            <td class="content">The document has a punched hole.</td>
+        </tr>
+        <tr>
+            <td class="content">009014</td>
+            <td class="content">The document corner has been physically cut off.</td>
+        </tr>
+        <tr>
+            <td class="content">009015</td>
+            <td class="content">The document contains severely diminished colors (due to resolution issues, low-quality liquid scan rather than photo, or washed-out background for instance).</td>
+        </tr>
+        <tr>
+            <td class="content">009016</td>
+            <td class="content">The document has a glare obscuring a security chip.</td>
+        </tr>
+        <tr>
+            <td class="content">009017</td>
+            <td class="content">Some features of the document are obscured.</td>
+        </tr>
+        <tr>
+            <td class="content">009018</td>
+            <td class="content">The back of the document is needed for processing.</td>
+        </tr>
+        <tr>
+            <td class="content">009019</td>
+            <td class="content">Mangopay doesn’t support this kind of document.</td>
+        </tr>
+        <tr>
+            <td class="content">009020</td>
+            <td class="content">The document owner is under the age of 18 years old.</td>
+        </tr>
+        <tr>
+            <td class="content">009021</td>
+            <td class="content">The document has expired.</td>
+        </tr>
+        <tr>
+            <td class="content">009022</td>
+            <td class="content">
+                The first name on the identity document doesn’t match the declared information in:
+                - The `FirstName` parameter for a natural user.
+                - The `LegalRepresentativeFirstName` parameter for a legal user.
+            </td>
+        </tr>
+        <tr>
+            <td class="content">009023</td>
+            <td class="content">
+                The last name on the identity document doesn't match the declared information in:
+                - The `LastName` parameter for a natural user.
+                - The `LegalRepresentativeLastName` parameter for a legal user.
+                Note that for French identity documents, Mangopay supports the spouse name, widow’s name, or alias name as declared `LastName` (or `LegalRepresentativeLastName`).
+            </td>
+        </tr>
+        <tr>
+            <td class="content">009024</td>
+            <td class="content">The document information is not readable because the image resolution is too low (please note that prior to June 13th, 2022, the 009009 error was returned instead).</td>
+        </tr>
+        <tr>
+            <td class="content">009025</td>
+            <td class="content">The document information is not readable because the image is in black and white (rather than in color).</td>
+        </tr>
+        <tr>
+            <td class="content">009026</td>
+            <td class="content">The document is considered paper-based (printed on paper), rather than being a card or passport format.</td>
+        </tr>
+        <tr>
+            <td class="content">009100</td>
+            <td class="content">
+                A match couldn’t be made with the relevant flag, but you can find out more about the issue by reviewing the `RefusedReasonType` and `RefusedReasonMessage` values.\
+                Please contact the Mangopay Support team for explanations about the issue.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+## Refused reason types  
+
+Select the `RefusedReasonType` encountered and the type of document to display information about the issue and the expected quality of the documents.  
+
+Ensure you also check the `RefusedReasonMessage` parameter for personalized information from Mangopay’s teams.

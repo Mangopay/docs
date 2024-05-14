@@ -1,0 +1,745 @@
+---
+title: "How to integrate the fraud prevention profiler on iOS"
+sidebarTitle: "Fraud prevention - iOS"
+description: "This how-to guide covers integrating the profiler in iOS applications."
+---
+
+[Learn about fraud prevention]()
+
+<Note>
+    **Note - Size overhead**
+
+    The size of the framework you need to download is about 12 MB. It contains compiled versions for iOS Simulators and iOS Devices. 
+
+    For end users, the application download size will increase by 0.9 MB and the installed app size will increase by around 2.4 MB.
+</Note>
+
+<Info>
+    **Prerequisites**
+
+    To use the fraud prevention SDK (iOS), you’ll need:
+
+    - iOS 11.0+ 
+    - Xcode 12+
+    - Merchant Number provided by Mangopay
+</Info>
+
+## Setting up your Artifactory account
+
+Once you sign the fraud prevention contract with Mangopay, your assigned solutions engineer assesses the integration of your application. 
+
+If mobile integration is needed, you will be asked to provide the email addresses of your mobile developers. Once provided, JFrog accounts will be generated for your developers and they will receive an email to set up their account.
+
+<Warning>
+    **Caution - Locked accounts**
+
+    In case of multiple failed login attempts, the system will temporarily suspend that user's account for a brief period of time during which additional login attempts will be ignored. To unlock your account, contact your assigned solutions engineer.
+</Warning>
+
+## Getting started
+
+<Note>
+    **Note - Sample project**
+
+    There is a sample project available in Artifactory under the name [mangopay-ios-sample](https://nethone.jfrog.io/ui/repos/tree/General/nethonesdk-ios-sample), which may help integrate our SDK.
+</Note>
+
+### Installation using CocoaPods
+
+<Note>
+    **Note - Contact Mangopay**
+
+    If you want to use the CocoaPods option, contact your assigned solutions engineer to create a CocoaPods repository for you.
+</Note>
+
+
+<Warning>
+    **Caution - CocoaPods deprecation**
+
+    CocoaPods will be deprecated in later updates. We recommend you use the XCFramework or Swift Package Manager installation.
+</Warning>
+
+**1/ Install the latest version of CocoaPods**
+
+``` shell
+sudo gem install cocoapods
+```
+
+**2/ Install Artifactory CocoaPods plugin**
+
+``` shell
+gem install cocoapods-art
+```
+
+**3/ To pass the Artifactory authorization during the CocoaPod download, go to your application home directory and add the following code to your .netrc file**
+
+<Note>
+    **Note - Using your .netrc file**
+
+    Create the .netrc file manually if it doesn’t exist in your home directory. For more information, see the [GNU .netrc file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html) article.
+</Note>
+
+``` shell 
+machine nethone.jfrog.io
+login <your jfrog username>
+password <your jfrog password or api key>
+```
+
+**4/ Add the Artifactory repository to your application directory**
+
+``` shell
+pod repo-art add nethonesdk-ios-<your company name>-cocoapods "https://nethone.jfrog.io/nethone/api/pods/nethonesdk-ios-<your company name>-cocoapods"
+```
+
+**5/ Go to your application home directory and add the following code to your Podfile.**
+
+``` ruby
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '10.0'
+use_frameworks!
+
+plugin 'cocoapods-art', :sources => [
+    'nethonesdk-ios-sample-cocoapods', 'master'
+]
+
+target 'Cocoapods Integration' do
+    pod 'NethoneSDK'
+end
+```
+
+**6/ Install the pods files.**
+
+``` shell
+pod install
+```
+
+**Version update**
+
+To update, you would first need to update the artifactory repository then the pods.
+
+**1/ Update the artifactory repository.**
+
+``` shell
+pod repo-art update nethonesdk-ios-<your company name>-cocoapods
+```
+
+**2/ Update the pods.**
+
+``` shell
+pod update
+```
+
+### Installation using Swift Package Manager
+
+<Note>
+    **Note - Contact Mangopay**
+
+    If you want to use the  Swift Package Manager option, contact your assigned solutions engineer to create a  Swift Package Manager repository for you.  
+</Note>
+
+<Info>
+    **Prerequisites**
+
+    This integration method requires:
+
+    - Swift 5.7+
+    - Xcode 15+
+</Info>
+
+**1/ Create the Dependencies directory inside your project.**
+
+``` shell
+mkdir Dependencies
+```
+
+**2/ Set it as your working directory.**
+
+``` shell
+cd Dependencies
+```
+
+**3/ Initialize Swift package.**
+
+``` shell
+swift package init
+```
+
+**4/ Remove unnecessary test files.**
+
+``` shell
+rm -r Tests
+```
+
+**5/ Set up the repository and add your credentials to your .netrc file.**
+
+Go to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/repos/tree/General/nethonesdk-ios-sample):
+1. On the left navigation pane, go to _Artifactory_ > _Artifacts_
+2. Find `nethonesdk-ios-{your_company_name}-spm` repository.
+3. In the top corner, click the Set Me Up button
+4. Enter your password then client on Generate Token & Create Instructions
+5. Add your credentials to your .netrc file:
+
+<Note>
+    **Note - Using your .netrc file**
+
+    Create the .netrc file manually if it doesn’t exist in your home directory. For more information, see the [GNU .netrc file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html) article.
+</Note>
+
+``` shell
+machine nethone.jfrog.io 
+login <your jfrog username> 
+password <the generate token>
+```
+
+**6/ Set Artifactory as a Swift repository.**
+
+``` shell
+swift package-registry set "https://nethone.jfrog.io/artifactory/api/swift/nethonesdk-ios-<your company name>-spm"
+```
+
+**7/ Add NethoneSDK dependency in the Package.swift file.**
+
+``` swift Swift
+// swift-tools-version: 5.7
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+import PackageDescription
+
+let package = Package(
+    name: "Dependencies",
+    products: [
+        .library(
+            name: "Dependencies",
+            targets: ["Dependencies"]
+        ),
+    ],
+    dependencies: [
+        .package(id: "Nethone.NethoneSDK", from: "2.13.1")
+    ],
+    targets: [
+        .target(
+            name: "Dependencies",
+            dependencies: [
+                .product(name: "NethoneSDK", package: "Nethone.NethoneSDK")
+            ]),
+    ]
+)
+```
+**8/ Resolve the package.**
+
+``` shell
+swift package resolve
+```
+**9/ Add the Dependencies package to your Xcode project**
+
+1. Open your Xcode project.
+2. Navigate to _File_ > _Add Package Dependencies_.
+3. Click the _Add Local_ button.
+4. Select the _Dependencies_ directory.
+
+### Installation using SwiftUI
+
+First, download the latest version of NethoneSDKSwiftUI.xcframework:
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Download the latest version of NethoneSDKSwiftUI.xcframework.
+3. Find `nethonesdk-ios-{your_company_name}` repository.
+4. Save it in the project folder.
+
+In Xcode, embed the framework into your application target:
+
+1. Go to the application target _General_ settings.
+2. Scroll to the bottom to find the _Embedded Binaries_ section.
+3. Click the + button and add NethoneSDKSwiftUI.xcframework from your disk.
+
+**Version update**
+
+Update the framework manually:
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Download the new version of the NethoneSDKSwiftUI.xcframework.
+3. Find the folder where you had the older version of the NethoneSDKSwiftUI.xcframework saved.
+4. Overwrite it by saving the newly downloaded version.
+
+### Installation using the XCFramework
+
+First, download the latest version of NethoneSDK.xcframework:
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Download the latest version of NethoneSDK.xcframework.
+3. Find `nethonesdk-ios-{your_company_name}` repository.
+4. Save it in the project folder.
+
+In Xcode, embed the framework into your application target:
+
+1. Go to the application target _General_ settings.
+2. Scroll to the bottom to find the _Embedded Binaries_ section.
+3. Click the + button and add NethoneSDK.xcframework from your disk.
+
+**Version update**
+
+The XCFramework update needs to be done manually:
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Download the new version of the NethoneSDK.xcframework.
+3. Find the folder where you had the older version of the NethoneSDK.xcframework saved.
+4. Overwrite it by saving the newly downloaded version.
+
+## Initializing the SDK
+
+Before you can use the framework, you must set the Merchant Number which is the identification number provided to you during the onboarding process. 
+
+To do so, you need to call `setMerchantNumber(...)` shortly after application starts.
+
+For example in `didFinishLaunchingWithOptions`:
+
+<CodeGroup>
+``` swift Swift
+import NethoneSDK
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        NTHNethone.setMerchantNumber("<your merchant number>");
+        return true
+    }
+}
+```
+
+``` c Objective-C
+#import <NethoneSDK/NethoneSDK.h>
+
+@implementation AppDelegate
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [NTHNethone setMerchantNumber:@"<your merchant number>"];
+    return YES;
+}
+```
+</CodeGroup>
+
+## Profiling attempt
+
+### Attempt reference
+
+The `attemptReference` is a unique, single-use identifier used to identify a specific profiling attempt. Your server will use this reference to query Nethone about the status of the attempt.
+
+`AttemptReference` is generated by calling the `beginAttempt` function and is accessible by a static function named `attemptReference`.
+
+<CodeGroup>
+``` swift Swift
+let currentAttempt: String? = NTHNethone.attemptReference()
+```
+
+``` c Objective-C
+NSString *currentAttempt = [NTHNethone attemptReference];
+```
+</CodeGroup>
+
+### Starting an attempt
+
+<Note>
+**Note - Concurrency of profiling attempts**
+
+Only one profiling attempt can be running at a time. You should wait for this attempt to finish before starting the next one. 
+</Note>
+
+To start an attempt, use the `NTHNethone.beginAttempt` method. Calling this method results in `Listener.onBegin(String attemptReference)` being called. 
+
+The behavioral data collection can also be turned off by setting the configuration variable `config.withoutBehavioralData `to `true` (swift) or `YES` (objective-c), and passing this configuration when starting the attempt.
+
+<CodeGroup>
+``` swift Swift
+override func viewWillAppear(_ animated: Bool) {
+    //...
+    let config = NTHAttemptConfiguration()
+    config.sensitiveFields = ["input"]
+    config.withoutBehavioralData = false
+    try? NTHNethone.beginAttempt(with: config)
+}
+```
+
+``` c Objective-C
+- (void)viewWillAppear:(BOOL)animated {
+    //...
+        NTHAttemptConfiguration *config = [NTHAttemptConfiguration new];
+        config.sensitiveFields = @[@"input"];
+        config.withoutBehavioralData = NO;
+    [NTHNethone  beginAttemptWithConfiguration:configerror:nil];
+}
+```
+</CodeGroup>
+
+### Finalizing an attempt
+
+<Warning>
+**Caution - Attempt and payment**
+
+You have to finalize the attempt before you process the payment.
+</Warning>
+
+The `finalizeButtonTapped` function makes sure that the necessary data has reached us. It is not recommended to terminate profiling and continue the flow until the function returns to the completion block.
+
+<CodeGroup>
+``` swift Swift
+func finalizeButtonTapped() {
+    try? NTHNethone.finalizeAttempt(completion: { error in
+        guard error == nil else {
+            // Handle finalization error.
+            // For example: internet is down
+            return
+        }
+        // All data has been delivered to Nethone. Do the actual payment processing
+    })
+}
+```
+
+``` c Objective-C
+- (void)finalizeButtonTapped {
+    [NTHNethone finalizeAttemptWithCompletion:^(NSError * _Nullable completionError) {
+        if (completionError) {
+            // Handle finalization error.
+            // For example: internet is down
+            return;
+        }
+        // All data has been delivered to Nethone. Do the actual payment processing
+    } error:nil];
+}
+```
+</CodeGroup>
+
+### Sending custom attempt data
+
+For custom data, you can use the `sendCustomAttemptData` method and add the `options` argument to specify the type of the custom data.
+
+The available option is `DataTypeJson`.
+
+<Warning>
+**Caution - Usage errors**
+
+Calling `sendCustomAttemptData` on a not started or already completed attempt, or passing a data type that does not match the one provided in the `options` argument will return an error.
+</Warning>
+
+<CodeGroup>
+``` swift Swift
+let customData:[String: Any] = ["some_custom_data": 48151]
+try? NTHNethone.sendCustomAttemptData(customData, options: .DataTypeJson)
+```
+
+``` c Objective-C
+NSDictionary<NSString *, id> *customData = @{
+    @"some_custom_data": @48151
+};
+[NTHNethone sendCustomAttemptData:customData options:DataTypeJson error:nil];
+```
+</CodeGroup>
+
+### Canceling an attempt
+
+<Warning>
+**Caution - Attempt reference usage**
+
+Once an attempt is canceled, the same attempt reference can not be reused.
+</Warning>
+
+Canceling an attempt immediately stops collecting and sending data without further checking whether the relevant data has been received by us.
+
+<CodeGroup>
+``` swift Swift
+override func viewDidDisappear(_ animated: Bool) {
+    //...
+    try? NTHNethone.cancelAttempt()
+}
+```
+
+``` c Objective-C
+- (void)viewDidDisappear:(BOOL)animated {
+    //...
+    [NTHNethone cancelAttemptWithError:nil];
+}
+```
+</CodeGroup>
+
+## Errors
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Error code</th>
+            <th class="header">Error&nbsp;message</th>
+            <th class="header">Short description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">kNTHApiErrorMerchantNumberNotSet = -1</td>
+            <td class="content">Begin calls while the merchant number is not set.</td>
+            <td class="content">Without setting the merchant number, profiling cannot be started and no data will be collected.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorAnotherAttemptOngoing = -2</td>
+            <td class="content"> Begin called when another attempt is ongoing.</td>
+            <td class="content">It is possible that the previous profiling has not yet completed finalization (after calling the `+finalizeAttemptWithCompletion:error:`). In this case, you should wait for it to finish before starting the next profiling. To force the immediate termination of the profiling, you can call `+cancelAttemptWithError:`. However, this may result in the collection of insufficient data.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorFinalizingAlreadyEndedAttempt = -5</td>
+            <td class="content">Finalize or send custom data called when the attempt is already completed or canceled.</td>
+            <td class="content">The last profiling has already been completed. Currently, no profiling is in progress and it is not possible to finalize it or send additional data as part of it. The `AttemptReference` of the last profiling can be found in error.userInfo under the key `kNTHNethoneAttemptReference`.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorCancelingAlreadyEndedAttempt = -15</td>
+            <td class="content">Cancel called when the attempt is already completed or canceled.</td>
+            <td class="content">The last profiling has already been completed. Currently, no profiling is in progress and it is not possible to cancel it.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorAttemptDuringFinalization = -13</td>
+            <td class="content">Finalize or send custom data called when profiling has already been finalized.</td>
+            <td class="content">Custom data cannot be sent during finalization or after profiling is completed.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorAttemptNotInitiated = -6</td>
+            <td class="content">Finalize, cancel or send custom data called without begin called before.</td>
+            <td class="content">Currently, no profiling has been started. It is not possible to finalize, cancel, or send additional data.</td>
+        </tr>
+        <tr>
+            <td class="content">kNTHApiErrorInvalidCustomData = -14</td>
+            <td class="content">Send custom data called with structure that cannot be parsed properly.</td>
+            <td class="content"></td>
+        </tr>
+    </tbody>
+</table>
+
+## Optional features
+
+<Note>
+**Note - Adding features**
+
+To use any of the optional features available, please contact your assigned solutions engineer.
+</Note>
+
+### Text field registration
+
+**Register a text field**
+
+The `registerTextField()` method will register a text field to send data from it. 
+
+The function takes a `mode` parameter which indicates the mode in which `textField` will collect data. The `NTHRegisterMode` enum provides constants for the data collecting options for a `textField` when registered. 
+
+There are 3 possible options:
+
+- NTHRegisterMode.NoneData – No behavioral or text data will be collected.
+- NTHRegisterMode.ContentFree –Only behavioral data will be collected.
+- NTHRegisterMode.AllData – All behavioral and text data will be collected.
+
+The function also takes a `name` parameter which describes the given `textField` in collected data. When left as `Null`, the value will be determined automatically, however it might be inaccurate. 
+
+The text fields are permanently registered, which means that data from these fields will be collected during each profiling. There is no need to register fields every time during the start of an attempt.
+
+<CodeGroup>
+``` swift Swift
+@IBOutlet weak var aTextFieldToRegister: UITextField!
+
+override func viewDidLoad() {
+    //...
+    NTHNethone.register(aTextFieldToRegister,
+                        mode: .ContentFree,
+                        name: "UserName")
+}
+```
+
+``` c Objective-C
+@property (nonatomic, weak) IBOutlet UITextField *aTextFieldToRegister;
+
+- (void)viewDidLoad {
+    //...
+    [NTHNethone registerTextField:aTextFieldToRegister
+                             mode:NTHRegisterMode.NoneData
+                             name:nil];
+}
+```
+</CodeGroup>
+
+**Customizing data collection**
+
+To collect data only from previously registered text fields instead of all UITextFields, you need to use the registered `textFields`.
+
+<CodeGroup>
+``` swift Swift
+registeredTextFieldsOnly = false
+```
+
+``` c Objective-c
+registeredTextFieldsOnly = NO
+```
+</CodeGroup>
+
+### IDFA permissions
+
+The identifier for advertisers (IDFA) is a unique identifier assigned by Apple to a user's iOS device. Advertisers are required to request permission to access the IDFA and track the user. 
+
+To use this feature, you will need to use the App Tracking Transparency (ATT) framework. You must also include a purpose string in the system prompt that explains why you'd like to track the user.
+
+To access the values of the IDFA, you need:
+
+- The user’s device on iOS 14.5+ .
+- The user’s permission granted through the App Tracking Transparency prompt.
+
+### Location permissions
+
+According to [Apple’s Core Location](https://developer.apple.com/documentation/corelocation?language=objc) documentation, to enable data location collection during profiling, the application should handle authorization from the user before profiling starts.
+
+To collect the relevant data, the application needs consent for “When In Use” with the Full Accuracy option selected.
+
+``` swift Swift
+//
+//  NTHLocationManager.swift
+//
+//  Copyright © 2021 Nethone. All rights reserved.
+//
+
+/**
+    If the user has denied access to the location.
+    The SDK will not show any other popup and fail to get the location data silently.
+
+    Before you implement a permission handling module,
+    you need to add some explanation to your's app plist.
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need this to ...</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+        <key>ExampleUsageDescription</key>
+        <string>We need this to ...</string>
+    </dict>
+
+    If your app already uses those, you don't need to change anything.
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <key>NSLocationAlwaysUsageDescription</key>
+
+    If you app uses this, then it is preferred to remove it for getting more accurate location.
+    <key>NSLocationDefaultAccuracyReduced</key>
+    <true/>
+*/
+
+import CoreLocation
+
+class NTHLocationManager: NSObject {
+    private static var sharedLocationManager: NTHLocationManager = {
+        let nlm = NTHLocationManager()
+        nlm.locationManager.delegate = nlm
+        return nlm
+    }()
+
+    class func shared() -> NTHLocationManager {
+        return sharedLocationManager
+    }
+
+    private let locationManager: CLLocationManager
+
+    private override init() {
+        locationManager = CLLocationManager()
+    }
+
+    func handlePermissions() {
+        if !CLLocationManager.locationServicesEnabled() {
+
+            //TODO: Explain to the user to turn on location services in the settings
+            //Otherwise, it will not be possible to collect location data
+
+            return
+        }
+        checkStatus()
+    }
+
+    private func checkStatus() {
+        var status: CLAuthorizationStatus?
+        if #available(iOS 14.0, *) {
+            status = locationManager.authorizationStatus
+        } else {
+            status = CLLocationManager.authorizationStatus()
+        }
+
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .denied:
+
+            //TODO: Convince the user to allow access to the location data
+            //Otherwise, it will not be possible to collect location data
+
+            break
+        case .restricted:
+            break
+        case .authorizedAlways:
+            if #available(iOS 14.0, *) {
+                checkAccuracy()
+            }
+        case .authorizedWhenInUse:
+            if #available(iOS 14.0, *) {
+                checkAccuracy()
+            }
+        default:
+            break
+        }
+    }
+
+    @available(iOS 14.0, *)
+    private func checkAccuracy() {
+        switch locationManager.accuracyAuthorization {
+        case .fullAccuracy:
+            break
+        case .reducedAccuracy:
+            requestFullAccuracy()
+        default:
+            break
+        }
+    }
+
+    @available(iOS 14.0, *)
+    func requestFullAccuracy() {
+        locationManager
+            .requestTemporaryFullAccuracyAuthorization(withPurposeKey: "ExampleUsageDescription")
+            { [weak self] (error) in
+                guard error == nil else { return }
+
+                switch self?.locationManager.accuracyAuthorization {
+                case .fullAccuracy:
+                    break
+                case .reducedAccuracy:
+
+                    //TODO: Convince the user to allow access to a precise location data and request again
+                    //Otherwise, it will not be possible to collect precise location data
+
+                    break
+                default:
+                    break
+                }
+            }
+    }
+}
+
+extension NTHLocationManager: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkStatus()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) { }
+}
+``` 
+
+### Active call detection
+
+<Note>
+**Note - Applicable to Chinese market**
+
+If the app is also being distributed in China, this feature is required during the Apple Review process.
+</Note>
+
+The use of CallKit is prohibited in China. Due to this, Apple has introduced an additional check to make sure that the regulation is fulfilled.  We made sure our solution does not use CallKit in China by using the `NSLocale.regionCode` function. 
+
+Apple detects the use of CallKit during the Apple Review process and makes sure the developer is aware of the regulation by rejecting the application with a message. You need to reply that your CallKit implementation is not active in China, and include a short message in the Reviewer Information section saying: "In this version and next we do not use CallKit for users in China. We detect the user's region with `NSLocale`".
+
+## Related resources
+
+<Card title="Article">Fraud prevention - Overview</Card>

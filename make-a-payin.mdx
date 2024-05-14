@@ -7,7 +7,7 @@ description: "Make a card payment to get funds into a Mangopay e-wallet"
 
 This how-to guide will take you through the steps to successfully process a payment by card. With the Mangopay API, this consists in registering a card and making a direct card pay-in. 
 
-### 1. Create a Natural User
+## 1. Create a Natural User
   
    Natural users categorized as Payers only need to provide the most basic information at their creation:
    - First and last name
@@ -143,7 +143,7 @@ This how-to guide will take you through the steps to successfully process a paym
     "UserStatus": "ACTIVE"
 }
  ```
-### 2. Create a Wallet for the User
+## 2. Create a Wallet for the User
   
 Create a wallet for your user to add funds into.
 While Mangopay authorizes you to create as many wallets as required, we recommend you create one wallet per user and currency.
@@ -212,7 +212,7 @@ While Mangopay authorizes you to create as many wallets as required, we recommen
 
  ``` 
 
-### 3. Create a Card Registration
+## 3. Create a Card Registration
   In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.
 
 You also need to define the currency and type of the card at this stage.
@@ -288,14 +288,41 @@ From this response, you will need to save the following values for the next step
 -`PreregistrationData`
 -`CardRegistrationURL`
 
-### 4. Tokenize the Card
+## 4. Tokenize the Card
   Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
 
 Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
 - Use `AccessKey` data for the `accessKeyRef` parameter  
 - Use `PreregistrationData` data for the `data` parameter  
 
-You also need the end user’s card details, entered on the payment page:TW please add the old table here  
+You also need the end user’s card details, entered on the payment page:
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">`cardNumber `</td>
+            <td class="content">string</td>
+            <td class="content">The card number to be tokenized, without any separators.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardExpirationDate `</td>
+            <td class="content">string (Format: “MMYY”)</td>
+            <td class="content">The expiration date of the card.</td>
+        </tr>
+        <tr>
+            <td class="content">`cardCvx `</td>
+            <td class="content">string</td>
+            <td class="content">The card verification code (on the back of the card, usually 3 digits).</td>
+        </tr>
+    </tbody>
+</table>
 
 ```json POST CardRegistrationURL
 {
@@ -325,7 +352,7 @@ You also need the end user’s card details, entered on the payment page:TW plea
 data=R7hxMYui4h4rBkaNwbiH1C52oyBEPsNQqJWhStf8lRp-qFm87Xjc6eMmalQEBwCL8iAjp5-yMYx2KX5HaewKbrR7SzblGS3JYA-uOAwvnl9GWCA1bf83AsB4aEx48yIyNx0xgKTVnyDj15oG8jR88g
 ```
 
-### 5. Update the Card Registration
+## 5. Update the Card Registration
 
   Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`.  
 
@@ -379,7 +406,7 @@ data=R7hxMYui4h4rBkaNwbiH1C52oyBEPsNQqJWhStf8lRp-qFm87Xjc6eMmalQEBwCL8iAjp5-yMYx
     "Status": "VALIDATED"
 }
 ```
-### 6. Create a Direct Card PayIn
+## 6. Create a Direct Card PayIn
 Now that the card is validated, we can create a direct card pay-in.
 
 Don't forget to click on the link provided by `SecureModeRedirectURL` parameter in the response
@@ -641,7 +668,7 @@ Don't forget to click on the link provided by `SecureModeRedirectURL` parameter 
     }
 }
 ```
-### 7. View the PayIn
+## 7. View the PayIn
 
 ``` json Response
 {

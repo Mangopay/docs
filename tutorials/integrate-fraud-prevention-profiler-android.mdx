@@ -1,0 +1,515 @@
+---
+title: "How to integrate the fraud prevention profiler on Android"
+sidebarTitle: "Fraud prevention - Android"
+description: "This how-to guide covers integrating the profiler in Android applications."
+---
+
+[Learn about fraud prevention]()
+
+<Info>
+**Prerequisites**
+
+To use the fraud prevention Android SDK, you’ll need:
+
+- Android 5.0 Lollipop (API level 21) or higher
+- Device supporting armeabi-v7a, arm64-v8a, x86 or x86_64 ABI
+</Info>
+
+<Note>
+Note - Size overhead
+
+The average size overhead for each architecture is:
+
+- X86: 1.6 MB
+- X86_64: 1.6 MB
+- ARMv8: 1.7 MB
+- ARMv7: 1.7 MB
+</Note>
+
+## Setting up your Artifactory account
+
+Once you sign the fraud prevention contract with Mangopay, your assigned solutions engineer assesses the integration of your application. 
+
+If mobile integration is needed, you will be asked to provide the email addresses of your mobile developers. Once provided, JFrog accounts will be generated for your developers and they will receive an email to set up their account. In addition, a document with information about third-party dependencies is placed in your Artifactory repository with each release in a file called _third-party-notices.txt_.
+
+<Warning>
+**Caution - Locked accounts**
+
+In case of multiple failed login attempts, the system will temporarily suspend that user's account for a brief period of time during which additional login attempts will be ignored. To unlock your account, contact your assigned solutions engineer.
+</Warning>
+
+## Getting started
+
+### Installation with Gradle using the Maven Repository
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Under the _Artifacts_ section, find the `nethonesdk-android-{your_company_name}` repository.
+3. Note the repository link with the format `https://nethone.jfrog.io/artifactory/nethonesdk-android-{your_company_name}`
+4. Include your repository link in your module’s _build.gradle_ or _settings.gradle_ file:
+
+``` groovy Groovy
+allprojects {
+    repositories {
+        maven {
+            url 'https://nethone.jfrog.io/artifactory/nethonesdk-android-<your company name>'
+            credentials {
+                username = '<your JFrog username>'
+                password = '<your JFrog password>'
+            }
+        }
+        ...
+    }
+
+  dependencies {
+    implementation(group: 'com.daredevil', name: 'library', version: '<version>')
+    ...
+  }
+
+}
+```
+
+### Manual installation
+
+<Warning>
+**Caution - Required manual updates**
+
+With manual integration, the dependency management procedure will need to be performed again after each Nethone update. We recommend you install the SDK using Gradle. 
+</Warning>
+
+1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
+2. Under the _Artifacts_ section, find the `nethonesdk-android-{your_company_name}` repository.
+3. Download the artifact named `library-{version}.aar`.
+4. Place the downloaded artifact in your module's directory. The recommended path is `{your_app_module's_directory}/lib`.
+5. Add the following to your module's _build.gradle_ or _settings.gradle_:
+
+``` groovy Groovy
+repositories {
+    flatDir {
+        dirs 'lib' // A relative path to the directory chosen in the previous point
+    }
+    ...
+}
+...
+dependencies {
+    implementation(group: 'com.daredevil', name: 'library', version: '<version>', ext: 'aar')
+    // the rest of external dependencies
+    ...
+}
+```
+
+## Initializing the SDK
+
+Before you can use the framework, you must set the Merchant Number and the Application Context. 
+
+- Merchant Number – Identification number provided to you during the integration process needed before the profiler can execute any further actions.
+- Application Context – Android interface allowing you to access application specific resources and classes.
+
+**1/ Set up your Application subclass.**
+
+According to Android documentation, the Application class instance, or its subclass defined in a manifest file, is the first thing created in a process. If you have your own Application subclass, its instance will be created during the attempt session. Any application setup done in this isolated service will most likely fail: whenever you use things like shared preferences or for example SoLoader, which extracts APKs to disk, an isolated process cannot do this.
+
+We require that you modify your Application subclass to behave as a base Application when run in an isolated process and not perform any custom setup in this case. This can be done by calling `android.os.Process.isIsolated()` method.
+
+``` kotlin Kotlin 
+import android.app.Application
+import android.content.Context
+import android.os.Process
+
+class ExampleApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        if (Process.isIsolated()) {
+            return
+        }
+        
+        // here goes anything that needs to be done in application's main process
+        // ...
+    }
+}
+```
+
+**2/ Get the Application context.**
+
+There are multiple ways to get a reference to the application context instance.
+
+For more information, see the [Android Developers Context](https://developer.android.com/reference/android/content/Context) article. 
+
+<CodeGroup>
+``` kotlin Method 1: Getting static access to the application's Context instance
+import android.app.Application
+import android.content.Context
+
+class ExampleApplication : Application() {
+    companion object {
+        // To access this variable, use 'ExampleApplication.context'.
+        var context: Context? = null
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        context = applicationContext
+    }
+}
+```
+
+``` kotlin Method 2: Using the Context class
+import android.content.Context
+
+...
+
+// This is an example method
+override fun onCreate() {
+  var context = Context.getApplicationContext()
+    ...
+}
+```
+</CodeGroup>
+
+**3/ Initialize the profiler by using `Profiler.initialize()`.**
+
+The initialize method can only be called once. Any subsequent calls will throw an exception.
+
+``` kotlin Kotlin
+try {
+    val merchantNumber = <your merchant number>
+    var context = <your application context>
+    Profiler.initialize(merchantNumber, context)
+} catch (e: ProfilerException) {
+    Log.e("ExampleApp", "Profiler.initialize() failed: $e")
+}
+```
+
+## Profiling attempt
+
+<Warning>
+**Caution – Globally configurable Android settings**
+
+This feature utilizes the capabilities of [WebView](https://developer.android.com/reference/android/webkit/WebView). To be fully effective, the profiler uses a local database which is enabled with the webSettings.setDatabaseEnabled(true) call. This has a global effect and any further calls may be ignored. We recommend you to not set this setting to false in your own WebViews as it will also affect the profiler’s WebView.
+</Warning>
+
+**Attempt reference**
+
+The `attemptReference` is a unique, single-use identifier used to identify a specific profiling attempt which is generated automatically by the SDK. Your server will use this reference to enquire Nethone about the status of the attempt. 
+
+On mobile platforms, it starts with a `mznx-` prefix, for example `mznx-8c00d909-9f92-4b83-a5b2-7b65b07c704f`.
+
+### Starting an attempt
+
+<Note>
+**Note - Concurrency of profiling attempts**
+
+Only one profiling attempt can be running at a time. You should wait for this attempt to finish before starting the next one. If another attempt is running, the  method will throw an exception.
+</Note>
+
+To start an attempt, use the `Profiler.begin(ProfilerOptions options)` method. Calling this method results in `Listener.onBegin(String attemptReference)` being called. 
+
+In addition, you can add the class `ProfilerOptions` allows you to customize the profiling session with the available version options differ per version. 
+
+``` kotlin Kotlin
+try {
+    val options = ProfilerOptions()
+    ...
+    Profiler.begin(options)
+} catch (e: ProfilerException) {
+    Log.e(tag, "Profiler.begin failed: $e")
+}
+```
+
+### Finalizing an attempt
+
+The `Profiler.finish()` method makes sure that the necessary data has reached us and ends the attempt. Calling this method results in `Listener.onSuccess(String attemptReference)` being executed.
+
+``` kotlin Kotlin
+try {
+    Profiler.finish()
+} catch (e: ProfilerException) {
+    Log.e(tag, "Profiler.finish failed: $e")
+}
+```
+
+### Canceling an attempt
+
+The `Profiler.cancel()` method immediately cancels the current profiling attempt. Calling this method results in `Listener.onCancel()` being executed.
+
+<Note>
+**Note - Expired attempt reference**
+
+After finalizing the attempt, the latest attempt reference becomes invalid and can no longer be used to query our servers.
+</Note>
+
+``` kotlin Kotlin
+try {
+    Profiler.cancel()
+} catch (e: ProfilerException) {
+    Log.e(tag, "Profiler.cancel failed: $e")
+}
+```
+
+## Optional features
+
+<Note>
+**Note - Adding features**
+
+To use any of the optional features available, please contact your assigned solutions engineer.
+</Note>
+
+### Behavioral analysis
+
+**TextView changes**
+
+<Note>
+**Note - Sensitive data**
+
+Only behavioral data is gathered from views registered with the `RegisterMode.SENSITIVE` mode. 
+</Note>
+
+We recommend registering all user input fields. A registered `TextView` data will be gathered during the profiling session. 
+
+To register a `TextView`, you need to use the `registerTextView` and add the following arguments:
+
+- `textView` – the TextView’s object name.
+- `mode` 
+- `type` – type of the TextView format.
+
+``` koltin Kotlin
+val textView = <yourTextView>
+val mode = RegisterMode.SENSITIVE
+val type = RegisterType.PASSWORD
+Profiler.registerTextView(textView, mode, type)
+```
+
+**Touch events**
+
+Behavioral data can be performed based on the user’s touches. You need to provide the profiler with touch events by invoking the `Profiler.dispatchTouchEvent(ev)` method.
+
+``` kotlin Kotlin
+override fun dispatchTouchEvent(ev: MotionEvent?): Boolean { 
+Profiler.dispatchTouchEvent(ev)
+      return super.dispatchTouchEvent(ev)
+}
+```
+
+### Logging
+
+<Warning>
+**Caution – Disable all logging before release**
+
+Please note that this feature needs to be disabled before releasing your application.
+</Warning>
+
+The fraud prevention profiler SDK for Android can provide logs using [Android logcat utility](https://developer.android.com/tools/logcat). 
+
+By default, those logs are disabled. To print them, you need the `Profiler.setLogLevel(int level)` method. It supports the following values:
+
+- `0` – Off
+- `1` – Fatal
+- `2` – Error
+- `3` – Warn
+- `4` – Info
+- `5` – Debug
+
+### Location permissions
+
+Before enabling data location collection during profiling, the application should handle authorization from the user before profiling starts.
+
+To collect the most precise location data from the user, there are 2 needed permissions:
+
+- `ACCESS_COARSE_LOCATION` – Data from the most battery-efficient non-GPS provider available.
+- `ACCESS_FINE_LOCATION` – GPS data in reporting user location.
+
+**1/ In the _AndroidManifest.xml_ file, add the following in your `manifest`**
+
+``` xml XML 
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+**2/ Declare `requestPermissionLauncher` variable in your activity.**
+
+``` koltin Kotlin
+private var requestPermissionLauncher = ActivityResultContracts.RequestMultiplePermissions()
+{ permissions ->
+    if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+        // Precise location access granted.
+    }
+    if (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+        // Approximate location access granted.
+    }
+}
+```
+
+**3/ Request permission from the user.**
+
+``` kotlin Kotlin
+try {
+    requestPermissionLauncher.launch(arrayOf(
+         Manifest.permission.ACCESS_FINE_LOCATION,
+         Manifest.permission.ACCESS_COARSE_LOCATION))
+} catch (e: Exception) {
+    ...
+}
+```
+
+### Read and write external storage permissions
+
+Before enabling these permissions, the application should handle authorization from the user before profiling starts.
+
+As the SDK saves universally unique identifiers (UUIDs) values on the external storage, the permission allows the data to persist through app re-installation on APIs on and below API 28. 
+
+For more information, see the [Android Developers Manifest.permission](https://developer.android.com/reference/android/Manifest.permission) article.
+
+**1/ In the _activity_main.xml_ file, add the following in your `manifest` tag:**
+
+``` xml XML
+<uses-permission android:name="READ_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+```
+
+**2/ Declare `requestPermissionLauncher` variable in your activity.**
+
+``` kotlin Kotlin
+private var requestPermissionLauncher = ActivityResultContracts.RequestMultiplePermissions()
+{ permissions ->
+    if (permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true) {
+        // Read external storage access granted.
+    }
+    if (permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
+        // Write external storage access granted.
+    }
+}
+```
+
+**3/ Request permission from the user.**
+
+``` kotlin Kotlin
+if (Build.VERSION.SDK_INT <= 28) {
+    try {
+        requestPermissionLauncher.launch(arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE))
+    } catch (e: Exception) {
+        ...
+    }
+ }
+```
+
+### Listener
+
+The Listener interface is a way of notifying you of different events occurring in your profiling attempt.
+
+It has four main methods:
+
+- `Listener.onBegin(String attemptReference)` passes the attempt reference through the listener after the profiling session is created. 
+- `Listener.onSuccess(String attemptReference)` queries the server to provide results after the profiling attempt is finalized.
+- `Listener.onCancel()` aborts the listener of the current profiling attempt.
+- `Listener.onError(String attemptReference, String message)` is executed after an error occurs in the profiling attempt. The `message` argument contains information about the error.
+
+**Set the listener**
+
+In order to receive callbacks from the listener, you need to set the Listener object before starting a profiling session to receive all callbacks on time.
+
+``` kotlin Kotlin
+try {
+    Profiler.setListener(listener)
+} catch (e: ProfilerException) {
+    Log.e(tag, "Profiler.setListener failed: $e")
+}
+```
+
+**Unset the listener**
+
+When the profiler attempt is finalized, you need to unset the listener to avoid a possible memory leak.
+
+``` kotlin Kotlin
+try {
+    Profiler.unsetListener()
+} catch (e: ProfilerException) {
+    Log.e(tag, "Profiler.unsetListener failed: $e")
+}
+```
+
+**Listener and Activity Lifecycle**
+
+If you want to interact with elements of your Activity in the Listener methods, you should ensure that the Listener does not outlive the Activity.
+
+For more information, see the [Android Developers Activity](https://developer.android.com/reference/android/app/Activity#activity-lifecycle) article.
+
+``` kotlin Kotlin
+class MainActivity : AppCompatActivity() {
+    private val listener = object : Listener {
+        ...
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        try {
+            Profiler.setListener(listener)
+        } catch (e: ProfilerException) {
+            Log.e(tag, "Profiler.setListener failed: $e")
+        }
+
+        ...
+    }
+
+    override fun onPause() {
+        ...
+
+        try {
+            Profiler.unsetListener()
+        } catch (e: ProfilerException) {
+            Log.e(tag, "Profiler.unsetListener failed: $e")
+        }
+
+        super.onPause()
+    }
+    ...
+}
+```
+
+**Full implementation example**
+
+``` kotlin Kotlin
+import androidx.appcompat.app.AppCompatActivity
+import com.daredevil.library.Listener
+
+...
+
+class MainActivity : AppCompatActivity() {
+    private val listener = object : Listener {
+        override fun onBegin(attempt: String) {
+            runOnUiThread {
+                var msg = "Profiling $attempt started."
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onCancel() {
+            runOnUiThread {
+                var msg = "Profiling canceled."
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onSuccess(attempt: String) {
+            runOnUiThread {
+                var msg = "Profiling $attempt finished successfully."
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onError(attempt: String, message: String) {
+            runOnUiThread {
+                var msg = "Profiling $attempt failed: $message"
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+     }
+
+    ...
+}
+```
+
+## Related resources
+
+<Card title="Article">Fraud prevention - Overview</Card>

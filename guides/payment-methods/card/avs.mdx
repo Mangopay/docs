@@ -1,0 +1,65 @@
+---
+title: Address verification system
+"og:description": "Learn about how to leverage Mangopay’s card anti-fraud features, including unique card fingerprints and an address verification system for enhanced security in only payments."
+---
+
+import Acquirer from "/snippets/glossary/acquirer.mdx";
+
+Address verification system (AVS) is an anti-fraud tool used in the UK, US, and Canada for online payments by Visa, Mastercard, and Amex.
+
+The system checks with the <Acquirer content="acquiring" /> bank if the address of the cardholder matches the billing address (provided via the API in the pay-in call). The acquiring bank provides a score as a result of this verification.
+
+Based on the score provided by the bank, Mangopay provides a specific value in the `AVSResult` parameter for you to act upon.
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">AVS Result</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">FULL_MATCH</td>
+            <td class="content">The user `Address` and the address registered on the bank side are exactly the same.</td>
+        </tr>
+        <tr>
+            <td class="content">ADDRESS_MATCH_ONLY</td>
+            <td class="content">Only the street names are a match (`AddressLine1` and `AddressLine2`). Postal codes don’t match.</td>
+        </tr>
+        <tr>
+            <td class="content">POSTAL_CODE_MATCH_ONLY</td>
+            <td class="content">Only the postal codes are a match (`PostalCode`). The street names don't match.</td>
+        </tr>
+        <tr>
+            <td class="content">NO_MATCH</td>
+            <td class="content">Both street names and postal codes don’t match.</td>
+        </tr>
+        <tr>
+            <td class="content">NO_CHECK</td>
+            <td class="content">
+                No check has been done.
+
+                This may be due to:
+
+                - A lack of information (no `Address` provided)
+                - A non-compatible card
+                - An unavailability of the AVS service on the bank side. 
+
+                This status is also used for 3DS payments until the payment has been validated on the customer side (AVS check given when status = SUCCEEDED)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<Note>
+    **Best practice - Implement an AVS result-based payment flow** In order to
+    make the most of this feature: Make the user `Address` mandatory in your
+    implementation Adapt your flow by adding conditions dependent on the AVS
+    result. One of the ways to use the AVS feature is to rely on the
+    preauthorized pay-in. Steps would be as follow: Make a preauthorization
+    Check the `AVSResult` Capture the preauthorized funds based on the AVS
+    result
+</Note>
+
+<a href="#">Test AVS</a>

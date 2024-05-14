@@ -1,0 +1,51 @@
+---
+title: 'Error report'  
+'og:description': 'Learn about HTTP errors in the Mangopay API: how the error report is structured and what information it provides to help you debug your integration.'  
+---
+
+When an HTTP error occurs, an error report is returned with the following information:
+
+<table class="html-table">
+    <tbody>
+        <tr>
+            <th class="header">**Property**</th>
+            <th class="header">**Type**</th>
+            <th class="header">**Description and value**</th>
+        </tr>
+        <tr>
+            <td class="content">`Message`</td>
+            <td class="content">string</td>
+            <td class="content">The description of the error.</td>
+        </tr>
+        <tr>
+            <td class="content">`Type`</td>
+            <td class="content">string</td>
+            <td class="content">The type of the error (e.g., param_error, resource_not_found, etc.)</td>
+        </tr>
+        <tr>
+            <td class="content">`Id`</td>
+            <td class="content">string</td>
+            <td class="content">The unique identifier of the error. This information may be requested by our Support team when investigating an issue.</td>
+        </tr>
+        <tr>
+            <td class="content">`Date`</td>
+            <td class="content">timestamp</td>
+            <td class="content">The date and time at which the error occurred.</td>
+        </tr>
+        <tr>
+            <td class="content">`errors`</td>
+            <td class="content">array</td>
+            <td class="content">The list of issues that triggered the HTTP error.</td>
+        </tr>
+    </tbody>
+</table>
+
+```json Error report example (JSON)
+{
+    "Message":"A resource has already been created with this Idempotency Key",
+    "Type":"idempotent_creation_conflict",
+    "Id":"13c824a3-06b9-465f-90a7-3d7262d35b66#1658230707",
+    "Date":1658230708.0,
+    "errors":null
+}
+```

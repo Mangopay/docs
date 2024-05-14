@@ -1,0 +1,183 @@
+---
+title: 'Address verification system (AVS)'
+sidebarTitle: 'Address verification system'
+'og:description': 'Use test values to simulate scenarios in the address verification system.'  
+---
+
+Address verification system (AVS) checks with the acquiring bank if the address of the cardholder matches the billing address. The acquiring bank provides a score as a result of this verification.  
+<a href="#" class="btn Primary normal">Learn more about AVS</a>  
+
+## Testing values  
+
+The AVS feature is testable in Sandbox when making pay-ins in GBP by changing the two first digits of the billing address `PostalCode`.
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">First 2 digits of the PostalCode</th>
+            <th class="header">AVSResult</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">22</td>
+            <td class="content">FULL_MATCH</td>
+        </tr>
+        <tr>
+            <td class="content">12, 42, 82</td>
+            <td class="content">ADDRESS_MATCH_ONLY</td>
+        </tr>
+        <tr>
+            <td class="content">21, 24, 28</td>
+            <td class="content">POSTAL_CODE_MATCH_ONLY</td>
+        </tr>
+        <tr>
+            <td class="content">14, 18, 41, 44, 48, 81, 84, 88</td>
+            <td class="content">NO_MATCH</td>
+        </tr>
+        <tr>
+            <td class="content">11, any other value</td>
+            <td class="content">NO_CHECK</td>
+        </tr>
+    </tbody>
+</table>  
+
+<Note>  
+**Note – `PostalCode` default value** 
+  
+Keep in mind that, by default, the Address information of the Billing object inherits the values of the Shipping object, if provided, otherwise the user (author).  
+</Note>  
+
+## Worked example  
+
+<Card title="TW should set this">  
+
+Prerequisites  
+
+To go through the worked example, you need to have everything you usually have for making a pay-in:  
+-A User object, with a GBP wallet  
+-A GBP card for the same user
+
+</Card>
+
+```json REST
+{
+    "AuthorId": "142036728 ",
+    "CreditedWalletId": "150014739",
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 5000
+    },
+    "Fees": {
+        "Currency": "GBP",
+        "Amount": 100
+    },
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore",
+    "CardId": "162951073",
+    "Billing": {
+        "FirstName": "Petra",
+        "LastName": "Braun",
+        "Address": {
+            "AddressLine1": "660 Hayes Fork",
+            "AddressLine2": "Zora Locks",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "22400",
+            "Country": "FR"
+        }
+    },
+    "IpAddress": "2001:0620:0000:0000:0211:24FF:FE80:C12C",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true       
+    }
+}
+```
+
+```json API Response with AVS check
+{
+    "Id": "162996961",
+    "Tag": "Created using MANGOPAY API Collection Postman",
+    "CreationDate": 1677163753,
+    "AuthorId": "142036728",
+    "CreditedUserId": "142036728",
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 5000
+    },
+    "CreditedFunds": {
+        "Currency": "GBP",
+        "Amount": 4900
+    },
+    "Fees": {
+        "Currency": "GBP",
+        "Amount": 100
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1677163755,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "150014739",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "162951073",
+    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=162996961",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "FULL_MATCH"
+    },
+    "StatementDescriptor": "MANGOPAY",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "0112:73bb:2d58:2369:2a2e:cf3c:03b4:c6a3",
+    "Billing": {
+        "FirstName": "Petra",
+        "LastName": "Braun",
+        "Address": {
+            "AddressLine1": "660 Hayes Fork",
+            "AddressLine2": "Zora Locks",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "22400",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Petra",
+        "LastName": "Braun",
+        "Address": {
+            "AddressLine1": "660 Hayes Fork",
+            "AddressLine2": "Zora Locks",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "22400",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null
+}
+```
