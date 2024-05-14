@@ -30,41 +30,41 @@ An indicative rate for a currency pair is available at any time using the View a
 ### Constraints  
 
 Conversions (of both types):  
--Must take place between two wallets owned by the same user  
--Can’t be refunded: another conversion with the reverse currency pair must be created  
+- Must take place between two wallets owned by the same user  
+- Can’t be refunded: another conversion with the reverse currency pair must be created  
 
 Quotes:  
--Can only be made for a duration pre-agreed between Mangopay and the platform  
--Can only be used once  
--Can’t be used once they expire  
--Don’t have to be used once created  
+- Can only be made for a duration pre-agreed between Mangopay and the platform  
+- Can only be used once  
+- Can’t be used once they expire  
+- Don’t have to be used once created  
 
 ## Rates  
 
 The conversion rate offered by Mangopay is expressed in two ways, both as decimal numbers:  
--MarketRate - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
--ClientRate - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
+- MarketRate - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
+- ClientRate - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
 
 Mangopay's markup is agreed during contracting. You can can calculate it using the formula:  
--Markup = 1 - (`ClientRate` / `MarketRate`)  
+- Markup = 1 - (`ClientRate` / `MarketRate`)  
 
 ## Currencies  
 
 Mangopay is able to offer the following currencies for both Spot FX and Guaranteed FX:  
--AUD - Australian dollar  
--CAD - Canadian dollar  
--CHF - Swiss franc  
--CZK - Czech koruna  
--DKK - Danish krone  
--EUR - Euro  
--GBP - Pound sterling  
--HKD - Hong Kong dollar  
--JPY - Japanese yen  
--NOK - Norwegian krone  
--PLN - Polish złoty  
--SEK - Swedish krona  
--USD - US dollar  
--ZAR - South African rand  
+- AUD - Australian dollar  
+- CAD - Canadian dollar  
+- CHF - Swiss franc  
+- CZK - Czech koruna  
+- DKK - Danish krone  
+- EUR - Euro  
+- GBP - Pound sterling  
+- HKD - Hong Kong dollar  
+- JPY - Japanese yen  
+- NOK - Norwegian krone  
+- PLN - Polish złoty  
+- SEK - Swedish krona  
+- USD - US dollar  
+- ZAR - South African rand  
 
 <Note>  
 **Note - Activation required for feature and currencies** 
@@ -77,8 +77,8 @@ For more information or to activate contact the Support teamvia the Hub.
 ## Rates  
 
 The conversion rate offered by Mangopay is expressed in two ways, both as decimal numbers:  
--MarketRate - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
--ClientRate - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
+- MarketRate - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
+- ClientRate - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
 
 ## Use cases  
 
@@ -87,9 +87,9 @@ The conversion rate offered by Mangopay is expressed in two ways, both as decima
 You can offer FX services to your users from within your platform thanks to Mangopay’s wallet-based FX services. This enables your users to request payouts in a different currency, as well as re-use their funds on your platform for transactions in other currencies.  
 
 The flow is as follows:  
--Create a Wallet in each currency for your user  
--Show the user an approximate conversion rate using the View an indicative Conversion Rate endpoint  
--If they wish to proceed with the currency exchange, Create an Instant Conversion to convert the funds  
+- Create a Wallet in each currency for your user  
+- Show the user an approximate conversion rate using the View an indicative Conversion Rate endpoint  
+- If they wish to proceed with the currency exchange, Create an Instant Conversion to convert the funds  
 
 The indicative rate presented and the actual rate converted may differ slightly, so you need to communicate this to the user.  
 
@@ -104,10 +104,10 @@ You can list product prices in the user’s local currency before they pay.
 For example, a European marketplace can list EUR products in GBP for the UK market.  
 
 The flow is as follows:  
--Display approximate GBP prices on product pages using the View an indicative Conversion Rate endpoint, refreshing every few minutes  
--When the buyer proceeds to checkout, Create a Quote (GBPEUR) to guarantee their GBP price for the quote duration  
--Create a GBP pay-in to the buyer’s GBP wallet  
--Create a Quoted Conversion to convert the funds to the buyer’s EUR wallet  
+- Display approximate GBP prices on product pages using the View an indicative Conversion Rate endpoint, refreshing every few minutes  
+- When the buyer proceeds to checkout, Create a Quote (GBPEUR) to guarantee their GBP price for the quote duration  
+- Create a GBP pay-in to the buyer’s GBP wallet  
+- Create a Quoted Conversion to convert the funds to the buyer’s EUR wallet  
 
 Both the pay-in and conversion needs to happen before the quote expires, so you should trigger the conversion on the successful pay-in.  
 
@@ -116,13 +116,13 @@ If the quote expires before the buyer completes their checkout, then you can ref
 ## Managing conversions  
 
 The View a Conversion endpoint returns both instant and quoted conversions.  
--For an instant conversion, the `QuoteId` is `null`.  
--For a quoted conversion, the `QuoteId` contains the unique identifier of the quote against which the conversion was requested  
+- For an instant conversion, the `QuoteId` is `null`.  
+- For a quoted conversion, the `QuoteId` contains the unique identifier of the quote against which the conversion was requested  
 
 The conversion transaction behaves like other transactions, meaning it appears in the following endpoints:  
--List Transactions for a User  
--List Transactions for a Wallet  
--Create a Transactions Report  
+- List Transactions for a User  
+- List Transactions for a Wallet  
+- Create a Transactions Report  
 
 ## Related resources  
 
