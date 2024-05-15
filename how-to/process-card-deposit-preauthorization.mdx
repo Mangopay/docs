@@ -157,14 +157,14 @@ For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of 
 Once the Deposit Preauthorization's `PaymentStatus` is `WAITING`, you can use the hold on the funds in a number of ways.  
 
 Set up hook notifications for the following event types in order to be notified when a deposit preauthorization is ready to use, or when it has expired and can no longer be used:   
--DEPOSIT_PREAUTHORIZATION_PAYMENT_WAITING  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_EXPIRED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_WAITING  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_EXPIRED  
 
 There are 3 ways you can use a Deposit Preauthorization and, if it won’t be used, you can cancel it manually to release the preauthorized funds for the user.  
--A. Full or partial capture without complement  
--B. Full capture with complement  
--C. No-show with complement  
--D. Cancel  
+- A. Full or partial capture without complement  
+- B. Full capture with complement  
+- C. No-show with complement  
+- D. Cancel  
 
 In the following calls, use the `Id` of the Deposit Preauthorization obtained previously as the `DepositId`.  
 
@@ -226,8 +226,8 @@ Once the `PaymentStatus` is `VALIDATED`, no further action is possible.
 ### B. FULL CAPTURE WITH COMPLEMENT  
 
 This option is a two-step process:  
--Capture the full amount of the preauthorized funds  
--Capture the complement  
+- Capture the full amount of the preauthorized funds  
+- Capture the complement  
 
 <Note>  
 **Note - Partial capture not possible** 
@@ -256,7 +256,7 @@ To capture the preauthorized funds and also capture an additional amount as a co
 If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `TO_BE_COMPLETED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.  
 
 You can set up a webhook for the following event type to be notified of the status change:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_TO_BE_COMPLETED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_TO_BE_COMPLETED  
 
 Use the View a Deposit Preauthorization endpoint to see these details.  
 ```json API response parameters - Capture prior to complement 
@@ -290,7 +290,7 @@ To capture the complement, use the dedicated Create a Deposit Preauthorized PayI
 After a successful pay-in complement, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the complement is linked as the `PayinComplementId`.  
 
 You can set up a webhook for the following event type to be notified of the status change:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
 
 Use the View a Deposit Preauthorization endpoint to see these details.  
 
@@ -308,8 +308,8 @@ Once the `PaymentStatus` is `VALIDATED`, no further action is possible.
 ### C. NO-SHOW WITH COMPLEMENT  
 
 This option is a two step-process:  
--Request a no-show, indicating that the preauthorized funds were not used  
--Capture a complement, for example as penalty or other service charge  
+- Request a no-show, indicating that the preauthorized funds were not used  
+- Capture a complement, for example as penalty or other service charge  
 
 To request a no-show, change the `PaymentStatus` to `NO_SHOW_REQUESTED`.  
 ```json REST
@@ -330,8 +330,8 @@ If the request is successful, the `PaymentStatus` in the response is `NO_SHOW`.
 ```  
 
 You can set up a webhook for the following event types to be notified of the status changes:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW_REQUESTED  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW_REQUESTED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW  
 
 To capture the complement, use the dedicated Create a Deposit Preauthorized PayIn complement endpoint.  
 ```json REST
@@ -354,7 +354,7 @@ To capture the complement, use the dedicated Create a Deposit Preauthorized PayI
 After a successful pay-in complement, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the complement is linked as the `PayinComplementId`.  
 
 You can set up a webhook for the following event type to be notified of the status change:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
 
 Use the View a Deposit Preauthorization endpoint to see these details.  
 ```json API response parameters - No-show and complement
@@ -390,8 +390,8 @@ Once the `PaymentStatus` is `CANCELED`, no further action is possible.
 ```  
 
 You can set up a webhook for the following event types to be notified of the status changes:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCELED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCELED  
 
 ## Related resources  
 
