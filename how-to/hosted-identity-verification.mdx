@@ -1,0 +1,146 @@
+---
+title: 'Guide to hosted identity verification'
+---
+
+import UserId from '/snippets/path-parameters/UserId.mdx';
+import ReturnURL4 from '/snippets/body-parameters/ReturnURL4.mdx';
+import Tag3 from '/snippets/body-parameters/Tag3.mdx';
+import IdResponse from '/snippets/response-parameters/IdResponse.mdx';
+import Tag2Response from '/snippets/response-parameters/Tag2Response.mdx';
+import CreationDateResponse from '/snippets/response-parameters/CreationDateResponse.mdx';
+import HostedUrlResponse from '/snippets/response-parameters/HostedUrlResponse.mdx';
+import Status13Response from '/snippets/response-parameters/Status13Response.mdx';
+import ReturnURL3Response from '/snippets/response-parameters/ReturnURL3Response.mdx';
+import IdentityVerificationId from '/snippets/path-parameters/IdentityVerificationId.mdx';
+
+Mangopay's hosted identity verification session allows platforms to redirect a user to a Mangopay-hosted digital experience in which the user provides details and documents to verify their identity.
+
+<Note>
+**Note – Hosted identity verification only available for Legal Soletraders**
+
+The hosted identity verification feature is only available for Legal users whose `LegalPersonType` is `SOLETRADER`.
+
+The user must also be an Owner to request identity verification.
+</Note>
+
+## Endpoints
+
+### POST Create a hosted Identity Verification Session
+
+This endpoint allows you to initiate an identity verification session for a user and obtain a redirection link for their Mangopay-hosted experience.
+
+``` json POST /users/{UserId}/identity-verifications
+{
+  "ReturnUrl": "https://your-return-url.com",
+  "Tag": "Custom data"
+}
+```
+
+<Accordion title="See parameter details">
+### Path parameters
+<UserId />
+### Body parameters
+<ReturnURL4 />
+<Tag3/>
+
+### Responses
+<AccordionGroup>
+    <Accordion title="200 Session pending">
+        <IdResponse />
+        <Tag2Response />
+        <CreationDateResponse />
+        <HostedUrlResponse />
+        <Status13Response />
+        <ReturnURL3Response />
+
+    </Accordion>
+    <Accordion title="400 User must have UserCategory value OWNER">
+    
+    </Accordion>
+</AccordionGroup>
+</Accordion>
+
+**API response**
+
+``` json 200 - Session pending
+{
+  "Id": "32197520",
+  "Tag": "Custom data",
+  "CreationDate": 1710402969,
+  "HostedUrl": "https://example.com",
+  "Status": "PENDING",
+  "ReturnUrl": "https://your-return-url.com"
+}
+```
+
+In response, the API returns the `HostedUrl` to which you need to redirect the user to complete their identity verification.
+
+The `Status` parameter indicates the progression of the verification session:
+
+- **VALIDATED** – The session was successful.
+- **REJECTED** – The session was unsuccessful.
+- **OUTDATED** – The session is no longer valid (likely due to expired documents used during the session).
+- **TIMEOUT** – The session timed out due to inactivity.
+- **PENDING** – The session is in progress and user action is required to complete it.
+- **REVIEW** – The session is under manual review by Mangopay.
+- **ERROR** – The session was not completed because an error occurred.
+
+**HTTP errors**
+
+The user must have the `UserCategory` value `OWNER` to enable a verification request for them.
+
+``` json 400 - User must have UserCategory value OWNER
+{
+  "Message": "This feature is only available for users categorised as Owner.",
+  "Type": "invalid_action",
+  "Id": "0ecdeb35-c34b-489b-92ee-a1a5f9062ee5",
+  "Date": 1710955348.0,
+  "errors": null
+}
+```
+
+### GET View an Identity Verification session
+
+This endpoint lets you view the details of an Identity Verification session using its `Id` as the `IdentityVerificationId` path parameter.
+
+``` json GET /v2.01/{ClientId}/identity-verifications/{IdentityVerificationId}
+// GET has no body parameters
+```
+
+<Accordion>
+### Path parameters
+<IdentityVerificationId />
+
+### Responses
+</Accordion>
+
+**API response**
+
+``` json
+{
+  "Id": "32197520",
+  "Tag": "Custom data",
+  "CreationDate": 1710402969,
+  "HostedUrl": "https://example.com",
+  "Status": "VALIDATED",
+  "ReturnUrl": "https://your-return-url.com"
+}
+```
+
+## Webhooks
+
+You can set up [webhook notifications](/webhooks) for following event types relating to the identity verification session:
+
+- **IDENTITY_VERIFICATION_PENDING** – The identity verification session is in progress and requires further action from the user to complete.
+- **IDENTITY_VERIFICATION_VALIDATED** – The identity verification session was successful. 
+- **IDENTITY_VERIFICATION_FAILED** – The identity verification session was unsuccessful. You can retry the verification for the user.  
+- **IDENTITY_VERIFICATION_OUTDATED** – The identity verification session is no longer valid, likely due to expired documents used during the session.
+- **IDENTITY_VERIFICATION_TIMEOUT** – The identity verification session was not completed within the allocated time. The session cannot be resumed and a new session must be initiated.
+- **IDENTITY_VERIFICATION_REVIEW** – The identity verification session is undergoing additional manual review by Mangopay.
+
+The `ResourceId` of these webhooks corresponds to the `IdentityVerificationId`.
+
+These event types complement the existing ones relating to the user's KYCLevel:
+
+- **USER_KYC_REGULAR** – The user has been successfully verified by Mangopay, either using the hosted experience or through submission of KYC Documents.
+- **USER_KYC_LIGHT** – The user has not been verified by Mangopay and is therefore subject to product limitations for AML purposes.
