@@ -1,0 +1,426 @@
+---
+title: 'How to categorize Unknown users'
+sidebarTitle: 'Categorize Unknown users'
+---
+
+## Introduction
+
+This guide is relevant to you because there are users created by your platform whose `UserCategory` is `UNKNOWN` in Mangopay’s database. We assigned this value in our database when we introduced the `UserCategory` parameter. 
+
+Your platform has Unknown users even if you now create and update users with the `UserCategory` logic correctly implemented. This is because there are users that you created before `UserCategory` was introduced, and who haven’t been updated since. 
+
+Categorization is mandatory: the `UNKNOWN` value is not accepted for `UserCategory`.
+
+<Check>
+**Best practice – Categorize users on your side**
+
+We strongly recommend that you categorize legacy Unknown users on your side (Part B below) and integrate the `UserCategory` logic in your systems. The potential consequences of leaving the categorization to Mangopay are described in Part C. 
+</Check>
+
+## A. Understanding which users need which category
+
+As explained in the Categories article, the `UserCategory` parameter defines a user's role within the Mangopay system and determines their permitted actions. Its purpose is to restrict functionalities based on users’ intended actions. Payer is for users only paying funds into a Mangopay wallet. Owner is for users who hold funds and, if verified, can withdraw them to their bank account.
+
+**Payers**
+
+For a users with the `UserCategory` value `PAYER`, the platform can:
+
+- Request a pay-in to a wallet owned by the Payer
+- Request a transfer from a wallet owned by the Payer to a wallet owned by an Owner
+
+**Owners**
+
+For a users with the `UserCategory` value `OWNER`, the platform can:
+
+- Request all possible actions as for a Payer
+- Request a transfer to a wallet owned by the Owner
+- Submit a KYC Document for validation during the verification process
+- Request a payout (if verified, meaning the user’s `KYCLevel` is `REGULAR`)
+
+<Note>
+**Note – Owners can’t become Payers**
+
+A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.
+</Note>
+
+## B. How to categorize Unknown users
+
+This step-by-step guide takes you through the process you need to follow to categorize your legacy Unknown users via the API.
+
+<Note>
+**Note – Mangopay may be able to provide a list of your Unknown users**
+
+Mangopay may be able to extract a list of User IDs whose `UserCategory` is `UNKNOWN` (replacing Steps 1 and 2 of the process below). 
+</Note>
+
+### 1. Fetch all users 
+
+Call the [GET List all users](/api-reference/users/list-users) endpoint setting the `per_page` query parameter to 100 (the maximum allowed) to reduce the number of necessary requests.
+
+- GET /v2.01/`ClientId`/users?per_page=100
+
+The response contains the first 100 users that your platform created, in ascending order of creation. 
+
+Create script to query all users, using the following headers:
+
+- `x-number-of-pages` gives you the total number of pages 
+- `link` whose `rel="next"` value provides the next page to query
+
+<Check>
+**Best practice – Run script during low activity to avoid rate limits**
+
+Given the number of users, you are at risk of reaching your [rate limits](/api-reference/overview/rate-limiting) when you fetch all users. We recommend running your script during periods when there is less activity on your platform. 
+
+If you get a 429 error indicating that you have hit a rate limit, pause your script and retry it at the time indicated in the `x-ratelimit-reset` header.
+</Check>
+
+Past a certain CreationDate, no user will have the `UserCategory` value `UNKNOWN`. For your platform, this is the date you stopped creating Unknown users.
+
+**February 14, 2024** is the date that Mangopay enforced `UserCategory` as a required parameter for all platforms on both the creation and modification endpoints.
+
+### 2. Filter your users and prepare update
+
+Filter your dataset to leave only those whose `UserCategory` has the value `UNKNOWN`. You can also filter out users with the `UserStatus` value `CLOSED`.
+
+Prepare a loop through the filtered list. Based on the value of the PersonType and `KYCLevel`, and your selected categorization, how you update the user will be different as explained in the next steps.
+
+### 3. Categorize a user as Payer and update it
+
+While looping through your Unknown users, if you wish to update the current user’s `UserCategory` to `PAYER`, do so using:
+
+- [PUT Update a Natural User](/api-reference/users/update-natural-user) endpoint if the PersonType is NATURAL
+- [PUT Update a Legal User](/api-reference/users/update-legal-user) endpoint if the PersonType is LEGAL
+
+<Warning>
+**Caution – Data minimization for Payers**
+
+For Payers, non-required parameters are returned `null` to minimize the amount of data held for them by Mangopay. 
+
+The following optional parameters are exceptions and can be used to store data. 
+
+- Natural: `Tag`, `Address`
+- Legal: `Tag`, `LegalRepresentativeAddress`
+</Warning>
+
+### 4. Categorize a Natural user as Owner and update it
+
+While looping through your Unknown users, if you wish to update the current user’s `UserCategory` to `OWNER` and their `PersonType` is `NATURAL`, you need to: 
+
+i. Retrieve the user’s data by calling the [GET View a User](/api-reference/users/view-user) endpoint
+
+ii. Check if the parameters below are filled (not `null`):
+
+- `FirstName`
+- `LastName`
+- `Email`
+- `Birthday`
+- `Nationality`
+- `CountryOfResidence`
+
+In the response, you’ll see the UserCategory filled.
+
+<Warning>
+**Caution – KYCLevel of REGULAR may downgrade to LIGHT**
+
+If the user that you’re updating to Owner has the `KYCLevel` value `REGULAR`, they will be [downgraded](/guides/users/policies/verification-downgrade) to LIGHT if the following values are modified:
+
+- `FirstName`
+- `LastName`
+- `Birthday`
+- `Nationality`
+
+In this case, they will be required to submit KYC Documents to regain their [verification](/guides/users/verification/introduction) and be able to request payouts.
+</Warning>
+
+### 5. Categorize a Legal user as Owner and update it
+
+While looping through your Unknown users, if you wish to update the current user’s `UserCategory` to `OWNER` and their `PersonType` is `LEGAL`, you need to: 
+
+i. Retrieve the user’s data by calling the [GET View a User](/api-reference/users/view-user) endpoint
+
+ii. Check if the parameters below are filled (not `null`):
+
+- `Name`
+- `Email`
+- `HeadquartersAddress`
+- `CompanyNumber` (if `LegalPersonType` is `BUSINESS`)
+- `LegalRepresentativeFirstName`
+- `LegalRepresentativeLastName`
+- `LegalRepresentativeBirthday`
+- `LegalRepresentativeNationality`
+- `LegalRepresentativeCountryOfResidence`
+
+In the response, you’ll see the `UserCategory` filled.
+
+<Warning>
+**Caution – KYCLevel of REGULAR may downgrade to LIGHT**
+
+If the user that you’re updating to Owner has the `KYCLevel` value `REGULAR`, they will be [downgraded](/guides/users/policies/verification-downgrade) to LIGHT if the following values are modified:
+
+- `LegalRepresentativeFirstName`
+- `LegalRepresentativeLastName`
+- `LegalRepresentativeBirthday`
+- `LegalRepresentativeNationality`
+
+In this case, they will be required to submit KYC Documents to regain their [verification](/guides/users/verification/introduction) and be able to request payouts.
+</Warning>
+
+## C. Automatic categorization by Mangopay
+
+### Criteria
+
+After the date communicated by us, Mangopay will proceed with assigning `PAYER` or `OWNER` to all users that have `UserCategory` of `UNKNOWN` in our database, according to the following criteria.
+
+Given:
+
+- `UserCategory`=`UNKNOWN`
+
+**Natural users**
+
+The User becomes `OWNER` if any of the following are true:
+
+1. They have `KYCLevel`=`REGULAR`
+
+2. They have ever received a transfer to their wallet (any wallet of which they are owner)
+
+3. They have all the required parameters: `Birthday`, `CountryOfResidence`, and `Nationality` are all present (that is, not `null`)
+
+4. They have completed a payout to their bank account
+
+All other cases become `PAYER`.
+
+**Legal users**
+
+The User becomes `OWNER` if any of the following are true:
+
+1. They have `KYCLevel`=`REGULAR`
+
+2. They have ever received a transfer to their wallet (any wallet of which they are owner)
+
+3. They have completed a payout to their bank account
+
+4. They have all the required parameters:
+
+If `LegalPersonType` is `BUSINESS`
+
+And `CompanyNumber`, `HeadquartersAddress.AddressLine1`, `LegalRepresentativeBirthday`, `LegalRepresentativeCountryOfResidence`, and `LegalRepresentativeNationality` are all present (that is, not `null`)
+
+If `LegalPersonType` is `ORGANIZATION`, `SOLETRADER`, or `PARTNERSHIP`
+
+And `HeadquartersAddress.AddressLine1`, `LegalRepresentativeBirthday`, `LegalRepresentativeCountryOfResidence`, and `LegalRepresentativeNationality` are all present (that is, not `null`)
+
+All other cases become `PAYER`.
+
+### Consequences
+
+If Mangopay assigns a `UserCategory` in our database according to the above criteria, there are two scenarios that may be adverse for you.
+
+**1. You are unable to re-categorize an Owner as a Payer**
+
+If Mangopay assigns the category Owner and you subsequently attempt to change the category to Payer, the API will return an error. Once a User becomes an Owner, they can not revert to a Payer. 
+
+**2. Data is minimized when you next update a user**
+
+As explained above, non-essential data for Payers is returned `null` by the API. For users that we categorize as Payers, this data will be returned `null` if you use the endpoints [PUT Update a Natural User](/api-reference/users/update-natural-user) and [PUT Update a Legal User](/api-reference/users/update-legal-user). 
+
+Our categorization will not proactively delete this non-essential data in our database, however, so the [GET View a User](/api-reference/users/view-user) endpoint will continue to return all data we hold. This allows you to store it on your side so that it is not lost on the next update.
+
+The `Tag`, `Address` (Natural user), and `LegalRepresentativeAddress` (Legal) are unaffected by this minimization and can continue to be used optionally.
+
+<Warning>
+Caution – Verification downgrade
+
+If Mangopay categorizes a user as an Owner and their `KYCLevel` is `REGULAR`, they may be to `LIGHT` (as per the [verification downgrade](/guides/users/policies/verification-downgrade)) if you subsequently update any of the following parameters:
+
+**Natural**
+
+- FirstName
+- LastName
+- Birthday
+- Nationality
+
+**Legal**
+
+- LegalRepresentativeFirstName
+- LegalRepresentativeLastName
+- LegalRepresentativeBirthday
+- LegalRepresentativeNationality
+- LegalPersonType
+
+In this case, they will be required to submit KYC Documents to regain their [verification](/guides/users/verification/introduction) and be able to request payouts.
+</Warning>
+
+## D. Summary of User parameter usability
+
+The following tables provide a summary of the usability of user body parameters.
+
+**Natural**
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Parameter</th>
+            <th class="header">Payer</th>
+            <th class="header">Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">UserCategory</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">FirstName</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LastName</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Email</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Birthday</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Nationality</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">CountryOfResidence</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Occupation</td>
+            <td class="content">null</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+        <tr>
+            <td class="content">IncomeRange</td>
+            <td class="content">null</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+        <tr>
+            <td class="content">TermsAndConditionsAccepted</td>
+            <td class="content">false</td>
+            <td class="content">true</td>
+        </tr>
+        <tr>
+            <td class="content">Tag</td>
+            <td class="content">OPTIONAL</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+        <tr>
+            <td class="content">Address</td>
+            <td class="content">OPTIONAL</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+    </tbody>
+</table>
+
+**Legal**
+
+<table class="html-table">
+    <thead>
+        <tr>
+            <th class="header">Parameter</th>
+            <th class="header">Payer</th>
+            <th class="header">Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="content">UserCategory</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalPersonType</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Name</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">Email</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeFirstName</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeLastName</td>
+            <td class="content">REQUIRED</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">HeadquartersAddress</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">CompanyNumber</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeBirthday</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeNationality</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeCountryOfResidence</td>
+            <td class="content">null</td>
+            <td class="content">REQUIRED</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeEmail</td>
+            <td class="content">null</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+        <tr>
+            <td class="content">TermsAndConditionsAccepted</td>
+            <td class="content">false</td>
+            <td class="content">true</td>
+        </tr>
+        <tr>
+            <td class="content">Tag</td>
+            <td class="content">OPTIONAL</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+        <tr>
+            <td class="content">LegalRepresentativeAddress</td>
+            <td class="content">OPTIONAL</td>
+            <td class="content">OPTIONAL</td>
+        </tr>
+    </tbody>
+</table>
+
+## Note on TermsAndConditionsAccepted
+
+Owners must accept Mangopay’s Terms and Conditions governing the use of our payment services. You must therefore obtain your Owner users’ approval of Mangopay’s Terms and Conditions and indicate it by setting `TermsAndConditionsAccepted` as `true`.
+
+Although this policy is in place, the `TermsAndConditionsAccepted` parameter is technically optional for legacy Unknown users. It will be enforced at a later date.
+
+The relevant T&Cs for your platform are defined by your contract, and all versions can be found on [our website](https://mangopay.com/terms-and-conditions).
