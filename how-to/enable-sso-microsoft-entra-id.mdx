@@ -1,0 +1,80 @@
+---
+title: 'How to enable single sign-on with Microsoft Entra ID'
+sidebarTab: 'Enable single sign-on with Microsoft Entra ID'
+'og:description': 'null'
+---
+Single sign-on (SSO) lets your team members authenticate their access to the Mangopay Hub via a third-party identity provider.
+
+Setting up SSO can help simplify access management and increase security by enforcing standards.
+
+<Note>  
+**Note - Enabling SSO replaces previous credentials** 
+  
+If you decide to set up SSO, Hub users will no longer be able to authenticate using their previously created passwords.  
+</Note>  
+
+<Info>
+**Prerequisites**
+
+- An Azure account with an active subscription
+- Microsoft Entra ID as your identity provider
+- Mangopay registered as an application in your Microsoft Entra ID account (for more information, see the [Microsoft Quickstart guide](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app))
+</Info>
+
+## 1/ Configure Microsoft Entra ID for Mangopay
+
+In Microsoft Entra ID, go to _Applications_ > _Identity_ > _Applications_ > _Enterprise applications_ > _All applications_:
+
+- Search for and select the Mangopay app.
+- Assign the users or groups that will be able to log in to Mangopay.
+
+In the left navigation pane, select _App registrations_. In _App registrations_, select your Mangopay app, go to the _Overview_ menu:
+
+- Note the Application (client) ID for the next step.
+
+
+## 2/ Retrieve your Client Secret and Client Secret Token
+
+In your Mangopay app registration, go to the _Certificates & secrets_ menu and then the _Client secrets_ tab:
+
+- Create a new Client Secret.
+- Note the Client Secret Token for the next step.
+
+<Warning>
+**Caution – Client Secret Token expires after 24 months**
+
+Once the Client Secret Token expires, you will no longer be able to connect to your application using the Entra ID SSO. You will have to generate a new token and contact Mangopay to regain access.
+</Warning>
+
+## 3/ Retrieve your Microsoft Entra ID domain 
+
+To find your Microsoft Entra ID domain: 
+
+1. Sign in to the [Microsoft Azure portal](https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?redirect_uri=https%3A%2F%2Fportal.azure.com%2Fsignin%2Findex%2F&response_type=code%20id_token&scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2Fuser_impersonation%20openid%20email%20profile&state=OpenIdConnect.AuthenticationProperties%3DMmB0StiVQxOsIcsJD8MU63bZW4DzMl1YB9IjSqD0yEjFbkdRaLEd1_duEeArcO4FrJEzLUGr3p1FBJ75VdWrKp9eLPsuRuCYqigis8r8XW2r7Yxa9DDon3lu7LZ0ll44XjPAysr66hkf1qjcSL5xxtocz2M8vb9V66_3IoS1oPBh8mcNT-WL816UfTlbOZdZJ2puV6hWg3BQrT0tyuZ_sBS9otVhq6k34kwDCJ3HNQDOhxmDmn9xr6oZSk3RwA4RR3zCKZ8-jfC6qf_XRlnkFE1ugJ7Y8yuaGoY_sAlbAFXPk66drCzM1GZ9783F8Asl3iDBN7OnQ8y1GCF_neyI3qEuGNSaOQErnHUweQlieJYY3MKNFT-gjbw7k_dT6S0s3tgVAjQN5SY_03mQOVBmOd74lDPN7vmmeKL60pkfkyHq-UuLCeBo-eZrDsJNQASTTrHp29v2-G3MRgMj4FHfRoe6VMWSd_DEGHbhnIqenLdyIPNN9olFZtT1eelyWB00&response_mode=form_post&nonce=638409102344571996.Nzc1MGYyNDgtMmNlYS00ZTBiLThlYzAtODFhMzE5ZmYxNzI3OGQ5YmFjZmUtYjRjNC00Mjc2LTk4NTEtZWNhNjc3MTVjNWZk&client_id=c44b4083-3bb0-49c1-b47d-974e53cbdf3c&site_id=501430&client-request-id=f92a7eaf-8892-4b96-8bc7-aade6f697965&x-client-SKU=ID_NET472&x-client-ver=6.30.1.0&sso_reload=true).
+2. On the Microsoft Entra ID Overview page, scroll through the _Basic information_ section to find _Primary domain_.
+
+For more information on locating important IDs, see the following [Microsoft article](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-microsoft-entra-tenant-id-and-primary-domain-name). 
+
+## 4/ Contact Mangopay
+
+Contact the Mangopay Support team [via the Hub](https://hub.mangopay.com/) (category: My platform account > Hub and dashboard).
+
+Set the subject as:
+
+- Microsoft Entra ID SSO activation
+
+In the description, make sure to include the following information:
+
+- Microsoft Entra ID domain (example.onmicrosoft.com)
+- Microsoft Entra ID Client ID
+- Microsoft Entra ID Client Secret Token
+
+## 5/ Await confirmation to coordinate switchover
+
+When Mangopay activates the Microsoft Entra ID SSO for your application, you will receive a confirmation email.
+
+## 6/ Instruct your users to log in with Microsoft Entra ID
+
+On the [Hub login screen](https://hub.mangopay.com/), your users will see a button prompting them to log in with Microsoft Entra ID.
+
+
