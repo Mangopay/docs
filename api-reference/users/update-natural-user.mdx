@@ -95,7 +95,54 @@ For more information, see the Country restrictions article.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Payer">  
+<AccordionGroup>
+    <Accordion title="200 - Payer">  
+
+    <Address3Response />  
+
+    <FirstName1Response />  
+
+    <LastName1Response />  
+
+    <BirthdayResponse />  
+
+    <NationalityResponse />  
+
+    <CountryOfResidenceResponse />  
+
+    <OccupationResponse />  
+
+    <IncomeRangeResponse />  
+
+    <ProofOfIdentityResponse />  
+
+    <ProofOfAddressResponse />  
+
+    <CapacityResponse />  
+
+    <IdResponse />  
+
+    <Tag2Response />  
+
+    <CreationDateResponse />  
+
+    <PersonTypeResponse />  
+
+    <Email2Response />  
+
+    <KYCLevelResponse />  
+
+    <TermsAndConditionsAcceptedResponse />  
+
+    <TermsAndConditionsAcceptedDateResponse />  
+
+    <UserCategoryResponse />  
+
+    <UserStatusResponse />
+
+    </Accordion>
+
+    <Accordion title="200 - Owner">  
 
 <Address3Response />  
 
@@ -137,54 +184,42 @@ For more information, see the Country restrictions article.
 
 <UserCategoryResponse />  
 
-<UserStatusResponse /></Accordion><Accordion title="200 Owner">  
+<UserStatusResponse />
 
-<Address3Response />  
+</Accordion>
+</AccordionGroup> 
 
-<FirstName1Response />  
+<AccordionGroup>  
+    <Accordion title="400 - Owner can't become Payer">
+    ```json 
+    {
+        "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type": "param_error",
+        "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+        "Date": 1707907057.0,
+        "errors": {
+            "UserCategory": "A User OWNER can't be modified to a user PAYER"
+        }
+    }  
+    ```  
+    </Accordion>
 
-<LastName1Response />  
-
-<BirthdayResponse />  
-
-<NationalityResponse />  
-
-<CountryOfResidenceResponse />  
-
-<OccupationResponse />  
-
-<IncomeRangeResponse />  
-
-<ProofOfIdentityResponse />  
-
-<ProofOfAddressResponse />  
-
-<CapacityResponse />  
-
-<IdResponse />  
-
-<Tag2Response />  
-
-<CreationDateResponse />  
-
-<PersonTypeResponse />  
-
-<Email2Response />  
-
-<KYCLevelResponse />  
-
-<TermsAndConditionsAcceptedResponse />  
-
-<TermsAndConditionsAcceptedDateResponse />  
-
-<UserCategoryResponse />  
-
-<UserStatusResponse /></Accordion><Accordion title="400 Owner can't become Payer"></Accordion><Accordion title="400 Terms and conditions acceptance can't be revoked"></Accordion></AccordionGroup>  
+    <Accordion title="400 - Terms and conditions acceptance can't be revoked">
+    ```json 
+    {
+        "Message": "The user cannot revoke the terms and conditions acceptance",
+        "Type": "invalid_action",
+        "Id": "f3126c80-1e1f-4f89-a031-237bf997759f",
+        "Date": 1690290675.0,
+        "errors": null
+    }  
+    ```  
+    </Accordion>
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Payer  
-
+```json 200 - Payer  
 {
     "Address":{
         "AddressLine1":"3 rue des Plantes",
@@ -215,11 +250,9 @@ For more information, see the Country restrictions article.
     "UserCategory":"PAYER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 200 Owner  
-
+```json 200 - Owner  
 {
     "Address": {
         "AddressLine1": "3 rue des Plantes",
@@ -250,41 +283,14 @@ For more information, see the Country restrictions article.
     "UserCategory": "OWNER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 400 Owner can't become Payer  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
-    "Date": 1707907057.0,
-    "errors": {
-        "UserCategory": "A User OWNER can't be modified to a user PAYER"
-    }
-}  
-
- ```  
-
-```json 400 Terms and conditions acceptance can't be revoked  
-
-{
-    "Message": "The user cannot revoke the terms and conditions acceptance",
-    "Type": "invalid_action",
-    "Id": "f3126c80-1e1f-4f89-a031-237bf997759f",
-    "Date": 1690290675.0,
-    "errors": null
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "Address":{
         "AddressLine1":"3 rue des Plantes",
@@ -310,7 +316,6 @@ For more information, see the Country restrictions article.
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -363,7 +368,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -409,7 +413,6 @@ updateNaturalUser(myNaturalUser)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -455,8 +458,7 @@ updateNaturalUser(myNaturalUser[:Id], myNaturalUser)
 ```  
 
   
-```python Python  
-
+```python Python
 # Import pprint for cleaner response formatting
 from pprint import pprint
 
