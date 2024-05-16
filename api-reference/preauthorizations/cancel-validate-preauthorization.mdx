@@ -61,7 +61,9 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Canceled (no captures)">  
+<AccordionGroup>
+
+<Accordion title="200 - Canceled (no captures)">  
 
 <Id3Response />  
 
@@ -189,12 +191,43 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
 <PreferredCardNetworkResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="400 - Cancel attempted after capture"></Accordion><Accordion title="400 - Validation attempted before capture"></Accordion></AccordionGroup>  
+<CardInfoResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+<Accordion title="400 - Cancel attempted after capture">
+```json
+{
+   "Message": "The Payment Status of the preauthorization does not allow for it to be edited",
+   "Type": "preauthorization_payment_status_can_not_be_canceled",
+   "Id": "a682bfc5-7dd6-4884-abee-9a6ff74fa21c#1669115406",
+   "Date": 1669115407,
+   "errors": null
+}  
+```
+</Accordion>
+
+<Accordion title="400 - Validation attempted before capture">
+```json
+{
+   "Message": "Can't validate a preauthorization with no successful payin.",
+   "Type": "invalid_action",
+   "Id": "ebe43430-6a43-4ef5-9e97-06b2a7e075f9#1669114162",
+   "Date": 1669114163,
+   "errors": null
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Canceled (no captures)  
-
 {
    "Id": "156686431",
    "Tag": null,
@@ -280,7 +313,6 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
  ```  
 
 ```json 200 - Validated following successful capture  
-
 {
    "Id": "156686696",
    "Tag": null,
@@ -365,29 +397,8 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 
  ```  
 
-```json 400 - Cancel attempted after capture  
 
-{
-   "Message": "The Payment Status of the preauthorization does not allow for it to be edited",
-   "Type": "preauthorization_payment_status_can_not_be_canceled",
-   "Id": "a682bfc5-7dd6-4884-abee-9a6ff74fa21c#1669115406",
-   "Date": 1669115407,
-   "errors": null
-}  
 
- ```  
-
-```json 400 - Validation attempted before capture  
-
-{
-   "Message": "Can't validate a preauthorization with no successful payin.",
-   "Type": "invalid_action",
-   "Id": "ebe43430-6a43-4ef5-9e97-06b2a7e075f9#1669114162",
-   "Date": 1669114163,
-   "errors": null
-}  
-
- ```  
 
 </ResponseExample>  
 

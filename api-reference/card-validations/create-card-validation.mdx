@@ -56,7 +56,9 @@ import CardId from '/snippets/path-parameters/CardId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Created">  
+<AccordionGroup>
+
+<Accordion title="200 - Created">  
 
 <IdResponse />  
 
@@ -92,12 +94,75 @@ import CardId from '/snippets/path-parameters/CardId.mdx';
 
 <TagResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="400 - Only available for CB_VISA_MASTERCARD"></Accordion><Accordion title="400 - Card validation already pending"></Accordion><Accordion title="400 - The card is already valid"></Accordion><Accordion title="400 - The card is invalid"></Accordion></AccordionGroup>  
+<CardInfoResponse />
+
+</Accordion>
+
+</AccordionGroup>  
+
+<AccordionGroup>  
+
+    <Accordion title="400 - Only available for CB_VISA_MASTERCARD">
+    ```json 
+    {
+        "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type": "param_error",
+        "Id": "c67ea4b3-c144-4142-8fbd-aca45be840da",
+        "Date": 1706044641.0,
+        "errors": {
+            "CardId": "The underlying card type is invalid. Only card type CB_VISA_MASTERCARD is accepted on this feature."
+        }
+    }  
+    ``` 
+    </Accordion>
+
+    <Accordion title="400 - Card validation already pending">
+    ```json
+    {
+        "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type":"param_error",
+        "Id":"7a2d1d57-6c0e-4689-bb80-62222ae073ed#1687358437",
+        "Date":1687358438.0,
+        "errors":{
+            "CardId":"This card is already being validated."
+        }
+    }  
+    ``` 
+    </Accordion>
+    
+    <Accordion title="400 - The card is already valid">
+    ```json 
+    {
+        "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type":"param_error",
+        "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
+        "Date":1687358114.0,
+        "errors":{
+            "CardId":"This card is already VALID."
+        }
+    }  
+    ```  
+    </Accordion>
+    
+    <Accordion title="400 - The card is invalid">
+    ```json 400 - The card is invalid  
+    {
+        "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type":"param_error",
+        "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
+        "Date":1687358114.0,
+        "errors":{
+            "CardId":"This card is INVALID."
+        }
+    }  
+    ```  
+    </Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Created  
-
 {
     "Id": "055f0b74-9314-4edf-896b-a5d6611cde1a",
     "AuthorId": "user_m_01HQAPQWR2ZKGXFTEW93FGBTGD",
@@ -134,62 +199,6 @@ import CardId from '/snippets/path-parameters/CardId.mdx';
         "Type": "CREDIT",
         "Brand": "VISA",
         "SubType": null
-    }
-}  
-
- ```  
-
-```json 400 - Only available for CB_VISA_MASTERCARD  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "c67ea4b3-c144-4142-8fbd-aca45be840da",
-    "Date": 1706044641.0,
-    "errors": {
-        "CardId": "The underlying card type is invalid. Only card type CB_VISA_MASTERCARD is accepted on this feature."
-    }
-}  
-
- ```  
-
-```json 400 - Card validation already pending  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"7a2d1d57-6c0e-4689-bb80-62222ae073ed#1687358437",
-    "Date":1687358438.0,
-    "errors":{
-        "CardId":"This card is already being validated."
-    }
-}  
-
- ```  
-
-```json 400 - The card is already valid  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
-    "Date":1687358114.0,
-    "errors":{
-        "CardId":"This card is already VALID."
-    }
-}  
-
- ```  
-
-```json 400 - The card is invalid  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"7af030d9-c652-4cfa-a76b-ae445018ed6e#1687358113",
-    "Date":1687358114.0,
-    "errors":{
-        "CardId":"This card is INVALID."
     }
 }  
 
