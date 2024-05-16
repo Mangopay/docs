@@ -74,7 +74,8 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Created">  
+<AccordionGroup>
+<Accordion title="200 - Created">  
 
 <IdResponse />  
 
@@ -126,12 +127,45 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
 
 <Reference1Response />  
 
-<TrackingsResponse /></Accordion><Accordion title="400 - Shipping required if ShippingPreference is SET_PROVIDED_ADDRESS"></Accordion><Accordion title="400 - DebitedFunds amount must equal LineItems total"></Accordion></AccordionGroup>  
+<TrackingsResponse /></Accordion>
+
+</AccordionGroup>  
+
+<AccordionGroup>
+
+<Accordion title="400 - Shipping required if ShippingPreference is SET_PROVIDED_ADDRESS">
+```json
+{
+    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "id": "ec5265c3-4c41-47fe-a7f5-5f6bfc6cc34c",
+    "date": 1694613912,
+    "type": "param_error",
+    "errors": {
+        "shipping": "The shipping address is required when `ShippingPreference=SET_PROVIDED_ADDRESS`"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - DebitedFunds amount must equal LineItems total">
+```json  
+{
+    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "id": "58bf1a12-65e0-4298-a1cb-62dc800bcf84",
+    "date": 1699366251,
+    "type": "param_error",
+    "errors": {
+        "debitedAmount": "DebitedAmount has to be equal to the total amount of all the line items."
+    }
+}  
+
+ ```  
+ </Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Created  
-
 {
     "Id": "wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -196,36 +230,11 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
     "Reference": "1234",
     "Trackings": null
 }  
-
  ```  
 
-```json 400 - Shipping required if ShippingPreference is SET_PROVIDED_ADDRESS  
 
-{
-    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "id": "ec5265c3-4c41-47fe-a7f5-5f6bfc6cc34c",
-    "date": 1694613912,
-    "type": "param_error",
-    "errors": {
-        "shipping": "The shipping address is required when `ShippingPreference=SET_PROVIDED_ADDRESS`"
-    }
-}  
 
- ```  
 
-```json 400 - DebitedFunds amount must equal LineItems total  
-
-{
-    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "id": "58bf1a12-65e0-4298-a1cb-62dc800bcf84",
-    "date": 1699366251,
-    "type": "param_error",
-    "errors": {
-        "debitedAmount": "DebitedAmount has to be equal to the total amount of all the line items."
-    }
-}  
-
- ```  
 
 </ResponseExample>  
 

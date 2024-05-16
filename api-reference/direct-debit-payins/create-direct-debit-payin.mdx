@@ -143,12 +143,45 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 <MandateIdResponse />  
 
-<StatementDescriptor1Response /></Accordion><Accordion title="400 - Payment method not activated"></Accordion><Accordion title="400 - Statement descriptor not available for BACS Direct Debit "></Accordion></AccordionGroup>  
+<StatementDescriptor1Response />
+
+</Accordion>
+
+</AccordionGroup>  
+<AccordionGroup>  
+
+<Accordion title="400 - Payment method not activated">
+```json  
+{
+    "Message":"Error this mean of payment for this asked currency has been disabled",
+    "Type":"disabled_mean_of_payment_for_currency",
+    "Id":"2c4253ca-dd49-4092-8997-65b20b467b45#1663145348",
+    "Date":1663145349.0,
+    "errors":{
+        "error":"The method payment DIRECT_DEBIT_GOCARDLESS with the ccy EUR is not active for the partner Sandboxtest"
+    }
+}  
+ ```  
+</Accordion>
+<Accordion title="400 - Statement descriptor not available for BACS Direct Debit ">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "24e0f9e1-7f37-4a8b-b644-873cabc4ee97",
+    "Date": 1695374496.0,
+    "errors": {
+        "StatementDescriptor": "This field is only available for Mandates with the Scheme 'SEPA'"
+    }
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200  
-
 {
     "Id":"156622086",
     "CreationDate":1669040874,
@@ -185,7 +218,6 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
  ```  
 
 ```json 200 - Failed due to invalid mandate status  
-
 {
     "Id":"152162063",
     "CreationDate":1663916149,
@@ -217,34 +249,6 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
     "Tag":null,
     "MandateId":"152162020",
     "StatementDescriptor":"sandbox test Nov2022"
-}  
-
- ```  
-
-```json 400 - Payment method not activated  
-
-{
-    "Message":"Error this mean of payment for this asked currency has been disabled",
-    "Type":"disabled_mean_of_payment_for_currency",
-    "Id":"2c4253ca-dd49-4092-8997-65b20b467b45#1663145348",
-    "Date":1663145349.0,
-    "errors":{
-        "error":"The method payment DIRECT_DEBIT_GOCARDLESS with the ccy EUR is not active for the partner Sandboxtest"
-    }
-}  
-
- ```  
-
-```json 400 - Statement descriptor not available for BACS Direct Debit   
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "24e0f9e1-7f37-4a8b-b644-873cabc4ee97",
-    "Date": 1695374496.0,
-    "errors": {
-        "StatementDescriptor": "This field is only available for Mandates with the Scheme 'SEPA'"
-    }
 }  
 
  ```  
