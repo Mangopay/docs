@@ -56,7 +56,9 @@ import Tag3 from '/snippets/body-parameters/Tag3.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Standard: Created">  
+<AccordionGroup>
+
+<Accordion title="200 - Standard: Created">  
 
 <IdResponse />  
 
@@ -102,7 +104,9 @@ import Tag3 from '/snippets/body-parameters/Tag3.mdx';
 
 <FallbackReasonResponse />  
 
-<EndToEndIdResponse /></Accordion><Accordion title="200 - Instant payment: Created">  
+<EndToEndIdResponse /></Accordion>
+
+<Accordion title="200 - Instant payment: Created">  
 
 <IdResponse />  
 
@@ -148,12 +152,60 @@ import Tag3 from '/snippets/body-parameters/Tag3.mdx';
 
 <FallbackReasonResponse />  
 
-<EndToEndIdResponse /></Accordion><Accordion title="400 - Instant payout is deactivated"></Accordion><Accordion title="400 - Instant payout is deactivated (INSTANT_PAYOUT_ONLY requested)"></Accordion><Accordion title="400 - Destination bank not eligible for instant payout"></Accordion></AccordionGroup>  
+<EndToEndIdResponse /></Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+
+<Accordion title="400 - Instant payout is deactivated">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "e1606a91-e563-45f3-a337-acdd933ab80b#1673533663",
+    "Date": 1673533664.0,
+    "errors": {
+        "PayoutModeRequested": "InstantPayment is disabled"
+    }
+}  
+ ```  
+ </Accordion>
+
+<Accordion title="400 - Instant payout is deactivated (INSTANT_PAYOUT_ONLY requested)">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "b5a1b347-9b21-4077-bd41-d41ea4b07be4#1676883139",
+    "Date": 1676883140.0,
+    "errors": {
+        "PayoutModeRequested": "InstantPayment was explicitly requested but this feature is not activated on your configuration"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - Destination bank not eligible for instant payout">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c2a051f4-b4d2-4097-9a03-b4b3a67bb9e1#1676883693",
+    "Date": 1676883694.0,
+    "errors": {
+        "PayoutModeRequested": "The request for instant payment cannot be successful due to ineligibility "
+    }
+}  
+ ```  
+ </Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Standard: Created  
-
 {
     "Id": "po_m_01HQMZSGSQPPXC51TZHDAYFAJF",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -188,11 +240,9 @@ import Tag3 from '/snippets/body-parameters/Tag3.mdx';
     "FallbackReason": null,
     "EndToEndId": "2c2184396eef4e5da90ab48a2feeb51d"
 }  
-
  ```  
 
 ```json 200 - Instant payment: Created  
-
 {
     "Id": "po_m_01HQMZZV376RRXYQGQAHZ4TN9K",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -230,46 +280,6 @@ import Tag3 from '/snippets/body-parameters/Tag3.mdx';
 
  ```  
 
-```json 400 - Instant payout is deactivated  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "e1606a91-e563-45f3-a337-acdd933ab80b#1673533663",
-    "Date": 1673533664.0,
-    "errors": {
-        "PayoutModeRequested": "InstantPayment is disabled"
-    }  
-
- ```  
-
-```json 400 - Instant payout is deactivated (INSTANT_PAYOUT_ONLY requested)  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "b5a1b347-9b21-4077-bd41-d41ea4b07be4#1676883139",
-    "Date": 1676883140.0,
-    "errors": {
-        "PayoutModeRequested": "InstantPayment was explicitly requested but this feature is not activated on your configuration"
-    }
-}  
-
- ```  
-
-```json 400 - Destination bank not eligible for instant payout  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "c2a051f4-b4d2-4097-9a03-b4b3a67bb9e1#1676883693",
-    "Date": 1676883694.0,
-    "errors": {
-        "PayoutModeRequested": "The request for instant payment cannot be successful due to ineligibility "
-    }
-}  
-
- ```  
 
 </ResponseExample>  
 

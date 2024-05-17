@@ -36,7 +36,9 @@ This call is used both for the initial submission of the dispute and any resubmi
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <InitialTransactionIdResponse />  
 
@@ -70,12 +72,57 @@ This call is used both for the initial submission of the dispute and any resubmi
 
 <ClosedDateResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="400 - ContestedFunds required"></Accordion><Accordion title="400 - ContestedFunds higher than DisputedFunds"></Accordion><Accordion title="400 - ContestDeadlineDate in the past"></Accordion></AccordionGroup>  
+<RepudiationIdResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+<Accordion title="400 - ContestedFunds required">
+```json
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"994a6ed2-bca5-4673-a37f-16c01e9ad065#1673365608",
+    "Date":1673365609,
+    "errors":{
+        "ContestedFunds":"This field is required"
+    }
+}  
+ ```  
+</Accordion>
+<Accordion title="400 - ContestedFunds higher than DisputedFunds">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "d37b150a-6238-4298-9da4-2540e6d46bd5#1672669956",
+    "Date": 1672669957.0,
+    "errors": {
+        "ContestedFunds": "The ContestedFunds amount must be less than or equal to the DisputedFunds amount"
+    }
+}  
+ ``` 
+</Accordion>
+<Accordion title="400 - ContestDeadlineDate in the past">
+```json
+{
+    "Message": "The ContestDeadlineDate has now passed and this Dispute is no longer contestable",
+    "Type": "dispute_contest_deadline_passed",
+    "Id": "9544eb52-8ae4-41ac-99e0-1215f17e3859#1673434106",
+    "Date": 1673434107.0,
+    "errors": null
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200  
-
 {
     "InitialTransactionId": "158596153",
     "InitialTransactionType": "PAYIN",
@@ -103,46 +150,6 @@ This call is used both for the initial submission of the dispute and any resubmi
     "CreationDate": 1672411848,
     "ClosedDate": null,
     "RepudiationId": "159102966"
-}  
-
- ```  
-
-```json 400 - ContestedFunds required  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"994a6ed2-bca5-4673-a37f-16c01e9ad065#1673365608",
-    "Date":1673365609,
-    "errors":{
-        "ContestedFunds":"This field is required"
-    }
-}  
-
- ```  
-
-```json 400 - ContestedFunds higher than DisputedFunds  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "d37b150a-6238-4298-9da4-2540e6d46bd5#1672669956",
-    "Date": 1672669957.0,
-    "errors": {
-        "ContestedFunds": "The ContestedFunds amount must be less than or equal to the DisputedFunds amount"
-    }
-}  
-
- ```  
-
-```json 400 - ContestDeadlineDate in the past  
-
-{
-    "Message": "The ContestDeadlineDate has now passed and this Dispute is no longer contestable",
-    "Type": "dispute_contest_deadline_passed",
-    "Id": "9544eb52-8ae4-41ac-99e0-1215f17e3859#1673434106",
-    "Date": 1673434107.0,
-    "errors": null
 }  
 
  ```  

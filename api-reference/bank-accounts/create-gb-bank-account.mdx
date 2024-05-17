@@ -39,7 +39,9 @@ import UserId1 from '/snippets/path-parameters/UserId1.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <OwnerAddressResponse />  
 
@@ -59,12 +61,86 @@ import UserId1 from '/snippets/path-parameters/UserId1.mdx';
 
 <CreationDateResponse />  
 
-<ActiveResponse /></Accordion><Accordion title="400 - Blocked bank account"></Accordion><Accordion title="400 - AccountNumber format not accepted"></Accordion><Accordion title="400 - SortCode format not accepted"></Accordion><Accordion title="400 - SortCode invalid"></Accordion><Accordion title="400 - AccountNumber and SortCode combination not valid"></Accordion></AccordionGroup>  
+<ActiveResponse /></Accordion>
+
+</AccordionGroup>
+<AccordionGroup>
+
+<Accordion title="400 - Blocked bank account">
+```json
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"9d4feea4-353f-416d-b8d6-8053471785ea#1677146902",
+    "Date":1677146903,
+    "errors":{
+        "GB":"The GB account is blocked by Fraud Policy"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - AccountNumber format not accepted">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "6977ee65-e865-4fdb-8a4b-835f47fff41f",
+    "Date": 1698756883.0,
+    "errors": {
+        "AccountNumber": "The field AccountNumber must match the regular expression '\\d{8}'."
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - SortCode format not accepted">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "9b1dd701-a274-4be8-aabf-872a1557c9e9",
+    "Date": 1698756987.0,
+    "errors": {
+        "SortCode": "The field SortCode must match the regular expression '\\d{6}'."
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - SortCode invalid">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect",
+    "Type": "bankaccount_error",
+    "Id": "c2cea07c-4403-4f5d-b80e-806c1cc60112",
+    "Date": 1698757035.0,
+    "errors": {
+        "SortCode": "SortCode is invalid"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - AccountNumber and SortCode combination not valid">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect",
+    "Type": "bankaccount_error",
+    "Id": "55ed90cb-cbc5-438b-ba5d-3207ef27d341",
+    "Date": 1698757180.0,
+    "errors": {
+        "AccountNumber": "AccountNumber is invalid or is not applicable for this SortCode"
+    }
+}  
+ ``` 
+ </Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200  
-
 {
     "OwnerAddress":{
         "AddressLine1":"The Oasis",
@@ -83,76 +159,6 @@ import UserId1 from '/snippets/path-parameters/UserId1.mdx';
     "Tag":null,
     "CreationDate":1661866223,
     "Active":true
-}  
-
- ```  
-
-```json 400 - Blocked bank account  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"9d4feea4-353f-416d-b8d6-8053471785ea#1677146902",
-    "Date":1677146903,
-    "errors":{
-        "GB":"The GB account is blocked by Fraud Policy"
-    }
-}  
-
- ```  
-
-```json 400 - AccountNumber format not accepted  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "6977ee65-e865-4fdb-8a4b-835f47fff41f",
-    "Date": 1698756883.0,
-    "errors": {
-        "AccountNumber": "The field AccountNumber must match the regular expression '\\d{8}'."
-    }
-}  
-
- ```  
-
-```json 400 - SortCode format not accepted  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "9b1dd701-a274-4be8-aabf-872a1557c9e9",
-    "Date": 1698756987.0,
-    "errors": {
-        "SortCode": "The field SortCode must match the regular expression '\\d{6}'."
-    }
-}  
-
- ```  
-
-```json 400 - SortCode invalid  
-
-{
-    "Message": "One or several required parameters are missing or incorrect",
-    "Type": "bankaccount_error",
-    "Id": "c2cea07c-4403-4f5d-b80e-806c1cc60112",
-    "Date": 1698757035.0,
-    "errors": {
-        "SortCode": "SortCode is invalid"
-    }
-}  
-
- ```  
-
-```json 400 - AccountNumber and SortCode combination not valid  
-
-{
-    "Message": "One or several required parameters are missing or incorrect",
-    "Type": "bankaccount_error",
-    "Id": "55ed90cb-cbc5-438b-ba5d-3207ef27d341",
-    "Date": 1698757180.0,
-    "errors": {
-        "AccountNumber": "AccountNumber is invalid or is not applicable for this SortCode"
-    }
 }  
 
  ```  
