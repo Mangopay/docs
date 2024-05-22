@@ -457,6 +457,52 @@ myNaturalUser = {
 updateNaturalUser(myNaturalUser[:Id], myNaturalUser)  
 ```  
 
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+
+import java.lang.reflect.Field;
+
+public class UpdateNaturalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural myUser = mangopay.getUserApi().getNatural("user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ");
+
+        myUser.setFirstName("Jasmine");
+        myUser.setLastName("Patel");
+        myUser.setEmail("jasmine.patel@email.com");
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+
+        System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python
 # Import pprint for cleaner response formatting

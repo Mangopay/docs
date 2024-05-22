@@ -517,7 +517,85 @@ myLegalUser = {
 createLegalUser(myLegalUser)  
 ```  
 
-  
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserLegal;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.core.enumerations.LegalPersonType;
+
+import java.lang.reflect.Field;
+
+public class CreateLegalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal user = new UserLegal();
+        Address headquartersAddress = new Address();
+        Address legalRepAddress = new Address();
+
+        headquartersAddress.setAddressLine1("34 rue des Entreprises");
+        headquartersAddress.setAddressLine2("Batiment B");
+        headquartersAddress.setCity("Paris");
+        headquartersAddress.setRegion("Île-de-France");
+        headquartersAddress.setPostalCode("75001");
+        headquartersAddress.setCountry(CountryIso.FR);
+
+        legalRepAddress.setAddressLine1("12032 Wiza Way");
+        legalRepAddress.setAddressLine2("Mitchell Drive");
+        legalRepAddress.setCity("Paris");
+        legalRepAddress.setRegion("Île-de-France");
+        legalRepAddress.setPostalCode("75001");
+        legalRepAddress.setCountry(CountryIso.FR);
+        
+        user.setName("Best Business");
+        user.setLegalPersonType(LegalPersonType.BUSINESS);
+        user.setLegalRepresentativeFirstName("Cedrik");
+        user.setLegalRepresentativeLastName("Dickinson");
+        user.setLegalRepresentativeEmail("cedrik.dickinson@example.com");
+        user.setLegalRepresentativeBirthday((long) 652117514);
+        user.setLegalRepresentativeNationality(CountryIso.FR);
+        user.setLegalRepresentativeCountryOfResidence(CountryIso.FR);
+        user.setHeadquartersAddress(headquartersAddress);
+        user.setLegalRepresentativeAddress(legalRepAddress);
+        user.setCompanyNumber("652398741");
+        user.setEmail("best.business@best.com");
+        user.setTermsAndConditionsAccepted(true);
+        user.setTag("Created with the Mangopay Java SDK");
+        user.setUserCategory(UserCategory.OWNER);
+
+        User createUser = mangopay.getUserApi().create(user);  
+        
+        System.out.println(String.format("id: %s", createUser.getId()));
+        printObjectFields(createUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
 ```python Python 
 from pprint import pprint
 

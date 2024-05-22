@@ -196,7 +196,6 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 <ResponseExample>  
 
 ```json 200 - Natural Payer  
-
 {
     "Address": {
         "AddressLine1": "3 rue des Plantes",
@@ -230,7 +229,6 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
  ```  
 
 ```json 200 - Legal Payer  
-
 {
     "HeadquartersAddress": {
         "AddressLine1": null,
@@ -275,7 +273,6 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
  ```  
 
 ```json 200 - Legal Owner  
-
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
@@ -408,6 +405,45 @@ myUser = {
 viewUser(myUser[:Id])  
 ```  
 
+
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+
+import java.lang.reflect.Field;
+
+public class ViewUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        User user = mangopay.getUserApi().get("user_m_01HYG97J92QXDDVAWS9QW8C3FF");
+        System.out.println(String.format("id: %s", user.getId()));
+        printObjectFields(user);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
 from pprint import pprint
