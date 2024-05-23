@@ -12,7 +12,7 @@ This how-to guide will take you through the steps to successfully process a paym
 
 - A `ClientId` and an API key ([get a Sandbox account for free](https://hub.mangopay.com/))
 - A User object created for your end userr, and their associated Wallet
-- The end user’s card with which to pay ([use our test cards](https://mangopay.com/docs/dev-tools/testing/payment-methods))
+- The end user’s card with which to pay use our test cards
 - The URL of a page on your platform to return the end user to after authentication
 </Info>
 
@@ -21,11 +21,14 @@ The Mangopay API provides two distinct card-related objects:
 - **Card** - The tokenized version of the card, whose `CardId` will allow you to make payments.  
 
 
-## 1/ Create the Card Registration  
+## 1. Create the Card Registration  
 
 In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.  
 
 You also need to define the currency and type of the card at this stage.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/cardregistrations](/api-reference/card-registrations/create-card-registration)
+
 ```json REST
 {
     "UserId":"197111221",
@@ -57,7 +60,7 @@ From this response, you will need to save the following values for the next step
 - `PreregistrationData`  
 - `CardRegistrationURL`  
 
-## 2/ Send data to the tokenization server  
+## 2. Send data to the tokenization server  
 
 Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
 
@@ -69,8 +72,8 @@ The Vault SDK is available for web, iOS, and Android.
 </Note>  
 
 Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
--Use `AccessKey` data for the `accessKeyRef` parameter  
--Use `PreregistrationData` data for the `data` parameter  
+- Use `AccessKey` data for the `accessKeyRef` parameter  
+- Use `PreregistrationData` data for the `data` parameter  
 
 You also need the end user’s card details, entered on the payment page:
 
@@ -106,6 +109,9 @@ You also need the end user’s card details, entered on the payment page:
   
 For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS compliant tokenization server as described below.  
 </Warning>  
+
+> [**POST** &lcub;CardRegistrationURL&rcub;](/api-reference/card-registrations/tokenize-card)
+
 <CodeGroup>  
 
 ```json REST
@@ -167,7 +173,7 @@ data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh
 
 Save the returned string for the next step (if you’re not using the Vault SDK).  
 
-## 3/ Update the Card Registration with tokenization data  
+## 3. Update the Card Registration with tokenization data  
 
 <Note>  
 **Note - Not necessary if using Vault SDK** 
@@ -175,7 +181,10 @@ Save the returned string for the next step (if you’re not using the Vault SDK)
 If you’re using the Vault SDK, this step is taken care of for you.  
 </Note>  
 
-Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`.  
+Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`. 
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/cardregistrations/CardRegistrationId](/api-reference/card-registrations/update-card-registration)
+
 ```json REST
 {
     "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg"
@@ -208,7 +217,7 @@ The card is now registered, and the response contains the `CardId` which can be 
 A successful transaction (preauthorization, pay-in, or recurring) within 24 hours of the card registration is required to validate a card. Otherwise, the card remains invalid and a new card registration will be necessary to make a payment.  
 </Warning>  
 
-## 4/ Get the end user's session data  
+## 4. Get the end user's session data  
 
 Besides the `CardId`, to process an online card payment, you need to capture information from your end user’s browsing session.  
 
@@ -304,7 +313,7 @@ console.log(browserInfo);
     </tbody>
 </table>
 
-## 5/ Request the payment (Direct Card PayIn)  
+## 5. Request the payment (Direct Card PayIn)  
 
 <Note>  
 **Note - Recurring card payments and preauthorizations require other endpoints** 
@@ -331,6 +340,9 @@ When you make the payment request, you also need to:
 - Specify the page to which the user will be returned after payment (Step 7)  
 
 Read these steps before continuing.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/card/direct](/api-reference/direct-card-payins/create-direct-card-payin)
+
 ```json REST
 {
     "AuthorId":"197111221",
@@ -468,19 +480,21 @@ Read these steps before continuing.
 }
 ```  
 
-## 6/ Redirect the user to 3DS protocol (if required)  
+## 6. Redirect the user to 3DS protocol (if required)  
 
 Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
 
 You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
 
-See the 3DS article for more information.  
+See the [3DS](/guides/payment-methods/card/3ds) article for more information.  
 
-## 7/ Redirect the user after payment  
+## 7. Redirect the user after payment  
 
 After the payment, whether it includes 3DS or not and whatever the outcome, the end user is returned to the `SecureModeReturnURL` which you defined.  
 
-The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:<Info> http://example.com?transactionId=`Id`</Info>  
+The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:
+
+<Info> http://example.com?transactionId=`Id`</Info>  
 
 Mangopay updates the `Status` of the pay-in to indicate a successful or failed payment depending on the outcome of the end user's authentication.  
 
@@ -491,9 +505,9 @@ You should set up the following hooks to be notified of the outcome:
 
 You should also view the pay-in (using its `Id`) to confirm the result of the transaction, allowing you to customize the end user’s experience after the payment.  
 
-<Card title="ARTICLE">Hook notifications</Card>  
+<Card title="Guide" href="/webhooks">Hook notifications</Card>  
 
-<Card title="ENDPOINT">View a PayIn</Card>  
+<Card title="Endpoint" href="/api-reference/direct-card-payins/view-payin-direct-card">View a PayIn</Card>  
 
 If the pay-in is successful, the card's `Validity` parameter is set to `Valid` and it can be used for other payments at a later stage.   
 
@@ -504,7 +518,7 @@ Under no circumstances should card information be kept without the end user's ap
 If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
 </Warning>  
 
-## 8/ Deactivate the card (if required)  
+## 8. Deactivate the card (if required)  
 
 Once the pay-in is successful, if the end user did not request to save their card for later, set the card’s `Active` parameter to false to deactivate the card. This action is irreversible.  
 
@@ -513,6 +527,9 @@ Once the pay-in is successful, if the end user did not request to save their car
   
 Deactivating the card will not prevent the end user from making a payment with the same card in future. You will need to go through the card registration process again.  
 </Note>  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/cards/&lcub;CardId&rcub;](/api-reference/cards/deactivate-card)
+
 ```json REST
 {
     "Active": false,
@@ -525,8 +542,8 @@ The overall flow of a card payment is given in the diagram below, indicating the
 
 ## Related resources  
 
-<Card title="Article">3DS</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/3ds">3DS</Card>  
 
-<Card title="Article">Recurring card payments</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/recurring">Recurring card payments</Card>  
 
-<Card title="Article">Preauthorized card payments</Card>
+<Card title="Guide" href="/guides/payment-methods/card/preauthorization">Preauthorized card payments</Card>

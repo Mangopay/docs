@@ -17,14 +17,17 @@ A recurring card payment has two phases:
 
 <a href="#">Learn more about recurring card payments</a>  
 
-## 1/ Create the Recurring PayIn Registration  
+## 1. Create the Recurring PayIn Registration  
 
 The Recurring PayIn Registration object will define key information about the recurring payments such as:  
--The start and end date, as well as the frequency  
--Whether the amount is the same for each payment  
--Whether you want to offer zero-amount payments to your end user at the start of the recurrence (for example, during trial subscription offers)  
+- The start and end date, as well as the frequency  
+- Whether the amount is the same for each payment  
+- Whether you want to offer zero-amount payments to your end user at the start of the recurrence (for example, during trial subscription offers)  
 
 For this guide, we'll define a fixed monthly amount but not provide an end date.   
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations](/api-reference/recurring-card-payins/create-recurring-payin-registration)
+
 <CodeGroup>  
 
 ```json REST
@@ -164,6 +167,7 @@ createRecurringRegistration(myRecurringRegistration)
 </CodeGroup>  
 
 In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
+
 ```json API response
 {
     "Id": "197964541",
@@ -230,13 +234,16 @@ In the response, you will need the `Id` of the Recurring PayIn Registration for 
 }
 ```  
 
-## 2/ Process the first recurring payment (CIT)  
+## 2. Process the first recurring payment (CIT)  
 
 ### Make the request  
 
 Request the first payment, linking it to the registration object by using the `Id` returned in the previous step as the `RecurringPayinRegistrationId`.  
 
 In our example, the first transaction amounts have been defined at the registration level. Because of this, we don’t need to define the `DebitedFunds` or `Fees` at the pay-in level.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/recurring/card/direct](/api-reference/recurring-card-payins/create-recurring-payin-cit)
+
 <CodeGroup>  
 
 ```json REST
@@ -386,7 +393,7 @@ The CIT transaction always requires 3DS (the `SecureModeNeeded` value is set to 
 
 For more information on how to handle 3DS redirection, see Steps 6 and 7 of the How to process a card payment tutorial.  
 
-## 3/ Process the subsequent recurring payments (MIT) at the defined intervals  
+## 3. Process the subsequent recurring payments (MIT) at the defined intervals  
 
 Once the first pay-in has been successfully authorized, the platform can initiate payments without the end user being present to authenticate (but note that, at any time, the issuer may request SCA - see Step 5).  
 
@@ -442,7 +449,7 @@ createRecurringPayIn(myRecurringPayinMIT)
 ```  
 </CodeGroup>  
 
-## 4/ Update the registration (if required)  
+## 4. Update the registration (if required)  
 
 Some information regarding the recurring registration may be modified during the recurrence:  
 - `CardId` - Changing this will require a new CIT for SCA  
@@ -450,21 +457,21 @@ Some information regarding the recurring registration may be modified during the
 
 Use the Update a Recurring PayIn Registration endpoint to modify these details.  
 
-## 5/ Handle re-authentication (when required)  
+## 5. Handle re-authentication (when required)  
 
 At any moment during the recurrence, the issuer may request that the end user authenticates again. This also occurs when changing the `CardId` in the Recurring PayIn Registration (see Step 4).  
 
 Set up a hook notification for the following `EventType` to be notified when re-authentication is needed:  
--RECURRING_REGISTRATION_AUTH_NEEDED  
+- RECURRING_REGISTRATION_AUTH_NEEDED  
 
 In this case, you need to guide the end user through authentication during a new CIT in the same way as Step 2.  
 
-## 6/ Check the recurring payments' current state  
+## 6. Check the recurring payments' current state  
 
 The `CurrentState` of the Recurring PayIn Registration provides key information about the recurring payments:  
--Number of pay-ins made against the registration  
--Cumulated amounts of debited funds and fees  
--Last pay-in made against the registration  
+- Number of pay-ins made against the registration  
+- Cumulated amounts of debited funds and fees  
+- Last pay-in made against the registration  
 
 Use View a Recurring PayIn Registration endpoint to get this information.  
 ```json API response - Example of recurrence in progress
@@ -533,11 +540,14 @@ Use View a Recurring PayIn Registration endpoint to get this information.
 }
 ```  
 
-## 7/ End the recurring payments  
+## 7. End the recurring payments  
 
 Recurring payments may come to an end either automatically (when an `EndDate` was defined) or because the end user requests it.  
 
-To end the recurring payments manually, use the Update a Recurring Registration endpoint to change the `Status` to `ENDED`.  
+To end the recurring payments manually, use the Update a Recurring Registration endpoint to change the `Status` to `ENDED`. 
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-card-payins/update-recurring-payin-registration)
+
 <CodeGroup>  
 
 ```json REST
@@ -607,12 +617,12 @@ updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistratio
 When you do this, no more recurring pay-ins can be created based on the registration.  
 
 Set up a hook notification for the following `EventType` to be notified when a registration is ended by the end user:  
--RECURRING_REGISTRATION_ENDED  
+- RECURRING_REGISTRATION_ENDED  
 
-## Going further  
+## Related resources
 
-<Card title="Article">Recurring card payments</Card>  
+<Card title="Endpoints" href="/api-reference/recurring-card-payins/recurring-payin-registration-object">The Recurring PayIn Registration object</Card>  
 
-<Card title="Endpoints">Recurring card pay-ins</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/recurring">Recurring card payments</Card>  
 
-<Card title="Tutorial">How to process a card payment</Card>
+<Card title="How to" href="/how-to/process-card-payment">Process a card payment</Card>
