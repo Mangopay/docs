@@ -164,6 +164,36 @@ myRecurringRegistration = {
 
 createRecurringRegistration(myRecurringRegistration)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, RecurringPayInRegistration
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+recurring_payin_registration = RecurringPayInRegistration(
+    author_id = natural_user.id,
+    card_id = '213857548',
+    credited_wallet_id = '210514820',
+    first_transaction_debited_funds = Money(amount=1000, currency='EUR'),
+    first_transaction_fees = Money(amount=10, currency='EUR'),
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_recurring_payin_registration = recurring_payin_registration.save()
+
+pprint(create_recurring_payin_registration._data)  
+```
 </CodeGroup>  
 
 In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
@@ -305,6 +335,46 @@ const createRecurringPayIn = async (recurringPayin) => {
 
 createRecurringPayIn(myRecurringPayinCIT)
 ```  
+
+```python Python
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, RecurringPayInCIT
+from mangopay.utils import Money, BrowserInfo
+
+natural_user = NaturalUser.get('210513027')
+
+recurring_payin_cit = RecurringPayInCIT(
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187',
+    recurring_payin_registration_id = '213879771',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_recurring_payin_cit = recurring_payin_cit.save()
+
+pprint(create_recurring_payin_cit._data)
+```
 </CodeGroup>  
 ```json API response
 {
@@ -399,7 +469,6 @@ Once the first pay-in has been successfully authorized, the platform can initiat
 
 Create the recurring pay-in at the set interval with the dedicated endpoint. Note that in our example, we didn’t define the next transaction amounts at the registration level. As a consequence, we need to pass the `DebitedFunds` and `Fees` parameters at the pay-in level.  
 <CodeGroup>  
-
 ```json REST
 {
     "RecurringPayinRegistrationId": "197964679",
@@ -612,6 +681,29 @@ myRecurringRegistration = {
 
 updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import RecurringPayInRegistration
+
+recurring_payin_registration = RecurringPayInRegistration(
+    id = '213857583',
+    status = 'ENDED'
+)
+
+update_recurring_payin_registration = recurring_payin_registration.save()
+
+pprint(update_recurring_payin_registration._data)
+```
 </CodeGroup>  
 
 When you do this, no more recurring pay-ins can be created based on the registration.  
