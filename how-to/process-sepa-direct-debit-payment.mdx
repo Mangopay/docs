@@ -10,21 +10,26 @@ This how-to guide will show you how to successfully process a direct direct-debi
 
 Direct debit is a way of processing payments by pulling funds from the end user’s bank account directly to a wallet.  
 
-To process direct debits, Mangopay relies on a mandate, which is an agreement from the end user allowing a third party to collect the payment in the future.<a href="#" class="btn Tertiary normal">Learn more about direct debits</a>  
+To process direct debits, Mangopay relies on a mandate, which is an agreement from the end user allowing a third party to collect the payment in the future.
+
+[Learn more about direct debits](/guides/payment-methods/banking/direct-debit)
 
 ## 1. Create the user’s Bank Account  
 
 Create the Bank Account object from which the funds will be pulled.  
 
 Note that:  
--You need to use the `UserId` of the user as a path parameter for the following steps to be successful.  
--You can use Mangopay’s IBAN bank account available in the Testing payouts article.  
+- You need to use the `UserId` of the user as a path parameter for the following steps to be successful.  
+- You can use Mangopay’s IBAN bank account available in the Testing payouts article.  
 
 <Warning>  
 **Caution - The bank account must belong to the SEPA network** 
   
 Only IBAN-type Bank Accounts can be used for SEPA Direct Debits.  
 </Warning>
+
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/users/UserId/bankaccounts/iban](/api-reference/bank-accounts/create-iban-bank-account)
 
 <CodeGroup>  
 
@@ -44,6 +49,54 @@ Only IBAN-type Bank Accounts can be used for SEPA Direct Debits.
 }
 ```  
 
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HWAR82HD4D8CQ67J02YMKM82';
+
+    $bankAccount = new \MangoPay\BankAccount();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $details = new \MangoPay\BankAccountDetailsIBAN();
+    $details->IBAN = 'FR7630004000031234567890143';
+    $details->BIC = 'BNPAFRPP';
+
+    $bankAccount->OwnerAddress = $address;
+    $bankAccount->OwnerName = 'Alex Smith';
+    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
+    $bankAccount->Type = 'IBAN';
+    $bankAccount->Details = $details;
+
+    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
@@ -52,7 +105,7 @@ const mangopay = new mangopayInstance({
 })
 
 let user = {
-  Id: '165863393',
+  Id: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
   Address: {
     AddressLine1: 'Edgewood Road',
     AddressLine2: null,
@@ -111,7 +164,7 @@ def createIbanBankAccount(userId, ibanBankAccountObject)
 end
 
 myUser = {
-    Id: '165863393'
+    Id: 'user_m_01HWAR82HD4D8CQ67J02YMKM82'
 }
 
 myIbanBankAccount = {
@@ -131,6 +184,45 @@ myIbanBankAccount = {
 
 createIbanBankAccount(myUser[:Id], myIbanBankAccount)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+from mangopay.utils import Address
+
+
+natural_user = NaturalUser.get('user_m_01HWAR82HD4D8CQ67J02YMKM82')
+
+iban_bank_account = BankAccount(
+    user_id = natural_user.id,
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    owner_address = Address(
+        address_line_1 = natural_user.address.address_line_1,
+        address_line_2 = natural_user.address.address_line_2,
+        city = natural_user.address.city,
+        region = natural_user.address.region,
+        postal_code = natural_user.address.postal_code,
+        country = natural_user.address.country,
+    ),
+    iban = 'FR7630004000031234567890143',
+    bic = 'BNPAFRPP',
+    type = 'IBAN',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_iban_bank_account = iban_bank_account.save()
+
+pprint(create_iban_bank_account)  
+```
 </CodeGroup>  
 
 You’ll need the returned Bank Account `Id` value for the next step.  
@@ -138,15 +230,52 @@ You’ll need the returned Bank Account `Id` value for the next step.
 ## 2. Create the Mandate  
 
 Create the Mandate for the IBAN Bank Account you’ve just created.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/mandates/directdebit/web](/api-reference/mandates/create-mandate)
+
 <CodeGroup>  
 
 ```json REST
 {
-    "BankAccountId":"151453487",
+    "BankAccountId":"bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE",
     "Culture":"EN",
     "ReturnURL":"https://mangopay.com/docs/please-ignore"
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankAccountId = 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE'; 
+
+    $mandate = new \MangoPay\Mandate();
+    $mandate->BankAccountId = $bankAccountId;
+    $mandate->Culture = 'EN'; 
+    $mandate->ReturnURL = 'https://mangopay.com/docs/please-ignore';
+    $mandate->Tag = 'Created using Mangopay PHP SDK';
+    
+    $response = $api->Mandates->Create($mandate);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
 
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
@@ -156,7 +285,7 @@ const mangopay = new mangopayInstance({
 })
 
 let myMandate = {
-  BankAccountId: '151467634',
+  BankAccountId: 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE',
   Culture: 'EN',
   ReturnUrl: 'https://mangopay.com/docs/please-ignore',
 }
@@ -199,7 +328,7 @@ def createMandate(mandateObject)
 end
 
 myMandate = {
-    BankAccountId:'151453487',
+    BankAccountId:'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE',
     Culture:'EN',
     ReturnURL:'https://mangopay.com/docs/please-ignore'
 }
@@ -207,6 +336,32 @@ myMandate = {
 createMandate(myMandate)
 ```  
 
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Mandate
+
+bank_account_id = 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE'
+
+mandate = Mandate(
+    bank_account_id = bank_account_id,
+    culture = 'EN',
+    return_url = 'https://mangopay.com/docs/please-ignore',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_mandate = mandate.save()
+
+pprint(create_mandate)  
+```
 </CodeGroup>  
 
 You’ll need the returned Mandate `Id` value for some of the next steps.  
@@ -220,23 +375,25 @@ Provide the `RedirectURL` returned with the Mandate object to the end user. We a
 Once the user has visited the page and clicked on the Confirm button, the Mandate `Status` becomes `SUBMITTED`.  
 
 <Note>  
-**Best practice - Rely on webhooks for mandate activation ** 
+**Best practice - Rely on webhooks for mandate activation** 
   
 You can get notified when a Mandate turns active or expires by subscribing to the corresponding events:  
-MANDATE_EXPIRED  
-MANDATE_SUBMITTED  
+- MANDATE_EXPIRED  
+- MANDATE_SUBMITTED  
 Learn more about Hook notifications and Event types.  
 </Note>  
 
 ## 4. Make the direct debit pay-in  
 
 Once your Mandate has a `Status` of `SUBMITTED`, you can make the direct debit pay-in.   
-<CodeGroup>  
 
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/directdebit/direct](/api-reference/direct-debit-payins/create-direct-debit-payin)
+
+<CodeGroup>  
 ```json REST
 {
-    "AuthorId":"151452401",
-    "CreditedWalletId":"152161972",
+    "AuthorId":"user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    "CreditedWalletId":"wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
     "DebitedWalletId":null,
     "DebitedFunds":{
         "Currency":"EUR",
@@ -246,7 +403,7 @@ Once your Mandate has a `Status` of `SUBMITTED`, you can make the direct debit p
         "Currency":"EUR",
         "Amount":12
     },
-    "MandateId":"156620699"
+    "MandateId":"mdt_m_01HT2GPPV15HACN8CGV3SCNQQV"
 }
 ```  
 
@@ -260,9 +417,9 @@ const mangopay = new mangopayInstance({
 let myPayIn = {
   PaymentType: 'DIRECT_DEBIT',
   ExecutionType: 'DIRECT',
-  AuthorId: '151452401',
+  AuthorId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
   Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: '152161972',
+  CreditedUserId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
   DebitedFunds: {
     Currency: 'EUR',
     Amount: 1200,
@@ -271,8 +428,8 @@ let myPayIn = {
     Currency: 'EUR',
     Amount: 12,
   },
-  CreditedWalletId: '168935920',
-  MandateId: '156620699',
+  CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+  MandateId: 'mdt_m_01HT2GPPV15HACN8CGV3SCNQQV',
   StatementDescriptor: 'Mangopay',
 }
 
@@ -314,7 +471,7 @@ def createDirectDirectDebitPayIn(payInObject)
 end
 
 myPayIn = {
-    AuthorId:'151452401',
+    AuthorId:'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
     Tag: 'Created with Mangopay Ruby SDK',
     CreditedUserId:'195074410',
     DebitedFunds: {
@@ -325,13 +482,43 @@ myPayIn = {
       Currency: 'EUR',
       Amount: 12,
     },
-    CreditedWalletId: '152161972',
-    MandateId: '156620699',
+    CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+    MandateId: 'mdt_m_01HT2GPPV15HACN8CGV3SCNQQV',
     StatementDescriptor: 'Mangopay',
   }
 
 createDirectDirectDebitPayIn(myPayIn)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, DirectDebitDirectPayIn, Money
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+direct_debit_direct_payin = DirectDebitDirectPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+    debited_funds = Money(amount='1000', currency='EUR'),
+    fees = Money(amount='100', currency='EUR'),
+    tag = 'Created using the Mangopay Python SDK',
+    mandate_id = 'mdt_m_01HT2GPPV15HACN8CGV3SCNQQV',
+    statement_descriptor = 'Jan2024'
+)
+
+create_direct_debit_direct_payin = direct_debit_direct_payin.save()
+
+pprint(create_direct_debit_direct_payin)  
+```
 </CodeGroup>  
 
 If the pay-in is successful, the SEPA Mandates will become `ACTIVE`.  
@@ -358,8 +545,8 @@ As a result, the Mandate `Status` turns to `FAILED`, and you can no longer make 
 
 ## Related resources  
 
-<Card title="Article">Direct debit</Card>  
+<Card title="Guide" href="/guides/payment-methods/banking/direct-debit">Direct debit</Card>  
 
-<Card title="Endpoints">Direct direct-debit pay-ins</Card>  
+<Card title="Endpoint" href="/api-reference/direct-debit-payins/direct-debit-payin-object">The Direct Direct-Debit PayIn object</Card>  
 
-<Card title="Testing">Payment methods</Card>
+<Card title="Testing" href="/testing/payment-methods">Payment methods</Card>

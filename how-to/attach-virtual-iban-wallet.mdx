@@ -9,20 +9,58 @@ This how-to guide will show you how to successfully associate a virtual IBAN to 
 
 Mangopay supports for its wallets the creation of a virtual bank account number.  
 
-Once a wallet is associated with a virtual IBAN, users can do a bank wire directly from their bank account to the wallet, as they would do for any other bank account to bank account transfer.<a href="#" class="btn Tertiary normal">Learn more about virtual IBAN</a>  
+Once a wallet is associated with a virtual IBAN, users can do a bank wire directly from their bank account to the wallet, as they would do for any other bank account to bank account transfer.
+
+[Learn more about virtual IBAN](/guides/payment-methods/banking/virtual-iban)  
 
 ## 1. Create the wallet  
 
 Create the Wallet which is to be associated with a virtual IBAN. This wallet `Currency` must be `EUR`.  
-<CodeGroup>  
 
+> [**POST** /v2.01/&lcub;ClientId&rcub;/wallets](/api-reference/wallets/create-wallet)
+
+<CodeGroup>  
 ```json REST
 {
-    "Owners": ["146476890"],
+    "Owners": ["user_m_01HQK25M6KVHKDV0S36JY9NRKR"],
     "Description": "Description of the user's wallet",
     "Currency": "EUR"
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    
+    $wallet = new \MangoPay\Wallet();
+
+    $wallet->Owners = ['user_m_01HQK25M6KVHKDV0S36JY9NRKR'];
+    $wallet->Currency = 'EUR';
+    $wallet->Description = 'EUR Wallet';
+    $wallet->Tag = 'Created with Mangopay PHP SDK';
+
+    $response = $api->Wallets->Create($wallet);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
 
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
@@ -31,7 +69,7 @@ const mangopay = new mangopayInstance({
     clientApiKey: 'your-api-key'
 })
 
-let userId = '165863393'
+let userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR'
 
 let wallet = {
     Owners: [userId],
@@ -78,7 +116,7 @@ def createWallet(walletObject)
 end
 
 myUser = {
-  Id: '146476890',
+  Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
 }
 
 myWallet = {
@@ -90,6 +128,33 @@ myWallet = {
 
 createWallet(myWallet)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+user_wallet = Wallet(
+    owners=[natural_user],
+    description='Wallet of Rhoda Keeling',
+    currency='EUR',
+    tag="Created using the Mangopay Python SDK"
+)
+
+create_wallet = user_wallet.save()
+
+pprint(create_wallet)  
+```
 </CodeGroup>  
 
 ## 2. Create the wallet Virtual IBAN  
@@ -97,8 +162,11 @@ createWallet(myWallet)
 Create the Banking Alias by using the previously created wallet `Id` as a path parameter.  
 
 Please note that:  
--The `OwnerName` must be the first name and last name of the owner of the wallet.  
--Only `LU`, `FR` countries are allowed for now.  
+- The `OwnerName` must be the first name and last name of the owner of the wallet.  
+- Only `LU`, `FR` countries are allowed for now.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/wallets/&lcub;WalletId&rcub;/bankingaliases/iban](/api-reference/banking-aliases/create-iban-banking-alias)
+
 <CodeGroup>  
 
 ```json REST
@@ -107,6 +175,40 @@ Please note that:
     "Country": "FR"
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $walletId = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T';
+
+    $bankingAlias = new \MangoPay\BankingAliasIBAN();
+    $bankingAlias->OwnerName = 'Alex Smith';
+    $bankingAlias->Tag = 'Updated using Mangopay PHP SDK';
+    $bankingAlias->Country ='FR';
+    $bankingAlias->WalletId = $walletId;
+    
+    $response = $api->BankingAliases->Create($bankingAlias);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
 
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
@@ -120,7 +222,7 @@ let myBankingAlias = {
   Tag: 'Created with Mangopay NodeJS SDK',
   Country: 'FR',
   Type: 'IBAN',
-  WalletId: '172463559',
+  WalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
 }
 
 const createBankingAlias = async (bankingAlias) => {
@@ -166,15 +268,48 @@ myBankingAlias = {
     Tag: 'Created with Mangopay NodeJS SDK',
     Country: 'FR',
     Type: 'IBAN',
-    WalletId: '194311640'
+    WalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T'
 }
 
 myWallet = {
-    Id: '194311640'
+    Id: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T'
 }
 
 createBankingAlias(myBankingAlias, myWallet[:Id])
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, BankingAliasIBAN
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+user_wallet = Wallet.get('wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T')
+
+iban_alias = BankingAliasIBAN(
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    credited_user = natural_user,
+    wallet_id = user_wallet.id,
+    tag = 'Create using the Mangopay Python SDK',
+    country = 'FR' 
+)
+
+create_iban_alias = iban_alias.save()
+
+pprint(create_iban_alias)  
+```
 </CodeGroup>  
 
 The API then returns the Banking Alias object, which contains your virtual IBAN number. This IBAN can be used to make a bank wire directly from a bank account to the wallet, as they would do for any other bank account to bank account transfer.  
@@ -189,7 +324,7 @@ The API then returns the Banking Alias object, which contains your virtual IBAN 
     "CreationDate": 1670263006,
     "Active": true,
     "Type": "IBAN",
-    "Id": "157608228",
+    "Id": "wltbank_m_01HT2J9Y0A8XTNDE1JVV8Q7PQM",
     "WalletId": "157607922"
 }
 ```  
@@ -204,6 +339,9 @@ If the virtual IBAN is no longer required, you’ll need to deactivate it.
 Once the Banking Alias object is deactivated, you cannot reactivate it. Any funds wired to this banking alias won’t be credited to the corresponding wallet.  
 If such cases arise, please get in touch with Mangopay teams via the Hub (Transactions in production > Pay-in bank wire or ibanisation).  
 </Warning>  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/bankingaliases/&lcub;BankingAliasId&rcub;](/api-reference/banking-aliases/deactivate-banking-alias)
+
 <CodeGroup>  
 
 ```json REST
@@ -211,6 +349,37 @@ If such cases arise, please get in touch with Mangopay teams via the Hub (Transa
     "Active": false
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankingAliasId = 'wltbank_m_01HT2J9Y0A8XTNDE1JVV8Q7PQM';
+
+    $bankingAliasIBAN = $api->BankingAliases->Get($bankingAliasId);
+    $bankingAliasIBAN->Active = false;
+    
+    $response = $api->BankingAliases->Update($bankingAliasIBAN);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
 
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
@@ -220,7 +389,7 @@ const mangopay = new mangopayInstance({
 })
 
 let myBankingAlias = {
-  Id: '169741679',
+  Id: 'wltbank_m_01HT2J9Y0A8XTNDE1JVV8Q7PQM',
 }
 
 const deactivateBankingAlias = async (bankingAliasId) => {
@@ -261,7 +430,7 @@ def deactivateBankingAlias(bankingAliasId)
 end
 
 myBankingAlias = {
-    Id: '194349049',
+    Id: 'wltbank_m_01HT2J9Y0A8XTNDE1JVV8Q7PQM',
     Active: false
 }
 
@@ -271,6 +440,6 @@ deactivateBankingAlias(myBankingAlias[:Id])
 
 ## Related resources  
 
-<Card title="Article">Virtual IBAN</Card>  
+<Card title="Guide" href="/guides/payment-methods/banking/virtual-iban">Virtual IBAN</Card>  
 
-<Card title="Endpoints">Banking aliases</Card>
+<Card title="Endpoint" href="/api-reference/banking-aliases/banking-alias-object">The Banking Alias object</Card>
