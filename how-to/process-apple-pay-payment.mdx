@@ -5,9 +5,9 @@ sidebarTitle: 'Process an Apple Pay payment'
 ---
 
 This how-two guide covers:  
--Setting up Apple Pay with Mangopay for the first time  
--Making payment requests  
--Renewing your Apple Pay certification with Mangopay
+- Setting up Apple Pay with Mangopay for the first time  
+- Making payment requests  
+- Renewing your Apple Pay certification with Mangopay
 
 <hr />  
 
@@ -20,10 +20,10 @@ The Apple Pay Merchant ID is a unique identifier that identifies your platform t
 Use the formats below to create your Apple Pay Merchant ID:  
 
 Sandbox:  
--mangopay.com.payline.58937646344908.`ClientId`  
+- mangopay.com.payline.58937646344908.`ClientId`  
 
 Production:  
--mangopay.com.payline.43461661979437.`ClientId`  
+- mangopay.com.payline.43461661979437.`ClientId`  
 
 <Warning>  
 **Warning - Respect the Merchant ID formatting** 
@@ -34,7 +34,7 @@ The full string must be less than 50 characters, meaning that there are 14 chara
 
 ## 2. Send your Merchant ID to Mangopay  
 
-Once generated, send your Merchant ID to Mangopay by contacting the Support team via the Hub.  
+Once generated, send your Merchant ID to Mangopay by contacting the Support team via [the Hub](https://hub.mangopay.com/).  
 
 Mangopay will generate a Certificate Signing Request (CSR) file and return it to you.  
 
@@ -81,17 +81,20 @@ Further integration steps are necessary to be able to offer Apple Pay in your ap
 For more information, see the Apple Pay documentation.  
 </Note>  
 
-## 8/#Include payment data in the pay-in call  
+## 8. Include payment data in the pay-in call  
 
 Include the payment data received from Apple Pay in the `PaymentData` parameter in your request to the Create an Apple Pay PayIn endpoint.  
 
 To be notified of the outcome, you can use the same webhook event types as for other pay-ins. The same pay-in functional errors are also possible.
 
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/applepay/direct](/api-reference/apple-pay/create-apple-pay-payin)
+
+<CodeGroup>
 ```json REST
 {
     "Tag": "Created using the Mangopay API Postman collection",
-    "AuthorId": "204068024",
-    "CreditedWalletId": "204089031",
+    "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
     "DebitedFunds": {
         "Currency": "EUR",
         "Amount": 199
@@ -109,11 +112,86 @@ To be notified of the outcome, you can use the same webhook event types as for o
 }
 ```
 
+```php PHP 
+<?php
+// ... 
+// API initialization
+
+try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $walletId = 'wlt_m_01HQT6422EER2N7FPRXWTSDCSV';
+
+    $applePayPayIn = new \MangoPay\PayIn();
+    $applePayPayIn->AuthorId = $userId;
+    $applePayPayIn->CreditedWalletId = $walletId;
+
+    $applePayPayIn->DebitedFunds = new Money();
+    $applePayPayIn->DebitedFunds->Amount = 500;
+    $applePayPayIn->DebitedFunds->Currency = 'EUR';
+
+    $applePayPayIn->Fees = new Money();
+    $applePayPayIn->Fees->Amount = 0;
+    $applePayPayIn->Fees->Currency = 'EUR';
+
+    $applePayPayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+
+    $applePayPayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsApplePay();
+    $applePayPayIn->PaymentDetails->PaymentData = new \MangoPay\PaymentData();
+    $applePayPayIn->PaymentDetails->PaymentData->TransactionId = '061EB32181A2D9CA42AD16031B476EEBAA62A9A095AD660E2759FBA52B51A61';
+    $applePayPayIn->PaymentDetails->PaymentData->Network = 'VISA';
+    $applePayPayIn->PaymentDetails->PaymentData->TokenData = 'your-token-data';
+
+    $applePayPayIn->Tag = 'Created using the Mangopay PHP SDK';
+    
+    $createPayIn = $api->PayIns->Create($applePayPayIn);
+
+    print_r($createPayIn);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, ApplepayPayIn
+from mangopay.utils import Money, ApplepayPaymentData
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+applepay_payin = ApplepayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+    debited_funds = Money(amount=500, currency='EUR'),
+    fees = Money(amount=50, currency='EUR'),
+    payment_data = ApplepayPaymentData(
+        transaction_id='97e64d87f13a89ff6443cdcc205d5ccf7e15368b0d64126a8a2e0888a3a5c2a0',
+        network='MasterCard',        
+        token_data='{\"data\":\"your-token-data"}'
+    ),
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_applepay_payin = applepay_payin.save()
+
+pprint(create_applepay_payin)
+```
+</CodeGroup>
 <hr />  
 
 #### RENEWAL  
 
-## 9/#Renew your Payment Processing Certificate  
+## 9. Renew your Payment Processing Certificate  
 
 The process to renew your certificate is the same as when you created it first time. You create a new certificate which, when activated, automatically revokes the previous one.  
 
@@ -129,6 +207,6 @@ Follow Steps 4 to 6 to complete the renewal of your certificate.
 
 ## Related resources  
 
-<Card title="Article">Apple Pay - How it works</Card>  
+<Card title="Guide" href="/guides/payment-methods/apple-pay">Apple Pay - How it works</Card>  
 
-<Card title="Endpoints">The Apple Pay PayIn object</Card>
+<Card title="Endpoint" href="/api-reference/apple-pay/apple-pay-payin-object">The Apple Pay PayIn object</Card>
