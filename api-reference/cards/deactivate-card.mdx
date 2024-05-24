@@ -41,7 +41,7 @@ Because card information cannot be kept without the end user's approval, you sho
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<Accordion title="200">  
 
 <ExpirationDate1Response />  
 
@@ -69,12 +69,25 @@ Because card information cannot be kept without the end user's approval, you sho
 
 <Tag6Response />  
 
-<FingerprintResponse /></Accordion><Accordion title="400 Card is already deactivated"></Accordion></AccordionGroup>  
+<FingerprintResponse />
+
+</Accordion>
+
+<Accordion title="400 - Card is already deactivated">
+```json
+{
+    "Message": "The card has already been deactivated",
+    "Type": "card_already_not_active",
+    "Id": "8ebd2256-e596-4404-8c76-cd14b505d7a4",
+    "Date": 1690292341.0,
+    "errors": null
+}  
+ ```  
+</Accordion>  
 
 <ResponseExample>  
 
-```json 200   
-
+```json 200  
 {
     "ExpirationDate": "0224",
     "Alias": "497010XXXXXX4329",
@@ -92,27 +105,14 @@ Because card information cannot be kept without the end user's approval, you sho
     "CreationDate": 1660121693,
     "Fingerprint": "1ab7328005e4445dbfd38ac6cb49c3af"
 }  
-
  ```  
 
-```json 400 Card is already deactivated  
-
-{
-    "Message": "The card has already been deactivated",
-    "Type": "card_already_not_active",
-    "Id": "8ebd2256-e596-4404-8c76-cd14b505d7a4",
-    "Date": 1690292341.0,
-    "errors": null
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "Active": false,
 }  
@@ -120,7 +120,6 @@ Because card information cannot be kept without the end user's approval, you sho
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -153,7 +152,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
     clientId: 'your-client-id',
@@ -182,7 +180,6 @@ deactivateCard(myCard)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -214,7 +211,6 @@ deactivateCard(myCard[:Id], myCard)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay
@@ -235,7 +231,6 @@ user_card = Card(
 deactive_card = user_card.save()
 
 pprint(deactive_card)
-  
 ```  
 
   

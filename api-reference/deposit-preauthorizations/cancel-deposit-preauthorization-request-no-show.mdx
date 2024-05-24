@@ -48,7 +48,7 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<Accordion title="200">  
 
 <Id2Response />  
 
@@ -102,12 +102,25 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
 <TagResponse />  
 
-<CardInfoResponse /></Accordion><Accordion title="400 Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW"></Accordion></AccordionGroup>  
+<CardInfoResponse /></Accordion>
+
+
+<Accordion title="400 - Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW">
+```json 
+{
+    "Message": "The capture has a success status.",
+    "Type": "invalid_action",
+    "Id": "37b05486-e0de-4b17-9056-b3197a4d85e2",
+    "Date": 1699264645.0,
+    "errors": null
+}  
+ ```  
+</Accordion>
+
 
 <ResponseExample>  
 
-```json 200   
-
+```json 200  
 {
    "Id": "bca6b50b-b808-4b6b-ae46-145259dd01b5",
    "CreationDate": 1669137965,
@@ -182,19 +195,6 @@ This endpoints allows you to take one of two actions against a deposit preauthor
         "SubType": null
     }
 }  
-
- ```  
-
-```json 400 Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW  
-
-{
-    "Message": "The capture has a success status.",
-    "Type": "invalid_action",
-    "Id": "37b05486-e0de-4b17-9056-b3197a4d85e2",
-    "Date": 1699264645.0,
-    "errors": null
-}  
-
  ```  
 
 </ResponseExample>  
@@ -202,7 +202,6 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 <RequestExample>  
   
 ```json REST  
-
 {
    "PaymentStatus": "CANCELED"
 }  
@@ -210,7 +209,6 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

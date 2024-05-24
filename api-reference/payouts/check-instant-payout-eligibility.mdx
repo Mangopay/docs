@@ -34,45 +34,23 @@ This call is used to check whether or not the destination bank is eligible for i
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Bank is reachable">  
+<AccordionGroup><Accordion title="200 - Bank is reachable">  
 
 <IsReachableResponse />  
 
-<UnreachableReasonResponse /></Accordion><Accordion title="200 Bank is unreachable">  
+<UnreachableReasonResponse /></Accordion>
+
+<Accordion title="200 - Bank is unreachable">  
 
 <IsReachableResponse />  
 
-<UnreachableReasonResponse /></Accordion><Accordion title="400 Instant payment disabled "></Accordion></AccordionGroup>  
+<UnreachableReasonResponse /></Accordion>
 
-<ResponseExample>  
+</AccordionGroup>  
+<AccordionGroup>  
 
-```json 200 Bank is reachable  
-
-{
-    "InstantPayout": {
-        "IsReachable": true,
-        "UnreachableReason": null
-    }
-}  
-
- ```  
-
-```json 200 Bank is unreachable  
-
-{
-    "InstantPayout":{
-        "IsReachable":false,
-        "UnreachableReason":{
-            "Code":"130010",
-            "Message":"Generic operation error"
-        }
-    }
-}  
-
- ```  
-
-```json 400 Instant payment disabled   
-
+<Accordion title="400 - Instant payment disabled ">
+```json
 {
     "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
     "Type":"param_error",
@@ -82,15 +60,41 @@ This call is used to check whether or not the destination bank is eligible for i
         "PayoutModeRequested":"InstantPayment is disabled"
     }
 }  
-
  ```  
+ </Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 - Bank is reachable  
+{
+    "InstantPayout": {
+        "IsReachable": true,
+        "UnreachableReason": null
+    }
+}  
+ ```  
+
+```json 200 - Bank is unreachable  
+{
+    "InstantPayout":{
+        "IsReachable":false,
+        "UnreachableReason":{
+            "Code":"130010",
+            "Message":"Generic operation error"
+        }
+    }
+}  
+ ```  
+
+
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "PayoutModeRequested":"INSTANT_PAYMENT",
     "AuthorId":"142036728",
@@ -110,7 +114,6 @@ This call is used to check whether or not the destination bank is eligible for i
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|

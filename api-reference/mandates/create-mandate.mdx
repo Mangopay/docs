@@ -43,7 +43,7 @@ If not confirmed within 1 hour, the Mandate expires and returns a 001807 error.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<Accordion title="200">  
 
 <SchemeResponse />  
 
@@ -75,12 +75,26 @@ If not confirmed within 1 hour, the Mandate expires and returns a 001807 error.
 
 <ResultCodeResponse />  
 
-<ResultMessageResponse /></Accordion><Accordion title="400 Culture not supported"></Accordion></AccordionGroup>  
+<ResultMessageResponse /></Accordion>
+
+<Accordion title="400 - Culture not supported">
+
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "9d45b954-4eda-4247-b4e3-91027628ab22",
+    "Date": 1690294898.0,
+    "errors": {
+        "Culture": "The requested language is not supported"
+    }
+}  
+ ```
+ </Accordion>
 
 <ResponseExample>  
 
-```json 200   
-
+```json 200  
 {
     "Scheme":null,
     "BankAccountId":"151453487",
@@ -99,29 +113,14 @@ If not confirmed within 1 hour, the Mandate expires and returns a 001807 error.
     "ResultCode":null,
     "ResultMessage":null
 }  
-
  ```  
 
-```json 400 Culture not supported  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "9d45b954-4eda-4247-b4e3-91027628ab22",
-    "Date": 1690294898.0,
-    "errors": {
-        "Culture": "The requested language is not supported"
-    }
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "BankAccountId":"151453487",
     "Culture":"FR",
@@ -132,7 +131,6 @@ If not confirmed within 1 hour, the Mandate expires and returns a 001807 error.
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -168,7 +166,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -198,7 +195,6 @@ createMandate(myMandate)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -232,7 +228,6 @@ createMandate(myMandate)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

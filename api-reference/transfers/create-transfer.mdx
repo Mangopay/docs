@@ -46,7 +46,7 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -72,11 +72,25 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 <DebitedWalletIdResponse />  
 
-<CreditedWalletIdResponse /></Accordion><Accordion title="400 Currency incompatibility"></Accordion></AccordionGroup>  
+<CreditedWalletIdResponse /></Accordion>
+
+<Accordion title="400 - Currency incompatibility">
+```json
+{
+    "Message": "Error: multi-currency usage is not authorized",
+    "Type": "currency_incompatibility",
+    "Id": "0c23333c-a0ef-468a-8d33-7bd7ced6e7d4#1661495038",
+    "Date": 1661495039.0,
+    "errors": {
+        "currency": "The Debited Wallet's currency EUR and the Credited Wallet's currency GBP must be the same"
+    }
+}  
+ ```  
+</Accordion>
 
 <ResponseExample>  
 
-```json 200   
+```json 200  
 
 {
     "Id": "147418844",
@@ -105,29 +119,15 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
     "DebitedWalletId": "145397873",
     "CreditedWalletId": "145389978"
 }  
-
  ```  
 
-```json 400 Currency incompatibility  
 
-{
-    "Message": "Error: multi-currency usage is not authorized",
-    "Type": "currency_incompatibility",
-    "Id": "0c23333c-a0ef-468a-8d33-7bd7ced6e7d4#1661495038",
-    "Date": 1661495039.0,
-    "errors": {
-        "currency": "The Debited Wallet's currency EUR and the Credited Wallet's currency GBP must be the same"
-    }
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "Tag": "custom meta",
     "AuthorId": "145397183",
@@ -147,7 +147,6 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -188,7 +187,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -238,7 +236,6 @@ createTransfer(myTransfer)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -291,7 +288,6 @@ createTransfer(myTransfer)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

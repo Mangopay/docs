@@ -49,7 +49,7 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Natural Payer">  
+<AccordionGroup><Accordion title="200 - Natural Payer">  
 
 <Address3Response />  
 
@@ -91,7 +91,7 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 
 <UserCategoryResponse />  
 
-<UserStatusResponse /></Accordion><Accordion title="200 Legal Payer">  
+<UserStatusResponse /></Accordion><Accordion title="200 - Legal Payer">  
 
 <HeadquartersAddressResponse />  
 
@@ -141,7 +141,7 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 
 <UserCategoryResponse />  
 
-<UserStatusResponse /></Accordion><Accordion title="200 Legal Owner">  
+<UserStatusResponse /></Accordion><Accordion title="200 - Legal Owner">  
 
 <HeadquartersAddressResponse />  
 
@@ -195,8 +195,7 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 
 <ResponseExample>  
 
-```json 200 Natural Payer  
-
+```json 200 - Natural Payer  
 {
     "Address": {
         "AddressLine1": "3 rue des Plantes",
@@ -227,11 +226,9 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
     "UserCategory": "PAYER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 200 Legal Payer  
-
+```json 200 - Legal Payer  
 {
     "HeadquartersAddress": {
         "AddressLine1": null,
@@ -273,11 +270,9 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
     "UserCategory": "PAYER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 200 Legal Owner  
-
+```json 200 - Legal Owner  
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
@@ -319,7 +314,6 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
     "UserCategory": "OWNER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
 </ResponseExample>  
@@ -327,7 +321,6 @@ import UserId from '/snippets/path-parameters/UserId.mdx';
 <RequestExample>  
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -357,7 +350,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -385,7 +377,6 @@ getUser(user.Id)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -414,9 +405,47 @@ myUser = {
 viewUser(myUser[:Id])  
 ```  
 
+
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+
+import java.lang.reflect.Field;
+
+public class ViewUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        User user = mangopay.getUserApi().get("user_m_01HYG97J92QXDDVAWS9QW8C3FF");
+        System.out.println(String.format("id: %s", user.getId()));
+        printObjectFields(user);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

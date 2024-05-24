@@ -59,7 +59,9 @@ For more information, see the Refunds article.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -99,11 +101,70 @@ For more information, see the Refunds article.
 
 <CreditedWalletIdResponse />  
 
-<RefundReasonResponse /></Accordion><Accordion title="400 Fees parameter must be defined"></Accordion><Accordion title="400 Incorrect AuthorId"></Accordion><Accordion title="400 DebitedFunds exceed initial CreditedFunds"></Accordion><Accordion title="400 The transaction is already disputed"></Accordion></AccordionGroup>  
+<RefundReasonResponse /></Accordion>
+
+</AccordionGroup>  
+
+<AccordionGroup>  
+
+<Accordion title="400 - Fees parameter must be defined">
+```json
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"9712a945-c96a-4e70-b3de-06529534a9de#1667200884",
+    "Date":1667200885.0,
+    "errors":{
+        "Fees":"if DebitedFunds are defined, Fees must be defined"
+    }
+}  
+ ``` 
+ </Accordion>
+<Accordion title="400 - Incorrect AuthorId">
+```json
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"a2af2b8b-506c-4b5b-b607-7441a58c0a66#1667201846",
+    "Date":1667201847.0,
+    "errors":{
+        "AuthorId":"Author of the refund is not the author of the initial payin"
+    }
+}  
+ ```  
+ </Accordion>
+<Accordion title="400 - DebitedFunds exceed initial CreditedFunds">
+```json
+{
+    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type":"param_error",
+    "Id":"5eebf638-efd9-4a02-9854-f476c16c0262#1667809509",
+    "Date":1667809510.0,
+    "errors":{
+        "DebitedFunds":"DebitedFunds cannot be superior the CreditedFunds of the initial PayIn"
+    }
+}  
+ ```  
+</Accordion>
+<Accordion title="400 - The transaction is already disputed">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "34989f04-25db-4246-a926-6fadbf1d53e1#1673521386",
+    "Date": 1673521387.0,
+    "errors": {
+        "DebitedFunds": "Due to repudiations against this transaction, you can not refund this amount"
+    }
+}  
+ ```  
+ </Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
+```json 200  
 
 {
     "Id":"154987535",
@@ -139,63 +200,6 @@ For more information, see the Refunds article.
         "RefundReasonType":"INITIALIZED_BY_CLIENT"
     }
 }  
-
- ```  
-
-```json 400 Fees parameter must be defined  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"9712a945-c96a-4e70-b3de-06529534a9de#1667200884",
-    "Date":1667200885.0,
-    "errors":{
-        "Fees":"if DebitedFunds are defined, Fees must be defined"
-    }
-}  
-
- ```  
-
-```json 400 Incorrect AuthorId  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"a2af2b8b-506c-4b5b-b607-7441a58c0a66#1667201846",
-    "Date":1667201847.0,
-    "errors":{
-        "AuthorId":"Author of the refund is not the author of the initial payin"
-    }
-}  
-
- ```  
-
-```json 400 DebitedFunds exceed initial CreditedFunds  
-
-{
-    "Message":"One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type":"param_error",
-    "Id":"5eebf638-efd9-4a02-9854-f476c16c0262#1667809509",
-    "Date":1667809510.0,
-    "errors":{
-        "DebitedFunds":"DebitedFunds cannot be superior the CreditedFunds of the initial PayIn"
-    }
-}  
-
- ```  
-
-```json 400 The transaction is already disputed  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "34989f04-25db-4246-a926-6fadbf1d53e1#1673521386",
-    "Date": 1673521387.0,
-    "errors": {
-        "DebitedFunds": "Due to repudiations against this transaction, you can not refund this amount"
-    }
-}  
-
  ```  
 
 </ResponseExample>  
@@ -203,7 +207,6 @@ For more information, see the Refunds article.
 <RequestExample>  
   
 ```json REST  
-
 {
     "Tag":"custom meta",
     "AuthorId":"146476890",
@@ -216,12 +219,10 @@ For more information, see the Refunds article.
         "Amount":0
     }
 }
-  
 ```  
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -261,7 +262,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -302,7 +302,6 @@ createPayInRefund(myPayIn.Id, myRefund)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -346,7 +345,6 @@ createPayInRefund(myPayIn[:Id], myRefund)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

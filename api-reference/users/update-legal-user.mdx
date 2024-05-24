@@ -110,7 +110,63 @@ For more information, see the Country restrictions article.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Payer">  
+<AccordionGroup>
+
+    <Accordion title="200 - Payer">  
+
+    <HeadquartersAddressResponse />  
+
+    <LegalRepresentativeAddressResponse />  
+
+    <Name2Response />  
+
+    <LegalPersonTypeResponse />  
+
+    <LegalRepresentativeFirstNameResponse />  
+
+    <LegalRepresentativeLastNameResponse />  
+
+    <LegalRepresentativeEmailResponse />  
+
+    <LegalRepresentativeBirthdayResponse />  
+
+    <LegalRepresentativeNationalityResponse />  
+
+    <LegalRepresentativeCountryOfResidenceResponse />  
+
+    <ProofOfRegistrationResponse />  
+
+    <ShareholderDeclarationResponse />  
+
+    <StatuteResponse />  
+
+    <LegalRepresentativeProofOfIdentityResponse />  
+
+    <CompanyNumberResponse />  
+
+    <IdResponse />  
+
+    <Tag2Response />  
+
+    <CreationDateResponse />  
+
+    <PersonTypeResponse />  
+
+    <Email1Response />  
+
+    <KYCLevelResponse />  
+
+    <TermsAndConditionsAcceptedResponse />  
+
+    <TermsAndConditionsAcceptedDateResponse />  
+
+    <UserCategoryResponse />  
+
+    <UserStatusResponse />
+
+    </Accordion>
+
+    <Accordion title="200 - Owner">  
 
 <HeadquartersAddressResponse />  
 
@@ -160,62 +216,47 @@ For more information, see the Country restrictions article.
 
 <UserCategoryResponse />  
 
-<UserStatusResponse /></Accordion><Accordion title="200 Owner">  
+<UserStatusResponse />
 
-<HeadquartersAddressResponse />  
+</Accordion>
 
-<LegalRepresentativeAddressResponse />  
+</AccordionGroup> 
 
-<Name2Response />  
+<AccordionGroup>  
 
-<LegalPersonTypeResponse />  
+    <Accordion title="400 - Owner can't become Payer">
+        ```json  
+        {
+            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+            "Type": "param_error",
+            "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+            "Date": 1707907057.0,
+            "errors": {
+                "UserCategory": "A User OWNER can't be modified to a user PAYER"
+            }
+        }  
+        ```  
 
-<LegalRepresentativeFirstNameResponse />  
+    </Accordion>
 
-<LegalRepresentativeLastNameResponse />  
+    <Accordion title="400 - Terms and conditions acceptance can't be revoked">
+        ```json
+        {
+            "Message": "The user cannot revoke the terms and conditions acceptance",
+            "Type": "invalid_action",
+            "Id": "5d0f2332-3808-4235-ab62-2ebac79f213c",
+            "Date": 1690290952.0,
+            "errors": null
+        }  
+        ```  
 
-<LegalRepresentativeEmailResponse />  
+    </Accordion>
 
-<LegalRepresentativeBirthdayResponse />  
-
-<LegalRepresentativeNationalityResponse />  
-
-<LegalRepresentativeCountryOfResidenceResponse />  
-
-<ProofOfRegistrationResponse />  
-
-<ShareholderDeclarationResponse />  
-
-<StatuteResponse />  
-
-<LegalRepresentativeProofOfIdentityResponse />  
-
-<CompanyNumberResponse />  
-
-<IdResponse />  
-
-<Tag2Response />  
-
-<CreationDateResponse />  
-
-<PersonTypeResponse />  
-
-<Email1Response />  
-
-<KYCLevelResponse />  
-
-<TermsAndConditionsAcceptedResponse />  
-
-<TermsAndConditionsAcceptedDateResponse />  
-
-<UserCategoryResponse />  
-
-<UserStatusResponse /></Accordion><Accordion title="400 Owner can't become Payer"></Accordion><Accordion title="400 Terms and conditions acceptance can't be revoked"></Accordion></AccordionGroup>  
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Payer  
-
+```json 200 - Payer  
 {
     "HeadquartersAddress": {
         "AddressLine1": null,
@@ -257,11 +298,9 @@ For more information, see the Country restrictions article.
     "UserCategory": "PAYER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 200 Owner  
-
+```json 200 - Owner  
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
@@ -303,41 +342,15 @@ For more information, see the Country restrictions article.
     "UserCategory": "OWNER",
     "UserStatus": "ACTIVE"
 }  
-
  ```  
 
-```json 400 Owner can't become Payer  
 
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
-    "Date": 1707907057.0,
-    "errors": {
-        "UserCategory": "A User OWNER can't be modified to a user PAYER"
-    }
-}  
-
- ```  
-
-```json 400 Terms and conditions acceptance can't be revoked  
-
-{
-    "Message": "The user cannot revoke the terms and conditions acceptance",
-    "Type": "invalid_action",
-    "Id": "5d0f2332-3808-4235-ab62-2ebac79f213c",
-    "Date": 1690290952.0,
-    "errors": null
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
@@ -369,12 +382,10 @@ For more information, see the Country restrictions article.
     "TermsAndConditionsAccepted": true,
     "UserCategory": "OWNER"
 }
-  
 ```  
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -433,7 +444,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -489,7 +499,6 @@ updateLegalUser(myLegalUser)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -545,10 +554,53 @@ myLegalUser = {
 updateLegalUser(myLegalUser[:Id], myLegalUser)  
 ```  
 
-  
-```python Python  
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserLegal;
 
-# Import pprint for cleaner response formatting
+import java.lang.reflect.Field;
+
+public class UpdateLegalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HRS7PQEGE4YGCM1AZK1ENTGE");
+
+        myUser.setName("D. Dickinson");
+        myUser.setEmail("best@dickinson.com");
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+        System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```python Python  
 from pprint import pprint
 
 import mangopay
@@ -569,7 +621,6 @@ legal_user = LegalUser(
 update_legal_user = legal_user.save()
 
 pprint(update_legal_user)
-  
 ```  
 
   

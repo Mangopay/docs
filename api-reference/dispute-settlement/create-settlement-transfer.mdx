@@ -41,7 +41,9 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -75,7 +77,11 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 <DebitedWalletIdResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="200 Failed">  
+<RepudiationIdResponse />
+
+</Accordion>
+
+<Accordion title="200 - Failed">  
 
 <IdResponse />  
 
@@ -109,12 +115,46 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
 <DebitedWalletIdResponse />  
 
-<RepudiationIdResponse /></Accordion><Accordion title="400 Settlement DebitedFunds exceed the initial transaction DebitedFunds"></Accordion><Accordion title="400 Settlement Fees exceed the initial transaction Fees"></Accordion></AccordionGroup>  
+<RepudiationIdResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+<Accordion title="400 - Settlement DebitedFunds exceed the initial transaction DebitedFunds">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "7da1f9f4-8c9f-4f9f-ba1c-babf394131ca#1673358577",
+    "Date": 1673358578.0,
+    "errors": {
+        "DebitedFunds": "The settlement DebitedFunds cannot exceed the initial transaction DebitedFunds"
+    }
+}  
+ ```  
+</Accordion>
+<Accordion title="400 - Settlement Fees exceed the initial transaction Fees">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "084e42e2-7523-4e28-99eb-79300d0dc37b#1672678394",
+    "Date": 1672678395.0,
+    "errors": {
+        "Fees": "The settlement Fees cannot exceed the initial transaction Fees"
+    }
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
-
+```json 200  
 {
     "Id": "159220385",
     "Tag": null,
@@ -143,11 +183,9 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
     "DebitedWalletId": "148968396",
     "RepudiationId": "159196330"
 }  
-
  ```  
 
-```json 200 Failed  
-
+```json 200 - Failed  
 {
     "Id": "159220127",
     "Tag": null,
@@ -176,35 +214,6 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
     "DebitedWalletId": "148968396",
     "RepudiationId": "159196330"
 }  
-
- ```  
-
-```json 400 Settlement DebitedFunds exceed the initial transaction DebitedFunds  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "7da1f9f4-8c9f-4f9f-ba1c-babf394131ca#1673358577",
-    "Date": 1673358578.0,
-    "errors": {
-        "DebitedFunds": "The settlement DebitedFunds cannot exceed the initial transaction DebitedFunds"
-    }
-}  
-
- ```  
-
-```json 400 Settlement Fees exceed the initial transaction Fees  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "084e42e2-7523-4e28-99eb-79300d0dc37b#1672678394",
-    "Date": 1672678395.0,
-    "errors": {
-        "Fees": "The settlement Fees cannot exceed the initial transaction Fees"
-    }
-}  
-
  ```  
 
 </ResponseExample>  
@@ -212,7 +221,6 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 <RequestExample>  
   
 ```json REST  
-
 {
     "AuthorId":"146476890",
     "DebitedFunds":{
@@ -228,7 +236,6 @@ import RepudiationId from '/snippets/path-parameters/RepudiationId.mdx';
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -270,7 +277,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
     clientId: 'your-client-id',
@@ -314,7 +320,6 @@ createSettlementTransfer(mySettlementTransfer, myDispute.RepudiationId)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -348,7 +353,6 @@ createSettlementTransfer(myRepudiation[:Id], mySettlementTransfer)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

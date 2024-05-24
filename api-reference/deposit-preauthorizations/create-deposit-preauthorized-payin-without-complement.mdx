@@ -45,7 +45,7 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<Accordion title="200">  
 
 <AuthorId5Response />  
 
@@ -81,11 +81,26 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
 <Fees1Response />  
 
-<TagResponse /></Accordion><Accordion title="400 CreditedWalletId not owned by Preauthorization object's AuthorId"></Accordion></AccordionGroup>  
+<TagResponse />
+
+</Accordion>
+
+<Accordion title="400 - CreditedWalletId not owned by Preauthorization object's AuthorId">
+```json  
+{
+    "Message": "CreditedUserExternalId:204069570 must be Equal to authorId:204068024.",
+    "Type": "invalid_action",
+    "Id": "42ba6af2-75ba-4d2b-92e9-b72650db3787",
+    "Date": 1696492277,
+    "errors": null
+}  
+ ```  
+</Accordion>
+
 
 <ResponseExample>  
 
-```json 200   
+```json 200  
 
 {
    "AuthorId": "156671912",
@@ -116,27 +131,15 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
    },
    "Tag": "custom meta"
 }  
-
  ```  
 
-```json 400 CreditedWalletId not owned by Preauthorization object's AuthorId  
 
-{
-    "Message": "CreditedUserExternalId:204069570 must be Equal to authorId:204068024.",
-    "Type": "invalid_action",
-    "Id": "42ba6af2-75ba-4d2b-92e9-b72650db3787",
-    "Date": 1696492277,
-    "errors": null
-}  
-
- ```  
 
 </ResponseExample>  
 
 <RequestExample>  
   
 ```json REST  
-
 {
     "AuthorId": "203063430",
     "CreditedWalletId": "203063456",
@@ -155,7 +158,6 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

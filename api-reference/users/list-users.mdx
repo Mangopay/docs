@@ -21,13 +21,13 @@ This endpoint returns key information for each user created by the platform.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200">  
 
 <Array_UsersResponse /></Accordion></AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
+```json 200  
 
 [ 
    {
@@ -75,7 +75,6 @@ This endpoint returns key information for each user created by the platform.
 <RequestExample>  
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -103,7 +102,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-mangopay-client-id',
@@ -127,7 +125,6 @@ listUsers()
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -153,9 +150,59 @@ end
 listAllUsers()  
 ```  
 
-  
-```python Python  
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.Pagination;
+import com.mangopay.core.Sorting;
+import com.mangopay.core.enumerations.SortDirection;
+import com.mangopay.entities.User;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
+public class ListAllUsers {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        Pagination pagination = new Pagination(1, 100);
+        Sorting sort = new Sorting();
+        sort.addField("CreationDate", SortDirection.desc);
+
+        List<User> users = mangopay.getUserApi().getAll(pagination, sort);
+
+        for (User user : users) {
+            user = mangopay.getUserApi().get(user.getId());
+            System.out.println("\nid: " + user.getId());
+            printObjectFields(user);
+        }
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
+```python Python  
 from pprint import pprint
 
 import mangopay

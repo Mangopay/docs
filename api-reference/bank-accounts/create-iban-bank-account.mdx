@@ -45,7 +45,7 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 ">  
+<AccordionGroup><Accordion title="200">  
 
 <OwnerAddressResponse />  
 
@@ -65,12 +65,43 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
 
 <CreationDateResponse />  
 
-<ActiveResponse /></Accordion><Accordion title="400 Invalid BIC format "></Accordion><Accordion title="400 Invalid IBAN"></Accordion></AccordionGroup>  
+<ActiveResponse /></Accordion>
+
+</AccordionGroup>  
+<AccordionGroup>  
+
+<Accordion title="400 - Invalid BIC format ">
+```json  
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "c35b1e0b-1a21-42e4-a80f-440ad9de3c57#1662449222",
+    "Date": 1662449223.0,
+    "errors": {
+        "BIC": "The field BIC must match the regular expression '^[a-zA-Z]{6}\\w{2}(\\w{3})?$'."
+    }
+}
+ ```  
+</Accordion>
+<Accordion title="400 - Invalid IBAN">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "692b34b2-86a5-4859-a515-f8838292a56e#1662449297",
+    "Date": 1662449298.0,
+    "errors": {
+        "IBAN": "The value is not a valid IBAN"
+    }
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200   
-
+```json 200  
 {
     "OwnerAddress":{
         "AddressLine1":"Rue des plantes",
@@ -90,36 +121,6 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
     "CreationDate":1661859994,
     "Active":true
 }  
-
- ```  
-
-```json 400 Invalid BIC format   
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "c35b1e0b-1a21-42e4-a80f-440ad9de3c57#1662449222",
-    "Date": 1662449223.0,
-    "errors": {
-        "BIC": "The field BIC must match the regular expression '^[a-zA-Z]{6}\\w{2}(\\w{3})?$'."
-    }
-}
-  
-
- ```  
-
-```json 400 Invalid IBAN  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "692b34b2-86a5-4859-a515-f8838292a56e#1662449297",
-    "Date": 1662449298.0,
-    "errors": {
-        "IBAN": "The value is not a valid IBAN"
-    }
-}  
-
  ```  
 
 </ResponseExample>  
@@ -127,7 +128,6 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
 <RequestExample>  
   
 ```json REST  
-
 {
     "OwnerAddress":{
         "AddressLine1":"Rue des plantes",
@@ -146,7 +146,6 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
 
   
 ```php PHP  
-
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -196,7 +195,6 @@ try {
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
   clientId: 'your-client-id',
@@ -243,7 +241,6 @@ createBankAccount(user.Id, bankAccount)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -290,7 +287,6 @@ createIbanBankAccount(myUser[:Id], myIbanBankAccount)
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay

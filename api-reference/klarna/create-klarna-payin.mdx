@@ -101,7 +101,7 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Created">  
+<AccordionGroup><Accordion title="200 - Created">  
 
 <IdResponse />  
 
@@ -159,12 +159,44 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
 
 <AdditionalDataResponse />  
 
-<ReferenceResponse /></Accordion><Accordion title="400 Billing address country doesn't match Country"></Accordion><Accordion title="400 AdditionalData JSON format error"></Accordion></AccordionGroup>  
+<ReferenceResponse /></Accordion>
+</AccordionGroup> 
+
+<AccordionGroup>  
+
+<Accordion title="400 - Billing address country doesn't match Country">
+```json  
+{
+    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "id": "5c1bd99e-3af9-4ac2-997a-daec27b8a255",
+    "date": 1710162995,
+    "type": "param_error",
+    "errors": {
+        "billing.Country": "The field should equal Country"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - AdditionalData JSON format error">
+```json
+{
+    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "id": "34554ec3-e46e-49f2-b29c-12db3e7e1c90",
+    "date": 1706798154,
+    "type": "param_error",
+    "errors": {
+        "additionalData": "The value is not a valid JSON format"
+    }
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Created  
-
+```json 200 - Created
 {
     "Id": "wt_5a175522-04c3-4115-88ef-3b1b3446c4c6",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -242,35 +274,6 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
     "AdditionalData": "{\"customer_account_info\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"app_id\": \"81363501-3540-494a-8627-33bc6112035d\",\"loyalty_level\": \"high\",\"customer_email\": \"customer@email.com\",\"customer_phone\": \"0611223344\",\"customer_ranking\": 2,\"customer_reviews\": 5,\"last_login_time\": \"2023-10-21T19:11:34Z\",\"account_security\": {\"last_verification_method\": \"2FA TOTP\",\"last_verification_time\": \"2023-10-21T19:11:34Z\",\"device_id\": \"772af5a5-2d55-4a5e-bb79-85969f683810\",\"fraud_behavior\": false,\"devices_linked\": 2,\"phone_verified\": true,\"email_verified\": true,\"failed_transactions_attempts\": 0},\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": \"2022-12-22T18:45:44Z\"}],\"marketplace_seller_info\": [{\"sub_merchant_id\": \"615a0e87-4941-45dc-978d-e6efcbd90ba0\",\"sub_merchant_name\": \"Marketbrick Ltd.\",\"sub_merchant_postal_code\": \"75010\",\"product_category\": \"Computers\",\"product_name\": \"Asus Zenbook 14\",\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2020-06-10T12:02:21Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2020-06-10T12:02:21Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"digital_download\": false,\"seller_rating\": 4.5,\"number_of_trades\": 34,\"volume_of_trades\": 4500}],\"payment_history_full\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 10,\"payment_option\": \"card\",\"total_amount_paid_purchases\": 1000.10,\"date_of_first_paid_purchase\": \"2020-06-10T12:12:34Z\",\"date_of_last_paid_purchase\": \"2023-10-26T18:52:38Z\"},{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 14,\"payment_option\": \"non klarna credit\",\"total_amount_paid_purchases\": 2322.10,\"date_of_first_paid_purchase\": \"2021-10-11T20:31:15Z\",\"date_of_last_paid_purchase\": \"2023-09-22T14:59:22Z\"}],\"marketplace_winner_info\": [{\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2022-12-22T18:45:44Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2023-08-14T08:23:34Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"number_of_trades\": 24,\"volume_of_trades\": 3322}],\"other_delivery_address\": [{\"shipping_method\": \"pick-up point\",\"shipping_type\": \"express\",\"first_name\": \"Test\",\"last_name\": \"Person\",\"street_address\": \"Rue La Fayette\",\"street_number\": \"33\",\"postal_code\": \"75009\",\"city\": \"Paris\",\"country\": \"FR\"}]}",
     "Reference": "1234"
 }  
-
- ```  
-
-```json 400 Billing address country doesn't match Country  
-
-{
-    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "id": "5c1bd99e-3af9-4ac2-997a-daec27b8a255",
-    "date": 1710162995,
-    "type": "param_error",
-    "errors": {
-        "billing.Country": "The field should equal Country"
-    }
-}  
-
- ```  
-
-```json 400 AdditionalData JSON format error  
-
-{
-    "message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "id": "34554ec3-e46e-49f2-b29c-12db3e7e1c90",
-    "date": 1706798154,
-    "type": "param_error",
-    "errors": {
-        "additionalData": "The value is not a valid JSON format"
-    }
-}  
-
  ```  
 
 </ResponseExample>  
@@ -278,7 +281,6 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
 <RequestExample>  
   
 ```json REST  
-
 {
     "Tag": "Created using the Mangopay API Postman collection",
     "AuthorId": "213407540",
@@ -344,7 +346,6 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
 
   
 ```php PHP  
-
 <?php
     require_once 'vendor/autoload.php';
 
@@ -439,7 +440,6 @@ In Production, the minimum accepted `DebitedFunds` amount for Klarna is `1` (reg
 
   
 ```javascript NodeJS  
-
 const mangopayInstance = require('mangopay2-nodejs-sdk');
 const mangopay = new mangopayInstance({
     clientId: "your-client-id",
@@ -454,7 +454,7 @@ let myPayIn = {
     CreditedUserId: '210513027',
     DebitedFunds: { 
         Currency: 'EUR', 
-        Amount: 400 
+        Amount: 400 - 
     },
     Fees: { 
         Currency: 'EUR', 
@@ -528,7 +528,6 @@ createKlarnaPayIn(myPayIn)
 
   
 ```ruby Ruby  
-
 require 'mangopay'
 
 require 'PP'
@@ -548,7 +547,7 @@ let myPayIn = {
     CreditedUserId: '210513027',
     DebitedFunds: { 
         Currency: 'EUR', 
-        Amount: 400 
+        Amount: 400 - 
     },
     Fees: { 
         Currency: 'EUR', 
@@ -622,7 +621,6 @@ pp(createKlarnaPayIn(myPayIn))
 
   
 ```java Java  
-
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Address;
 import com.mangopay.core.Shipping;
@@ -746,7 +744,6 @@ public class HandleRequest {
 
   
 ```python Python  
-
 from pprint import pprint
 
 import mangopay
@@ -823,7 +820,6 @@ pprint(create_klarna_payin)
 
   
 ```aspnet .Net  
-
 using MangoPay.SDK;
 using MangoPay.SDK.Entities;
 using MangoPay.SDK.Core.Enumerations;
@@ -942,7 +938,6 @@ class CreateKlarnaPayIn {
         }).GetAwaiter().GetResult();
     }
 }
-  
 ```  
 
   

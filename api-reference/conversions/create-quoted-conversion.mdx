@@ -46,7 +46,9 @@ Fees can’t be taken on a quoted conversion.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 Succeeded">  
+<AccordionGroup>
+
+<Accordion title="200 - Succeeded">  
 
 <IdResponse />  
 
@@ -78,12 +80,106 @@ Fees can’t be taken on a quoted conversion.
 
 <ConversionRateResponseResponse />  
 
-<TagResponse /></Accordion><Accordion title="400 Quote required for Quoted Conversion"></Accordion><Accordion title="400 Quote expired"></Accordion><Accordion title="400 Quote already used"></Accordion><Accordion title="400 Credited currency doesn’t match quote"></Accordion><Accordion title="400 Debited currency doesn’t match quote"></Accordion><Accordion title="400 Author is not debited wallet owner"></Accordion><Accordion title="400 Author is not credited wallet owner "></Accordion></AccordionGroup>  
+<TagResponse /></Accordion>
+
+</AccordionGroup>
+<AccordionGroup>
+
+
+<Accordion title="400 - Quote required for Quoted Conversion">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "ffaf5ad6-d9f1-47bf-832c-ea5da626037e",
+    "Date": 1706192320,
+    "errors": {
+        "QuoteId": "Quote not found"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - Quote expired">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "31dc86e1-783e-4e34-94d0-4e1891fd74bb",
+    "Date": 1707301282,
+    "errors": {
+        "QuoteId": "The quote is expired"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - Quote already used">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "2b989396-3dc7-4fcf-8a7e-2c6463262633",
+    "Date": 1707301113,
+    "errors": {
+        "QuoteId": "The quote is already consumed"
+    }
+}  
+ ```  
+</Accordion>
+
+<Accordion title="400 - Credited currency doesn’t match quote">
+```json
+{
+    "Message": "Credited currency incompatibility.",
+    "Type": "currency_incompatibility",
+    "Id": "47ade3b3-0c5d-4c32-ae11-1cfd23720a11",
+    "Date": 1707314958,
+    "errors": null
+}  
+ ``` 
+ </Accordion>
+
+<Accordion title="400 - Debited currency doesn’t match quote">
+```json
+{
+    "Message": "Debited currency incompatibility.",
+    "Type": "currency_incompatibility",
+    "Id": "f83e073e-287d-4781-bbba-87256dad4aa0",
+    "Date": 1707315285,
+    "errors": null
+}  
+ ```  
+ </Accordion>
+
+<Accordion title="400 - Author is not debited wallet owner">
+```json
+{
+    "Message": "Author 204071581 is not debited wallet 214818911 owner.",
+    "Type": "author_is_not_debited_wallet_owner",
+    "Id": "c16cb140-0f02-4c5f-a705-9cfdb11fb499",
+    "Date": 1708382645.0,
+    "errors": null
+}  
+ ``` 
+</Accordion>
+<Accordion title="400 - Author is not credited wallet owner ">
+```json
+{
+    "Message": "Author 204071581 is not credited wallet 214818911 owner.",
+    "Type": "author_is_not_credited_wallet_owner",
+    "Id": "5586bf7e-8e33-4e7a-a140-107f7a9e3a26",
+    "Date": 1708382704.0,
+    "errors": null
+}  
+ ```  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 Succeeded  
-
+```json 200 - Succeeded  
 {
     "Id": "cvr_01HP1H6P56SSSTBZK1K9THFP79",
     "QuoteId": "cvrquote_01HP1H6EK4H39SCQ8WJ349WMBB",
@@ -111,97 +207,6 @@ Fees can’t be taken on a quoted conversion.
     },
     "Tag": "Created using the Mangopay API Postman collection"
 }  
-
- ```  
-
-```json 400 Quote required for Quoted Conversion  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "ffaf5ad6-d9f1-47bf-832c-ea5da626037e",
-    "Date": 1706192320,
-    "errors": {
-        "QuoteId": "Quote not found"
-    }
-}  
-
- ```  
-
-```json 400 Quote expired  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "31dc86e1-783e-4e34-94d0-4e1891fd74bb",
-    "Date": 1707301282,
-    "errors": {
-        "QuoteId": "The quote is expired"
-    }
-}  
-
- ```  
-
-```json 400 Quote already used  
-
-{
-    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-    "Type": "param_error",
-    "Id": "2b989396-3dc7-4fcf-8a7e-2c6463262633",
-    "Date": 1707301113,
-    "errors": {
-        "QuoteId": "The quote is already consumed"
-    }
-}  
-
- ```  
-
-```json 400 Credited currency doesn’t match quote  
-
-{
-    "Message": "Credited currency incompatibility.",
-    "Type": "currency_incompatibility",
-    "Id": "47ade3b3-0c5d-4c32-ae11-1cfd23720a11",
-    "Date": 1707314958,
-    "errors": null
-}  
-
- ```  
-
-```json 400 Debited currency doesn’t match quote  
-
-{
-    "Message": "Debited currency incompatibility.",
-    "Type": "currency_incompatibility",
-    "Id": "f83e073e-287d-4781-bbba-87256dad4aa0",
-    "Date": 1707315285,
-    "errors": null
-}  
-
- ```  
-
-```json 400 Author is not debited wallet owner  
-
-{
-    "Message": "Author 204071581 is not debited wallet 214818911 owner.",
-    "Type": "author_is_not_debited_wallet_owner",
-    "Id": "c16cb140-0f02-4c5f-a705-9cfdb11fb499",
-    "Date": 1708382645.0,
-    "errors": null
-}  
-
- ```  
-
-```json 400 Author is not credited wallet owner   
-
-{
-    "Message": "Author 204071581 is not credited wallet 214818911 owner.",
-    "Type": "author_is_not_credited_wallet_owner",
-    "Id": "5586bf7e-8e33-4e7a-a140-107f7a9e3a26",
-    "Date": 1708382704.0,
-    "errors": null
-}  
-
  ```  
 
 </ResponseExample>  
@@ -209,7 +214,6 @@ Fees can’t be taken on a quoted conversion.
 <RequestExample>  
   
 ```json REST  
-
 {
     "QuoteId": "cvrquote_01HP1H6EK4H39SCQ8WJ349WMBB",
     "AuthorId": "204071581",
