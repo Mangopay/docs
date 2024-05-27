@@ -1,0 +1,35 @@
+---  
+ title: '130011'  
+---  
+  
+<table>
+    <tbody>
+        <tr>
+            <th scope="row"><strong>Error message</strong></th>
+            <td>Manual review required - not compatible with payout mode requested</td>
+        </tr>
+        <tr>
+            <th scope="row"><strong>Short description</strong></th>
+            <td>A manual review is required for this payout, so the <inline-code>INSTANT_PAYMENT_ONLY</inline-code> value for <inline-code>PayoutModeRequested</inline-code> cannot be processed.</td>
+        </tr>
+        <tr>
+            <th scope="row"><strong>Categories</strong></th>
+            <td>  
+<div class="label">Payout</div>  
+<div class="label">Instant payment</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+#### Causes  
+
+Some payouts are subject to manual review by Mangopay’s teams for reasons of risk management or AML/CFT.   
+
+This error occurs when a manual review is required on an instant payout requested with `INSTANT_PAYMENT_ONLY` as the value for `PayoutModeRequested`.  
+
+The mode has no fallback to standard processing to enable the review, so an error is returned.  
+
+#### What to do  
+
+Create the payout request again with the `PayoutModeRequested` as `STANDARD` or `INSTANT_PAYMENT` (which falls back to `STANDARD` in case of manual review). This will enable the manual review to be performed by Mangopay’s team. 

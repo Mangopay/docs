@@ -1,45 +1,134 @@
----
-title: '008500'  
----
+---  
+ title: '008500'  
+---  
+  
+<table>
+    <tbody>
+        <tr>
+            <th scope="row"><strong>Error message</strong></th>
+            <td>Transaction blocked by Fraud Policy</td>
+        </tr>
+        <tr>
+            <th scope="row"><strong>Short description</strong></th>
+            <td>This payment was blocked by the platform’s fraud prevention rules or Mangopay’s policy.</td>
+        </tr>
+        <tr>
+            <th scope="row"><strong>Categories</strong></th>
+            <td>  
+<div class="label">Fraud policy</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
 
+#### Causes  
 
-                    | **Error message**     | Transaction blocked by Fraud Policy                   |
-                    |-----------------------|--------------------------------------------|
-                    | **Short description** | This payment does not comply with Mangopay’s anti-fraud rules. |
-                    | **Categories**        | <div class="pill">Fraud policy</div>                         |
-                  
+This error may occur when:  
+-The transaction is blocked by Mangopay’s anti-fraud policy  
+-The transaction is blocked by the platform’s fraud prevention rules  
+
+#### What to do  
+
+In the Hub’s fraud prevention panel, you can find the inquiry linked to the transaction to see the logic to determine the cause of the refusal. Search on the transaction’s `Id`, which corresponds to the inquiry reference.  
+
+If the refusal was caused by a rule set created by the platform, you can review the rule or rules that led to the Refuse recommendation.   
+
+#### Testing  
+
+Mangopay’s fraud prevention solution allows you to:  
+-Test rules on historical data (backtesting)  
+-Publish rules in Simulation mode to generate recommendations without triggering automated actions  
 
 #### Example  
-```json API Response
+
+In the following example, a direct card pay-in was refused because of Mangopay’s anti-fraud policy.  
+```json API response
 {
-    "AuthorId":"217375552",
-    "CreditedWalletId":"216665210",
-    "StatementDescriptor":"Mangopay",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1179
+    "Id": "4855823599",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1710756355,
+    "AuthorId": "3946356658",
+    "CreditedUserId": "3946356658",
+    "DebitedFunds": {
+        "Currency": "GBP",
+        "Amount": 3649
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "CreditedFunds": {
+        "Currency": "GBP",
+        "Amount": 3649
     },
-    "Tag":"custom meta",
-    "Culture":"fr",
-    "CardId":"3339166628",
-    "SecureMode":"DEFAULT",
-    "SecureModeReturnURL":"https://return url",
-    "IpAddress":"ipv6",
-    "BrowserInfo":{
-        "AcceptHeader":"*/*",
-        "JavaEnabled":false,
-        "Language":"fr-FR",
-        "ColorDepth":32,
-        "ScreenHeight":2179,
-        "ScreenWidth":1080,
-        "TimeZoneOffset":60,
-        "UserAgent":"useragent",
-        "JavascriptEnabled":true
+    "Fees": {
+        "Currency": "GBP",
+        "Amount": 0
     },
-    "Requested3DSVersion":"V2_1"
+    "Status": "FAILED",
+    "ResultCode": "008500",
+    "ResultMessage": "Transaction blocked by Fraud Policy",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "3316357763",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "4030432624",
+    "SecureModeReturnURL": null,
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "658e:1b88:7f7a:a60b:32af:0b7f:56e1:2e9a",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "City": null,
+            "Region": null,
+            "PostalCode": null,
+            "Country": null
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "City": null,
+            "Region": null,
+            "PostalCode": null,
+            "Country": null
+        }
+    },
+    "Requested3DSVersion": "V2_1",
+    "Applied3DSVersion": null,
+    "RecurringPayinRegistrationId": null,
+    "PreferredCardNetwork": null,
+    "PaymentCategory": "ECommerce",
+    "CardInfo": {
+        "BIN": "475141",
+        "IssuingBank": "NATIONWIDE BUILDING SOCIETY",
+        "IssuerCountryCode": "GB",
+        "Type": "DEBIT",
+        "Brand": "VISA",
+        "SubType": "CLASSIC"
+    }
 }
 ```
