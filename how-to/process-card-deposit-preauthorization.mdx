@@ -8,13 +8,18 @@ sidebarTitle: 'Process a 30-day card preauthorization'
 
 This how-to guide will show you how to preauthorize funds on a card for 30 days and then debit the payment. The 30-day preauthorization feature gives flexibility for several use cases, and this guide shows you each of them.
 
-<a href="#">Learn more about preauthorizations</a>  
+[Learn more about preauthorizations](/guides/payment-methods/card/deposit-preauthorization)
 
-## 1/ Secure the funds  
+
+## 1. Secure the funds  
 
 Create a deposit preauthorization to hold funds for 30 days.  
 
-### Make the request  
+### Make the request
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/deposit-preauthorizations/card/direct](/api-reference/deposit-preauthorizations/create-deposit-preauthorization)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId": "203063430",
@@ -65,6 +70,48 @@ Create a deposit preauthorization to hold funds for 30 days.
     "Tag": "Created using Mangopay API Postman Collection"
 }
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Deposit
+from mangopay.utils import Money, BrowserInfo
+
+natural_user = NaturalUser.get('213753890')
+
+deposit_preauthorization = Deposit(
+    author_id = natural_user.id,
+    debited_funds = Money(amount=3000, currency='EUR'),
+    card_id = '213944219',
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_deposit_preauthorization = deposit_preauthorization.save()
+
+pprint(create_deposit_preauthorization)  
+```
+</CodeGroup>
 
 In the information returned, retain the `Id` of the Deposit Preauthorization for the next steps.  
 ```json API response
@@ -152,7 +199,7 @@ You can also use the `SecureModeNeeded` boolean to determine this redirection be
 
 For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of the How to process a card payment tutorial.  
 
-## 2/ Use the deposit preauthorization  
+## 2. Use the deposit preauthorization  
 
 Once the Deposit Preauthorization's `PaymentStatus` is `WAITING`, you can use the hold on the funds in a number of ways.  
 
@@ -177,7 +224,7 @@ Any captures or complements must be requested within 30 days, whether or not the
 ### A. FULL OR PARTIAL CAPTURE WITHOUT COMPLEMENT  
 
 This option involves only one step:  
--Capture the preauthorized funds either in full or partially  
+- Capture the preauthorized funds either in full or partially  
 
 <Note>  
 **Note - Multiple captures not possible** 
@@ -185,9 +232,13 @@ This option involves only one step:
 Capturing the preauthorized amount (without a complement) can only be done once. It is possible to do a partial capture (for an amount less than the preauthorized amount).  
 </Note>  
 
-To capture the preauthorized funds without taking advantage of the complement feature, use the dedicated Create a Deposit Preauthorized PayIn without complement endpoint.  
+To capture the preauthorized funds without taking advantage of the complement feature, use the dedicated [Create a Deposit Preauthorized PayIn without complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-without-complement) endpoint.  
 
 Specify the `Amount` values of debited funds and fees. The amount of the `DebitedFunds` must be less than or equal to the preauthorized amount.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/deposit-preauthorized/direct/full-capture](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-without-complement)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId": "203063430",
@@ -205,10 +256,42 @@ Specify the `Amount` values of debited funds and fees. The amount of the `Debite
 }
 ```  
 
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardPreAuthorizedDepositPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorized_deposit_payin = CardPreAuthorizedDepositPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    deposit_id = '3766b5f6-717b-4863-b0e9-aab4d174ad88',
+    debited_funds =  Money(amount=2000, currency='EUR'),
+    fees = Money(amount=1000, currency='EUR'),
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorized_deposit_payin = preauthorized_deposit_payin.save()
+
+pprint(create_preauthorized_deposit_payin)  
+```
+</CodeGroup>
+
+
 If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.  
 
 You can set up a webhook for the following event type to be notified of the status change:  
--DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
+- DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED  
 
 Use the View a Deposit Preauthorization endpoint to see these details.  
 
@@ -235,7 +318,10 @@ This option is a two-step process:
 Capturing part of the initially preauthorized amount is not possible if it is followed by a complement.  
 </Note>  
 
-To capture the preauthorized funds and also capture an additional amount as a complement, use the dedicated Create a Deposit Preauthorized PayIn prior to complement endpoint.  
+To capture the preauthorized funds and also capture an additional amount as a complement, use the dedicated [Create a Deposit Preauthorized PayIn prior to complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-prior-to-complement) endpoint.  
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/deposit-preauthorized/direct/capture-with-complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-prior-to-complement)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId": "203063430",
@@ -252,6 +338,37 @@ To capture the preauthorized funds and also capture an additional amount as a co
     "Tag": "Created using Mangopay API Postman Collection"
 }
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardPreAuthorizedDepositPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorized_deposit_payin = CardPreAuthorizedDepositPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    deposit_id = '3766b5f6-717b-4863-b0e9-aab4d174ad88',
+    debited_funds =  Money(amount=2000, currency='EUR'),
+    fees = Money(amount=1000, currency='EUR'),
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorized_deposit_payin = preauthorized_deposit_payin.save()
+
+pprint(create_preauthorized_deposit_payin)  
+```
+</CodeGroup> 
 
 If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `TO_BE_COMPLETED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.  
 
@@ -311,7 +428,10 @@ This option is a two step-process:
 - Request a no-show, indicating that the preauthorized funds were not used  
 - Capture a complement, for example as penalty or other service charge  
 
-To request a no-show, change the `PaymentStatus` to `NO_SHOW_REQUESTED`.  
+To request a no-show, change the `PaymentStatus` to `NO_SHOW_REQUESTED`.
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/deposit-preauthorizations/&lcub;DepositId&rcub;](/api-reference/deposit-preauthorizations/cancel-deposit-preauthorization-request-no-show)
+
 ```json REST
 {
    "PaymentStatus": "NO_SHOW_REQUESTED"
@@ -333,7 +453,11 @@ You can set up a webhook for the following event types to be notified of the sta
 - DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW_REQUESTED  
 - DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW  
 
-To capture the complement, use the dedicated Create a Deposit Preauthorized PayIn complement endpoint.  
+To capture the complement, use the dedicated [Create a Deposit Preauthorized PayIn complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-complement) endpoint.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/deposit-preauthorized/direct/complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-complement)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId": "203063430",
@@ -350,6 +474,37 @@ To capture the complement, use the dedicated Create a Deposit Preauthorized PayI
     "Tag": "Created using Mangopay API Postman Collection"
 }
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardPreAuthorizedDepositPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorized_deposit_payin = CardPreAuthorizedDepositPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    deposit_id = '3766b5f6-717b-4863-b0e9-aab4d174ad88',
+    debited_funds =  Money(amount=10000, currency='EUR'),
+    fees = Money(amount=1000, currency='EUR'),
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorized_deposit_payin = preauthorized_deposit_payin.save()
+
+pprint(create_preauthorized_deposit_payin)  
+```
+</CodeGroup>
 
 After a successful pay-in complement, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the complement is linked as the `PayinComplementId`.  
 
@@ -372,11 +527,40 @@ Once the `PaymentStatus` is `VALIDATED`, no further action is possible.
 ### D. CANCEL  
 
 If the Deposit Preauthorization won’t be used, either to capture the preauthorized funds or a complement, you can release the preauthorized funds by changing the `PaymentStatus` to `CANCELED`.  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/deposit-preauthorizations/&lcub;DepositId&rcub;](/api-reference/deposit-preauthorizations/cancel-deposit-preauthorization-request-no-show)
+
+<CodeGroup>
 ```json REST
 {
    "PaymentStatus": "CANCELED"
 }
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Deposit
+
+deposit_preauthorization = Deposit(
+    id = '5ac7a986-cf01-47f0-a882-8b0928ae5458',
+    payment_status = 'CANCELED'
+)
+
+cancel_deposit_preauthorization = deposit_preauthorization.save()
+
+pprint(cancel_deposit_preauthorization)  
+```
+</CodeGroup>
+
 
 Once the `PaymentStatus` is `CANCELED`, no further action is possible.  
 ```json API response parameters - Canceled
@@ -395,8 +579,8 @@ You can set up a webhook for the following event types to be notified of the sta
 
 ## Related resources  
 
-<Card title="Article">Preauthorization</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/deposit-preauthorization">30-day preauthorization</Card>  
 
-<Card title="Endpoints">The Deposit Preauthorization object</Card>  
+<Card title="Endpoint" href="/api-reference/deposit-preauthorizations/deposit-preauthorization-object">The Deposit Preauthorization object</Card>  
 
-<Card title="Dev tools">Event types</Card>
+<Card title="Resource" href="/webhooks/event-types">Event types</Card>

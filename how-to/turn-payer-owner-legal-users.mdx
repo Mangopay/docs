@@ -22,18 +22,18 @@ Users created before May 2022, when `UserCategory` was introduced, were categori
 A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.  
 </Note>  
 
-## 1/ Collect the necessary information  
+## 1. Collect the necessary information  
 
 Legal users categorized as Payers only need to provide the most basic information at their creation. You need more information for the Owner category.  
 
 ### User information  
 
 Gather the following additional information about your users:  
--Headquarters address  
--Date of birth of the legal representative  
--Country of residence of the legal representative  
--Nationality of the legal representative  
--Company number (needed for the Business type, optional for Partnership but recommended if the entity has one)  
+- Headquarters address  
+- Date of birth of the legal representative  
+- Country of residence of the legal representative  
+- Nationality of the legal representative  
+- Company number (needed for the Business type, optional for Partnership but recommended if the entity has one)  
 
 ### Mangopay’s terms and conditions  
 
@@ -41,9 +41,12 @@ Mangopay’s T&Cs apply to Owners on your platform. You need to ensure your end 
 
 The relevant T&Cs for your users are provided when your platform signs the contract with Mangopay.  
 
-## 2/ Update the user object  
+## 2. Update the user object  
 
 Update the legal user object with the collected information as well as the new `UserCategory`.  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/users/legal/&lcub;UserId&rcub;](/api-reference/users/update-legal-user)
+
 <CodeGroup>  
 
 ```json REST
@@ -65,6 +68,63 @@ Update the legal user object with the collected information as well as the new `
 }
 ```  
 
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HYJVHY77NDDM97TQP57W87MH';
+    $user = $api->Users->Get($userId);
+
+    $user->Name = 'Smith corp';
+    $user->Email = 'smithupdated@example.com';
+    $user->LegalPersonType = \MangoPay\LegalPersonType::Business;
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->HeadquartersAddress = $address;
+    $user->LegalRepresentativeAddress = $address;
+    
+    $user->LegalRepresentativeFirstName = 'Alex';
+    $user->LegalRepresentativeLastName = 'Smith';
+    $user->LegalRepresentativeEmail = 'asmith@example.com';
+    $user->LegalRepresentativeBirthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->LegalRepresentativeNationality = 'FR';
+    $user->LegalRepresentativeCountryOfResidence = 'FR';
+    $user->CompanyNumber = 'LU123456';
+    
+    $user->Tag = 'Updated using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
@@ -73,7 +133,7 @@ const mangopay = new mangopayInstance({
 }) 
 
 let myLegalUser = {
-  Id: '175370690',
+  Id: 'user_m_01HYJVHY77NDDM97TQP57W87MH',
   HeadquartersAddress: {
     AddressLine1: '57 Main Road',
     AddressLine2: null,
@@ -128,7 +188,7 @@ def updateLegalUser(legalUserId, legalUserObject)
 end
 
 myLegalUser = {
-    Id: '194338122',
+    Id: 'user_m_01HYJVHY77NDDM97TQP57W87MH',
     HeadquartersAddress: {
     AddressLine1: '57 Main Road',
     AddressLine2: 'PB 456',
@@ -145,6 +205,78 @@ myLegalUser = {
   PersonType: 'LEGAL'
 }
 ```  
+
+```java Java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserLegal;
+
+import java.lang.reflect.Field;
+
+public class UpdateLegalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HRS7PQEGE4YGCM1AZK1ENTGE");
+
+        myUser.setName("C. Dickinson");
+        myUser.setEmail("best@dickinson.com");
+        myUser.setUserCategory("Owner");
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+        System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import LegalUser
+
+legal_user = LegalUser(
+    id = 'user_m_01HRS7PQEGE4YGCM1AZK1ENTGE',  
+    user_category = 'Owner',
+    legal_person_type = 'SOLETRADER'
+)
+
+update_legal_user = legal_user.save()
+
+pprint(update_legal_user)
+```
+
 </CodeGroup>  
 
 <Warning>  
@@ -155,8 +287,8 @@ If your recategorized users intend to make payouts, they will need to successful
 
 ## Related resources  
 
-<Card title="Tutorial">How to turn a Payer into a Owner (Natural users)</Card>  
+<Card title="How to" href="/how-to/turn-payer-owner-natural-users">Turn a Payer into a Owner (natural users)</Card>  
 
-<Card title="Article">User categories</Card>  
+<Card title="Guide" href="/guides/users/categories">User categories</Card>  
 
-<Card title="Article">User verification process</Card>
+<Card title="Guide" href="/guides/users/verification/introduction">User verification process</Card>

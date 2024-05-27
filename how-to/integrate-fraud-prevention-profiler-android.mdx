@@ -104,7 +104,7 @@ Before you can use the framework, you must set the Merchant Number and the Appli
 - Merchant Number – Identification number provided to you during the integration process needed before the profiler can execute any further actions.
 - Application Context – Android interface allowing you to access application specific resources and classes.
 
-**1/ Set up your Application subclass.**
+**1. Set up your Application subclass.**
 
 According to Android documentation, the Application class instance, or its subclass defined in a manifest file, is the first thing created in a process. If you have your own Application subclass, its instance will be created during the attempt session. Any application setup done in this isolated service will most likely fail: whenever you use things like shared preferences or for example SoLoader, which extracts APKs to disk, an isolated process cannot do this.
 
@@ -128,7 +128,7 @@ class ExampleApplication : Application() {
 }
 ```
 
-**2/ Get the Application context.**
+**2. Get the Application context.**
 
 There are multiple ways to get a reference to the application context instance.
 
@@ -165,7 +165,7 @@ override fun onCreate() {
 ```
 </CodeGroup>
 
-**3/ Initialize the profiler by using `Profiler.initialize()`.**
+**3. Initialize the profiler by using `Profiler.initialize()`.**
 
 The initialize method can only be called once. Any subsequent calls will throw an exception.
 
@@ -317,14 +317,14 @@ To collect the most precise location data from the user, there are 2 needed perm
 - `ACCESS_COARSE_LOCATION` – Data from the most battery-efficient non-GPS provider available.
 - `ACCESS_FINE_LOCATION` – GPS data in reporting user location.
 
-**1/ In the _AndroidManifest.xml_ file, add the following in your `manifest`**
+**1. In the _AndroidManifest.xml_ file, add the following in your `manifest`**
 
 ``` xml XML 
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 ```
 
-**2/ Declare `requestPermissionLauncher` variable in your activity.**
+**2. Declare `requestPermissionLauncher` variable in your activity.**
 
 ``` koltin Kotlin
 private var requestPermissionLauncher = ActivityResultContracts.RequestMultiplePermissions()
@@ -338,7 +338,7 @@ private var requestPermissionLauncher = ActivityResultContracts.RequestMultipleP
 }
 ```
 
-**3/ Request permission from the user.**
+**3. Request permission from the user.**
 
 ``` kotlin Kotlin
 try {
@@ -358,14 +358,14 @@ As the SDK saves universally unique identifiers (UUIDs) values on the external s
 
 For more information, see the [Android Developers Manifest.permission](https://developer.android.com/reference/android/Manifest.permission) article.
 
-**1/ In the _activity_main.xml_ file, add the following in your `manifest` tag:**
+**1. In the _activity_main.xml_ file, add the following in your `manifest` tag:**
 
 ``` xml XML
 <uses-permission android:name="READ_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
 ```
 
-**2/ Declare `requestPermissionLauncher` variable in your activity.**
+**2. Declare `requestPermissionLauncher` variable in your activity.**
 
 ``` kotlin Kotlin
 private var requestPermissionLauncher = ActivityResultContracts.RequestMultiplePermissions()
@@ -379,7 +379,7 @@ private var requestPermissionLauncher = ActivityResultContracts.RequestMultipleP
 }
 ```
 
-**3/ Request permission from the user.**
+**3. Request permission from the user.**
 
 ``` kotlin Kotlin
 if (Build.VERSION.SDK_INT <= 28) {
@@ -512,4 +512,4 @@ class MainActivity : AppCompatActivity() {
 
 ## Related resources
 
-<Card title="Article">Fraud prevention - Overview</Card>
+<Card title="Guide" href="/guides/fraud-prevention/overview">Fraud prevention - Overview</Card>

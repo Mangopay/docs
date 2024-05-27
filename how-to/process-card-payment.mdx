@@ -12,7 +12,7 @@ This how-to guide will take you through the steps to successfully process a paym
 
 - A `ClientId` and an API key ([get a Sandbox account for free](https://hub.mangopay.com/))
 - A User object created for your end userr, and their associated Wallet
-- The end user’s card with which to pay ([use our test cards](https://mangopay.com/docs/dev-tools/testing/payment-methods))
+- The end user’s card with which to pay use our test cards
 - The URL of a page on your platform to return the end user to after authentication
 </Info>
 
@@ -21,18 +21,116 @@ The Mangopay API provides two distinct card-related objects:
 - **Card** - The tokenized version of the card, whose `CardId` will allow you to make payments.  
 
 
-## 1/ Create the Card Registration  
+## 1. Create the Card Registration  
 
 In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.  
 
 You also need to define the currency and type of the card at this stage.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/cardregistrations](/api-reference/card-registrations/create-card-registration)
+
+<CodeGroup>
 ```json REST
 {
-    "UserId":"197111221",
+    "UserId":"user_m_01HQK53VP687RBSH2Q5TJZRR3S",
     "Currency":"EUR",
     "CardType":"CB_VISA_MASTERCARD"
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardRegistration = new \MangoPay\CardRegistration();
+
+    $cardRegistration->UserId = 'user_m_01HQK53VP687RBSH2Q5TJZRR3S';
+    $cardRegistration->CardType = 'CB_VISA_MASTERCARD';
+    $cardRegistration->Currency = 'EUR';
+    $cardRegistration->Tag = 'Created using Mangopay PHP SDK';
+
+    $response = $api->CardRegistrations->Create($cardRegistration);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let user = {
+    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  }
+
+let userCardRegistration = {
+    UserId: user.Id,
+    Currency: 'EUR',
+    CardType: 'CB_VISA_MASTERCARD'
+}
+
+const createCardRegistration = async(cardRegistration) => {
+    return await mangopay.CardRegistrations.create(cardRegistration)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+
+createCardRegistration(userCardRegistration)
+```
+
+```python Python 
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardRegistration
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+card_registration = CardRegistration(
+    user_id = natural_user.id,
+    currency = 'GBP',
+    card_type =  'CB_VISA_MASTERCARD'
+)
+
+create_card_registration = card_registration.save()
+
+pprint(create_card_registration)  
+```
+</CodeGroup>
+
 ```json API response - Create card registration
 {
     "Id": "198410142",
@@ -57,7 +155,7 @@ From this response, you will need to save the following values for the next step
 - `PreregistrationData`  
 - `CardRegistrationURL`  
 
-## 2/ Send data to the tokenization server  
+## 2. Send data to the tokenization server  
 
 Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
 
@@ -69,8 +167,8 @@ The Vault SDK is available for web, iOS, and Android.
 </Note>  
 
 Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
--Use `AccessKey` data for the `accessKeyRef` parameter  
--Use `PreregistrationData` data for the `data` parameter  
+- Use `AccessKey` data for the `accessKeyRef` parameter  
+- Use `PreregistrationData` data for the `data` parameter  
 
 You also need the end user’s card details, entered on the payment page:
 
@@ -106,6 +204,9 @@ You also need the end user’s card details, entered on the payment page:
   
 For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS compliant tokenization server as described below.  
 </Warning>  
+
+> [**POST** &lcub;CardRegistrationURL&rcub;](/api-reference/card-registrations/tokenize-card)
+
 <CodeGroup>  
 
 ```json REST
@@ -118,7 +219,7 @@ For security reasons, it is strictly forbidden to send the card details to your 
 }
 ```  
 
-```javascript 
+```javascript NodeJS
 const cardInfoObject = {
   cardNumber: '4970107111111119',
   cardExpirationDate: '1127',
@@ -167,7 +268,7 @@ data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh
 
 Save the returned string for the next step (if you’re not using the Vault SDK).  
 
-## 3/ Update the Card Registration with tokenization data  
+## 3. Update the Card Registration with tokenization data  
 
 <Note>  
 **Note - Not necessary if using Vault SDK** 
@@ -175,12 +276,110 @@ Save the returned string for the next step (if you’re not using the Vault SDK)
 If you’re using the Vault SDK, this step is taken care of for you.  
 </Note>  
 
-Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`.  
+Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`. 
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/cardregistrations/CardRegistrationId](/api-reference/card-registrations/update-card-registration)
+
+
+<CodeGroup>
 ```json REST
 {
     "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg"
 }
 ```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardRegistration = new \MangoPay\CardRegistration();
+
+    $cardRegistration->Id = 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD';
+    $cardRegistration->RegistrationData = 'data=EwQibNkLWbGepaBektTHQcnk7KxDDpQybRm3BWmKLu4DKdgmC-JI0b4bK9UW5C3u1L4A4AkhT3LJqC3_FAvbwYQXIPvj1ElxL2OIJfvlS3YXlJyOctdX1PGkkgCkgl3j0ftIYwFxOdfmDQ5GtM_cIg';
+
+    $response = $api->CardRegistrations->Update($cardRegistration);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let user = {
+    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  }
+
+let userCardRegistration = {
+    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
+    UserId: user.Id,
+    Currency: 'EUR',
+    CardType: 'CB_VISA_MASTERCARD',
+    RegistrationData: 'data=acIcnwwLleiAvlZUea5VxT5mw_fK696E0m-dvIdK-KnTCrftajOU7W3fTvYLnKiF68q7RUkmAEL86Wi8c0oX7wHD6vfA3lowMRD7SvlcCCl6Xl3Esy_DIyBzznraJzm70ftIYwFxOdfmDQ5GtM_cIg'
+}
+
+const updateCardRegistration = async(cardRegistration) => {
+    return await mangopay.CardRegistrations.update(cardRegistration)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+
+updateCardRegistration(userCardRegistration)
+```
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import CardRegistration
+
+user_card_registration = CardRegistration(
+   id = 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
+   user_id = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+   currency = 'EUR',
+   card_type = 'CB_VISA_MASTERCARD',
+   registration_data = 'data=R7hxMYui4h4rBkaNwbiH1DvQL35Y-goFSYQI384_jNsDngV32O95BVgk3Pg7vqU_mZIFFs4gFl24VlSBXNiuoi4Be_uieN3jEegz77g8ElaToz_b7S91YuROvHH0w6J40ftIYwFxOdfmDQ5GtM_cIg'
+)
+
+update_card_registration = user_card_registration.save()
+
+pprint(update_card_registration)
+```
+</CodeGroup>
+
 ```json API response - Update card registration
 {
     "Id":"198410142",
@@ -208,7 +407,7 @@ The card is now registered, and the response contains the `CardId` which can be 
 A successful transaction (preauthorization, pay-in, or recurring) within 24 hours of the card registration is required to validate a card. Otherwise, the card remains invalid and a new card registration will be necessary to make a payment.  
 </Warning>  
 
-## 4/ Get the end user's session data  
+## 4. Get the end user's session data  
 
 Besides the `CardId`, to process an online card payment, you need to capture information from your end user’s browsing session.  
 
@@ -304,7 +503,7 @@ console.log(browserInfo);
     </tbody>
 </table>
 
-## 5/ Request the payment (Direct Card PayIn)  
+## 5. Request the payment (Direct Card PayIn)  
 
 <Note>  
 **Note - Recurring card payments and preauthorizations require other endpoints** 
@@ -331,6 +530,10 @@ When you make the payment request, you also need to:
 - Specify the page to which the user will be returned after payment (Step 7)  
 
 Read these steps before continuing.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/card/direct](/api-reference/direct-card-payins/create-direct-card-payin)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId":"197111221",
@@ -387,7 +590,282 @@ Read these steps before continuing.
     }
 }
 ```  
-```json REST
+
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payIn = new \MangoPay\PayIn();
+    $payIn->Tag = "Created using Mangopay PHP SDK";
+    $payIn->CreditedWalletId = "148968396";
+    $payIn->PaymentType = "CARD";
+    $payIn->AuthorId = "146476890";
+    
+    $payIn->DebitedFunds = new \MangoPay\Money();
+    $payIn->DebitedFunds->Amount = 1000;
+    $payIn->DebitedFunds->Currency = "EUR";
+    
+    $payIn->Fees = new \MangoPay\Money();
+    $payIn->Fees->Amount = 10;
+    $payIn->Fees->Currency = "EUR";
+    
+    $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsCard();
+    $payIn->PaymentDetails->CardId = "169687329";
+    $payIn->PaymentDetails->StatementDescriptor = "Mangopay";
+    $payIn->PaymentDetails->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+    
+    $payIn->PaymentDetails->BrowserInfo = new \MangoPay\BrowserInfo();
+    $payIn->PaymentDetails->BrowserInfo->AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8";
+    $payIn->PaymentDetails->BrowserInfo->JavaEnabled = true;
+    $payIn->PaymentDetails->BrowserInfo->Language = "FR-FR";
+    $payIn->PaymentDetails->BrowserInfo->ColorDepth = 4;
+    $payIn->PaymentDetails->BrowserInfo->ScreenHeight = 1800;
+    $payIn->PaymentDetails->BrowserInfo->ScreenWidth = 400;
+    $payIn->PaymentDetails->BrowserInfo->TimeZoneOffset = 60;
+    $payIn->PaymentDetails->BrowserInfo->UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+    $payIn->PaymentDetails->BrowserInfo->JavascriptEnabled = true;
+    
+    $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+    $payIn->ExecutionDetails->SecureModeReturnURL = "https://mangopay.com/docs/please-ignore";
+    $payIn->ExecutionDetails->Culture = 'FR';
+    
+    $response = $api->PayIns->Create($payIn);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myDirectCardPayIn = {
+  PaymentType: 'CARD',
+  ExecutionType: 'DIRECT',
+  AuthorId: '146476890',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '146476890',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '148968396',
+  CardId: '169687329',
+  CardType: 'CB_VISA_MASTERCARD',
+  SecureMode: 'DEFAULT',
+  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+  BrowserInfo: {
+    AcceptHeader:
+      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+    JavaEnabled: true,
+    Language: 'FR-FR',
+    ColorDepth: 4,
+    ScreenHeight: 1800,
+    ScreenWidth: 400,
+    TimeZoneOffset: 60,
+    UserAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    JavascriptEnabled: true,
+  },
+  IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  StatementDescriptor: 'Nov2023',
+}
+
+const createDirectCardPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createDirectCardPayIn(myDirectCardPayIn)  
+```
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDirectCardPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::Card::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Ruby SDK',
+  CreditedUserId: '192822811',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '192822814',
+  CardId: '192822826',
+  CardType: 'CB_VISA_MASTERCARD',
+  SecureMode: 'DEFAULT',
+  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+  BrowserInfo: {
+    AcceptHeader:
+      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+    JavaEnabled: true,
+    Language: 'FR-FR',
+    ColorDepth: 4,
+    ScreenHeight: 1800,
+    ScreenWidth: 400,
+    TimeZoneOffset: 60,
+    UserAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    JavascriptEnabled: true,
+  },
+  IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  StatementDescriptor: 'Nov2023',
+}
+
+createDirectCardPayIn(myPayIn)  
+```
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, LegalUser, Wallet, Card, DirectPayIn
+from mangopay.utils import Money, BrowserInfo
+
+legal_user = LegalUser.get('211918806')
+legal_user_wallet = Wallet.get('214564765')
+
+natural_user = NaturalUser.get('213753890')
+natural_user_card= Card.get('213944219')
+
+direct_payin = DirectPayIn(
+    author = natural_user,
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=1, currency='EUR'),
+    credited_wallet_id = legal_user_wallet.id,
+    card_id = natural_user_card,
+    secure_mode = 'DEFAULT',
+    secure_mode_return_url = "https://mangopay.com/docs/please-ignore",
+    tag = 'Created with Mangopay Python SDK',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187',
+)
+
+create_direct_payin = direct_payin.save()
+
+pprint(create_direct_payin)  
+```
+</CodeGroup>
+
+```json API Response
 {
     "Id":"198410196",
     "Tag":"Created using Mangopay API Collection Postman",
@@ -468,19 +946,21 @@ Read these steps before continuing.
 }
 ```  
 
-## 6/ Redirect the user to 3DS protocol (if required)  
+## 6. Redirect the user to 3DS protocol (if required)  
 
 Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
 
 You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
 
-See the 3DS article for more information.  
+See the [3DS](/guides/payment-methods/card/3ds) article for more information.  
 
-## 7/ Redirect the user after payment  
+## 7. Redirect the user after payment  
 
 After the payment, whether it includes 3DS or not and whatever the outcome, the end user is returned to the `SecureModeReturnURL` which you defined.  
 
-The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:<Info> http://example.com?transactionId=`Id`</Info>  
+The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:
+
+<Info> http://example.com?transactionId=`Id`</Info>  
 
 Mangopay updates the `Status` of the pay-in to indicate a successful or failed payment depending on the outcome of the end user's authentication.  
 
@@ -491,9 +971,9 @@ You should set up the following hooks to be notified of the outcome:
 
 You should also view the pay-in (using its `Id`) to confirm the result of the transaction, allowing you to customize the end user’s experience after the payment.  
 
-<Card title="ARTICLE">Hook notifications</Card>  
+<Card title="Guide" href="/webhooks">Hook notifications</Card>  
 
-<Card title="ENDPOINT">View a PayIn</Card>  
+<Card title="Endpoint" href="/api-reference/direct-card-payins/view-payin-direct-card">View a PayIn</Card>  
 
 If the pay-in is successful, the card's `Validity` parameter is set to `Valid` and it can be used for other payments at a later stage.   
 
@@ -504,7 +984,7 @@ Under no circumstances should card information be kept without the end user's ap
 If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
 </Warning>  
 
-## 8/ Deactivate the card (if required)  
+## 8. Deactivate the card (if required)  
 
 Once the pay-in is successful, if the end user did not request to save their card for later, set the card’s `Active` parameter to false to deactivate the card. This action is irreversible.  
 
@@ -513,11 +993,128 @@ Once the pay-in is successful, if the end user did not request to save their car
   
 Deactivating the card will not prevent the end user from making a payment with the same card in future. You will need to go through the card registration process again.  
 </Note>  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/cards/&lcub;CardId&rcub;](/api-reference/cards/deactivate-card)
+
+<CodeGroup>
 ```json REST
 {
     "Active": false,
 }
 ```  
+
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $card = new \MangoPay\Card();
+
+    $card->Id = '198660883';
+    $card->Active = false;
+
+    $response = $api->Cards->Update($card);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myCard = {
+  Id: '156285393',
+  Active: false,
+}
+
+const deactivateCard = async (card) => {
+  return await mangopay.Cards.update(card)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+deactivateCard(myCard)  
+```
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def deactivateCard(cardId, cardObject)
+    begin
+        response = MangoPay::Card.update(cardId, cardObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to deactivate card: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCard = {
+    Id: '194579926',
+    Active: false
+}
+
+deactivateCard(myCard[:Id], myCard)  
+```
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Card
+
+user_card = Card(
+    id = '213601128',
+    active = False
+)
+
+deactive_card = user_card.save()
+
+pprint(deactive_card)
+```
+</CodeGroup>
+
 
 ## Flow diagram  
 
@@ -525,8 +1122,8 @@ The overall flow of a card payment is given in the diagram below, indicating the
 
 ## Related resources  
 
-<Card title="Article">3DS</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/3ds">3DS</Card>  
 
-<Card title="Article">Recurring card payments</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/recurring">Recurring card payments</Card>  
 
-<Card title="Article">Preauthorized card payments</Card>
+<Card title="Guide" href="/guides/payment-methods/card/preauthorization">Preauthorized card payments</Card>

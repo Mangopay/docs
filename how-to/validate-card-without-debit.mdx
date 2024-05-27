@@ -21,9 +21,9 @@ This guide focuses on how to perform a card validation.
 - The URL of a page on your platform to return the end user to after authentication
 </Info>
 
-## 1/ Request the card validation  
+## 1. Request the card validation  
 
-Using the User’s `Id` as the `AuthorId`, use the Create a Card Validation endpoint to make the request for validation without a payment.  
+Using the User’s `Id` as the `AuthorId`, use the [Create a Card Validation](/api-reference/card-validations/create-card-validation) endpoint to make the request for validation without a payment.  
 
 When you make the card validation request, you also need to:  
 - Be ready to handle 3DS authentication (Step 2)  
@@ -31,6 +31,9 @@ When you make the card validation request, you also need to:
 
 Read these steps before continuing.
 
+> [**POST** /V2.01/&lcub;ClientId&rcub;/cards/&lcub;CardId&rcub;/validation](/api-reference/card-validations/create-card-validation)
+
+<CodeGroup>
 ```json REST
 {
     "AuthorId": "2659641945",
@@ -51,6 +54,47 @@ Read these steps before continuing.
     "PreferredCardNetwork": "VISA"
 }
 ```  
+
+```python Python
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardValidation
+from mangopay.utils import BrowserInfo
+
+natural_user = NaturalUser.get('213600749')
+
+user_card_validation = CardValidation(
+    author = natural_user,
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    ip_address = '159.180.248.187',
+    tag = 'Created with Mangopay Python SDK',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    card_id = '213601128'
+)
+
+create_card_validation = user_card_validation.validate(card_id = user_card_validation.card_id)
+
+pprint(create_card_validation)  
+```
+</CodeGroup>
+
+
 ```json API response
 {
     "Id": "158aa411-6eaa-420c-82b5-bee7dab2e49c",
@@ -91,7 +135,7 @@ Read these steps before continuing.
 }
 ```  
 
-## 2/ Redirect the user to 3DS protocol (if required)  
+## 2. Redirect the user to 3DS protocol (if required)  
 
 Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication.  
 
@@ -108,7 +152,7 @@ Because you cannot create two requests at once for the same card, the card valid
 The Card `Validity`, however, will remain `UNKNOWN`, which allows you to request a new Card Validation.  
 </Note>  
 
-## 3/ Redirect the user after authentication  
+## 3. Redirect the user after authentication  
 
 After the card validation, whatever the authentication outcome, the end user is returned to the `SecureModeReturnURL` which you defined.  
 
@@ -149,12 +193,14 @@ You can set up the following hooks to be notified of the outcome:
 
 The card validation endpoints contain HTTP error examples, such as when a card validation is already in progress or the card is already valid or invalid.  
 
-In terms of functional errors, the card validation endpoints may return the same errors as other card pay-in requests. <a href="#" class="btn Secondary normal">See all errors codes</a>  
+In terms of functional errors, the card validation endpoints may return the same errors as other card pay-in requests. 
+
+[See all error codes](/errors/codes)
 
 ## Related resources  
 
-<Card title="Endpoints">The Card Validation object</Card>  
+<Card title="Endpoints" href="/api-reference/card-validations/card-validation-object">The Card Validation object</Card>  
 
-<Card title="Tutorial">How to process a card payment</Card>  
+<Card title="How to" href="/how-to/process-card-payment">Process a card payment</Card>  
 
-<Card title="Article">Card validation</Card>
+<Card title="Guide">Card validation</Card>

@@ -8,21 +8,25 @@ sidebarTitle: 'Process a 7-day card preauthorization'
 This how-to guide will show you how to preauthorize funds on a card for 7 days and then debit the payment.  
 
 The preauthorization feature allows you to reserve funds on a card so they can be captured later. It’s a two-step process:  
--Preauthorize the funds to hold them for a defined period  
--Make the capture of the funds before the end of the hold period  
+- Preauthorize the funds to hold them for a defined period  
+- Make the capture of the funds before the end of the hold period  
 
-This guide focuses on the 7-day preauthorization feature.<a href="#" class="btn Secondary normal">Learn more about preauthorizations</a>  
+This guide focuses on the 7-day preauthorization feature.
 
-## 1/ Secure the funds  
+[Learn more about preauthorizations](/guides/payment-methods/card/preauthorization)
+
+## 1. Secure the funds  
 
 Create a preauthorization to request to hold funds for 7 days.  
 
 ### Make the request  
-<CodeGroup>  
 
+> [**POST** /v2.01/&lcub;ClientId&rcub;/preauthorizations/card/direct](/api-reference/preauthorizations/create-preauthorization) 
+
+<CodeGroup>  
 ```json REST
 {
-    "AuthorId": "204068024",
+    "AuthorId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
     "DebitedFunds": {
         "Currency": "EUR",
         "Amount": 10000
@@ -69,7 +73,7 @@ Create a preauthorization to request to hold funds for 7 days.
 }
 ```  
 
-```php 
+```php PHP
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -86,7 +90,7 @@ $api->Config->TemporaryFolder = 'tmp/';
 
 try {
     $cardPreauthorization = new \MangoPay\CardPreAuthorization();
-    $cardPreauthorization->AuthorId = '204068024';
+    $cardPreauthorization->AuthorId = 'user_m_01HWAR82HD4D8CQ67J02YMKM82';
     $cardPreauthorization->DebitedFunds = new \MangoPay\Money();
     $cardPreauthorization->DebitedFunds->Currency = 'EUR';
     $cardPreauthorization->DebitedFunds->Amount = 10000;
@@ -147,7 +151,7 @@ const mangopay = new mangopayInstance({
 let myPreauthorization = {
   PaymentType: 'CARD',
   ExecutionType: 'DIRECT',
-  AuthorId: '146476890',
+  AuthorId: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
   Tag: 'Created with Mangopay Node.js SDK',
   CreditedUserId: '192822811',
   DebitedFunds: {
@@ -244,9 +248,9 @@ end
 myPreauthorization = {
     PaymentType: 'CARD',
     ExecutionType: 'DIRECT',
-    AuthorId: '192822811',
+    AuthorId: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
     Tag: 'Created with Mangopay Ruby SDK',
-    CreditedUserId: '192822811',
+    CreditedUserId: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
     DebitedFunds: {
       Currency: 'EUR',
       Amount: 1000,
@@ -304,6 +308,47 @@ myPreauthorization = {
 
 createPreauthorization(myPreauthorization)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PreAuthorization
+from mangopay.utils import Money, BrowserInfo
+
+natural_user = NaturalUser.get('213600749')
+
+card_preauthorization = PreAuthorization(
+    author = natural_user,
+    debited_funds = Money(amount=100, currency='GBP'),
+    card_id = '213635147',
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187', 
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_card_preauthorization = card_preauthorization.save()
+
+pprint(create_card_preauthorization)  
+```
 </CodeGroup>  
 
 In the information returned, make sure you keep the `Id` of the Preauthorization for the next steps.  
@@ -390,25 +435,27 @@ You can also use the `SecureModeNeeded` boolean to determine this redirection be
 
 For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of the How to process a card payment tutorial.  
 
-## 2/ Capture the funds  
+## 2. Capture the funds  
 
 Once the Preauthorization `PaymentStatus` is `WAITING`, you can capture the funds with a preauthorized pay-in.  
 
 The preauthorized pay-in must be:  
--For an amount equal or less than the preauthorized amount (full or partial capture)  
--Done within 6.5 days of a successful authorization  
+- For an amount equal or less than the preauthorized amount (full or partial capture)  
+- Done within 6.5 days of a successful authorization  
 
 Set up hook notifications for the following `EventType` in order to be notified when it is possible or too late to make a pay-in against a preauthorization:  
--PREAUTHORIZATION_PAYMENT_WAITING  
--PREAUTHORIZATION_PAYMENT_EXPIRED  
+- PREAUTHORIZATION_PAYMENT_WAITING  
+- PREAUTHORIZATION_PAYMENT_EXPIRED  
 
 In the following calls, use the `Id` of the Preauthorization obtained previously as the `PreauthorizationId`.  
 
 ### Make a full capture  
 
-Use the Create a Preauthorized PayIn endpoint and make sure the `Amount` value of the `DebitedFunds` is equal to the preauthorized funds.  
-<CodeGroup>  
+Use the [Create a Preauthorized PayIn](/api-reference/preauthorizations/create-preauthorized-payin) endpoint and make sure the `Amount` value of the `DebitedFunds` is equal to the preauthorized funds.  
 
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/preauthorized/direct](/api-reference/preauthorizations/create-preauthorized-payin)
+
+<CodeGroup>  
 ```json REST
 {
    "DebitedFunds": {
@@ -504,6 +551,35 @@ myPreauthorizedPayIn = {
 
 createPreauthorizedPayIn(myPreauthorizedPayIn)
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PreAuthorizedPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorization_payin = PreAuthorizedPayIn(
+    author_id = natural_user.id,
+    debited_funds =  Money(amount=1000, currency='GBP'),
+    fees = Money(amount=0, currency='GBP'),
+    credited_wallet_id = '213754077',
+    preauthorization_id = '213944840',
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorization_payin = preauthorization_payin.save()
+pprint(create_preauthorization_payin)
+```
 </CodeGroup>  
 
 If the preauthorized pay-in is successful, the corresponding preauthorization is updated accordingly: it's `PaymentStatus` changes to `VALIDATED` as there are no `RemainingFunds` left to be captured.  
@@ -586,14 +662,17 @@ Use the View a Preauthorization endpoint to see this:
 
 ### Make a partial capture  
 
-Use the Create a Preauthorized PayIn endpoint and specify the portion of the preauthorized funds you want to capture.  
+Use the [Create a Preauthorized PayIn](/api-reference/preauthorizations/create-preauthorized-payin) endpoint and specify the portion of the preauthorized funds you want to capture. 
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/preauthorized/direct](/api-reference/preauthorizations/create-preauthorized-payin)
+
 <CodeGroup>  
 
 ```json REST
 {
    "DebitedFunds": {
        "Currency": "EUR",
-       "Amount": 5000
+       "Amount": 500
    },
    "Fees": {
        "Currency": "EUR",
@@ -619,7 +698,7 @@ let myPreauthorizedPayIn = {
   CreditedUserId: '192822811',
   DebitedFunds: {
     Currency: 'EUR',
-    Amount: 5000,
+    Amount: 500,
   },
   Fees: {
     Currency: 'EUR',
@@ -672,7 +751,7 @@ myPreauthorizedPayIn = {
     CreditedUserId: '192822811',
     DebitedFunds: {
       Currency: 'EUR',
-      Amount: 5000,
+      Amount: 500,
     },
     Fees: {
       Currency: 'EUR',
@@ -684,11 +763,41 @@ myPreauthorizedPayIn = {
 
 createPreauthorizedPayIn(myPreauthorizedPayIn)
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PreAuthorizedPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorization_payin = PreAuthorizedPayIn(
+    author_id = natural_user.id,
+    debited_funds =  Money(amount=500, currency='GBP'),
+    fees = Money(amount=0, currency='GBP'),
+    credited_wallet_id = '213754077',
+    preauthorization_id = '213944840',
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorization_payin = preauthorization_payin.save()
+pprint(create_preauthorization_payin)
+```
+
 </CodeGroup>  
 
 If the preauthorized pay-in is successful, the corresponding preauthorization is updated accordingly:  
--The `RemainingFunds` equals the initial preauthorized funds minus de pay-in `DebitedFunds` and `Fees`.  
--The `PaymentStatus` remains as `WAITING`, allowing you to make another capture for the remaining funds.  
+- The `RemainingFunds` equals the initial preauthorized funds minus de pay-in `DebitedFunds` and `Fees`.  
+- The `PaymentStatus` remains as `WAITING`, allowing you to make another capture for the remaining funds.  
 
 You can View a Preauthorization to see these details.   
 ```json API response - View a Preauthorization
@@ -774,13 +883,16 @@ Once the hold period is over:
 -If at least one capture was made, the Preauthorization’s `PaymentStatus` changes to `VALIDATED`.  
 -If no capture was made, the Preauthorization’s `PaymentStatus` changes to `EXPIRED`.  
 
-## 3/ Release manually unused funds (recommended)  
+## 3. Release manually unused funds (recommended)  
 
 You can manually close the preauthorization hold period before the `ExpirationDate` to release the preauthorized funds for the user. If you don't do this, the funds will be released at the `ExpirationDate`  
 
 ### Validate a partially used preauthorization  
 
 If at least one preauthorized pay-in has been made to capture funds (partial capture), you can release the remaining preauthorized funds by changing the `PaymentStatus` to `VALIDATED`.  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/preauthorizations/&lcub;PreauthorizationId&rcub;](/api-reference/preauthorizations/cancel-validate-preauthorization)
+
 <CodeGroup>  
 
 ```json REST
@@ -795,8 +907,6 @@ const mangopay = new mangopayInstance({
     clientId: 'your-client-id',
     clientApiKey: 'your-api-key',
 })
-
-// To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
 
 let myPreauthorization = {
   Id: '205734378',
@@ -828,9 +938,6 @@ MangoPay.configure do |client|
     client.log_file = File.join(Dir.pwd, 'mangopay.log')
 end
 
-
-# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
-
 def validatePreauthorization(preauthorizationId, preauthorizationObject)
     begin
         response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
@@ -850,6 +957,30 @@ myPreauthorization = {
 
 validatePreauthorization(myPreauthorization[:Id], myPreauthorization)
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+
+from mangopay.resources import PreAuthorization
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'VALIDATED'
+)
+
+validate_preauthorization = card_preauthorization.save()
+
+pprint(validate_preauthorization)
+```
 </CodeGroup>  
 
 Once this is done, no more captures can be made against the preauthorization.  
@@ -857,6 +988,9 @@ Once this is done, no more captures can be made against the preauthorization.
 ### Cancel an unused preauthorization  
 
 If no preauthorized pay-in has been made to capture the funds, you can release the remaining funds by changing the `PaymentStatus` to `CANCELED`.  
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/preauthorizations/&lcub;PreauthorizationId&rcub;](/api-reference/preauthorizations/cancel-validate-preauthorization)
+
 <CodeGroup>  
 
 ```json REST
@@ -871,8 +1005,6 @@ const mangopay = new mangopayInstance({
     clientId: 'your-client-id',
     clientApiKey: 'your-api-key',
 })
-
-// To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
 
 let myPreauthorization = {
   Id: '205734378',
@@ -904,8 +1036,6 @@ MangoPay.configure do |client|
     client.log_file = File.join(Dir.pwd, 'mangopay.log')
 end
 
-# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
-
 def cancelPreauthorization(preauthorizationId, preauthorizationObject)
     begin
         response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
@@ -925,14 +1055,38 @@ myPreauthorization = {
 
 cancelPreauthorization(myPreauthorization[:Id], myPreauthorization)
 ```  
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PreAuthorization
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'CANCEL'
+)
+
+cancel_preauthorization = card_preauthorization.save()
+
+pprint(cancel_preauthorization)  
+```
+
 </CodeGroup>  
 
 Once a preauthorization has been validated or canceled, no more captures can be made against it.  
 
 ## Related resources  
 
-<Card title="Article">Preauthorization</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/preauthorization">7-day preauthorization</Card>
 
-<Card title="Endpoints">Preauthorizations</Card>  
+<Card title="Endpoint" href="/api-reference/preauthorizations/preauthorization-object">The Preauthorization object</Card>  
 
-<Card title="Tutorial">How to process a card payment</Card>
+<Card title="How to" href="/how-to/process-card-payment">Process a card payment</Card>

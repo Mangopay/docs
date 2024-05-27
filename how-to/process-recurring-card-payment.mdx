@@ -17,14 +17,17 @@ A recurring card payment has two phases:
 
 <a href="#">Learn more about recurring card payments</a>  
 
-## 1/ Create the Recurring PayIn Registration  
+## 1. Create the Recurring PayIn Registration  
 
 The Recurring PayIn Registration object will define key information about the recurring payments such as:  
--The start and end date, as well as the frequency  
--Whether the amount is the same for each payment  
--Whether you want to offer zero-amount payments to your end user at the start of the recurrence (for example, during trial subscription offers)  
+- The start and end date, as well as the frequency  
+- Whether the amount is the same for each payment  
+- Whether you want to offer zero-amount payments to your end user at the start of the recurrence (for example, during trial subscription offers)  
 
 For this guide, we'll define a fixed monthly amount but not provide an end date.   
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations](/api-reference/recurring-card-payins/create-recurring-payin-registration)
+
 <CodeGroup>  
 
 ```json REST
@@ -161,9 +164,40 @@ myRecurringRegistration = {
 
 createRecurringRegistration(myRecurringRegistration)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, RecurringPayInRegistration
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+recurring_payin_registration = RecurringPayInRegistration(
+    author_id = natural_user.id,
+    card_id = '213857548',
+    credited_wallet_id = '210514820',
+    first_transaction_debited_funds = Money(amount=1000, currency='EUR'),
+    first_transaction_fees = Money(amount=10, currency='EUR'),
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_recurring_payin_registration = recurring_payin_registration.save()
+
+pprint(create_recurring_payin_registration)  
+```
 </CodeGroup>  
 
 In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
+
 ```json API response
 {
     "Id": "197964541",
@@ -230,13 +264,16 @@ In the response, you will need the `Id` of the Recurring PayIn Registration for 
 }
 ```  
 
-## 2/ Process the first recurring payment (CIT)  
+## 2. Process the first recurring payment (CIT)  
 
 ### Make the request  
 
 Request the first payment, linking it to the registration object by using the `Id` returned in the previous step as the `RecurringPayinRegistrationId`.  
 
 In our example, the first transaction amounts have been defined at the registration level. Because of this, we don’t need to define the `DebitedFunds` or `Fees` at the pay-in level.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/recurring/card/direct](/api-reference/recurring-card-payins/create-recurring-payin-cit)
+
 <CodeGroup>  
 
 ```json REST
@@ -298,6 +335,46 @@ const createRecurringPayIn = async (recurringPayin) => {
 
 createRecurringPayIn(myRecurringPayinCIT)
 ```  
+
+```python Python
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, RecurringPayInCIT
+from mangopay.utils import Money, BrowserInfo
+
+natural_user = NaturalUser.get('210513027')
+
+recurring_payin_cit = RecurringPayInCIT(
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187',
+    recurring_payin_registration_id = '213879771',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_recurring_payin_cit = recurring_payin_cit.save()
+
+pprint(create_recurring_payin_cit)
+```
 </CodeGroup>  
 ```json API response
 {
@@ -386,13 +463,12 @@ The CIT transaction always requires 3DS (the `SecureModeNeeded` value is set to 
 
 For more information on how to handle 3DS redirection, see Steps 6 and 7 of the How to process a card payment tutorial.  
 
-## 3/ Process the subsequent recurring payments (MIT) at the defined intervals  
+## 3. Process the subsequent recurring payments (MIT) at the defined intervals  
 
 Once the first pay-in has been successfully authorized, the platform can initiate payments without the end user being present to authenticate (but note that, at any time, the issuer may request SCA - see Step 5).  
 
 Create the recurring pay-in at the set interval with the dedicated endpoint. Note that in our example, we didn’t define the next transaction amounts at the registration level. As a consequence, we need to pass the `DebitedFunds` and `Fees` parameters at the pay-in level.  
 <CodeGroup>  
-
 ```json REST
 {
     "RecurringPayinRegistrationId": "197964679",
@@ -442,7 +518,7 @@ createRecurringPayIn(myRecurringPayinMIT)
 ```  
 </CodeGroup>  
 
-## 4/ Update the registration (if required)  
+## 4. Update the registration (if required)  
 
 Some information regarding the recurring registration may be modified during the recurrence:  
 - `CardId` - Changing this will require a new CIT for SCA  
@@ -450,21 +526,21 @@ Some information regarding the recurring registration may be modified during the
 
 Use the Update a Recurring PayIn Registration endpoint to modify these details.  
 
-## 5/ Handle re-authentication (when required)  
+## 5. Handle re-authentication (when required)  
 
 At any moment during the recurrence, the issuer may request that the end user authenticates again. This also occurs when changing the `CardId` in the Recurring PayIn Registration (see Step 4).  
 
 Set up a hook notification for the following `EventType` to be notified when re-authentication is needed:  
--RECURRING_REGISTRATION_AUTH_NEEDED  
+- RECURRING_REGISTRATION_AUTH_NEEDED  
 
 In this case, you need to guide the end user through authentication during a new CIT in the same way as Step 2.  
 
-## 6/ Check the recurring payments' current state  
+## 6. Check the recurring payments' current state  
 
 The `CurrentState` of the Recurring PayIn Registration provides key information about the recurring payments:  
--Number of pay-ins made against the registration  
--Cumulated amounts of debited funds and fees  
--Last pay-in made against the registration  
+- Number of pay-ins made against the registration  
+- Cumulated amounts of debited funds and fees  
+- Last pay-in made against the registration  
 
 Use View a Recurring PayIn Registration endpoint to get this information.  
 ```json API response - Example of recurrence in progress
@@ -533,11 +609,14 @@ Use View a Recurring PayIn Registration endpoint to get this information.
 }
 ```  
 
-## 7/ End the recurring payments  
+## 7. End the recurring payments  
 
 Recurring payments may come to an end either automatically (when an `EndDate` was defined) or because the end user requests it.  
 
-To end the recurring payments manually, use the Update a Recurring Registration endpoint to change the `Status` to `ENDED`.  
+To end the recurring payments manually, use the Update a Recurring Registration endpoint to change the `Status` to `ENDED`. 
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-card-payins/update-recurring-payin-registration)
+
 <CodeGroup>  
 
 ```json REST
@@ -602,17 +681,40 @@ myRecurringRegistration = {
 
 updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)
 ```  
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import RecurringPayInRegistration
+
+recurring_payin_registration = RecurringPayInRegistration(
+    id = '213857583',
+    status = 'ENDED'
+)
+
+update_recurring_payin_registration = recurring_payin_registration.save()
+
+pprint(update_recurring_payin_registration)
+```
 </CodeGroup>  
 
 When you do this, no more recurring pay-ins can be created based on the registration.  
 
 Set up a hook notification for the following `EventType` to be notified when a registration is ended by the end user:  
--RECURRING_REGISTRATION_ENDED  
+- RECURRING_REGISTRATION_ENDED  
 
-## Going further  
+## Related resources
 
-<Card title="Article">Recurring card payments</Card>  
+<Card title="Endpoints" href="/api-reference/recurring-card-payins/recurring-payin-registration-object">The Recurring PayIn Registration object</Card>  
 
-<Card title="Endpoints">Recurring card pay-ins</Card>  
+<Card title="Guide" href="/guides/payment-methods/card/recurring">Recurring card payments</Card>  
 
-<Card title="Tutorial">How to process a card payment</Card>
+<Card title="How to" href="/how-to/process-card-payment">Process a card payment</Card>

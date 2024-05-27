@@ -22,16 +22,16 @@ Users created before May 2022, when `UserCategory` was introduced, were categori
 A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.  
 </Note>  
 
-## 1/ Collect the necessary information  
+## 1. Collect the necessary information  
 
 Natural users categorized as Payers only need to provide the most basic information at their creation. You need more information for the Owner category.  
 
 ### User information  
 
 Gather the following additional information about your users:  
--Date of birth  
--Nationality  
--Country of residence  
+- Date of birth  
+- Nationality  
+- Country of residence  
 
 ### Mangopay’s terms and conditions  
 
@@ -39,11 +39,13 @@ Mangopay’s T&Cs apply to Owners on your platform. You need to ensure your end 
 
 The relevant T&Cs for your users are provided when your platform signs the contract with Mangopay.  
 
-## 2/ Update the user object  
+## 2. Update the user object  
 
-Update the natural user object with the collected information as well as the new `UserCategory`.  
+Update the natural user object with the collected information as well as the new `UserCategory`.
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/users/natural/&lcub;UserId&rcub;](/api-reference/users/update-natural-user)
+
 <CodeGroup>  
-
 ```json REST
 {
   "Birthday":“1463496101”,
@@ -54,6 +56,44 @@ Update the natural user object with the collected information as well as the new
 }
 ```  
 
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ';
+    $user = $api->Users->Get($userId);
+
+    $user->FirstName = 'Alex';
+    $user->LastName = 'Smith';
+    $user->Email = 'smithupdated@example.com';
+
+    $user->Nationality = 'FR';
+    $user->CountryOfResidence = 'FR';
+      
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
 ```javascript NodeJS 
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({
@@ -62,6 +102,7 @@ const mangopay = new mangopayInstance({
 })
 
 let myNaturalUser = {
+  Id: 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ',
   Birthday: 656640000,
   Nationality: 'GB',
   CountryOfResidence: 'FR',
@@ -108,7 +149,7 @@ def updateNaturalUser(naturalUserId, naturalUserObject)
 end
 
 myNaturalUser = {
-    Id: '194554499',
+    Id: 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ',
     Birthday: 655772400,
     Nationality: 'FR',
     CountryOfResidence: 'US',
@@ -118,6 +159,118 @@ myNaturalUser = {
 
 updateNaturalUser(myNaturalUser[:Id], myNaturalUser)
 ```  
+
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+
+import java.lang.reflect.Field;
+
+public class UpdateNaturalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural myUser = mangopay.getUserApi().getNatural("user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ");
+
+        myUser.setFirstName("Jasmine");
+        myUser.setLastName("Patel");
+        myUser.setEmail("jasmine.patel@example.com");
+        myUser.setUserCategory(UserCategory.OWNER);
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+	 System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+from mangopay.utils import Address
+
+natural_user = NaturalUser(
+    id = 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ', 
+    user_category = 'Owner'
+)
+
+update_natural_user = natural_user.save()
+
+pprint(update_natural_user)
+```
+
+```dotnet .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using System.Reflection;
+using MangoPay.SDK.Entities.PUT;
+
+class UpdateUser {
+    static void Main(string[] args)
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var userId = "user_m_01HWAR82HD4D8CQ67J02YMKM82";
+
+            var myUser = new UserNaturalPutDTO {
+                Birthday = new DateTime(1975, 12, 21, 0, 0, 0),
+                Nationality = CountryIso.FR,
+                CountryOfResidence = CountryIso.FR,
+                UserCategory = UserCategory.OWNER
+            };
+
+            var updateUser = await api.Users.UpdateNaturalAsync(myUser, userId);
+
+            foreach (PropertyInfo prop in updateUser.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(updateUser);
+                if (propValue != null)
+                {
+                    Console.Write($"{prop.Name}: ");
+                    Console.WriteLine(propValue);
+                }
+            }
+        }).GetAwaiter().GetResult();
+    }
+}
+```
 </CodeGroup>  
 
 <Warning>  
@@ -128,8 +281,8 @@ If your recategorized users intend to make payouts, they will need to successful
 
 ## Related resources  
 
-<Card title="Tutorial">How to turn a Payer into a Owner (legal users)</Card>  
+<Card title="How to" href="/how-to/turn-payer-owner-legal-users">Turn a Payer into a Owner (legal users)</Card>  
 
-<Card title="Article">User categories</Card>  
+<Card title="Guide" href="/guides/users/categories">User categories</Card>  
 
-<Card title="Article">User verification process</Card>
+<Card title="Guide" href="/guides/users/verification/introduction">User verification process</Card>
