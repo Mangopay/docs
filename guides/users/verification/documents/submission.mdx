@@ -5,6 +5,7 @@ sidebarTitle: "Submission"
 ---
   
 import WorkingDay from '/snippets/glossary/working-day.mdx';
+import IconGreenCheck from '/snippets/icons/icon-green-check.mdx';
 
 ## Overview  
 
@@ -19,27 +20,30 @@ The verification process can be broken down into the following steps:
 
 You can submit end users' verification documents with the dedicated KYC Documents endpoints.   
 
-Submission requires 3 API calls:  
-- Create the KYC Document  
-- Upload each file as a KYC Document Page  
-- Submit the KYC Document by changing its status.  
+Submission requires a minimum of 3 API calls:
+- [Create the KYC Document](/api-reference/kyc-documents/create-kyc-document)
+- Upload each file as a [KYC Document Page](/api-reference/kyc-documents/create-kyc-document-page) (this call must be repeated for each file)
+- [Submit the KYC Document](/api-reference/kyc-documents/submit-kyc-document) by changing its status.  
 
-Follow our tutorial for a step-by-step guide:  
+Follow the how-to guide for a step-by-step explanation:  
 
-<Card title="Tutorial">How to submit a KYC Document</Card>  
+<Card title="How to" href="/how-to/submit-kyc-document">Submit a KYC Document for verification</Card>
 
 <Note>  
 **Note - Verification time** 
   
 Verification takes on average 24 hours on <WorkingDay content="working days" /> to be completed by the Mangopay Compliance team.  
-You can use the Hook feature to get notified of the KYC Document status update.  
+
+You can use [webhooks](/webhooks) to be notified of the KYC Document status update.  
 </Note>  
 
-Mangopay returns the following statuses once the verification process is done:  
-- `VALIDATED` - The document is validated by Mangopay’s team.  
-- `REFUSED` - The document is rejected by Mangopay’s team.  
+Mangopay returns the following statuses once the verification process is done:
+- `VALIDATED` – The document is validated by Mangopay’s team.
+- `REFUSED` – The document is rejected by Mangopay’s team.
 
-Please note that following submission (in the case of identity proofs) and validation (in the case of all documents) the status may also be changed to `OUT_OF_DATE` as a result of the Verification downgrade mechanism.  
+The following status may also be returned as a result of the [Verification downgrade](/guides/users/policies/verification-downgrade) mechanism.
+- `OUT_OF_DATE` – The user's key details have been modified.
+The downgrade can be triggered after submission (in the case of identity proofs) and validation (in the case of all documents).
 
 ## Submission constraints  
 
@@ -81,13 +85,23 @@ For identity proof documents, refer to the dedicated ID proof best practices art
 
 For other types, the document should be: 
 <CardGroup cols={2}>
-    <Card title="First Card" icon={<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14.4831" cy="14.4333" r="14" transform="rotate(0.045216 14.4831 14.4333)" fill="#52C064"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.1095 10.8378C20.6112 11.3701 20.6106 12.2325 20.1081 12.7639L14.1036 19.1146C13.6011 19.6461 12.7871 19.6454 12.2854 19.113L8.85934 15.478C8.35762 14.9457 8.35822 14.0833 8.8607 13.5518C9.36318 13.0204 10.1772 13.0211 10.679 13.5534L13.1965 16.2246L18.2912 10.8362C18.7937 10.3047 19.6077 10.3054 20.1095 10.8378Z" fill="white"/></svg>}>
+
+    <Card icon={IconGreenCheck}>
         Compliant with the accepted documents for the legal entity’s country of registration.
     </Card>
     
-    <Card title="First Card" icon={<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14.4831" cy="14.4333" r="14" transform="rotate(0.045216 14.4831 14.4333)" fill="#52C064"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.1095 10.8378C20.6112 11.3701 20.6106 12.2325 20.1081 12.7639L14.1036 19.1146C13.6011 19.6461 12.7871 19.6454 12.2854 19.113L8.85934 15.478C8.35762 14.9457 8.35822 14.0833 8.8607 13.5518C9.36318 13.0204 10.1772 13.0211 10.679 13.5534L13.1965 16.2246L18.2912 10.8362C18.7937 10.3047 19.6077 10.3054 20.1095 10.8378Z" fill="white"/></svg>}>Consistent with the information declared for the user, the legal representative, and any beneficial owners (if applicable).</Card>
+    <Card icon={IconGreenCheck}>
+        Consistent with the information declared for the user, the legal representative, and any beneficial owners (if applicable).
+    </Card>
     
-    <Card title="First Card" icon={<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14.4831" cy="14.4333" r="14" transform="rotate(0.045216 14.4831 14.4333)" fill="#52C064"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.1095 10.8378C20.6112 11.3701 20.6106 12.2325 20.1081 12.7639L14.1036 19.1146C13.6011 19.6461 12.7871 19.6454 12.2854 19.113L8.85934 15.478C8.35762 14.9457 8.35822 14.0833 8.8607 13.5518C9.36318 13.0204 10.1772 13.0211 10.679 13.5534L13.1965 16.2246L18.2912 10.8362C18.7937 10.3047 19.6077 10.3054 20.1095 10.8378Z" fill="white"/></svg>}>Full and complete, meaning not censored, concealed, obscured, modified or otherwise altered in any way.</Card>
+    <Card icon={IconGreenCheck}>
+        Full and complete, meaning not censored, concealed, obscured, modified or otherwise altered in any way.
+    </Card>
     
-    <Card title="First Card" icon={<svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14.4831" cy="14.4333" r="14" transform="rotate(0.045216 14.4831 14.4333)" fill="#52C064"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.1095 10.8378C20.6112 11.3701 20.6106 12.2325 20.1081 12.7639L14.1036 19.1146C13.6011 19.6461 12.7871 19.6454 12.2854 19.113L8.85934 15.478C8.35762 14.9457 8.35822 14.0833 8.8607 13.5518C9.36318 13.0204 10.1772 13.0211 10.679 13.5534L13.1965 16.2246L18.2912 10.8362C18.7937 10.3047 19.6077 10.3054 20.1095 10.8378Z" fill="white"/></svg>}>Accompanied by an official translation if not in one of the accepted languages: English, French, Spanish, German, Dutch, Italian and Portuguese.The official translation must be:To English or FrenchSigned by a certified sworn translatorSubmitted in the same KYC Document object</Card>
+    <Card icon={IconGreenCheck}>
+        Accompanied by an official translation if **not** in one of the accepted languages: English, French, Spanish, German, Dutch, Italian and Portuguese.
+        <br/>
+        The official translation must be to English or French, signed by a certified sworn translator, and submitted in the same KYC Document object.
+    </Card>
+
 </CardGroup>  
