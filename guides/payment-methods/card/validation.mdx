@@ -5,25 +5,19 @@ title: Card validation
 
 A registered card must be validated within 24 hours of registration, otherwise its `Validity` is permanently set to `INVALID` and the card must be registered again.
 
-Cards can be validated by:
+Cards can be validated by a successful card flow:
 
--   Making a successful transaction (direct, preauthorization, or recurring), which includes authentication and authorization from the issuer
--   Using the dedicated card validation feature
+- Direct card pay-in or recurring card pay-in (MIT) (authorization and debit)
+- Preauthorization or deposit preauthorization (authorization and deferred debit)
+- Card validation (authorization and no debit)
 
-The card validation feature allows platforms to validate a card without debiting a transaction. The feature effectively requests a zero-amount transaction, meaning the cardholder will be required to complete 3DS authentication by the issuer.
+The card validation is a request for authentication only. It does not request capture of funds, and it is therefore not a [Transaction](/api-reference/transactions/transaction-object).
 
-<a href="#">Read more about 3DS</a>
 
 <Note>
     **Note - Card validation only available for CB_VISA_MASTERCARD** The card
     validation feature is only available for cards with the `CardType`
     `CB_VISA_MASTERCARD`
-</Note>
-
-<Note>
-    **Note - Card validation not returned in Transactions** A card validation is
-    a request for authentication only: it does not request capture or debiting
-    of any funds. Therefore, it is not stored as a Transaction in the API.
 </Note>
 
 ## Benefits
@@ -33,23 +27,34 @@ For the platform:
 -   Verifying that the card belongs to the user who registered it
 -   Checking that the issuer authorizes the use of the card (for example, that it’s not blocked)
 
-The platform can obtain these benefits even if there is no payment without 24 hours of the card being registered, allowing greater flexibility in the user’s payment experience.
+Because a card must be validated within 24 hours, the card validation feature allows greater flexibility in the user’s payment experience than a pay-in or preauthorization.
 
 For the cardholder:
 
--   Confirming to platforms the card is theirs and is fit for use without seeing any trace of the validation on their bank statement
+- Proving to platforms the card is theirs and is fit for use 
+- No trace of the validation on their bank statement
 
-<Note>
-    **Note - 3DS still possible on payments after card validation** The card
-    validation feature makes it possible to validate a card that has been
-    registered. It does not change the likelihood of SCA being applied again at
-    the moment of payment with the card.
-</Note>
+## 3DS and card validation
+
+A card validation may require 3DS authentication. It does not change the likelihood of SCA being required again later at the moment of payment with the card. 
+
+Like with other card flows, the `SecureMode` parameter is available on card validation, which allows the platform to indicate a preference for 3DS authentication.
+
+You can also use the `ValidationUsage` parameter to indicate the intended usage of the card. It has the values:
+
+- CIT – For customer-initiated transactions (CITs), meaning 3DS is less likely to be required on the card validation.
+- MIT – For merchant-initiated transactions (MITs), meaning 3DS is more likely to be required on the card validation.
+
+You can set the `ValidationUsage` parameter to `CIT` to decrease the likelihood of SCA when the `SecureMode` value is `DEFAULT` or `NO_CHOICE`.
+
+If the `SecureMode` value is `FORCE`, explicitly requesting SCA, then the `ValidationUsage` is set to `MIT` even if you send `CIT`.
 
 ## Related resources
 
 <CardGroup col={2}> 
-    <Card title="How to" href="/how-to/validate-card-without-debit">Learn how to validate a card without debiting a payment</Card>  
+    <Card title="Guide" href="/guides/payment-methods/card/3ds">3DS</Card>
 
     <Card title="Endpoint" href="/api-reference/card-validations/card-validation-object">The Card Validation object</Card>  
+
+    <Card title="How to" href="/how-to/validate-card-without-debit">Learn how to validate a card without debiting a payment</Card>  
 </CardGroup>
