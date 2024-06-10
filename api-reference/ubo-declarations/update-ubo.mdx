@@ -263,6 +263,60 @@ myUbo = {
 updateUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo[:Id], myUbo)  
 ```  
 
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.entities.Birthplace;
+import com.mangopay.entities.Ubo;
+
+import java.lang.reflect.Field;
+
+public class UpdateUbo {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        String userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
+        String uboDeclarationId = "ubo_m_01HRYRKZN51BFXDWD6CCE22PHN";
+        String uboId = "ubo_m_01HRYTZJS07SP4GAMKYMB9YPCG";
+
+        Ubo ubo = mangopay.getUboDeclarationApi().getUbo(userId, uboDeclarationId, uboId);
+        
+        Birthplace birthplace = new Birthplace();
+
+        birthplace.setCity("Lyon");
+        birthplace.setCountry(CountryIso.FR);
+
+        ubo.setBirthplace(birthplace);
+
+        Ubo updateUbo = mangopay.getUboDeclarationApi().updateUbo(userId, uboDeclarationId, ubo);
+
+        System.out.println(String.format("id: %s", updateUbo.getId()));
+        printObjectFields(updateUbo);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address
+                    || value instanceof Birthplace) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
 from pprint import pprint

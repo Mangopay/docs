@@ -242,7 +242,7 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
 ```json REST  
 {
     "Tag": "Created using the Mangopay API Postman collection",
-    "AuthorId": "204068024",
+    "AuthorId": "user_m_01HS10X7WCFSVMAZTBVYY0HPXF",
     "DebitedFunds": {
         "Currency": "EUR",
         "Amount": 1500
@@ -251,9 +251,10 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
         "Currency": "EUR",
         "Amount": 300
     },
-    "CreditedWalletId": "204068186",
+    "CreditedWalletId": "wlt_m_01HS10XBZQHDWSX10WW6RTMRA6",
     "ReturnURL": "http://www.mangopay.com/docs/please-ignore",
-    "StatementDescriptor": "Mangopay",
+    "CancelURL": "http://www.example.com/",
+    "StatementDescriptor": "MGP",
     "Shipping": {
         "FirstName": "Alex",
         "LastName": "Smith",
@@ -272,20 +273,22 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
             "Quantity": 2,
             "UnitAmount": 400,
             "TaxAmount": 100,
-            "Description": "ID of Seller 1"
+            "Description": "ID of Seller 1",
+            "Category": "PHYSICAL_GOODS"
         },
         {
             "Name": "Walking shoes",
             "Quantity": 1,
             "UnitAmount": 400,
             "TaxAmount": 100,
-            "Description": "ID of Seller 2"
+            "Description": "ID of Seller 2",
+            "Category": "PHYSICAL_GOODS"
         }
     ],
     "Culture": "FR",
     "ShippingPreference": "SET_PROVIDED_ADDRESS",
     "Reference": "1234"
-}  
+}
 ```  
 
   
@@ -303,11 +306,11 @@ handler = APIRequest(sandbox=True)
 from mangopay.resources import NaturalUser, PayPalWebPayIn
 from mangopay.utils import Money, LineItem, Shipping, Address
 
-natural_user = NaturalUser.get('210513027')
+natural_user = NaturalUser.get('user_m_01HS10X7WCFSVMAZTBVYY0HPXF')
 
 paypal_payin = PayPalWebPayIn(
     author_id = natural_user.id,
-    credited_wallet_id = '210514820',
+    credited_wallet_id = 'wlt_m_01HS10XBZQHDWSX10WW6RTMRA6',
     debited_funds = Money(amount=1500, currency='EUR'),
     fees = Money(amount=300, currency='EUR'),
     culture = 'FR',

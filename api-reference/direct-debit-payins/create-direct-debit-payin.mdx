@@ -275,7 +275,55 @@ import AuthorId from '/snippets/body-parameters/AuthorId.mdx';
 }  
 ```  
 
-  
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Money;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HYDWQNXC3M655SJXVGNDP91J';
+    $walletId = 'wlt_m_01HYDWR4NMAF0GRM2GZ25479EG';
+    $mandateId = 'mdt_m_01HYDWRQNDFC7R7P37DWH8C9SP';
+
+    $directDirectDebitPayIn = new \MangoPay\PayIn();
+    $directDirectDebitPayIn->AuthorId = $userId;
+    $directDirectDebitPayIn->CreditedWalletId = $walletId;
+
+    $directDirectDebitPayIn->DebitedFunds = new Money();
+    $directDirectDebitPayIn->DebitedFunds->Amount = 1000;
+    $directDirectDebitPayIn->DebitedFunds->Currency = 'EUR';
+
+    $directDirectDebitPayIn->Fees = new Money();
+    $directDirectDebitPayIn->Fees->Amount = 0;
+    $directDirectDebitPayIn->Fees->Currency = 'EUR';
+
+    $directDirectDebitPayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsDirectDebit();
+    $directDirectDebitPayIn->PaymentDetails->MandateId = $mandateId;
+
+    $directDirectDebitPayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect(); 
+
+    $directDirectDebitPayIn->Tag = 'Created using the Mangopay PHP SDK';
+
+    $createPayIn = $api->PayIns->Create($directDirectDebitPayIn);
+
+    print_r($createPayIn);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
 ```javascript NodeJS  
 const mangopayInstance = require('mangopay2-nodejs-sdk')
 const mangopay = new mangopayInstance({

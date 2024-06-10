@@ -20,7 +20,6 @@ import FundsType from '/snippets/path-parameters/FundsType.mdx';
 <ResponseExample>  
 
 ```json 200  
-
 [
     {
         "Balance": {
@@ -110,6 +109,51 @@ const listClientWalletsByFundsType = async (fundsType) => {
 listClientWalletsByFundsType(myWallets.FundsType)  
 ```  
 
+```java Java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.Pagination;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.FundsType;
+import com.mangopay.entities.Wallet;
+
+import java.lang.reflect.Field;
+import java.util.List;
+
+public class ListClientWallets {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        List<Wallet> clientWallets = mangopay.getClientApi().getWallets(FundsType.FEES, new Pagination(1, 100));
+
+        for (Wallet clientWallet : clientWallets) {
+            System.out.println(String.format("\nid: %s", clientWallet.getId()));
+            printObjectFields(clientWallet);
+        }
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Money 
+                    || value instanceof FundsType 
+                    || value instanceof CurrencyIso)  {
+                    System.out.println(field.getName() + ": " + value);
+			  printObjectFields(value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
 from pprint import pprint

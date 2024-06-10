@@ -153,13 +153,13 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
 
 ```json 200 - Successful capture  
 {
-   "Id": "156683388",
-   "Tag": "custom meta",
+   "Id": "5ca9a5a3-8db0-4184-9322-acf521a4e210",
+   "Tag": "Created using the Mangopay Python SDK",
    "CreationDate": 1669114580,
    "ResultCode": "000000",
    "ResultMessage": "Success",
-   "AuthorId": "156671158",
-   "CreditedUserId": "156671158",
+   "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+   "CreditedUserId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
    "DebitedFunds": {
        "Currency": "EUR",
        "Amount": 200
@@ -176,23 +176,23 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
    "ExecutionDate": 1669114581,
    "Type": "PAYIN",
    "Nature": "REGULAR",
-   "CreditedWalletId": "156683179",
+   "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
    "DebitedWalletId": null,
    "PaymentType": "PREAUTHORIZED",
    "ExecutionType": "DIRECT",
-   "PreauthorizationId": "156679832"
+   "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
 }  
  ```  
 
 ```json 200 - Failed: Amount greater than remaining funds  
 {
-   "Id": "156684537",
+   "Id": "5ca9a5a3-8db0-4184-9322-acf521a4e210",
    "Tag": "capture attempt",
    "CreationDate": 1669115134,
    "ResultCode": "001505",
    "ResultMessage": "The PayIn DebitedFunds can't be higher than the PreAuthorization remaining amount",
-   "AuthorId": "156671158",
-   "CreditedUserId": "156671912",
+   "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+   "CreditedUserId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
    "DebitedFunds": {
        "Currency": "EUR",
        "Amount": 700
@@ -209,11 +209,11 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
    "ExecutionDate": null,
    "Type": "PAYIN",
    "Nature": "REGULAR",
-   "CreditedWalletId": "156683554",
+   "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
    "DebitedWalletId": null,
    "PaymentType": "PREAUTHORIZED",
    "ExecutionType": "DIRECT",
-   "PreauthorizationId": "156679832"
+   "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
 }  
  ```  
 
@@ -223,20 +223,17 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
   
 ```json REST  
 {
-   "Tag": "custom meta",
-   "AuthorId": "156671158",
-   "CreditedUserId": "156671158",
-   "DebitedFunds": {
-       "Currency": "EUR",
-       "Amount": 200
-   },
-   "Fees": {
-       "Currency": "EUR",
-       "Amount": 0
-   },
-   "CreditedWalletId": "156683179",
-   "PreauthorizationId": "156679832"
-}  
+    "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 2000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 200
+    },
+    "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
+}
 ```  
 
   
@@ -250,9 +247,9 @@ const mangopay = new mangopayInstance({
 let myPreauthorizedPayIn = {
   PaymentType: 'PREAUTHORIZED',
   ExecutionType: 'DIRECT',
-  AuthorId: '192822811',
+  AuthorId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
   Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: '192822811',
+  CreditedUserId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
   DebitedFunds: {
     Currency: 'EUR',
     Amount: 1000,
@@ -261,8 +258,8 @@ let myPreauthorizedPayIn = {
     Currency: 'EUR',
     Amount: 100,
   },
-  CreditedWalletId: '192822814',
-  PreauthorizationId: '192823192',
+  CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+  PreauthorizationId: 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42',
 }
 
 const createPreauthorizedPayin = async (payin) => {
@@ -304,9 +301,9 @@ def createPreauthorizedPayIn(payInObject)
 end
 
 myPreauthorizedPayIn = {
-    AuthorId: '192822811',
+    AuthorId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
     Tag: 'Created with Mangopay Ruby SDK',
-    CreditedUserId: '192822811',
+    CreditedUserId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
     DebitedFunds: {
       Currency: 'EUR',
       Amount: 900,
@@ -315,8 +312,8 @@ myPreauthorizedPayIn = {
       Currency: 'EUR',
       Amount: 100,
     },
-    CreditedWalletId: '192822814',
-    PreauthorizationId: '195059241'
+    CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+    PreauthorizationId: 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42'
   }
 
 createPreauthorizedPayIn(myPreauthorizedPayIn)  
@@ -337,14 +334,14 @@ handler = APIRequest(sandbox=True)
 from mangopay.resources import NaturalUser, PreAuthorizedPayIn
 from mangopay.utils import Money
 
-natural_user = NaturalUser.get('213753890')
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
 
 preauthorization_payin = PreAuthorizedPayIn(
     author_id = natural_user.id,
     debited_funds =  Money(amount=1000, currency='GBP'),
     fees = Money(amount=0, currency='GBP'),
-    credited_wallet_id = '213754077',
-    preauthorization_id = '213944840',
+    credited_wallet_id = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+    preauthorization_id = 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42',
     tag='Created using the Mangopay Python SDK'
 )
 

@@ -174,6 +174,38 @@ myUboDeclaration = {
 viewUboDeclaration(myLegalUser[:Id], myUboDeclaration[:Id])  
 ```  
 
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.UboDeclaration;
+
+import java.lang.reflect.Field;
+
+public class ViewUboDeclaration {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UboDeclaration uboDeclaration = mangopay.getUboDeclarationApi().get("ubo_m_01HRYRKZN51BFXDWD6CCE22PHN");
+        System.out.println(String.format("id: %s", uboDeclaration.getId()));
+        printObjectFields(uboDeclaration);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
 from pprint import pprint

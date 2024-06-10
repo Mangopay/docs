@@ -156,6 +156,44 @@ timeFrame = {
 viewUserEmoney(myUser[:Id], timeFrame[:year], timeFrame[:month])  
 ```  
 
+```java Java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.entities.EMoney;
+
+import java.lang.reflect.Field;
+
+public class ViewUserEMoney {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        var userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
+        EMoney viewEMoney = mangopay.getUserApi().getEMoney(userId, "2023");
+        printObjectFields(viewEMoney);
+    }
+ 
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Money) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value);
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
   
 ```python Python  
 from pprint import pprint
