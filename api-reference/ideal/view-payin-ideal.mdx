@@ -80,7 +80,6 @@ import PayInId from '/snippets/path-parameters/PayInId.mdx';
 <ResponseExample>  
 
 ```json 200 - Succeeded  
-
 {
     "Id": "wt_00e4bd1b-08f8-40cf-8104-2d91fe270b34",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -118,7 +117,61 @@ import PayInId from '/snippets/path-parameters/PayInId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let myPayIn = {
+    Id: 'wt_3bc9f70c-cc3e-481a-adf0-aff0a8941696',
+  }
   
+  const viewPayIn = async (payinId) => {
+    return await mangopay.PayIns.get(payinId)
+      .then((response) => {
+        console.info(response)
+        return response
+      })
+      .catch((err) => {
+        console.log(err)
+        return false
+      })
+  }
+  
+viewPayIn(myPayIn.Id)
+```
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+
+try {
+    $payinId = 'wt_ec4590a3-3ef0-40ef-a6df-945c84729726';
+
+    $response = $api->PayIns->Get($payinId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
 ```python Python  
 from pprint import pprint
 

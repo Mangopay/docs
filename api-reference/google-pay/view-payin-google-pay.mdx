@@ -147,6 +147,35 @@ import PayInId from '/snippets/path-parameters/PayInId.mdx';
 
 <RequestExample>  
   
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+
+try {
+    $payinId = 'wt_ec4590a3-3ef0-40ef-a6df-945c84729726';
+
+    $response = $api->PayIns->Get($payinId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
 ```python Python  
 from pprint import pprint
 
