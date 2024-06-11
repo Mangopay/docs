@@ -11,14 +11,14 @@ This guide helps you get started with the Checkout SDK on web browsers.
 
 - A Mangopay ClientId and API key (get a Sandbox API key for free)  
 - A User and their associated Wallet to complete the pay-in  
-- A card to register or payment method setup (see Testing - Payment methods for testing information)  
+- A card to register or payment method setup (see [Testing - Payment methods](testing/payment-methods.mdx) for testing information)  
 
 **Supported browsers:** Chrome 117, Firefox 118, Safari 16
 </Info>  
 
 ## Installation  
 
-You can install the Mangopay Checkout SDK using npm or yarn.
+You can install the Mangopay Checkout SDK using [npm](https://www.npmjs.com/package/@mangopay/checkout-sdk) or yarn.
 
 ```shell Install with npm
 npm install --save @mangopay/checkout-sdk
@@ -39,7 +39,8 @@ If you are using script tags to load files, include the Mangopay SDK script in y
 **Warning – Load script from Mangopay Checkout domain** 
   
 To maintain PCI compliance, the script must be loaded directly from the Mangopay Checkout domain:  
-https://checkout.mangopay.com  
+- https://checkout.mangopay.com  
+
 The script must not be bundled or hosted on other domains. You must reference it directly from our domain.  
 </Warning>  
 
@@ -107,7 +108,7 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
         <tr>
             <td class="table-content">`options`</td>
             <td class="table-content">
-                Object 
+                Object \
                 **REQUIRED**
             </td>
             <td class="table-content">The options of the Checkout SDK configuration.</td>
@@ -138,10 +139,8 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
             <td class="table-content">`environment`</td>
             <td class="table-content">String</td>
             <td class="table-content">
-                The Mangopay environment. 
-
-                **Allowed values:** SANDBOX, PRODUCTION
-
+                The Mangopay environment. \
+                **Allowed values:** SANDBOX, PRODUCTION\
                 **Default values:** SANDBOX
             </td>
         </tr>
@@ -194,7 +193,7 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 Configure the MangopayCheckout parameters and delegates.  
 
 ### Example - Vanilla JS   
-```shell HTML 
+```html HTML 
 <body>
     <div id="checkoutForm">
         <div id="container"></div>
@@ -202,7 +201,7 @@ Configure the MangopayCheckout parameters and delegates.
     <script src="/index.js"></script>
 </body>
 ```  
-```javascript 
+```javascript JavaScript
 window.addEventListener('load', async () => {
     const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
     if (!mangopaySdk) {
@@ -223,7 +222,7 @@ window.addEventListener('load', async () => {
 
 ### Example - ReactJS
 
-```javascript 
+```javascript JavaScript
 import { MangopayCheckout } from '@mangopay/checkout-sdk-react';
 const sdkRef = useRef(null);
 
@@ -295,7 +294,6 @@ const onPaymentComplete = () => {
             <td class="table-content">Function(event)</td>
             <td class="table-content">
                 Triggered when:
-
                 - A card tokenization is completed and a `CardId` is returned.
                 - The user authorizes a Google Pay or Apple Pay payment.
             </td>
@@ -314,7 +312,8 @@ const onPaymentComplete = () => {
 **Warning – Use Mangopay Checkout domain as return URL** 
   
 When making the pay-in request from your backend, use the Mangopay Checkout URL as the `SecureModeReturnURL` or `ReturnURL` (depending on the payment method):  
-https://checkout.mangopay.com  
+- https://checkout.mangopay.com  
+
 The user must be returned to this URL after redirection.  
 </Warning>  
 
@@ -338,7 +337,8 @@ To manage transaction redirects effectively with the SDK:
 - Triggers the `onPaymentComplete` event with the ID and status of the transaction.  
 - Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
 - Presents the payment result to the user.  
-```javascript Redirection example
+
+```javascript JavaScript - Redirection example
 paymentMethods: [
     {
         type: 'card | paypal',
@@ -370,8 +370,7 @@ To configure the card payment method, specify `card` as the `type` of the `payme
             <td class="table-content">Array
                 **REQUIRED**</td>
             <td class="table-content">
-                The card brands supported.
-
+                The card brands supported.\
                 **Allowed values:** VISA, MASTERCARD, AMERICAN_EXPRESS, MAESTRO, CB
             </td>
         </tr>
@@ -391,7 +390,7 @@ To configure the card payment method, specify `card` as the `type` of the `payme
 </table>
 
 ### Card configuration example  
-```javascript 
+```javascript JavaScript
 const options = {
     clientId: 'MANGOPAY_CLIENT_ID',
     environment: 'SANDBOX | PRODUCTION',
@@ -421,11 +420,12 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 
 In the `options` for the card payment method, create a function to handle creation of Card Registration event handler in the `paymentMethods` object:  
 - Your `onCreateCardRegistration` function calls your server, and passes it the card brand of the user.  
-- Your server makes a request to Create a Card Registration.  
+- Your server makes a request to [Create a Card Registration](/api-reference/card-registrations/create-card-registration).  
 - In response, your server receives a Card Registration object.  
 - In your `onCreateCardRegistration` function, return the unmodified Card Registration object to the SDK.  
-- The SDK tokenizes the card and updates the Card Registration object to create the `CardId` which is used for payment.  
-```javascript Card tokenization example
+- The SDK [tokenizes the card](/api-reference/card-registrations/tokenize-card) and [updates the Card Registration](/api-reference/card-registrations/update-card-registration) object to create the `CardId` which is used for payment.  
+
+```javascript JavaScript - Card tokenization example
 // Vanilla JS
 mangopaySdk.on('tokenizationComplete', (event: CustomEvent<TokenizationCompleteEventDetails>) => {
     // handle tokenization complete
@@ -453,7 +453,7 @@ const onPaymentComplete = () => {
 ```  
 
 ### tokenizationComplete output  
-```json 
+```json REST
 {
   "Id": "cardreg_m_01HQ0J6GB3JFZ1NC5EGCJBE4PB",
   "Tag": null,
@@ -476,8 +476,8 @@ const onPaymentComplete = () => {
 ### Managing cards  
 
 You can use the following endpoints to manage cards:  
-- View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
-- Deactivate a Card allows you to irreversibly set the card as inactive  
+- [View a Card](/api-reference/cards/view-card) provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+- [Deactivate a Card](/api-reference/cards/deactivate-card) allows you to irreversibly set the card as inactive  
 
 <Warning>  
 **Warning - End user's approval needed to save card details** 
@@ -489,24 +489,24 @@ If you don’t have the end user’s approval, you need to deactivate the card s
 ### Requesting card payments  
 
 You can use a registered card (`CardId`) for requests with the following objects. In your request, ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
-- The Card Validation object, to validate a card without debit  
-- The Direct Card PayIn object, for one-shot card payments  
-- The Recurring PayIn Registration object, for recurring card payments  
-- The Preauthorization object, for 7-day preauthorized card payments  
-- The Deposit Preauthorization object, for 30-day preauthorized card payments  
+- [The Card Validation object](/api-reference/card-validations/card-validation-object), to validate a card without debit  
+- [The Direct Card PayIn object](/api-reference/card-validations/card-validation-object), for one-shot card payments  
+- [The Recurring PayIn Registration object](/api-reference/recurring-card-payins/recurring-payin-registration-object), for recurring card payments  
+- [The Preauthorization object](/api-reference/preauthorizations/preauthorization-object), for 7-day preauthorized card payments  
+- [The Deposit Preauthorization object](/api-reference/deposit-preauthorizations/deposit-preauthorization-object), for 30-day preauthorized card payments  
 
 ## Configuring Apple Pay  
 
 <Note>  
 **Note - Apple Pay integration required** 
   
-Offering Apple Pay requires additional setup by the platform, including certification and integration. For more information, see the How to process an Apple Pay payment tutorial.   
+Offering Apple Pay requires additional setup by the platform, including certification and integration. For more information, see the [How to process an Apple Pay payment](/guides/payment-methods/apple-pay/how-to) tutorial.   
 </Note>  
 
 <Warning>  
 **Caution - Apple Pay on the Web availability** 
   
-Apple Pay on the Web, using the JavaScript Checkout SDK, is only available on Safari browsers on Mac and iOS devices. Apple Pay on the Web also requires additional certification.  
+[Apple Pay on the Web](https://developer.apple.com/documentation/apple_pay_on_the_web/), using the JavaScript Checkout SDK, is only available on Safari browsers on Mac and iOS devices. Apple Pay on the Web also requires additional certification.  
 </Warning>  
 
 To configure the Apple Pay payment method, specify `apple_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.   
@@ -532,19 +532,18 @@ To configure the Apple Pay payment method, specify `apple_pay` as the `type` of 
         <tr>
             <td class="table-content">`currencyCode`</td>
             <td class="table-content">String</td>
-            <td class="table-content">One of the Mangopay-supported currencies in the ISO_4217 format.</td>
+            <td class="table-content">One of the [Mangopay-supported currencies](/api-reference/overview/data-formats) in the ISO_4217 format.</td>
         </tr>
         <tr>
             <td class="table-content">`merchantCapabilities`</td>
             <td class="table-content">Array</td>
-            <td class="table-content">Information about the card types and authentication protocols you support (see Apple Pay documentation).</td>
+            <td class="table-content">Information about the card types and authentication protocols you support (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/1916123-merchantcapabilities)).</td>
         </tr>
         <tr>
             <td class="table-content">`supportedNetworks`</td>
             <td class="table-content">Array</td>
             <td class="table-content">
-                The card networks supported by Mangopay: `VISA` and `MASTERCARD`.
-
+                The card networks supported by Mangopay: `VISA` and `MASTERCARD`.\
                 **Allowed values:** VISA, MASTERCARD
             </td>
         </tr>
@@ -566,7 +565,7 @@ To configure the Apple Pay payment method, specify `apple_pay` as the `type` of 
         <tr>
             <td class="table-content">`onValidateMerchant`</td>
             <td class="table-content">Function</td>
-            <td class="table-content">Function called when the SDK receives an onvalidatemerchant merchant event from the Apple Pay sheet. This function should implement backend creation of the merchant session object. After creating the session object, return the session object to the SDK.</td>
+            <td class="table-content">Function called when the SDK receives an onvalidatemerchant merchant event from the Apple Pay sheet. This function should implement backend creation of the [merchant session object](https://developer.apple.com/documentation/apple_pay_on_the_web/apple_pay_js_api/creating_an_apple_pay_session). After creating the session object, return the session object to the SDK.</td>
         </tr>
     </tbody>
 </table> 
@@ -585,22 +584,22 @@ To configure the Apple Pay payment method, specify `apple_pay` as the `type` of 
         <tr>
             <td class="table-content">`requiredBillingContactFields`</td>
             <td class="table-content">Array</td>
-            <td class="table-content">The billing information to fulfill the order (see Apple Pay documentation).</td>
+            <td class="table-content">The billing information to fulfill the order (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/2216120-requiredbillingcontactfields)).</td>
         </tr>
         <tr>
             <td class="table-content">`requiredShippingContactFields`</td>
             <td class="table-content">Array</td>
-            <td class="table-content">The shipping information to fulfill the order (see Apple Pay documentation).</td>
+            <td class="table-content">The shipping information to fulfill the order (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/2216121-requiredshippingcontactfields)).</td>
         </tr>
         <tr>
             <td class="table-content">`billingContact`</td>
             <td class="table-content">Object</td>
-            <td class="table-content">The billing contact information for the user (see Apple Pay documentation).</td>
+            <td class="table-content">The billing contact information for the user (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/1916125-billingcontact)).</td>
         </tr>
         <tr>
             <td class="table-content">`shippingContact`</td>
             <td class="table-content">Object</td>
-            <td class="table-content">The shipping contact information for the user (see Apple Pay documentation).</td>
+            <td class="table-content">The shipping contact information for the user (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentrequest/1916127-shippingcontact)).</td>
         </tr>
     </tbody>
 </table>
@@ -651,7 +650,7 @@ To configure the Apple Pay payment method, specify `apple_pay` as the `type` of 
 </table>
 
 ### Apple Pay configuration example  
-```javascript 
+```javascript JavaScript
 const validateApplePayMerchant = (validationURL: string): Promise<ApplePayMerchantSession> => {
     return HttpClient.request < ApplePayMerchantSession > (
         'https://backend-api-url/get-apple-pay-session',
@@ -702,24 +701,24 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 ### Requesting the merchantSession from your server  
 
 Displaying the Apple Pay payment sheet using the Mangopay Checkout SDK works as follows:  
-- You generate the merchant session from your server  
-- The SDK’s `onValidateMerchant` function calls your server and passes it the static hostname `apple-pay-gateway.apple.com` as the validation URL. In the China region, use `cn-apple-pay-gateway.apple.com`.  
-- Your server uses the validation URL to request a session from the Apple Pay server, as described in Requesting an Apple Pay Payment Session.  
-- In the response, your server receives an opaque merchant session object, `MerchantSession`.  
-- You pass the merchant session object to the `completeMerchantValidation` method of the SDK (see Apple Pay documentation for more information on this method).  
+1. You generate the merchant session from your server  
+2. The SDK’s `onValidateMerchant` function calls your server and passes it the static hostname `apple-pay-gateway.apple.com` as the validation URL. In the China region, use `cn-apple-pay-gateway.apple.com`.  
+3. Your server uses the validation URL to request a session from the Apple Pay server, as described in [Requesting an Apple Pay Payment Session](https://developer.apple.com/documentation/apple_pay_on_the_web/apple_pay_js_api/requesting_an_apple_pay_payment_session).  
+4. In the response, your server receives an opaque merchant session object, `MerchantSession`.  
+5. You pass the merchant session object to the `completeMerchantValidation` method of the SDK (see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession/1778015-completemerchantvalidation) for more information on this method).  
 
   
 
 ### Requesting Apple Pay pay-in  
 
-To request the payment, use the Create a Apple Pay PayIn endpoint and include the Apple Pay `PaymentData`.  
+To request the payment, use the [Create a Apple Pay PayIn](/api-reference/apple-pay/create-apple-pay-payin) endpoint and include the Apple Pay `PaymentData`.  
 
 ## Configuring Google Pay  
 
 <Note>  
 **Note - Google Pay setup required** 
   
-Offering Google Pay requires additional setup by the platform. For more information, see the How to process a Google Pay payment tutorial.   
+Offering Google Pay requires additional setup by the platform. For more information, see the [How to process a Google Pay payment](/guides/payment-methods/google-pay/how-to) tutorial.   
 </Note>  
 
 To configure the Google Pay payment method, specify `google_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
@@ -745,7 +744,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
         <tr>
             <td class="table-content">`merchantName`</td>
             <td class="table-content">String</td>
-            <td class="table-content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”.</td>
+            <td class="table-content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”. For more information, see the [Google Pay documentation](https://developers.google.com/pay/api/android/reference/request-objects#MerchantInfo).</td>
         </tr>
     </tbody>
 </table>
@@ -765,8 +764,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             <td class="table-content">`allowedAuthMethods`</td>
             <td class="table-content">Array</td>
             <td class="table-content">
-                The supported authentication methods: PAN_ONLY, meaning the card is registered in the user’s Google account and requires additional authentication; CRYPTOGRAM_3DS, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.
-                
+                The supported authentication methods: PAN_ONLY, meaning the card is registered in the user’s Google account and requires additional authentication; CRYPTOGRAM_3DS, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.\
                 **Allowed values:** PAN_ONLY, CRYPTOGRAM_3DS
             </td>
         </tr>
@@ -774,8 +772,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             <td class="table-content">`allowedCardNetworks `</td>
             <td class="table-content">Array</td>
             <td class="table-content">
-                The card networks supported by Mangopay: VISA and MASTERCARD.
-
+                The card networks supported by Mangopay: VISA and MASTERCARD.\
                 **Allowed values:** VISA, MASTERCARD
             </td>
         </tr>
@@ -783,15 +780,14 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             <td class="table-content">`gateway`</td>
             <td class="table-content">String</td>
             <td class="table-content">
-                The orchestration used: in this case, whenthen.
-                
+                The orchestration used: in this case, whenthen.\
                 **Allowed values:** whenthen
             </td>
         </tr>
     </tbody>
 </table> 
 
-### button
+#### button
 
 <table>
     <thead>
@@ -809,11 +805,8 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
                 **Default value:** default
 
                 **Allowed values:**
-
                 - default – A Google-selected default value. Currently black but it may change over time.
-
                 - black – A black button suitable for use on white or light backgrounds.
-
                 - white – A white button suitable for use on colorful backgrounds.
             </td>
         </tr>
@@ -823,22 +816,14 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             <td class="table-content">
                 **Default value:** buy
 
-                **Allowed values:**
-
+                **Allowed values:** 
                 - book – The "Book with Google Pay" payment button.
-
                 - buy – The "Buy with Google Pay" payment button.
-
                 - checkout – The "Checkout with Google Pay" payment button.
-
                 - donate – The "Donate with Google Pay" payment button.
-
                 - order – The "Order with Google Pay" payment button.
-
                 - pay – The "Pay with Google Pay" payment button.
-
                 - plain – The Google Pay payment button without the additional text.
-
                 - subscribe – The "Subscribe with Google Pay" payment button.
             </td>
         </tr>
@@ -858,9 +843,9 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
 
 #### transactionInfo  
 
-Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the Google Pay documentation.
+Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the [Google Pay documentation](https://developers.google.com/pay/api/web/reference/request-objects#TransactionInfo).
   
-```javascript Google Pay configuration example
+```javascript JavaScript - Google Pay configuration example
 const options = {
     clientId: 'MANGOPAY_CLIENT_ID',
     environment: 'SANDBOX | PRODUCTION',
@@ -909,18 +894,18 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 
 ### Handling Google Pay authorization  
 
-The `onTokenizationComplete` function is called after the user approves the payment on the Google Pay form. The output contains the paymentData object (see Google Pay documentation) which is needed to request the Google Pay payment via the API from your backend.  
+The `onTokenizationComplete` function is called after the user approves the payment on the Google Pay form. The output contains the paymentData object (see [Google Pay documentation](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData)) which is needed to request the Google Pay payment via the API from your backend.  
 
 ### Requesting Google Pay pay-in  
 
-To request the payment, use the Create a Google Pay PayIn endpoint. Include the Google Pay `PaymentData` and ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+To request the payment, use the [Create a Google Pay PayIn](/api-reference/google-pay/create-google-pay-payin) endpoint. Include the Google Pay `PaymentData` and ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
 
 ### Configuring PayPal  
 
 <Note>  
 **Note – PayPal setup required** 
   
-Offering PayPal requires approval from PayPal and activation. For more information, see the PayPal article.  
+Offering PayPal requires approval from PayPal and activation. For more information, see the [PayPal](/guides/payment-methods/paypal) article.  
 </Note>  
 
 To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.
@@ -943,7 +928,7 @@ To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` obje
     </tbody>
 </table>
 
-```javascript PayPal configuration example
+```javascript JavaScript - PayPal configuration example
 const options = {
     clientId: 'MANGOPAY_CLIENT_ID',
     environment: 'SANDBOX | PRODUCTION',
@@ -972,15 +957,15 @@ mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetail
 
 ### Requesting PayPal pay-in  
 
-To request the payment, use the Create a PayPal PayIn endpoint. Ensure that the `ReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+To request the payment, use the [Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin) endpoint. Ensure that the `ReturnURL` parameter is set to `https://checkout.mangopay.com`.  
 
 ## Verifying the payment result  
 
 Once `onPaymentComplete` is triggered, verify the status of the relevant Mangopay API object:  
-- View a PayIn  
-- View a Preauthorization  
-- View a Deposit Preauthorization  
-- View a Card Validation  
+- [View a PayIn](/api-reference/direct-card-payins/view-payin-direct-card)  
+- [View a Preauthorization](/api-reference/preauthorizations/view-preauthorization)
+- [View a Deposit Preauthorization](/api-reference/deposit-preauthorizations/view-deposit-preauthorization)  
+- [View a Card Validation](/api-reference/card-validations/view-card-validation)  
 
 <Warning>  
 **Caution – Check payment result from backend** 
@@ -1003,7 +988,7 @@ mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetail
 When processing a token request, the SDK shows a loading spinner and retains it until the loading state is set to `false`. This provides a temporary state for the user until the full payment is complete, including calls from your platform's backend.  
 
 The `setLoading` method handles the loading state for displaying and dismissing the spinner.  
-```json setLoading example
+```json REST - setLoading example
 import { CheckoutSdk } from '@mangopay/checkout-sdk';
 const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
 // dismiss the  loader spinner
@@ -1044,7 +1029,7 @@ const cardFormElement = await MangopaySdkLoader.loadCardFormElement(elementOrSel
 </table>  
 
 ### Vanilla JS usage example  
-```shell HTML
+```html HTML
 <body>
     <form novalidate id="checkoutForm">
         <div id="container"></div>
@@ -1053,7 +1038,8 @@ const cardFormElement = await MangopaySdkLoader.loadCardFormElement(elementOrSel
     <script src="/index.js"></script>
 </body>
 ```  
-```javascript 
+
+```javascript JavaScript
 window.addEventListener('load', async () => {
     const cardFormElement = await MangopaySdkLoader.loadCardFormElement('#container', options);
     if (!cardFormElement) {
@@ -1084,7 +1070,7 @@ window.addEventListener('load', async () => {
 ```  
 
 ### ReactJS usage example  
-```javascript 
+```javascript Javascript
 import { CardFormElement } from '@mangopay/checkout-sdk-react';
 const sdkRef = useRef(null);
 
@@ -1115,7 +1101,7 @@ const onTokenizationComplete = () => {
 ## Branding  
 
 You can customize the appearance of the payment sheet using the `branding` object.  
-```javascript Branding example
+```javascript JavaScript - Branding example
 const options = {
     branding: {
         fontFamily: 'Helvetica Neue',
@@ -1157,7 +1143,7 @@ You can use the `rules` and `variables` objects for further customization.
 #### Variables  
 
 Variables are CSS variables that you can declare and use in your theme rules.  
-```javascript 
+```javascript JavaScript
 {
     theme: {
     ...,
@@ -1178,7 +1164,7 @@ Variables are CSS variables that you can declare and use in your theme rules.
 #### Rules  
 
 Rules allows you to apply CSS styles to Checkout SDK components. To do so, target components by class names, with or without the CSS class selector prefix (`FieldContainer` or `.FieldContainer`), and specify the styles to apply. The feature supports all native CSS properties and nesting.  
-```javascript 
+```javascript JavaScript
 {
     theme: {
       ...,
@@ -1205,7 +1191,7 @@ Rules allows you to apply CSS styles to Checkout SDK components. To do so, targe
 ## Localization  
 
 Mangopay Checkout SDK has built-in support for English and French localization.  
-```javascript 
+```javascript JavaScript
 const options = {
     locale: 'en', // 'en' | 'fr' | Object
 };
@@ -1218,7 +1204,7 @@ const mangopaySdk = await MangopaySdkLoader.loadCheckoutSdk('#container', option
 ```  
 
 You can customize labels, placeholder and success and error messages by providing a `customLanguage` object.  
-```javascript 
+```javascript JavaScript
 const customLanguage = {
 
     'card.number.placeholder': '1234 1234 1234 1234',
