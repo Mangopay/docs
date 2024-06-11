@@ -110,8 +110,7 @@ import PayInId from '/snippets/path-parameters/PayInId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
+```php PHP 
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -126,8 +125,9 @@ $api->Config->ClientId = 'your-client-id';
 $api->Config->ClientPassword = 'your-api-key';
 $api->Config->TemporaryFolder = 'tmp/';
 
+
 try {
-    $payinId = '198161872';
+    $payinId = 'wt_ec4590a3-3ef0-40ef-a6df-945c84729726';
 
     $response = $api->PayIns->Get($payinId);
 
@@ -137,38 +137,38 @@ try {
 } catch(MGPException $e) {
     print_r($e);
 }  
-```  
+```
 
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
 const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
 })
 
 let myPayIn = {
-  Id: '156279887',
-}
-
-const viewPayIn = async (payinId) => {
-  return await mangopay.PayIns.get(payinId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewPayIn(myPayIn.Id)  
-```  
-
+    Id: 'wt_3bc9f70c-cc3e-481a-adf0-aff0a8941696',
+  }
   
-```ruby Ruby  
+  const viewPayIn = async (payinId) => {
+    return await mangopay.PayIns.get(payinId)
+      .then((response) => {
+        console.info(response)
+        return response
+      })
+      .catch((err) => {
+        console.log(err)
+        return false
+      })
+  }
+  
+viewPayIn(myPayIn.Id)
+```
+  
+```ruby Ruby 
 require 'mangopay'
+
+require 'PP'
 
 MangoPay.configure do |client|
     client.preproduction = true
@@ -178,25 +178,68 @@ MangoPay.configure do |client|
 end
 
 def viewPayIn(payinId)
-    begin
-        response = MangoPay::PayIn.fetch(payinId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch PayIn: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
+  begin
+      response = MangoPay::PayIn.fetch(payinId)
+      puts response
+      return response
+  rescue MangoPay::ResponseError => error
+      puts "Failed to fetch PayIn: #{error.message}"
+      puts "Error details: #{error.details}"
+      return false
+  end
 end
 
 myPayIn = {
-    Id: '156279887'
+  Id: 'wt_4502fd11-1aca-44ed-9fc5-fec8f41b6b05'
 }
 
-viewPayIn(myPayIn[:Id])  
-```  
+pp(viewPayIn(myPayIn[:Id]))
+```
 
-  
+```java Java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.core.enumerations.CountryIso;
+
+import java.lang.reflect.Field;
+
+public class HandleRequest {
+    public static void main(String[] args) {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+PayIn payin = mangopay.getPayInApi().get("wt_4988a6e9-cc9b-47a7-a754-1f7e3eed8365");
+
+        printPayInId(payin);
+        printObjectFields(payin);
+        printObjectFields(payin.getExecutionDetails());
+        printObjectFields(payin.getPaymentDetails());
+    }
+
+    private static void printPayInId(PayIn payIn) {
+        System.out.println("PayIn ID: " + payIn.getId());
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
 ```python Python  
 from pprint import pprint
 
@@ -218,6 +261,4 @@ try:
 except PayIn.DoesNotExist:
     print('PayIn {} does not exist.'.format(payin_id))  
 ```  
-
-  
 </RequestExample>
