@@ -164,5 +164,27 @@ myUser = {
 listTransactionsUser(myUser[:Id])  
 ```  
 
-  
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Transaction, NaturalUser
+
+natural_user = NaturalUser.get('213600749')
+
+transactions = Transaction.all(user_id = natural_user.id)
+
+print('=== Transactions for User {} ==='.format(natural_user.id))
+
+for transaction in transactions:
+    pprint(transaction._data)
+    print()
+```
 </RequestExample>
