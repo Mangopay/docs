@@ -4,14 +4,18 @@
 html {
   font-family: "Inter", sans-serif;
 }
+/* 
+* {
+  transition-duration: 0.15s !important;
+  transition-delay: 0ms !important;
+} */
 
 em {
   font-style: normal;
   font-variation-settings: "slnt" -10;
 }
-
-
-/* .prose {
+/* 
+.prose {
   border: 1px solid red !important;
 }
 
@@ -20,14 +24,23 @@ em {
 } */
 
 .pill {
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: #f8f8f8;
-  padding: 4px 8px;
-  font-size: 10px;
+  color: #2d0f37;
+  padding: 0px 8px;
+  font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
+  height: 20px;
+  /* text-transform: uppercase; */
+  text-transform: lowercase;
   margin-right: 2px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pill.pill-green {
+  color: #1a5615;
+  background-color: #40ca5a;
 }
 
 /* Colors */
@@ -74,8 +87,8 @@ em {
 }
 
 #topbar-cta-button * {
-    color: #FCB069 !important;
-    border: unset;
+  color: #fcb069 !important;
+  border: unset;
 }
 
 /*  */
@@ -93,28 +106,27 @@ em {
 
 /* Links */
 
-.prose :where(a):not(:where([class~=not-prose] *)) {
-    /* font-weight: inherit; */
-    /* border-bottom: unset; */
-    /* text-decoration: underline; */
-    border-bottom-color: inherit;
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  /* font-weight: inherit; */
+  /* border-bottom: unset; */
+  /* text-decoration: underline; */
+  border-bottom-color: inherit;
 }
-
 
 code.language-ruby,
 code.language-dotnet,
 code.language-python,
 code.language-java {
-    color: #FFF;
+  color: #fff;
 }
 
 code.language-php span,
 code.language-ruby span {
-    color: #FFF;
+  color: #fff;
 }
 
 #text {
-    color: #FFF;
+  color: #fff;
 }
 
 /* .dark p, .dark a, .dark li {
@@ -125,13 +137,17 @@ code.language-ruby span {
     color: #FFF;
 } */
 
-.dark .card-header h2, .dark .card-body p  {
-    color: #2D0F37
+.dark .card-header h2,
+.dark .card-body p {
+  color: #2d0f37;
 }
 
-
-
 /* general typo colors */
+
+/* html.dark #content-container p,
+html.dark #content-container a,
+html.dark #content-container li,
+html.dark #content-container span { */
 
 html.dark p,
 html.dark a,
@@ -149,7 +165,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 html.dark h1,
@@ -159,6 +175,14 @@ html.dark h4,
 html.dark h5,
 html.dark h6 {
   color: white;
+}
+html:not(.dark) h1,
+html:not(.dark) h2,
+html:not(.dark) h3,
+html:not(.dark) h4,
+html:not(.dark) h5,
+html:not(.dark) h6 {
+  color: #2d0f37;
 }
 
 html:not(.dark) p,
@@ -188,54 +212,71 @@ code.language-ruby span {
   color: #fff;
 }
 
-/* .dark p,
-.dark a,
-.dark li {
-  color: #a5a3a1;
-}
-
-.dark span {
-  color: #fff;
-} */
-
 .dark .card-header h2,
 .dark .card-body p {
   color: #2d0f37;
 }
 
 /*  */
+/* Lists */
+/*  */
+
+.prose :where(ol > li):not(:where([class~="not-prose"] *))::marker {
+  color: inherit;
+}
+
+/*  */
+/* Block Quote */
+/*  */
+
+.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  border-color: #2d0f37;
+}
+
+:is(.dark .prose blockquote) {
+  border-color: white;
+}
+
+/*  */
 /* Sidebar */
 /*  */
 
-html #sidebar a {
-    transition: 0.25s;
+html #sidebar li {
+  transition: 0.15s;
 }
 
-html:not(.dark) #sidebar a.bg-primary\/10.text-primary {
-    background: #2d0f37 !important;
-    color: white !important;
+html.dark #sidebar .dark\:text-gray-400 p {
+  color: rgb(159, 158, 160);
 }
+
+/* Per Design Light Highlight */
+/* html:not(.dark) #sidebar a.bg-primary\/10.text-primary {
+  background: #2d0f37 !important;
+  color: white !important;
+} */
 
 /*  */
 /* Unordered List */
 /*  */
 
-.prose :where(ul>li):not(:where([class~=not-prose] *)):before {
-    content: "";
-    width: 4px;
-    height: 4px;
-    position: absolute;
-    /* top: calc(.875em - .0625em); */
-    top: calc(.875em - 2px);
-    left: 12px;
-    border-radius: 999px;
-    background: white;
+.prose :where(ul > li):not(:where([class~="not-prose"] *)):before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  position: absolute;
+  /* top: calc(.875em - .0625em); */
+  top: calc(0.875em - 2px);
+  left: 12px;
+  border-radius: 999px;
+  background-color: white;
 }
-html:not(.dark) .prose :where(ul>li):not(:where([class~=not-prose] *)):before {
-    background-color: #2d0f37;
+html:not(.dark)
+  .prose
+  :where(ul > li):not(:where([class~="not-prose"] *)):before {
+  background-color: #2d0f37;
 }
 
-
+/*  */
 /* Cards */
 /*  */
 
@@ -251,6 +292,11 @@ html:not(.dark) .prose :where(ul>li):not(:where([class~=not-prose] *)):before {
 
 .dark .card:not(.card-variation) {
   background: rgb(20, 23, 23);
+  border: none;
+}
+
+.dark .card:not(.card-variation):hover {
+  background-color: #2d2e2f;
 }
 
 .card:not(.card-variation):not(.sdk-card) > div {
@@ -394,44 +440,44 @@ td {
 /* Currencies Table */
 
 .currenciesTable {
-    max-height: 720px;
-    border-collapse: separate; 
-    border-spacing: 0;
-    /* border: 1px solid #d0d3d0; */
+  max-height: 720px;
+  border-collapse: separate;
+  border-spacing: 0;
+  /* border: 1px solid #d0d3d0; */
 }
 
 .currenciesTable td {
-    border-bottom: 1px solid #d0d3d0;
-    border-right: 1px solid #d0d3d0;
-    border-left: none;
-    border-collapse: collapse;
-} 
+  border-bottom: 1px solid #d0d3d0;
+  border-right: 1px solid #d0d3d0;
+  border-left: none;
+  border-collapse: collapse;
+}
 
 .dark .currenciesTable td {
-    border-bottom: 1px solid #4e5251;
-    border-right: 1px solid #4e5251;
-} 
+  border-bottom: 1px solid #4e5251;
+  border-right: 1px solid #4e5251;
+}
 
 .currenciesTable .header {
-    border: 1px solid #d0d3d0;
-    border-top: none;
-    border-left: none;
-    background-color:#F3F5F3!important;
+  border: 1px solid #d0d3d0;
+  border-top: none;
+  border-left: none;
+  background-color: #f3f5f3 !important;
 }
 
 .dark .currenciesTable .header {
-    border: 1px solid #4e5251;
-    border-top: none;
-    border-left: none;
-    background-color:#171919!important;
+  border: 1px solid #4e5251;
+  border-top: none;
+  border-left: none;
+  background-color: #171919 !important;
 }
 
 /* Freeze first column  */
 .currenciesTable thead tr:first-child th:first-child,
 .currenciesTable tbody th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 1; 
+  position: sticky;
+  left: 0;
+  z-index: 1;
 }
 
 /* .currenciesTable thead tr:last-child th:last-child,
@@ -452,16 +498,16 @@ td {
 
 /* Freeze first row */
 .currenciesTable thead {
-    position: sticky;
-    top: 0;
-    z-index: 2; /* Ensure it stays above other content */
-    /* background-color: #F3F5F3; */
+  position: sticky;
+  top: 0;
+  z-index: 2; /* Ensure it stays above other content */
+  /* background-color: #F3F5F3; */
 }
 
 .dark .currenciesTable thead {
-    position: sticky;
-    top: 0;
-    z-index: 2; /* Ensure it stays above other content */
+  position: sticky;
+  top: 0;
+  z-index: 2; /* Ensure it stays above other content */
 }
 
 .header-normal-weight {
@@ -473,8 +519,6 @@ td {
   display: none;
 }
 
-
-
 /*  */
 /* Release Notes */
 /*  */
@@ -485,3 +529,75 @@ td {
   font-weight: 600;
   margin-bottom: 16px;
 }
+
+/* Date */
+
+.release-notes-cards .date,
+.release-notes-cards sup {
+  font-size: 12px;
+  line-height: 20px;
+  color: #505453;
+  font-weight: 500;
+  top: unset;
+}
+
+html.dark #content-container .release-notes-cards .date,
+html.dark #content-container .release-notes-cards sup {
+  color: rgb(159, 158, 160);
+}
+
+.release-notes-cards .card ul {
+  padding-left: 24px;
+}
+
+.release-notes-cards .card li {
+  position: relative;
+  list-style-type: disc;
+}
+
+/*  */
+/* Accordions */
+/*  */
+
+html.dark #content-area button.dark:hover\:bg-white\/5 {
+  background-color: rgb(20, 23, 23);
+}
+
+html.dark #content-area button.dark:hover\:bg-white\/5:hover {
+  background-color: #2d2e2f;
+}
+
+#content-area button p {
+  font-weight: 600;
+}
+
+html.dark #content-area div[role=listitem].border {
+  background-color: rgb(20, 23, 23);
+  /* border: 3px solid lime !important; */
+  border: none;
+}
+
+/*  */
+/* Code */
+/*  */
+
+:is(.dark :not(pre)>code) {
+  border-color: #2d2e2f;
+  /* border-color: transparent; */
+  background-color: rgb(20, 23, 23);
+}
+
+/* 
+.release-notes-cards .not-prose :where(ul>li):before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    position: absolute;
+    top: calc(.875em - 2px);
+    left: 12px;
+    border-radius: 999px;
+    background: white;
+}
+html:not(.dark) .release-notes-cards .not-prose :where(ul>li):before {
+    background-color: #2d0f37;
+} */
