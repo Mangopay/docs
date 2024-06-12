@@ -1,85 +1,279 @@
 ---
-title: 'Requirements'
-sidebarTitle: 'Overview'
+title: 'All requirements by user type'
+sidebarTitle: 'All by user type'
+# mode: wide
 ---
 
-Verification is necessary for Owner users wishing to make payouts to their bank account.  
+import IconGreenCheck from '/snippets/icons/icon-green-check.mdx';
+import IconGreenCheckOutline from '/snippets/icons/icon-green-check-outline.mdx';
+import IconGrayCross from '/snippets/icons/icon-gray-cross.mdx';
 
-<Warning>  
-**Caution - Acceptance of Mangopay’s T&Cs** 
+Verification is necessary for Owner users wishing to take actions beyond the limits defined in the Limits article. 
+
+This page outlines the requirements that a user needs to fulfill to be verified, which means their `KYCLevel` becomes `REGULAR`.
+
+To request verification, a user must already be an Owner, meaning that they have provided the required information depending on their type.
+
+For more details, see:
+
+<Card
+    title="Guide"
+    href="/guides/users/categories"
+>
+    Categories and required information for Owners
+</Card>
+
+<Note>  
+**Note - Acceptance of Mangopay’s T&Cs** 
   
-To be verified, a natural or legal user must have accepted Mangopay’s terms and conditions (T&Cs). The relevant T&Cs for your platform are defined by your contract. For more information on T&Cs, see the website Terms and Conditions page.  
-</Warning>  
+All Owner users must have accepted Mangopay’s terms and conditions (T&Cs). The relevant T&Cs for your platform are defined by your contract. For more information on T&Cs, see the website Terms and Conditions page.  
+</Note>  
 
-Mangopay reserves the right to request any additional information and/or documents that it considers relevant for verification purposes.  
+## Consistency of data and evidence
 
-## Natural users  
+The informaiton declared in the User object of the API must match the documents and other evidence provided. 
 
-A natural person is an individual. In terms of Mangopay users, this means:
-- Natural users  
-- Legal representatives of legal users (including sole proprietors)  
+For example, the name on the identity proof must match the declared data in the User object. For a natural user, this means the `FirstName` and `LastName`; for a legal user, `LegalRepresentativeFirstName` and `LegalRepresentativeLastName`.
 
-### Information to provide  
+The same applies to other data regarding the:
+- Person or entity being verified
+- Declared legal representative (if applicable)
+- Beneficial owners (if applicable)
 
-The natural person must provide the following information:  
-- First name  
-- Last name  
-- Email  
-- Date of birth  
-- Nationality  
-- Country of residence  
+## Summary
 
-This information is required to create an Owner user or to categorize an existing Payer as an Owner.  
+In addition to being an Owner, users must provide and validate the following elements to obtain verified status.
 
-### Documents to provide  
+### Natural users
 
-The natural person must provide the following verification documents: 
+Natural users only need to validate their proof of identity.
 
-<CardGroup cols={2}>  
-    <Card title="Identity proof">  
-    Official identity document of the natural person. The accepted documents depend on the country of issue as described below.  
-    To optimize the acceptance rate of identity documents, please refer to the ID best practices.  
-    </Card>  
-</CardGroup>  
+<table>
+<tbody>
+  <tr>
+  <th class="header header-column header-normal-weight">**Identity Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/id-accepted">accepted ID document</a> of the declared legal representative</td>
+  </tr>
+</tbody>
+</table>
 
-{/* Natural persons must provide proof of identity. For the accepted documents and more information, see:   */}
+<Warning>
+    **Caution – Mangopay may request additional evidence**
 
-<Card title="Article" href="/concepts/users/verification/requirements-natural">Requirements for natural persons</Card>  
+    Mangopay's KYC verification processes are mandated by AML regulations. Mangopay reserves the right to request any additional information and/or documents that it considers relevant for verification purposes. 
+</Warning>
 
-## Legal users  
+#### Related resources
 
-In terms of Mangopay users, legal entities are legal users. They are subject to more extensive requirements.  
-
-The entity’s legal representative must be verified in the same way as for all natural persons.  
-
-### Soletrader
-
-#### Information to proide
-
-##### For the sole proprietorship  
-- Registered legal name  
-- Business email  
-- Registered legal address  
-
-##### For the sole proprietor  
-- First name  
-- Last name  
-- Email  
-- Date of birth  
-- Nationality  
-- Country of residence 
-
-In the case of a Soletrader, the sole proprietor is their own legal representative.  
-
-The above information is required to create an Owner user or to categorize an existing Payer as an Owner.  
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/users/verification/documents/submission/id-best-practices"
+  >
+    Optimizing ID acceptance rates
+  </Card>
+  <Card
+    title="How to"
+    href="/guides/users/verification/documents/submission/how-to"
+  >
+    Submit a KYC Document
+  </Card>
+</CardGroup>
 
 
-Legal users must also provide other documents to prove their entity's registration and incorporation (if applicable). Because legal entities are governed and structured differently depending on the jurisdiction, the exact documents expected for each type are different in different countries.  
+### Legal users
 
-**Business** users must provide <a href="/concepts/users/verification/company-number">their company number</a> in the correct format. The company number is recommended for Soletrader and Organization types.  
+Legal entities and sole proprietors, represented by legal users, are subject to more extensive verification requirements. 
 
-**Business** and **Partnership** types must also provide information about their <a href="/concepts/users/verification/beneficial-owners">beneficial owners</a>.  
+A legal representative must be declared and verified in the same way as for natural persons.
 
-For more information on the requirements and expected documents by type and by country, see:   
+Legal users must also provide other documents to prove their registration and incorporation (if applicable). Because legal entities are governed and structured differently depending on the jurisdiction, the exact documents accepted for each type are different depending on the country of registration.
 
-<Card title="Article" href="/concepts/users/verification/requirements-legal">Requirements for legal users</Card>
+Business and Partnership types must also provide information about their beneficial owners.
+
+<Warning>
+    **Caution – Mangopay may request additional evidence**
+
+    Mangopay's KYC verification processes are mandated by AML regulations. Mangopay reserves the right to request any additional information and/or documents that it considers relevant for verification purposes. 
+
+    For legal users, this may include the Shareholder Declaration form, or an ID document for a beneficial owner.
+</Warning>
+
+The requirements are summarized in the tables below.
+
+#### Business
+
+<table>
+<tbody>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;number**<br/>`CompanyNumber`&nbsp;parameter</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – and in the correct format</td>
+  </tr>
+  <tr>
+  <th class="header header-column header-normal-weight">**Identity Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/id-accepted">accepted ID document</a> of the declared legal representative</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the entity</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Articles&nbsp;of&nbsp;Association**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the entity</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Beneficial&nbsp;owners**<br/>UBO Declaration</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – see <a href="/guides/users/verification/requirements/beneficial-owners">beneficial owners</a></td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Shareholder&nbsp;Declaration**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">**May be required** if the other KYB documents don't give sufficient information</td>
+  </tr>
+</tbody>
+</table>
+
+
+#### Partnership
+
+The Partnership type only applies to the Gesellschaft bürgerlichen Rechts (GbR) in Germany. See <a href="/guides/users/verification/requirements/kyb-local#de-partnership">DE - Partnership</a> for more details.
+
+<table>
+<tbody>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;number**<br/>`CompanyNumber`&nbsp;parameter</th>
+    <td class="table-content">{IconGrayCross}</td>
+    <td class="table-content">Not applicable</td>
+  </tr>
+  <tr>
+  <th class="header header-column header-normal-weight">**Identity Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/id-accepted">accepted ID document</a> of the declared legal representative</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the entity</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Articles&nbsp;of&nbsp;Association**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** if it exists for the entity – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a></td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Beneficial&nbsp;owners**<br/>UBO Declaration</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – see <a href="/guides/users/verification/requirements/beneficial-owners">beneficial owners</a></td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Shareholder&nbsp;Declaration**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">**May be required** if the other KYB documents don't give sufficient information</td>
+  </tr>
+</tbody>
+</table>
+
+#### Organization
+
+<table>
+<tbody>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;number**<br/>`CompanyNumber`&nbsp;parameter</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">Recommended if it exists</td>
+  </tr>
+  <tr>
+  <th class="header header-column header-normal-weight">**Identity Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/id-accepted">accepted ID document</a> of the declared legal representative</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the entity</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Articles&nbsp;of&nbsp;Association**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the entity</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Beneficial&nbsp;owners**<br/>UBO Declaration</th>
+    <td class="table-content">{IconGrayCross}</td>
+    <td class="table-content">Not applicable</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Shareholder&nbsp;Declaration**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">**May be required** if the other KYB documents don't give sufficient information</td>
+  </tr>
+</tbody>
+</table>
+
+#### Soletrader
+
+Soletrader users should declare themselves as their legal representative. Their registerd name and address must be in the `Name` and `HeadquartersAddress` parameters, with their personal details in the legal representative parameters.
+
+<table>
+<tbody>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;number**<br/>`CompanyNumber`&nbsp;parameter</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">Recommended if it exists</td>
+  </tr>
+  <tr>
+<th class="header header-column header-normal-weight">**Identity Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/id-accepted">accepted ID document</a> of the sole proprietor</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Registration&nbsp;Proof**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheck}</td>
+    <td class="table-content">**Required** – an <a href="/guides/users/verification/requirements/kyb-local">accepted KYB document</a> for the sole proprietorship</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Articles&nbsp;of&nbsp;Association**<br/>KYC Document</th>
+    <td class="table-content">{IconGrayCross}</td>
+    <td class="table-content">Not applicable</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Beneficial&nbsp;owners**<br/>UBO Declaration</th>
+    <td class="table-content">{IconGrayCross}</td>
+    <td class="table-content">Not applicable</td>
+  </tr>
+  <tr>
+    <th class="header header-column header-normal-weight">**Shareholder&nbsp;Declaration**<br/>KYC Document</th>
+    <td class="table-content">{IconGreenCheckOutline}</td>
+    <td class="table-content">**May be required** if the other KYB documents don't give sufficient information</td>
+  </tr>
+</tbody>
+</table>
+
+#### Related resources
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/users/verification/company-number"
+  >
+    Company number
+  </Card>
+  <Card
+    title="How to"
+    href="/guides/users/verification/documents/submission/how-to"
+  >
+    Submit a KYC Document
+  </Card>
+  <Card
+    title="How to"
+    href="/guides/users/verification/beneficial-owners/how-to"
+  >
+    Submit a UBO Declaration
+  </Card>
+</CardGroup>
