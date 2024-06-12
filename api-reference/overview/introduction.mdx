@@ -1,6 +1,7 @@
 ---
 title: 'Introduction'
 'og:description': 'Get started with the Mangopay RESTapi: base URLs, environments, content type, and encoding.'
+mode: 'wide'
 ---
 
 The Mangopay API is based on REST principles, providing a simple and secure way to process payment flows.  
@@ -30,5 +31,111 @@ The Mangopay API accepts and returns:
 <Note>  
 **Note** 
   
-Requests to generate an OAuth token use the application/x-www-form-urlencoded Content-Type. See more information in OAuth 2.0 authentication.  
+Requests to generate an OAuth token use the application/x-www-form-urlencoded Content-Type. See more information in [OAuth 2.0 authentication](/api-reference/overview/authentication#oauth-2-0-authentication).  
 </Note>
+
+## UK platforms
+
+Platforms that have contracted with Mangopay’s UK entity must include the following header in all requests in Production:
+
+<table>
+        <tr>
+            <th class="header">Key</th>
+            <th class="header">Value</th>
+        </tr>
+    <tbody>
+        <tr>
+            <td class="table-content">x-tenant-id</td>
+            <td class="table-content">uk</td>
+        </tr>
+    </tbody>
+</table>
+
+There is no equivalent for platforms contracting with other Mangopay entities. 
+
+If you’re using an SDK, you need to change the configuration during initialization by setting the UK header flag value to true.
+
+
+<CodeGroup>
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-mangopay-client-id';
+$api->Config->ClientPassword = 'your-mangopay-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+$api->Config->UKHeaderFlag = true;
+```
+
+```javascript NodeJS 
+const mangopay = require('mangopay2-nodejs-sdk');
+const paymentApi = new mangopay({
+	clientId: 'your-mangopay-client-id', 
+	clientApiKey: 'your-mangopay-api-key',
+	baseUrl: 'https://api.sandbox.mangopay.com',
+	ukHeaderFlag: true
+});
+```
+
+```ruby Ruby 
+require 'mangopay'
+
+MangoPay.configure do |c|
+  c.preproduction = true
+  c.client_id = 'your-mangopay-client-id'
+  c.client_apiKey = 'your-mangopay-api-key'
+  c.http_timeout = 30000
+  c.Http_open_timeout = 60000
+  c.Log_file = File.join('mypath', 'mangopay.log')
+  c.uk_header_flag = true
+end
+```
+
+```java Java 
+import com.mangopay.MangoPayApi;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+    MangoPayApi mangopay = new MangoPayApi();
+    mangopay.getConfig().setClientId("your-mangopay-client-id");
+    mangopay.getConfig().setClientPassword("your-mangopay-api-key");
+    mangoapy.getConfig().setUkHeaderFlag(true);
+    }
+}
+```
+
+```python Python 
+import mangopay
+
+mangopay.client_id='your-mangopay-client-id'
+mangopay.apikey='your-mangopay-api-key'
+mangopay.uk_header_flag= True
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+```
+
+```dotnet .Net
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using System.Reflection;
+
+class Program {
+    static void Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-mangopay-client-id";
+        api.Config.ClientPassword = "your-mangopay-api-key";
+	  api.Config.UKHeaderFlag = true;
+    }
+}
+```
+</CodeGroup>

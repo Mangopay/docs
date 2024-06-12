@@ -46,45 +46,68 @@ You must use the same currency for a transaction between your app, Checkout SDK,
 - Localization support for your whole user community  
 
 ## How it works  
-- The user proceeds to payment on your app or website.  
-- You configure and display your chosen payment methods to the user to collect payment information.  
-- The user selects the payment method and provide the payment information when required (e.g. card details).  
-- The Checkout SDK securely tokenizes the payment data:
+1. The user proceeds to payment on your app or website.  
+2. You configure and display your chosen payment methods to the user to collect payment information.  
+3. The user selects the payment method and provide the payment information when required (e.g. card details).  
+4. The Checkout SDK securely tokenizes the payment data:
 For card payments, with the tokenization server via the Mangopay API to generate a `CardId`
 For Google Pay and Apple Pay, with the payment method’s API to generate tokenized payment data  
-- You create a delegate function that gets called by the SDK to start payment processing.  
-- Your server uses the `CardId` or tokenized payment data to create the transaction via the Mangopay API (pay-in, preauthorization, deposit preauthorization, or card validation).  
-- Your delegate function returns the outcome of the transaction.  
-- If required, the SDK handles additional redirect actions: 3DS authorization or validation via payment method interface (e.g. PayPal).  
-- You present the payment result to the user.  
+5. You create a delegate function that gets called by the SDK to start payment processing.  
+6. Your server uses the `CardId` or tokenized payment data to create the transaction via the Mangopay API (pay-in, preauthorization, deposit preauthorization, or card validation).  
+7. Your delegate function returns the outcome of the transaction.  
+8. If required, the SDK handles additional redirect actions: 3DS authorization or validation via payment method interface (e.g. PayPal).  
+9. You present the payment result to the user.  
 
-## Flow diagramTW a workflow was visible here. Please add it.  
+## Flow diagram
+
+TW a workflow was visible here. Please add it.  
 
 ## Resources  
 
-### Integration guidesTW an element has not been migrated  
+### Integration guides
+
+<CardGroup cols={2 }>
+  <Card title="Checkout - Web" href="/sdks/checkout/web">
+
+  </Card>
+  <Card title="Checkout - iOS" href="/sdks/checkout/ios">
+
+  </Card>
+  <Card title="Checkout - Android" href="/sdks/checkout/android">
+
+  </Card>
+</CardGroup>
 
 ### Changelog  
 
 The GitHub repositories contain changelogs of updates:  
-- Changelog – Web  
+- [Changelog – Web](https://github.com/Mangopay/mangopay-checkout-web/blob/main/CHANGELOG.md)  
 - Changelog – iOS  
-- Changelog – Android  
+- [Changelog – Android](https://github.com/Mangopay/mangopay-checkout-android/blob/main/CHANGELOG.md)  
 
-### CodePen samples for web  
+### Example apps 
 
-Our team has put together CodePen samples that you can experiment with for the following payment methods:  
-- CodePen – Card  
+The GitHub repositories include example apps:
+
+- [GitHub Example apps – Web](https://github.com/Mangopay/mangopay-checkout-web/tree/main/examples)
+- [GitHub Example apps – iOS](https://github.com/Mangopay/mangopay-checkout-ios/tree/main/Examples)
+- [GitHub Example apps – Android](https://github.com/Mangopay/mangopay-checkout-android/tree/main/Examples)
+
+### Try it out
+##### **PlayCode**
+
+We also have a live demo on [PlayCode](https://playcode.io/1840460), where you can experiment with the code and see real-time results.
 
 ## Version policy  
 
-The Checkout SDK adheres to semantic versioning as the standard for versioning packages.  
+The Checkout SDK adheres to [semantic versioning](https://semver.org/) as the standard for versioning packages.  
 
 Given the SDKs beta status, we anticipate frequent updates and patches to improve stability and introduce new features.  
 
 To ensure a smooth integration experience while avoiding potentially breaking changes, we recommend configuring your dependency manager to automatically install only patch updates.  
 
 For example, when using the web SDK, you can specify the desired patch version in your `package.json` file using the `~` operator:  
+
 ```shell Specify patch version
 "dependencies": {
   "@mangopay/checkout-sdk": "~1.1.0"
