@@ -5,15 +5,13 @@ title: 'Company number'
 
 The company number is the legal registration number of an entity provided by the relevant national authority in the country where it is registered.  
 
-The company number is one of the elements checked during the user verification process. The number is required for Business-type legal users, and recommended for Soletraders and Organizations if it exists. Therefore, for Business-type users, it is important to ensure that the format of the number is correct beforehand.  
+The company number is one of the elements checked during the user verification process. The number is required for Business-type legal users, and recommended for Soletraders and Organizations if it exists.
 
-## Process  
+The `CompanyNumber` must be in the correct format for their country of registration, as determined by the `Country` of the `HeadquartersAddress`. For Business-type users, an incorrect format blocks the verification process.
 
-### 1. Submit the required information for the Business  
+## Validating format prior to verification
 
-Business-type legal users need to provide the required information described in the Requirements for legal users, and this includes the company number.  
-
-The `CompanyNumber` must be in the correct format for their country of registration, as determined by the `Country` of the `HeadquartersAddress`. An incorrect format will block the verification process.   
+Platforms should validate the format of the `CompanyNumber` for businesses before requesting verification. 
 
 You can set up <a href="">hook notifications</a> for<a href=""> the follow</a>ing event types to be notified when a user’s number corresponds or not to the expected format:  
 - LEGAL_COMPANY_NUMBER_VALIDATION_SUCCEEDED  
@@ -33,23 +31,11 @@ You can also use the following endpoint to check the format of the number and re
 The endpoint and hooks above only check that the format of the company number is as expected. Whether or not the data is true and correct for the specific user is checked during verification when documents are submitted.  
 </Warning>  
 
-### 2. Submit the required verification documents  
-
-Once all the data is present and correct, and the company number is in a valid format, you can proceed with submitting the necessary documents.  
-- For the accepted documents in the user’s country, see the Requirements for legal users  
-- For more about how to submit a verification document, see How to submit a KYC Document  
-
-### 3. Submit the declaration of beneficial ownership  
-
-Once the documents have been submitted, you can proceed with submitting information about the beneficial owners.  
-- For more information, see the Beneficial owners article  
-- For more about how to submit a declaration, see the How to submit a UBO Declaration tutorial  
-
 ## Accepted format by country  
 
 The countries in the table below have rules in place regarding a valid format for their country number. Countries not in the list have no formatting rules in place - the number format should match the verification documents.  
 
-The regular expressions for the accepted formats are returned on the Validate the format of User data endpoint.  
+The regular expressions for the accepted formats are returned on the <a href="/api-reference/user-data-format/validate-user-data-format">POST Validate the format of User data</a> endpoint.  
 
 <Note>  
 **Note - Only alphanumeric characters assessed** 
@@ -57,23 +43,235 @@ The regular expressions for the accepted formats are returned on the Validate th
 The company number formatting rules only evaluate alphanumeric characters. Any other characters, like dashes or spaces, in the `CompanyNumber` string are removed beforehand.  
 </Note>
 
+
 <table>
-    <thead>
-        <tr>
-            <th class="header">Pay-ins</th>
-            <th class="header">Users</th>
-            <th class="header">Bank accounts</th>
-            <th class="header">Payouts</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">Refused</td>
-            <td class="table-content">Blocked</td>
-            <td class="table-content">Blocked</td>
-            <td class="table-content">Blocked</td>
-        </tr>
-    </tbody>
+<thead>
+    <tr>
+        <th class="header">Country</th>
+        <th class="header">Accepted formats</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+<td>Austria (AT)</td>
+<td>
+- 2 letters + 6 numbers + 1 letter (LLXXXXXXL)
+- 1 – 6 numbers + 1 letter (XXXXXXL)
+</td>
+</tr>
+<tr>
+<td>Belgium (BE)</td>
+<td>
+- 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Bulgaria (BG)</td>
+<td>
+- 9 numbers (XXXXXXXXX)
+- 13 numbers (XXXXXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Croatia (HR)</td>
+<td>
+- 11 numbers (XXXXXXXXXXX)
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Cyprus (CY)</td>
+<td>
+- 2 letters + 6 numbers (HEXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Czech Republic (CZ)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Denmark (DK)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Estonia (EE)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Finland (FI)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>France (FR)</td>
+<td>
+- 9 numbers (XXXXXXXXX)
+- 14 numbers (XXXXXXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Germany (DE)</td>
+<td>
+- 2 – 3 letters + 6 numbers (LLXXXXXX)
+- 2 – 3 letters + 1 – 6 numbers (LLLXXXX)
+- 2 – 3 letters + 1 – 6 numbers + 1 letter (LLLXXXXXXL)
+- 2 – 3 letters + 1 – 6 numbers + 1 – 2 letter (LLLXXXXXXLL)
+</td>
+</tr>
+<tr>
+<td>Greece (GR)</td>
+<td>
+- 12 numbers (XXXXXXXXXXXX)
+- 9 numbers (XXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Hungary (HU)</td>
+<td>
+- 2 letters + 10 numbers (LLXXXXXXXXXX)
+- 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Iceland (IS)</td>
+<td>
+- 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Ireland (IE)</td>
+<td>
+- 6 numbers (XXXXXX)
+- 5 numbers (XXXXX)
+</td>
+</tr>
+<tr>
+<td>Italy (IT)</td>
+<td>
+- 11 numbers (XXXXXXXXXXX)
+- 2 letters + 7 numbers (LLXXXXXXX)
+- 2 letters + 6 numbers (LLXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Latvia (LV)</td>
+<td>
+- 11 numbers (XXXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Liechtenstein (LI)</td>
+<td>
+- 3 letters + 9 numbers (LLLXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Lithuania (LT)</td>
+<td>
+- 9 numbers (XXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Luxembourg (LU)</td>
+<td>
+- 1 letter + 6 numbers (LXXXXXX)
+- 1 letter (from A to J) + 3 – 6 numbers
+</td>
+</tr>
+<tr>
+<td>Malta (MT)</td>
+<td>
+- 1 letter + 5 numbers (LXXXXX)
+</td>
+</tr>
+<tr>
+<td>Netherlands (NL)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Norway (NO)</td>
+<td>
+- 11 numbers (XXXXXXXXXXX)
+- 9 numbers (XXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Poland (PL)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+- 6 numbers (XXXXXX)
+- 9 numbers (XXXXXXXXX)
+- 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Portugal (PT)</td>
+<td>
+- 9 numbers (XXXXXXXXX)
+- 3 – 6 numbers (XXXXXX)
+</td>
+</tr>
+<tr>
+<td>Romania (RO)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Slovakia (SK)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Slovenia (SI)</td>
+<td>
+- 10 numbers (XXXXXXXXXX)
+- 7 – 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Spain (ES)</td>
+<td>
+- 1 letter + 8 numbers (LXXXXXXXX)
+- 1 letter + 7 numbers + 1 letter (LXXXXXXXL)
+</td>
+</tr>
+<tr>
+<td>Sweden (SE)</td>
+<td>
+- 10 numbers (XXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>Switzerland (CH)</td>
+<td>
+- 9 numbers (XXXXXXXXX)
+- CHE + 9 numbers (CHEXXXXXXXXX)
+</td>
+</tr>
+<tr>
+<td>United Kingdom (GB)</td>
+<td>
+- 8 numbers (XXXXXXXX)
+- 7 numbers (XXXXXXX)
+- OC + 6 numbers (OCXXXXXX)
+- SC + 6 numbers (SCXXXXXX)
+- NI + 6 numbers (NIXXXXXX)
+- R + 7 numbers (RXXXXXXX)
+- IP + 5 numbers + R (IPXXXXXR)
+</td>
+</tr>
+</tbody>
 </table>
 
 ## Related resources  
