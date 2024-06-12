@@ -17,9 +17,9 @@ import Platform from "/snippets/glossary/platform.mdx";
 
 This protocol involves the following actors:
 
--   The cardholder : The end user initiating the online payment by card.
--   The merchant : In the case of Mangopay, the <Platform content="platform" /> through which the funds are transiting.
--   The issuer : The bank or PSP of the cardholder who determines whether or not to authorize the payment based on the information received.
+-   **The cardholder** - The end user initiating the online payment by card.
+-   **The merchant** - In the case of Mangopay, the <Platform content="platform" /> through which the funds are transiting.
+-   **The issuer** - The bank or PSP of the cardholder who determines whether or not to authorize the payment based on the information received.
 
 ## Benefits
 
@@ -42,16 +42,19 @@ SCA applies to online payments in Europe. The following conditions must be met:
 
 At Mangopay, this means <PayIn content="pay-ins" /> with cards from major networks (CB, Visa, Mastercard, Maestro, AMEX, etc.) that meet these conditions, as well as card validations.
 
-<Card title="Endpoint" href="/api-reference/payment-methods/">
+<Card title="Endpoint" href="/api-reference/direct-card-payins/direct-card-payin-object">
     Direct card pay-in
 </Card>
-<Card title="Endpoint" href="/api-reference/payment-methods/">
-    Preauthorized pay-in
-</Card>
-<Card title="Endpoint" href="/api-reference/payment-methods/">
+<Card title="Endpoint" href="/api-reference/recurring-card-payins/recurring-payin-object">
     Recurring pay-in (CIT)
 </Card>
-<Card title="Endpoint" href="/api-reference/payment-methods/">
+<Card title="Endpoint" href="/api-reference/preauthorizations/preauthorization-object">
+    Preauthorization
+</Card>
+<Card title="Endpoint" href="/api-reference/deposit-preauthorizations/deposit-preauthorization-object">
+    Deposit Preauthorization
+</Card>
+<Card title="Endpoint" href="/api-reference/card-validations/card-validation-object">
     Card validation
 </Card>
 
@@ -59,22 +62,22 @@ At Mangopay, this means <PayIn content="pay-ins" /> with cards from major networ
 
 SCA doesn’t apply in some cases:
 
--   Merchant-initiated transactions (MIT), for example during recurring card payments
--   Anonymous transactions, for example with anonymous cards)
+-   Merchant-initiated transactions (MIT), for example during [recurring](/guides/payment-methods/card/recurring) card payments
+-   Anonymous transactions, for example with anonymous cards
 -   Mail-order and telephone-order (MOTO) transactions
 
 ### MOTO transactions
 
 Platforms can process MOTO transactions with Mangopay by setting the `PaymentCategory` parameter to `TelephoneOrder` (otherwise `ECommerce` by default). The feature requires activation by Mangopay and is available on the following endpoints:
 
--   Create a Card Validation
--   Create a Direct Card PayIn
--   Create a Preauthorization
+-   [Create a Card Validation](/api-reference/card-validations/create-card-validation)
+-   [Create a Direct Card PayIn](/api-reference/direct-card-payins/create-direct-card-payin)
+-   [Create a Preauthorization](/api-reference/preauthorizations/create-preauthorization)
 
 <Warning>
-    **Caution - Liability with platform for MOTO transactions** Because SCA does
-    not apply to MOTO transactions, they are inherently less secure and
-    liability is always with the platform in case of chargeback.
+    **Caution - Liability with platform for MOTO transactions** 
+    
+    Because SCA does not apply to MOTO transactions, they are inherently less secure and liability is always with the platform in case of chargeback.
 </Warning>
 
 ## How does it work?
@@ -101,7 +104,9 @@ SCA is triggered when:
 -   The issuer applies SCA, regardless of the `SecureMode` value or if the parameter is not present.
 
 <Warning>
-    **Caution - The issuer decides when SCA is applied** Regardless of the
+    **Caution - The issuer decides when SCA is applied** 
+    
+    Regardless of the
     requested flow, the final decision to apply SCA or not rests with the
     <Issuer content="issuer" />. In other words, you can set the `SecureMode` parameter
     to `FORCE` and end up being exempted from SCA, or request for an exemption and
@@ -110,7 +115,9 @@ SCA is triggered when:
 
 For more information about how to handle 3DS, see the How to process a card payment tutorial.
 
-<Card title="Tutorial">How to process a card payment</Card>
+<Card title="How to" href="/guides/payment-methods/card/direct/how-to">
+    Learn how to process a card payment
+</Card>
 
 ### SCA exemptions
 
@@ -120,7 +127,9 @@ Acquirers may request exemptions to <Sca content="SCA" /> for some <Cit content=
 -   Allow a frictionless flow for the end user.
 
 <Note>
-    **Note - No exemption for recurring pay-ins (CIT)** Strong customer
+    **Note - No exemption for recurring pay-ins (CIT)** 
+    
+    Strong customer
     authentication is always applicable for CITs when making a recurring pay-in.
 </Note>
 
