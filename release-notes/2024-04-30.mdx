@@ -1,14 +1,13 @@
----  
-title: 'API Release CarreFrais'  
----  
-<span class="date">2024-04-30</span>  
-  
-  
-<div class="pill pill-green">Added</div>  
-  
+---
+title: Apr 30, 2024 – CarreFrais
+description: API release
+---
+ <div class="pill pill-green">Added</div>  
+
+## Error 121009: Payout expired before processing
 
 The following `ResultCode` and `ResultMessage` can be returned on payouts:  
--121009  
+- 121009  
 - Payout expired before processing  
 
 This error occurs when a payout stays in `CREATED` status longer than 7 days without the funds being sent by Mangopay.  
@@ -16,23 +15,31 @@ This error occurs when a payout stays in `CREATED` status longer than 7 days wit
 Some payouts are subject to manual review by Mangopay’s teams for reasons of risk management or AML/CFT. If this review is not completed within 7 days, the payout expires.  
 
 See the dedicated 121009 page for more details.  
+
+---
+
 <div class="pill pill-green">Added</div>  
-  
+
+## Error 130011: Instant payout mode prevents manual review  
 
 The following `ResultCode` and `ResultMessage` can be returned on payouts:  
--130011   
+- 130011   
 - Manual review required - not compatible with payout mode requested  
 
 This error occurs when a manual review is required on an instant payout requested with `INSTANT_PAYMENT_ONLY` as the value for `PayoutModeRequested`.  
 
 The mode has no fallback to standard processing to enable the review, so an error is returned.  
 
-See the dedicated 130011 page for more details.  
+See the dedicated 130011 page for more details.
+
+---
+
 <div class="pill pill-green">Added</div>  
-  
+
+## Error 002701: Payer user requests payout  
 
 The following `ResultCode` and `ResultMessage` can be returned on payouts:  
--002701   
+- 002701   
 - Refused due to author’s UserCategory: PAYER  
 
 This error occurs when a payout is requested for a Payer user. Payouts can only be requested if the user’s `UserCategory` is `OWNER`, and the user must also be verified.  
