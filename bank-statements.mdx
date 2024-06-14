@@ -8,7 +8,7 @@ The Mangopay API allows you to customize the text that appears on the bank state
 
 You can do this by sending custom text in specific parameters of the API (depending on the transaction and payment method). This is entirely optional, but it can help your end users to identify a transaction made on your platform.  
 
-## What is the bank statement reference?  
+## Components
 
 The string of text that appears on the bank statement to describe a transaction contains, in order:  
 - A reference to Mangopay (e.g., MGP)  
@@ -27,57 +27,53 @@ Mangopay can supply a string of text for the bank statement but ultimately it is
 
 ## Pay-ins  
 
-### Card payments  
+On pay-ins, platforms can use the `StatementDescriptor` parameter to send custom text. 
 
-Parameter to send custom text: `StatementDescriptor`  
+The structure of the complete string sent is:
 
-Format and max. length: 10 alphanumeric characters or spaces  
+> MGP* `TradingName` `StatementDescriptor`
 
-**Endpoints:**  
-- [Create a Direct Card PayIn](/api-reference/direct-card-payins/create-direct-card-payin)  
-- [Create a Web Card PayIn](/api-reference/web-card-payins/create-web-card-payin)  
-- [Create a Recurring PayIn (CIT)](/api-reference/recurring-card-payins/create-recurring-payin-cit)  
-- [Create a Recurring PayIn (MIT)](/api-reference/recurring-card-payins/create-recurring-payin-mit)  
-- [Create a Preauthorization](/api-reference/preauthorizations/create-preauthorization)  
-- [Create a Deposit Preauthorization](/api-reference/deposit-preauthorizations/create-deposit-preauthorization)
+On the following endpoints, the `StatementDescriptor` length is limited to **10 alphanumeric characters or spaces**:
 
-Note that for preauthorizations, the parameter is sent at the creation of the preauthorization object, not the corresponding pay-in to capture the funds.  
+- <a href="/api-reference/direct-card-payins/create-direct-card-payin">Create a Direct Card PayIn</a>
+- <a href="/api-reference/web-card-payins/create-web-card-payin">Create a Web Card PayIn</a>
+- <a href="/api-reference/recurring-card-payins/create-recurring-payin-cit">Create a Recurring PayIn (CIT)</a>
+- <a href="/api-reference/recurring-card-payins/create-recurring-payin-mit">Create a Recurring PayIn (MIT)</a>
+- <a href="/api-reference/preauthorizations/create-preauthorization">Create a Preauthorization</a>
+- <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorization">Create a Deposit Preauthorization</a>
+- <a href="/api-reference/apple-pay/create-apple-pay-payin">Create an Apple Pay PayIn</a>
+- <a href="/api-reference/blik/create-blik-payin">Create a BLIK PayIn</a>
+- <a href="/api-reference/giropay/create-giropay-payin">Create a Giropay PayIn</a>
+- <a href="/api-reference/google-pay/create-google-pay-payin">Create a Google Pay PayIn</a>
+- <a href="/api-reference/ideal/create-ideal-payin">Create an iDEAL PayIn</a>
+- <a href="/api-reference/klarna/create-klarna-payin">Create a Klarna PayIn</a>
+- <a href="/api-reference/mb-way/create-mb-way-payin">Create an MB WAY PayIn</a>
+- <a href="/api-reference/multibanco/create-multibanco-payin">Create an Multibanco PayIn</a>
+- <a href="/api-reference/paypal/create-paypal-payin">Create a PayPal PayIn</a>
+- <a href="/api-reference/satispay/create-satispay-payin">Create a Satispay PayIn</a>
 
-Structure of complete string sent:<Info> MGP* `TradingName` `StatementDescriptor`</Info>  
+On SEPA Direct Debit, the `StatementDescriptor` length can be up to **100 alphanumeric characters or spaces**:
 
-### SEPA Direct Debit  
+- <a href="/api-reference/direct-debit/create-direct-debit-payin">Create a Direct Direct-Debit PayIn</a> (if Mandate Scheme is SEPA)
 
-Parameter to send custom text: `StatementDescriptor`  
+Customization of the bank statement reference is not possible with BACS Direct Debits.
 
-Format and max. length: 100 alphanumeric characters or spaces  
+### Pay-in refunds
 
-**Endpoint:** 
-- [Create a Direct Direct-Debit PayIn](/api-reference/direct-debit-payins/create-direct-debit-payin)
+For the SEPA Direct Debit payment method only, the `StatementDescriptor` is also available on pay-in refunds.
 
-Structure of complete string sent: <Info> MGP* `TradingName` `StatementDescriptor`</Info>  
+The length is limited to **10 alphanumeric characters or spaces**.
 
-Note that customization of the bank statement reference is not possible with BACS Direct Debits.  
-
-### Paypal  
-
-Parameter to send custom text: `StatementDescriptor`  
-
-Format and max. length: 10 alphanumeric characters or spaces  
-
-**Endpoint:**
-- [Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin)
-
-Structure of string sent:<Info> MGP* `TradingName` `StatementDescriptor`</Info>  
-
-Note that for PayPal, the complete string sent is limited to 22 characters.  
+The structure is the same as the pay-in.
 
 ## Payouts  
 
-Parameter to send custom text: `BankWireRef`  
+On payouts, platforms can use the `BankWireRef` parameter to send custom text. 
 
-Format and max. length: 12 alphanumeric characters or spaces  
+The structure of the complete string sent is:
 
-**Endpoint:** 
-- [Create a Payout](/api-reference/payouts/create-payout)
+> MGP* `TradingName` `BankWireRef`
 
-Structure of string sent: <Info> MGP* `TradingName` `BankWireRef`</Info>
+On payouts, the recommended length is 12 characters. Strings longer than this may be truncated depending on the bank. The technical limit is 255 characters.
+
+- <a href="/api-reference/payouts/create-payout">Create a Payout</a>
