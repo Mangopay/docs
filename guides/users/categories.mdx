@@ -188,10 +188,497 @@ The required information for Owners (outlined above) is required if `UserCategor
 Users created before May 2022, when `UserCategory` was introduced, have the value `UNKNOWN`. If you have Unknown users, they must be modified to either Payer or Owner by sending the `UserCategory` (along with the required parameters if Owner).  
 </Note>  
 
-For guidance on adding the required information for Owners, see the following tutorials:  
+### Changing a Payer to an Owner
 
-<CardGroup col={2}> 
-    <Card title="How to" href="/how-to/turn-payer-owner-natural-users">Learn how to turn a Payer into a Owner (natural users)</Card>
+<Note>
+**Note – Owners can’t become Payers**
 
-    <Card title="How to" href="/how-to/turn-payer-owner-legal-users">Learn how to turn a Payer into a Owner (legal users)</Card> 
-</CardGroup>
+A user must be created as either a Payer or an Owner. A Payer can become an Owner, but an Owner can’t be recategorized as a Payer.
+</Note>
+
+The steps to turn a Payer into an Owner are: 
+
+<Steps>
+<Step title="Collect the necessary information">
+Owners need to provide the information described above, depending on their user type.
+</Step>
+<Step title="Update the user object">
+Update the user object with the collected information, setting `UserCategory` to `OWNER`.
+<Tabs>
+<Tab title="Natural user example">
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/users/natural/&lcub;UserId&rcub;](/api-reference/users/update-natural-user)
+
+<CodeGroup>  
+```json REST
+{
+  "Birthday":“1463496101”,
+  "Nationality":“GB”,
+  "CountryOfResidence":“FR”,
+  "TermsAndConditionsAccepted":true,
+  "UserCategory":”OWNER”
+}
+```  
+
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ';
+    $user = $api->Users->Get($userId);
+
+    $user->FirstName = 'Alex';
+    $user->LastName = 'Smith';
+    $user->Email = 'smithupdated@example.com';
+
+    $user->Nationality = 'FR';
+    $user->CountryOfResidence = 'FR';
+      
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myNaturalUser = {
+  Id: 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ',
+  Birthday: 656640000,
+  Nationality: 'GB',
+  CountryOfResidence: 'FR',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const updateNaturalUser = async (user) => {
+  return await mangopay.Users.update(user)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateNaturalUser(myNaturalUser)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateNaturalUser(naturalUserId, naturalUserObject)
+    begin
+        response = MangoPay::NaturalUser.update(naturalUserId, naturalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myNaturalUser = {
+    Id: 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ',
+    Birthday: 655772400,
+    Nationality: 'FR',
+    CountryOfResidence: 'US',
+    TermsAndConditionsAccepted: true,
+    UserCategory: 'OWNER'
+}
+
+updateNaturalUser(myNaturalUser[:Id], myNaturalUser)
+```  
+
+```java Java
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+
+import java.lang.reflect.Field;
+
+public class UpdateNaturalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural myUser = mangopay.getUserApi().getNatural("user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ");
+
+        myUser.setFirstName("Jasmine");
+        myUser.setLastName("Patel");
+        myUser.setEmail("jasmine.patel@example.com");
+        myUser.setUserCategory(UserCategory.OWNER);
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+	 System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```python Python
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+from mangopay.utils import Address
+
+natural_user = NaturalUser(
+    id = 'user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ', 
+    user_category = 'Owner'
+)
+
+update_natural_user = natural_user.save()
+
+pprint(update_natural_user)
+```
+
+```dotnet .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using System.Reflection;
+using MangoPay.SDK.Entities.PUT;
+
+class UpdateUser {
+    static void Main(string[] args)
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var userId = "user_m_01HWAR82HD4D8CQ67J02YMKM82";
+
+            var myUser = new UserNaturalPutDTO {
+                Birthday = new DateTime(1975, 12, 21, 0, 0, 0),
+                Nationality = CountryIso.FR,
+                CountryOfResidence = CountryIso.FR,
+                UserCategory = UserCategory.OWNER
+            };
+
+            var updateUser = await api.Users.UpdateNaturalAsync(myUser, userId);
+
+            foreach (PropertyInfo prop in updateUser.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(updateUser);
+                if (propValue != null)
+                {
+                    Console.Write($"{prop.Name}: ");
+                    Console.WriteLine(propValue);
+                }
+            }
+        }).GetAwaiter().GetResult();
+    }
+}
+```
+</CodeGroup>  
+
+</Tab>
+<Tab title="Legal user example">
+
+> [**PUT** /v2.01/&lcub;ClientId&rcub;/users/legal/&lcub;UserId&rcub;](/api-reference/users/update-legal-user)
+
+<CodeGroup>  
+
+```json REST
+{
+    "HeadquartersAddress":{
+        "AddressLine1":"The Oasis",
+        "AddressLine2":"Rue des plantes",
+        "City":"Paris",
+        "Region":"IDF",
+        "PostalCode":"75015",
+        "Country":"FR"
+    },
+    "LegalRepresentativeBirthday":1463496101,
+    "LegalRepresentativeNationality":"FR",
+    "LegalRepresentativeCountryOfResidence":"FR",
+    "CompanyNumber":"999999999",
+    "TermsAndConditionsAccepted":true,
+    "UserCategory":"OWNER"
+}
+```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HYJVHY77NDDM97TQP57W87MH';
+    $user = $api->Users->Get($userId);
+
+    $user->Name = 'Smith corp';
+    $user->Email = 'smithupdated@example.com';
+    $user->LegalPersonType = \MangoPay\LegalPersonType::Business;
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->HeadquartersAddress = $address;
+    $user->LegalRepresentativeAddress = $address;
+    
+    $user->LegalRepresentativeFirstName = 'Alex';
+    $user->LegalRepresentativeLastName = 'Smith';
+    $user->LegalRepresentativeEmail = 'asmith@example.com';
+    $user->LegalRepresentativeBirthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->LegalRepresentativeNationality = 'FR';
+    $user->LegalRepresentativeCountryOfResidence = 'FR';
+    $user->CompanyNumber = 'LU123456';
+    
+    $user->Tag = 'Updated using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Update($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+}) 
+
+let myLegalUser = {
+  Id: 'user_m_01HYJVHY77NDDM97TQP57W87MH',
+  HeadquartersAddress: {
+    AddressLine1: '57 Main Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'FR',
+  LegalRepresentativeCountryOfResidence: 'FR',
+  CompanyNumber: '12345678',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL',
+}
+
+const updateLegalUser = async (legalUser) => {
+  return await mangopay.Users.update(legalUser)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateLegalUser(myLegalUser)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateLegalUser(legalUserId, legalUserObject)
+    begin
+        response = MangoPay::LegalUser.update(legalUserId, legalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: 'user_m_01HYJVHY77NDDM97TQP57W87MH',
+    HeadquartersAddress: {
+    AddressLine1: '57 Main Road',
+    AddressLine2: 'PB 456',
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'FR',
+  LegalRepresentativeCountryOfResidence: 'FR',
+  CompanyNumber: '12345678',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL'
+}
+```  
+
+```java Java 
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserLegal;
+
+import java.lang.reflect.Field;
+
+public class UpdateLegalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HRS7PQEGE4YGCM1AZK1ENTGE");
+
+        myUser.setName("C. Dickinson");
+        myUser.setEmail("best@dickinson.com");
+        myUser.setUserCategory("Owner");
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+        System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import LegalUser
+
+legal_user = LegalUser(
+    id = 'user_m_01HRS7PQEGE4YGCM1AZK1ENTGE',  
+    user_category = 'Owner',
+    legal_person_type = 'SOLETRADER'
+)
+
+update_legal_user = legal_user.save()
+
+pprint(update_legal_user)
+```
+
+</CodeGroup>  
+
+</Tab>
+
+</Tabs>
+
+</Step>
+
+</Steps>
+

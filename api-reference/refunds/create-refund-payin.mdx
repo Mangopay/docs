@@ -28,6 +28,8 @@ import DebitedFunds7 from '/snippets/body-parameters/DebitedFunds7.mdx';
 import AuthorId3 from '/snippets/body-parameters/AuthorId3.mdx';
 import Tag from '/snippets/body-parameters/Tag.mdx';
 import PayInId from '/snippets/path-parameters/PayInId.mdx';
+import StatementDescriptor_Refunds from '/snippets/body-parameters/StatementDescriptor_Refunds.mdx';
+import StatementDescriptorResponse_Refunds from '/snippets/response-parameters/StatementDescriptorResponse_Refunds.mdx';
   
 
 The pay-in refund is a request to reimburse a pay-in and is supported for most payment methods. You can make partial refunds by providing a debited funds `Amount` value lower than the initial transaction amount.  
@@ -55,11 +57,13 @@ The pay-in refund is a request to reimburse a pay-in and is supported for most p
 
 <Fees6 />  
 
+<StatementDescriptor_Refunds/>
+
 ### Responses  
 
 <AccordionGroup>
 
-<Accordion title="200">  
+<Accordion title="200 - Direct debit pay-in refund with StatementDescriptor">  
 
 <IdResponse />  
 
@@ -99,7 +103,11 @@ The pay-in refund is a request to reimburse a pay-in and is supported for most p
 
 <CreditedWalletIdResponse />  
 
-<RefundReasonResponse /></Accordion>
+<RefundReasonResponse />
+
+<StatementDescriptorResponse_Refunds/>
+
+</Accordion>
 
 </AccordionGroup>  
 
@@ -162,42 +170,42 @@ The pay-in refund is a request to reimburse a pay-in and is supported for most p
 
 <ResponseExample>  
 
-```json 200  
-
+```json 200 - Direct debit pay-in refund with StatementDescriptor
 {
-    "Id":"154987535",
-    "Tag":null,
-    "CreationDate":1667200967,
-    "AuthorId":"146476890",
-    "CreditedUserId":null,
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1400
+    "Id": "refund_m_01HW8A130S4SBVDZ70V809SS2X",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1713970908,
+    "AuthorId": "204071581",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 2500
     },
-    "CreditedFunds":{
-        "Currency":"EUR",
-        "Amount":1400
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 2750
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": -250
     },
-    "Status":"SUCCEEDED",
-    "ResultCode":"000000",
-    "ResultMessage":"Success",
-    "ExecutionDate":1667200967,
-    "Type":"PAYOUT",
-    "Nature":"REFUND",
-    "InitialTransactionId":"154987477",
-    "InitialTransactionType":"PAYIN",
-    "InitialTransactionNature":"REGULAR",
-    "DebitedWalletId":"148968396",
-    "CreditedWalletId":null,
-    "RefundReason":{
-        "RefundReasonMessage":null,
-        "RefundReasonType":"INITIALIZED_BY_CLIENT"
-    }
-}  
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1713970908,
+    "Type": "PAYOUT",
+    "Nature": "REFUND",
+    "InitialTransactionId": "204844475",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR",
+    "DebitedWalletId": "204844308",
+    "CreditedWalletId": null,
+    "RefundReason": {
+        "RefundReasonMessage": null,
+        "RefundReasonType": "INITIALIZED_BY_CLIENT"
+    },
+    "StatementDescriptor": "Example123"
+}
  ```  
 
 </ResponseExample>  
