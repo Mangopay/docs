@@ -26,35 +26,49 @@ import Type3 from '/snippets/body-parameters/Type3.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - BIN - 6 digits">  
+<AccordionGroup><Accordion title="200 - BIN: 6 digits">  
 
 <Type12Response />  
 
-<Bin1Response />  
-
-<CardType2Response />  
+<Bin1Response />
 
 <IssuerCountryCodeResponse />  
 
 <IssuingBankResponse />  
 
-<CommercialIndicatorResponse />  
+<BinDataResponse />
 
-<BinDataResponse /></Accordion><Accordion title="200 - BIN - 8 digits">  
+</Accordion>
+
+<Accordion title="200 - BIN: 8 digits">  
 
 <Type12Response />  
 
 <Bin1Response />  
 
-<CardType2Response />  
+<IssuerCountryCodeResponse />  
+
+<IssuingBankResponse />  
+
+<BinDataResponse />
+
+</Accordion>
+
+<Accordion title="200 - Co-branded">  
+
+<Type12Response />  
+
+<Bin1Response />  
 
 <IssuerCountryCodeResponse />  
 
 <IssuingBankResponse />  
 
-<CommercialIndicatorResponse />  
+<BinDataResponse />
 
-<BinDataResponse /></Accordion><Accordion title="200 - Google Pay">  
+</Accordion>
+
+<Accordion title="200 - Google Pay">  
 
 <Type12Response />  
 
@@ -62,29 +76,28 @@ import Type3 from '/snippets/body-parameters/Type3.mdx';
 
 <Bin1Response />  
 
-<CardType2Response />  
-
 <IssuerCountryCodeResponse />  
 
 <IssuingBankResponse />  
 
-<CommercialIndicatorResponse />  
+<BinDataResponse />
 
-<BinDataResponse /></Accordion></AccordionGroup>  
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - BIN - 6 digits  
-
+```json 200 - BIN: 6 digits  
 {
     "Type": "BIN",
     "Bin": "540006",
-    "CardType": "CREDIT",
     "IssuerCountryCode": "US",
     "IssuingBank": "FIRST NATIONAL BANK OF OMAHA",
-    "CommercialIndicator": "PERSONAL",
     "BinData": [
         {
+            "CardType": "CREDIT",
+            "CommercialIndicator": "PERSONAL",
             "Subtype": "MIXED PRODUCT",
             "Brand": "MASTERCARD"
         }
@@ -92,23 +105,45 @@ import Type3 from '/snippets/body-parameters/Type3.mdx';
 }  
  ```  
 
-```json 200 - BIN - 8 digits  
-
+```json 200 - BIN: 8 digits  
 {
     "Type": "BIN",
     "Bin": "47929300",
-    "CardType": "CREDIT",
     "IssuerCountryCode": "GB",
     "IssuingBank": "SANTANDER UK PLC",
-    "CommercialIndicator": "COMMERCIAL",
     "BinData": [
         {
+            "CardType": "CREDIT",
+            "CommercialIndicator": "COMMERCIAL",
             "Subtype": "B2B",
             "Brand": "VISA"
         }
     ]
 }  
- ```  
+ ```
+
+```json 200 - Co-branded
+{
+    "Type": "BIN",
+    "Bin": "49735591",
+    "IssuerCountryCode": "FR",
+    "IssuingBank": "SOCIETE GENERALE, S.A.",
+    "BinData": [
+        {
+            "CardType": null,
+            "CommercialIndicator": null,
+            "SubType": null,
+            "Brand": "CB"
+        },
+        {
+            "CardType": "DEBIT",
+            "CommercialIndicator": "PERSONAL",
+            "SubType": "CLASSIC",
+            "Brand": "VISA"
+        }
+    ]
+}
+```
 
 ```json 200 - Google Pay  
 
