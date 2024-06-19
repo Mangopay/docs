@@ -1,5 +1,5 @@
 ---
-title: 'Deactivate a Card'  
+title: 'Deactivate or edit a Card'  
 api: 'PUT /v2.01/{ClientId}/cards/{CardId}'  
 ---
 
@@ -18,12 +18,15 @@ import CardType1Response from '/snippets/response-parameters/CardType1Response.m
 import AliasResponse from '/snippets/response-parameters/AliasResponse.mdx';
 import ExpirationDate1Response from '/snippets/response-parameters/ExpirationDate1Response.mdx';
 import Active1 from '/snippets/body-parameters/Active1.mdx';
+import CardHolderName1 from '/snippets/body-parameters/CardHolderName1.mdx';
+import CardHolderNameResponse from '/snippets/response-parameters/CardHolderNameResponse.mdx';
 import CardId1 from '/snippets/path-parameters/CardId1.mdx';
   
 
-This call updates the Card object to set it as inactive.   
+This call serves one of two purposes:
 
-This action is irreversible but doesn’t prevent registering the card again with the Create a Card Registration endpoint.  
+- Setting the card as inactive, and thereby preventing it from being used again. This action is irreversible but doesn’t prevent the card being registered again with <a href="/api-reference/card-registrations/create-card-registration">POST Create a Card Registration</a>.
+- Adding the `CardHolderName` to an existing Card object. The `CardHolderName` cannot be modified once added to a Card object. It can also be done during registration with <a href="/api-reference/card-registrations/update-card-registration">PUT Update a Card Registration</a>.
 
 <Warning>  
 **Warning – Implement card deactivation** 
@@ -38,6 +41,8 @@ Because card information cannot be kept without the end user's approval, you sho
 ### Body parameters  
 
 <Active1 />  
+
+<CardHolderName1 />
 
 ### Responses  
 
@@ -70,6 +75,8 @@ Because card information cannot be kept without the end user's approval, you sho
 <Tag6Response />  
 
 <FingerprintResponse />
+
+<CardHolderNameResponse/>
 
 </Accordion>
 
