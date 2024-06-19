@@ -1,0 +1,91 @@
+---
+title: 'Profiler'
+sidebarTitle: 'Overview'
+---
+
+import Signal from '/snippets/glossary/signal.mdx';
+
+The fraud prevention profiler is code implemented into the platform’s app or website which monitors browser and behavioral data during a user’s profiling session. The profiling session runs on your payment page, and the profiler enables you to monitor a vast array of data <Signal content="signals"/> which can be used when defining rules.
+
+Each profiling session has a unique identifier called the `attempt_reference`. The data from the profiling session is used to generate a fraud prevention recommendation for the user's action. The attempt reference is linked to the transaction request by being sent in the relevant API call in the `ProfilingAttemptReference` parameter.
+
+### Benefits
+
+Integrating the profiler – whether directly in your website or app, or via the [Checkout SDK](/sdks/checkout) – enables: 
+
+<CardGroup col={2}>
+    <Card title="Profiler-based rules">
+        Create rules based on the user’s interactions and traits of their browsing session, allowing you to detect bots, VPN usage, and other potentially suspicious behavior.
+    </Card>
+    <Card title="Enhanced data">
+        Integrate data from the profiler into velocity rules to increase accuracy and precision – such as number of distinct users with the same IP address, or various system fingerprints.
+    </Card>
+</CardGroup>
+
+For more information on Mangopay's fraud prevention solution:
+
+<Card
+  title="Guide"
+  href="/guide/fraud-prevention"
+>
+  Fraud prevention powered by Nethone
+</Card>
+
+## Integration 
+
+Integration of the profiling solution comprises two parts: 
+
+1. Integrate the profiler on your website or app
+2. Send the attempt reference in your pay-in requests to the Mangopay API
+
+<Note>
+    **Note – Checkout SDK has the profiler built in** 
+
+    As well as powering your payment page, Mangopay’s [Checkout SDK](/sdks/checkout)has the profiler built in to simplify your integration.\
+    It generates and returns the attempt reference automatically before triggering the pay-in call.
+</Note>
+
+### 1. Integrate the profiler
+
+Follow our step-by-step guides to integrate the profiler on your website and app:
+
+<CardGroup col={2}>
+  <Card title="How to" href="/sdks/profiler/web">
+  How to integrate the profiler on websites
+  </Card>
+  <Card title="How to" href="/sdks/profiler/ios">
+  How to integrate the profiler in iOS applications
+  </Card>
+  <Card title="How to" href="/sdks/profiler/android">
+  How to integrate the profiler in Android applications
+  </Card>
+</CardGroup>
+
+#### 2. Send the attempt reference to the API  
+
+You need to send the profiling attempt reference in the request to the Mangopay API from your backend. 
+
+The `ProfilingAttemptReference` parameter can be sent on the following endpoints:
+
+- [Create a Direct Card PayIn](/api-reference/direct-card-payins/create-direct-card-payin)
+- [Create a Web Card PayIn](/api-reference/direct-card-payins/create-direct-card-payin)
+- [Create a Recurring PayIn Registration](/api-reference/recurring-card-payins/create-recurring-payin-registration)
+- [Create a Preauthorization](/api-reference/preauthorizations/create-preauthorization)
+- [Create a Deposit Preauthorization](/api-reference/deposit-preauthorizations/create-deposit-preauthorization)
+- [Create a Direct Bank Wire PayIn](/api-reference/bank-wire-payins/create-bank-wire-payin)
+- [Create a Web Direct-Debit PayIn](/api-reference/web-direct-debit-payins/create-web-direct-debit-payin)
+- [Create a Direct Direct-Debit PayIn](/api-reference/direct-debit-payins/create-direct-debit-payin)
+- [Create an Apple Pay PayIn](/api-reference/apple-pay/create-apple-pay-payin)
+- [Create a BLIK PayIn](/api-reference/blik/create-blik-payin)
+- [Create a Giropay PayIn](/api-reference/giropay/create-giropay-payin)
+- [Create a Google Pay PayIn](/api-reference/google-pay/create-google-pay-payin)
+- [Create an iDEAL PayIn](/api-reference/ideal/create-ideal-payin)
+- [Create a Klarna PayIn](/api-reference/klarna/create-klarna-payin)
+- [Create an MB WAY PayIn](/api-reference/mb-way/create-mb-way-payin)
+- [Create a Multibanco PayIn](/api-reference/multibanco/create-multibanco-payin)
+- [Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin)
+- [Create a Satispay PayIn](/api-reference/satispay/create-satispay-payin)
+
+## Related resources  
+
+<Card title="Guide" href="/sdks/checkout">Learn how the Checkout SDK works</Card>

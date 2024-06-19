@@ -15,10 +15,12 @@ The hook notification has the following format:
 Doing a GET call on the `ResourceId` allows you to check that the event is still relevant and ensure that the hook is authentic.  
 
 <Note>  
-**Note - SSL certificate use** 
+**Note – Use a TLS v1.2+ certificate**
   
-You must use a trusted SSL certificate. Self-signed certificates are not supported.  
+Your endpoint should be protected using a TLS 1.2 certificate or better. Endpoints using self-signed certificates, SSL certificates or TLS certificates v1.0 and v1.1 may be rejected by our webhook systems.
 </Note>  
+
+## Notification failure
 
 Hook notifications can fail. This means the hooked URL did not respond with a 200 - status code within 2 seconds after the notification was sent.  
 
@@ -33,7 +35,7 @@ If this happens, the Mangopay API will behave as follows:
 Once the hook is set as `INVALID`, you cannot restore it to `VALID`. You will have to create a new hook.  
 </Warning>  
 
-## Retry feature  
+## Retries of failed notifications 
 
 Hook notifications come with a retry feature, which means that the Mangopay API will resubmit a failed notification until it reaches 100 consecutive failures.  
 
