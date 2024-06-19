@@ -133,7 +133,7 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
 
 <AccordionGroup>  
 
-<Accordion title="400 - Failed: Preauthorization Status not SUCCEEDED">
+<Accordion title="400 - Failed: Preauthorization Status must be SUCCEEDED">
 ```json
 {
    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -147,41 +147,55 @@ import Tag from '/snippets/body-parameters/Tag.mdx';
  ```  
 </Accordion>
 
+<Accordion title="400 - Failed: Preauthorization PaymentStatus must be WAITING">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "2a6b5503-551b-4a66-a7f4-3ae4d6efc91f",
+    "Date": 1716385561.0,
+    "errors": {
+        "PaymentStatus": "The PreAuthorization PaymentStatus value has to be WAITING"
+    }
+}
+ ```  
+</Accordion>
+
 </AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Successful capture  
 {
-   "Id": "5ca9a5a3-8db0-4184-9322-acf521a4e210",
-   "Tag": "Created using the Mangopay Python SDK",
-   "CreationDate": 1669114580,
-   "ResultCode": "000000",
-   "ResultMessage": "Success",
-   "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
-   "CreditedUserId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
-   "DebitedFunds": {
-       "Currency": "EUR",
-       "Amount": 200
-   },
-   "CreditedFunds": {
-       "Currency": "EUR",
-       "Amount": 200
-   },
-   "Fees": {
-       "Currency": "EUR",
-       "Amount": 0
-   },
-   "Status": "SUCCEEDED",
-   "ExecutionDate": 1669114581,
-   "Type": "PAYIN",
-   "Nature": "REGULAR",
-   "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
-   "DebitedWalletId": null,
-   "PaymentType": "PREAUTHORIZED",
-   "ExecutionType": "DIRECT",
-   "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
-}  
+    "Id": "payin_m_01HYG8DRT5FHT1FV44MV9KR1BS",
+    "Tag": null,
+    "CreationDate": 1716385145,
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "AuthorId": "user_m_01HSDQD2RPPQ8NMM36EDGYBMEY",
+    "CreditedUserId": "204068024",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 2000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1800
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 200
+    },
+    "Status": "SUCCEEDED",
+    "ExecutionDate": 1716385146,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "204089031",
+    "DebitedWalletId": null,
+    "PaymentType": "PREAUTHORIZED",
+    "ExecutionType": "DIRECT",
+    "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
+}
  ```  
 
 ```json 200 - Failed: Amount greater than remaining funds  
