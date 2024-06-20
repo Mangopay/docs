@@ -1,0 +1,184 @@
+---
+title:  "Product marketplace"
+mode: "wide"
+---
+
+This example workflow illustrates a product marketplace setup in a B2C context.
+
+<img src="images/workflow_product-marketplace.png"/>
+
+## Pay-in (1)
+
+A pay-in is a transaction which results in the funds entering the Mangopay environment. There are different kinds of pay-ins depending on the chosen payment methods, which allows your platform to offer many options to your customers.
+
+<Tabs>
+  <Tab title="Description">
+A pay-in is a transaction which results in the funds entering the Mangopay environment. There are different kinds of pay-ins depending on the chosen payment methods, which allows your platform to offer many options to your customers.
+<Card
+  title="Guide"
+  href="/guides/payment-methods"
+>
+All supported payment methods
+</Card>
+
+  </Tab>
+  <Tab title="Integration">
+Some payment methods require actions to be done prior to the pay-in, such as registering the card for the direct card pay-in or creating the mandate for the direct debit pay-in.
+
+Here is an example of a one-time card payment (<a href="/api-reference/direct-card-payins/create-direct-card-payin">POST Create Direct Card PayIn</a>):
+```json
+{
+    "Tag": "Created using Mangopay API Postman Collection",
+    "AuthorId": "204069570",
+    "CreditedUserId": "204069570",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 57842
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 8877
+    },
+    "CreditedWalletId": "204069727",
+    "SecureMode": "DEFAULT",
+    "CardId": "209160226",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "658e:1b88:7f7a:a60b:32af:0b7f:56e1:2e9a",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    }
+}  
+```
+  </Tab>
+</Tabs>
+
+## Wallet
+
+<Tabs>
+  <Tab title="Description">
+Wallets are digital e-wallets on which e-money is stored in the Mangopay environment. Wallets are at the core of the flow in the Mangopay environment: users can receive and transfer funds depending on your workflow and user types.
+  </Tab>
+  <Tab title="Integration">
+Whether it is the buyer’s or the seller’s wallet, the creation of this object remains the same.
+
+Bear in mind that wallets are single-currency: you need to create one wallet per currency for each user.
+
+<a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a>
+```json
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Currency": "EUR",
+    "Tag": "End user: 456-TSt"
+}
+```
+API response
+```json
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Balance": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Currency": "EUR",
+    "FundsType": "DEFAULT",
+    "Id": "164475130",
+    "Tag": "End user: 456-TSt",
+    "CreationDate": 1678954498
+}
+```
+  </Tab>
+</Tabs>
+
+## Transfer (2)
+
+<Tabs>
+  <Tab title="Description">
+Transfers are the transactions inside the Mangopay environment, from one wallet to another. This, coupled with the wallet feature, is what allows for a flexible network for processing payments! 
+
+Here, funds are transferred from the buyer to one (or several) sellers. This is also the step on which fees are collected, as, in the context of the marketplace, you can trigger this transaction when confirming the order for instance.    
+  </Tab>
+  <Tab title="Integration">
+Here is an example of a transfer from a buyer (natural user) to a seller (legal user) wallet.
+
+<a href="/api-reference/transfers/create-transfer">POST Create a Transfer</a>
+```json
+{
+    "AuthorId": "145397183",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1600
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "DebitedWalletId": "145397873",
+    "CreditedWalletId": "145389978"
+}
+```
+  </Tab>
+</Tabs>
+
+## Payout (3)
+
+<Tabs>
+  <Tab title="Description">
+A payout consists in transferring the funds from a wallet to an external bank account. In a basic marketplace workflow, that’s how sellers wire their revenue to their bank accounts.
+  </Tab>
+  <Tab title="Integration">
+Prior to making a payout, make sure a valid Bank Account object has been created for the user.
+
+This example is for a standard payout rather than taking advantage of the instant payout feature.
+
+<a href="/api-reference/payouts/create-payout">POST Create a Payout</a>
+```json
+{
+    "Description": "Customer wallet",
+    "Owners": [
+        "142036728"
+    ],
+    "Currency": "EUR",
+    "Tag": "End user: 456-TSt",
+}  
+```
+  </Tab>
+</Tabs>
