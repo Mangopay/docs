@@ -2,9 +2,6 @@
 title: Bank wire
 ---
 
-Bank wire page to be created
-
-
 <table>
     <tbody>
         <tr>
@@ -33,3 +30,77 @@ Bank wire page to be created
             </tr>
     </tbody>
 </table>
+
+## About
+
+Bank wire pay-ins – also known as wire, credit, or bank transfers – enable users to wire funds to an e-wallet by requesting the payment with their bank (for example, from their bank’s online banking app). 
+
+Unlike virtual IBANs, Mangopay’s bank wire pay-in relies on a specific wire reference for the payment, which must be entered by the user when they initiate the wire transfer with their bank.
+
+## How it works
+<Steps>
+<Step title="The platform creates a bank wire pay-in"
+>
+The platform calls the <a href="/api-reference/bank-wire-payins/create-bank-wire-payin">POST Create a Direct Bank Wire PayIn</a> endpoint to initiate the payment flow.
+
+This call enables the platform to obtain the bank account details and wire reference that the user must use. The platform must also declare the amount and currency of the payment.
+</Step>
+<Step title="Mangopay returns the bank details"
+>
+In the response from the API, Mangopay returns the `BankAccount` parameter object containing the IBAN and BIC to which the user must send the funds.
+
+The `WireReference` parameter contains the reference that must also be passed by the user to their bank.
+</Step>
+<Step title="The platform displays the bank details to the user"
+>
+The platform must display the details as they appear in the response of the pay-in call.
+
+<Warning>
+**Caution – Mismatched data may lead to delays**
+
+If any of the reference, bank details, amount, or currency are not those specified in the pay-in, delays or failures can occur.
+
+Ensure you display these details clearly for the user to copy and use.
+</Warning>
+</Step>
+<Step title="The user makes the payment via online banking"
+>
+The user requests the wire transfer via their online banking app, specifying:
+- The payee as the account information provided in the `BankAccount` parameter object
+- The payment reference as the `WireReference` value
+- The amount matching the `DeclaredDebitedFunds`
+<Note>
+**Note – Funds must be received within 1 month**
+
+Mangopay must receive the payment within 1 month of the pay-in’s `CreationDate`. Past this period, the `Status` changes to `FAILED` and the `WireReference` can no longer be used to reconcile the payment. A new pay-in must be created.
+</Note>
+</Step>
+<Step title="Mangopay reconciles the payment and credits the wallet"
+>
+When Mangopay receives the funds on the account, it uses the `WireReference` to identify the payment and credit the funds to the wallet.
+
+This process is known as reconciliation.
+</Step>
+</Steps>
+
+## Payment outcome
+When the payment is successfully received and reconciled by Mangopay, the pay-in object `Status` changes to `SUCCEEDED`.
+
+You should also set up hook notifications for the relevant event types:
+- PAYIN_NORMAL_SUCCEEDED
+- PAYIN_NORMAL_FAILED
+
+Use the <a href="/api-reference/bank-wire-payins/view-payin-bank-wire">GET View a PayIn</a> endpoint on the resource ID to confirm the payment details before notifying the user of the outcome. 
+
+## Testing
+You can use the Hub’s Sandbox Operations features to simulate the user making the wire transfer in their online banking app.
+
+## Related resources
+
+<CardGroup col={2}> 
+    <Card title="Guides" href="/guides/currencies">All currencies supported by Mangopay</Card>
+
+    <Card title="Endpoints" href="/api-reference/bank-wire-payins/create-bank-wire-payin">POST Create a Bank Wire PayIn</Card>
+    
+    <Card title="Endpoints" href="/api-reference/dispute-settlement/create-direct-bank-wire-payin-to-repudiation-wallet">POST Create a Direct Bank Wire PayIn to the Repudiation Wallet</Card>
+</CardGroup>
