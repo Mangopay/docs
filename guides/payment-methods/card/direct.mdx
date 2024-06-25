@@ -2,3 +2,54 @@
 title: Overview
 sidebarTitle: Overview
 ---
+
+**Availability:**
+- All card types
+
+Processing a one-time card payment is a multi-step process: 
+
+<Steps>
+    <Step title="Tokenization">
+        Register the card to tokenize its sensitive data so it can be used for payment.
+    </Step>
+    <Step title="Request">
+        Call the <a href="/api-reference/direct-card-payins/create-direct-card-payin">POST Create a Direct Card PayIn</a> endpoint to initiate the payment.
+    </Step>
+    <Step title="Redirection">
+        If required by the issuer, redirect the user to complete 3DS authentication.
+    </Step>
+    <Step title="Result">
+        Handle success and failure cases using [webhooks](/webhooks): 
+            - `PAYIN_NORMAL_SUCCEEDED`
+            - `PAYIN_NORMAL_FAILED`
+    </Step>
+    <Step title="Card deactivation">
+        Call the <a href="/api-reference/cards/deactivate-edit-card">PUT Deactivate or edit a Card</a> endpoint if you don't have the user's permission to save their payment details.
+    </Step>
+</Steps>
+
+See the how-to guide for a detailed walkthrough of these steps:
+
+<Card
+    title="How to"
+    href="/guides/payment-methods/card/direct/how-to"
+>
+    Process a one-time card payment
+</Card>
+
+Learn more about 3DS authentication: 
+
+<Card 
+    title="Guide" 
+    href="/guides/payment-methods/card/3ds"
+>
+    3-D Secure (3DS) 
+</Card>
+
+## Related resources
+
+<CardGroup col={2}> 
+    <Card title="Test cards" href="/testing/payment-methods">Use Mangopay's dedicated test cards in Sandbox</Card>
+
+    <Card title="Endpoints" href="/api-reference/direct-card-payins/direct-card-payin-object">The Direct Card PayIn object</Card>  
+</CardGroup>

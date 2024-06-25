@@ -5,14 +5,6 @@ sidebarTitle: Overview
 
 Mangopay offers a range of card payment features and integration options.
 
-<Check>
-    **Best practice – Use Checkout SDK**
-
-    The Mangopay Checkout SDK simplifies your integration for card payments and other payment methods.
-
-    [Learn more](/sdks/checkout)
-</Check>
-
 ## Brands and currencies
 
 Mangopay supports the following card brands and currencies, defined by the `CardType` parameter.
@@ -45,112 +37,125 @@ Mangopay supports the following card brands and currencies, defined by the `Card
             <td class="table-content">`MAESTRO`</td>
             <td class="table-content">EUR</td>
         </tr>
+        <tr>
+            <td class="header header-normal-weight">**Bancontact**<br/>Belgium</td>
+            <td class="table-content">`BCMC`</td>
+            <td class="table-content">EUR</td>
+        </tr>
     </tbody>
 </table>
 
-## One-time payment flow
+## Tokenization
 
-Processing a card payment is a multi-step process: 
+Processing card payments with Mangopay involves passing sensitive card details to a dedicated tokenaization server to generate a `CardId`.
 
 <Steps>
-    <Step title="Tokenization">
-        Register the card to tokenize its sensitive data so it can be used for payment.
+    <Step title="Initiate card tokenization">
+        Call the <a href="/api-reference/card-registrations/create-card-registration" target="_blank">POST Create a Card Registration</a> endpoint to initiate the flow and obtain a secure URL to which you can send card details.
     </Step>
-    <Step title="Request">
-        Call a card flow endpoint to initiate the payment.
+    <Step title="Tokenize the card">
+        Send the cardholder's sensitive data directly to the tokenization server, without passing yours or Mangopay's.
     </Step>
-    <Step title="Redirection">
-        If required by the issuer, redirect the user to complete 3DS authentication.
+    <Step title="Update the card registration object">
+        Send the `RegistrationData` received from the tokenization server to Mangopay to generate a `CardId`. 
     </Step>
-    <Step title="Result">
-        Handle success and failure cases using [webhooks](/webhooks): 
-            - `PAYIN_NORMAL_SUCCEEDED`
-            - `PAYIN_NORMAL_FAILED`
-        
-        Deactivate the card if you don't have the user's permission to save their payment details.
+    <Step title="Use the card object for a payment flow">
+        Use the `CardId` to call the Mangopay API to initiate a one-time, recurring, or preauthorized card payment flow.
+    </Step>
+    <Step title="Deactivate the card">
+        Deactivate the card if you don't have the user's permission to save their payment details. You can follow the same tokenization process for a future payment. 
     </Step>
 </Steps>
 
-See the how-to guide for a detailed walkthrough:
+For more detailed guidance, see the one-time payment guides below.
+
+<Check>
+    **Best practice – Use Checkout SDK**
+
+    The Mangopay Checkout SDK takes care of card tokenization for you, and simplifies your integration for cards and other payment methods.
+
+    <a href="/sdks/checkout">Learn more &rarr;</a>
+</Check>
+
+## Payment flows
+
+Once the card is tokenized, a number of payment flows are available depending on the `CardType`.
+
+### One-time card payment
+
+Allow a user to pay once, and save their card details for future payments if you have permission. 
+
+**Availability:**
+- All card types
 
 <Card
-    title="How to"
-    href="/guides/payment-methods/card/direct/how-to"
+    title="Direct card pay-in"
+    href="/guides/payment-methods/card/direct"
 >
-    Process a one-time card payment
+    Process a one-time card payment with a registered card 
 </Card>
-
-Learn more about 3DS authentication: 
-
-<Card 
-    title="Guide" 
-    href="/guides/payment-methods/card/3ds"
->
-    3-D Secure (3DS) 
-</Card>
-
-## Other flows
-
-Once the card is tokenized, a number of other different flows are also available depending on the `CardType`.
 
 ### Validation without debit
 
 Check the validity of a card, including 3DS authentication, without requesting payment.
 
-Availability: 
+**Availability:**
 - `CB_VISA_MASTERCARD` only
 
 <Card
-    title="Guide"
+    title="Card validation"
     href="/guides/payment-methods/card/validation"
 >
-    Card validation without debit
+    Validate a card without debiting it
 </Card>
 
-### Recurring transactions
+### Recurring card payments
 
-Set up a subscription, installments, or other recurring card payments.
+Set up a subscription, installments, or other recurring card transactions.
 
-Availability: 
+**Availability:** 
 - `CB_VISA_MASTERCARD` only
 
 <Card
-    title="Guide"
+    title="Recurring card payments"
     href="/guides/payment-methods/card/recurring"
 >
-    Recurring card payments
+    Set up and process subscriptions and installment payments
 </Card>
 
 ### 7-day preauthorization
 
 Authorize and reserve funds on a card to be captured later, at one time or in multiple captures.
 
-Availability: 
+**Availability:** 
 - `CB_VISA_MASTERCARD` – Partial and multple captures
 - `AMEX` – Single capture only (partial but not multiple)
 - `MAESTRO` – Full capture only (not partial or multiple)
 
 <Card
-    title="Guide"
+    title="Preauthorization (7 days)"
     href="/guides/payment-methods/card/preauthorization"
 >
-    7-day preauthorization with multi-capture
+    Secure funds for 6.5 days and charge the card with one or multiple captures
 </Card>
 
 ### 30-day preauthorization
 
 Authorize and reserve funds on a card to be captured later, including a complement in addition to the preauthorized amount.
 
-Availability: 
+**Availability:** 
 - `CB_VISA_MASTERCARD` only
 
 <Card
-    title="Guide"
+    title="Deposit preauthorization (30 days)"
     href="/guides/payment-methods/card/deposit-preauthorization"
 >
-    30-day preauthorization with no-show and complement
+    Secure funds for 29.5 days and capture the preauthorized amount and/or a complement
 </Card>
 
+## 3DS
+
+Redirection for cardholder authentication, using the <a href="/guides/payment-methods/card/3ds">3DS protocol</a>, is applicable to all card payment flows.
 
 ## Refunds
 
@@ -159,7 +164,6 @@ Refunds are supported on all card brands and for all pay-in flows. For more info
 ## Chargebacks and disputes
 
 All card pay-ins may be subject to a chargeback, which is when the end user opposes a payment with their issuing bank. When a chargeback occurs, a dispute is created which may be contestable. For more information, see the [Disputes](/guides/disputes) guide.
-
 
 ## Related resources
 <CardGroup>
