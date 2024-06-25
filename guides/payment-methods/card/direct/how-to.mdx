@@ -35,7 +35,7 @@ Payers only need to provide a first name, last name, and email (see the <a href=
 {
     "FirstName": "Alex",
     "LastName": "Smith",
-    "Email":"alex.smith@example.com",
+    "Email": "alex.smith@example.com",
     "TermsAndConditionsAccepted": false,
     "UserCategory": "PAYER"
 }
@@ -43,7 +43,7 @@ Payers only need to provide a first name, last name, and email (see the <a href=
 In response, the API returns an `Id` for the user, which you'll need for the next step.
 ```json
 {
-   "Id": "user_m_01HWAR82HD4D8CQ67J02YMKM82"
+    "Id": "user_m_01J18HZSACR1EMYNY1TBS8KTJD"
 }
 ```
 
@@ -57,7 +57,7 @@ Use the `Id` of the user as the owner of the wallet:
 
 ```json
 {
-    "Owners": ["user_m_01HWAR82HD4D8CQ67J02YMKM82"],
+    "Owners": ["user_m_01J18HZSACR1EMYNY1TBS8KTJD"],
     "Description": "Custom description",
     "Currency": "EUR"
 }
@@ -65,7 +65,7 @@ Use the `Id` of the user as the owner of the wallet:
 In response, the API returns an `Id` for the wallet, which you'll need to request the payment.
 ```json
 {
-   "Id": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD"
+    "Id": "wlt_m_01J18J1SQGG6KXNM3F8GD674TP"
 }
 ```
 
@@ -185,12 +185,12 @@ In response, the API returns the card registration object:
 
 ```json
 {
-    "Id": "cardreg_m_01HWAR88VG9K1PVN6EH07ZHTHT",
+    "Id": "cardreg_m_01J18JJA7VH1Q38V3Z3F2C059D",
     "Tag": null,
-    "CreationDate": 1714052932,
-    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "CreationDate": 1719348570,
+    "UserId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
     "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
-    "PreregistrationData": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
+    "PreregistrationData": "ObMObfSdwRfyE4QClGtUc1GGKTRAkntk_O93wafMNRiNkMGlbaUXBaLbPahxf7VD2ddFLVXdicolcUIkv_kKEA",
     "RegistrationData": null,
     "CardId": null,
     "CardType": "CB_VISA_MASTERCARD",
@@ -258,24 +258,26 @@ You also need the end user’s card details, entered on the payment page:
 For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS compliant tokenization server as described below.  
 </Warning>  
 
+The content-type for this call is "application/x-www-form-urlencoded".
+
 > [**POST** &lcub;CardRegistrationURL&rcub;](/api-reference/card-registrations/tokenize-card)
 
 <CodeGroup>  
 
 ```json REST
 {
-    "accessKeyRef": “1X0m87dmM2LiwFgxPLBJ”,
-    "data": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
-    "cardNumber": "4970107111111119",
-    "cardExpirationDate": "1127",
+    "accessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "data": "ObMObfSdwRfyE4QClGtUc1GGKTRAkntk_O93wafMNRiNkMGlbaUXBaLbPahxf7VD2ddFLVXdicolcUIkv_kKEA",
+    "cardNumber": "4970105181818183",
+    "cardExpirationDate": "1229",
     "cardCvx": "123"
 }
 ```  
 
 ```javascript NodeJS
 const cardInfoObject = {
-  cardNumber: '4970107111111119',
-  cardExpirationDate: '1127',
+  cardNumber: '4970105181818183',
+  cardExpirationDate: '1229',
   cardCvx: '123',
 };
 
@@ -319,12 +321,12 @@ MangopayVault.tokenizeCard(
 In response, the API returns an encoded data string:
  
 ```json
-data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg
+data=qc_ShKapgXF-A2t_OC72Ko0o568aiaCttReld3UFN6czA9d3uGhyoKRez0uSm5xbV52qH2pQE2MInBd_End2fZvHB1ZEXCpfiSAoeP1mpcuMSPVhQbki1iMJJFqJ1t8r0ftIYwFxOdfmDQ5GtM_cIg
 ```  
 
 You'll need this string for the next step.
 
-## 3. Update the card registration with tokenization data  
+## 5. Update the card registration with tokenization data  
 
 Update the Card Registration object by sending the data token returned by the tokenization server as the `RegistrationData`. 
 
@@ -336,7 +338,7 @@ You should also provide the cardholder's name at this stage, which will be added
 <CodeGroup>
 ```json REST
 {
-    "RegistrationData": "data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg",
+    "RegistrationData": "data=qc_ShKapgXF-A2t_OC72Ko0o568aiaCttReld3UFN6czA9d3uGhyoKRez0uSm5xbV52qH2pQE2MInBd_End2fZvHB1ZEXCpfiSAoeP1mpcuMSPVhQbki1iMJJFqJ1t8r0ftIYwFxOdfmDQ5GtM_cIg",
     "CardHolderName": "ALEX SMITH"
 }
 ```  
@@ -388,7 +390,7 @@ let userCardRegistration = {
     UserId: user.Id,
     Currency: 'EUR',
     CardType: 'CB_VISA_MASTERCARD',
-    RegistrationData: 'data=acIcnwwLleiAvlZUea5VxT5mw_fK696E0m-dvIdK-KnTCrftajOU7W3fTvYLnKiF68q7RUkmAEL86Wi8c0oX7wHD6vfA3lowMRD7SvlcCCl6Xl3Esy_DIyBzznraJzm70ftIYwFxOdfmDQ5GtM_cIg'
+    RegistrationData: 'data=qc_ShKapgXF-A2t_OC72Ko0o568aiaCttReld3UFN6czA9d3uGhyoKRez0uSm5xbV52qH2pQE2MInBd_End2fZvHB1ZEXCpfiSAoeP1mpcuMSPVhQbki1iMJJFqJ1t8r0ftIYwFxOdfmDQ5GtM_cIg'
 }
 
 const updateCardRegistration = async(cardRegistration) => {
@@ -433,29 +435,29 @@ pprint(update_card_registration)
 ```
 </CodeGroup>
 
-In response, the API returns the `CardId` indicating that the card is registered successfully.
+In response, the API returns the Card Registration object.
 
 ```json
 {
-    "Id":"198410142",
-    "Tag":null,
-    "CreationDate":1690194754,
-    "UserId":"197111221",
-    "AccessKey":"1X0m87dmM2LiwFgxPLBJ",
-    "PreregistrationData":"Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
-    "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg",
-    "CardId":"198410181",
-    "CardType":"CB_VISA_MASTERCARD",
-    "CardRegistrationURL":"https://homologation-webpayment.payline.com/webpayment/getToken",
-    "ResultCode":"000000",
-    "ResultMessage":"Success",
-    "Currency":"EUR",
-    "Status":"VALIDATED"
+    "Id": "cardreg_m_01J18JJA7VH1Q38V3Z3F2C059D",
+    "Tag": null,
+    "CreationDate": 1719348570,
+    "UserId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
+    "PreregistrationData": "ObMObfSdwRfyE4QClGtUc1GGKTRAkntk_O93wafMNRiNkMGlbaUXBaLbPahxf7VD2ddFLVXdicolcUIkv_kKEA",
+    "RegistrationData": "data=qc_ShKapgXF-A2t_OC72Ko0o568aiaCttReld3UFN6czA9d3uGhyoKRez0uSm5xbV52qH2pQE2MInBd_End2fZvHB1ZEXCpfiSAoeP1mpcuMSPVhQbki1iMJJFqJ1t8r0ftIYwFxOdfmDQ5GtM_cIg",
+    "CardId": "card_m_01J18JJSZTKET9SX9V0W69M8H8",
+    "CardType": "CB_VISA_MASTERCARD",
+    "CardRegistrationURL": "https://homologation-webpayment.payline.com/webpayment/getToken",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "Currency": "EUR",
+    "Status": "VALIDATED"
 }
 ```  
-You'll need the `CardId` in the next step to request the payment.
+The `CardId` is the tokenized version of the card that you can use in the next step to request the payment.
 
-## 4. Get the end user's session data  
+## 6. Get the end user's session data  
 
 In your integration, you'll also need to capture information from your end user’s browsing session to be able to request the payment.
 
@@ -558,18 +560,18 @@ console.log(browserInfo);
 </table>
 </Accordion>
 
-## 5. Request the payment (Direct Card PayIn)  
+## 7. Request the payment (Direct Card PayIn)  
 
-Now that you have a `CardId`, you can request the payment to the wallet using the Direct Card PayIn object.
+Now that you have a `CardId`, you can request the payment to the wallet using the <a href="/api-reference/direct-card-payins">Direct Card PayIn</a> object.
 
 <Note>  
 **Note - Recurring card payments and preauthorizations require other endpoints** 
 
 The Direct Card PayIn object represents a one-time payment with a registered card.  
 
-For subscriptions and other recurring card payments, use the Recurring PayIn Registration object.
+For subscriptions and other recurring card payments, use the <a href="/api-reference/recurring-card-payins">Recurring PayIn Registration</a> object.
 
-To reserve funds on a card for capture later, use the Preauthorization and Deposit Preauthorization objects.
+To reserve funds on a card for capture later, use the <a href="/api-reference/preauthorizations">Preauthorization</a> and <a href="/api-reference/deposit-preauthorizations">Deposit Preauthorization</a> objects.
 </Note>  
 
 Create the pay-in request using:  
@@ -582,64 +584,64 @@ In your integration, when you make the payment request you also need to:
 - Be ready to handle 3DS authentication (Step 6)  
 - Specify the page to which the user will be returned after payment (Step 7)  
 
-Read these steps before continuing.  
+Read these steps before continuing with the payment request:
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/payins/card/direct](/api-reference/direct-card-payins/create-direct-card-payin)
 
 <CodeGroup>
 ```json REST
 {
-    "AuthorId":"197111221",
-    "CreditedUserId":"197111221",
-    "CreditedWalletId":"197111249",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":10
+    "AuthorId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "CreditedUserId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "CreditedWalletId": "wlt_m_01J18J1SQGG6KXNM3F8GD674TP",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
     },
-    "SecureModeReturnURL":"https://mangopay.com/docs/please-ignore",
-    "CardId":"198410181",
-    "StatementDescriptor":"MANGOPAY",
-    "Billing":{
-        "FirstName":"Grant",
-        "LastName":"Batz",
-        "Address":{
-            "AddressLine1":"2878 Daron Unions",
-            "AddressLine2":"Crooks Brooks",
-            "City":"Paris",
-            "Region":"Ile-de-France",
-            "PostalCode":"75001",
-            "Country":"FR"
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore",
+    "CardId": "card_m_01J18JJSZTKET9SX9V0W69M8H8",
+    "StatementDescriptor": "Mangopay",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
         }
     },
-    "Shipping":{
-        "FirstName":"Cristopher",
-        "LastName":"Macejkovic",
-        "Address":{
-            "AddressLine1":"6869 Koepp Villages",
-            "AddressLine2":"Abernathy Village",
-            "City":"Paris",
-            "Region":"Ile-de-France",
-            "PostalCode":"75001",
-            "Country":"FR"
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
         }
     },
-    "Tag":"Created using Mangopay API Collection Postman",
-    "Culture":"EN",
-    "IpAddress":"3fff:3e21:c1ef:e9b2:7691:05c6:94d8:8046",
-    "BrowserInfo":{
-        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
-        "JavaEnabled":true,
-        "Language":"FR-FR",
-        "ColorDepth":4,
-        "ScreenHeight":1800,
-        "ScreenWidth":400,
-        "TimeZoneOffset":60,
-        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-        "JavascriptEnabled":true
+    "Tag": "Created using Mangopay API Postman Collection",
+    "Culture": "EN",
+    "IpAddress": "491e:bdf8:c242:ec64:e746:bed9:67a4:0568",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
     }
 }
 ```  
@@ -918,126 +920,134 @@ pprint(create_direct_payin)
 ```
 </CodeGroup>
 
-```json API Response
+The response from the API shows the pay-in request. 
+
+```json
 {
-    "Id":"198410196",
-    "Tag":"Created using Mangopay API Collection Postman",
-    "CreationDate":1690194792,
-    "AuthorId":"197111221",
-    "CreditedUserId":"197111221",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":10
+    "Id": "payin_m_01J18JYYP91PHQJJMPF6FFMVE8",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1719348985,
+    "AuthorId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "CreditedUserId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
     },
-    "CreditedFunds":{
-        "Currency":"EUR",
-        "Amount":10
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 9900
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
     },
-    "Status":"CREATED",
-    "ResultCode":null,
-    "ResultMessage":null,
-    "ExecutionDate":null,
-    "Type":"PAYIN",
-    "Nature":"REGULAR",
-    "CreditedWalletId":"197111249",
-    "DebitedWalletId":null,
-    "PaymentType":"CARD",
-    "ExecutionType":"DIRECT",
-    "SecureMode":"DEFAULT",
-    "CardId":"198410181",
-    "SecureModeReturnURL":"https://mangopay.com/docs/please-ignore?transactionId=198410196",
-    "SecureModeRedirectURL":"https://api.sandbox.mangopay.com:443/Redirect/ACSWithValidation?token=971bc588ce9a46529fea66bc8a249b13&mgpsecureid=971bc588ce9a46529fea66bc8a249b13",
-    "SecureModeNeeded":true,
-    "Culture":"EN",
-    "SecurityInfo":{
-        "AVSResult":"NO_CHECK"
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01J18J1SQGG6KXNM3F8GD674TP",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "card_m_01J18JJSZTKET9SX9V0W69M8H8",
+    "SecureModeReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=payin_m_01J18JYYP91PHQJJMPF6FFMVE8",
+    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com/mvc/eu/Redirect/ACSWithValidation?token=49fd524ebba54ed686239527312e2a59&mgpsecureid=49fd524ebba54ed686239527312e2a59",
+    "SecureModeNeeded": true,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
     },
-    "StatementDescriptor":"MANGOPAY",
-    "BrowserInfo":{
-        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
-        "JavaEnabled":true,
-        "Language":"FR-FR",
-        "ColorDepth":4,
-        "ScreenHeight":1800,
-        "ScreenWidth":400,
-        "TimeZoneOffset":60,
-        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-        "JavascriptEnabled":true
+    "StatementDescriptor": "Mangopay",
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "en",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
     },
-    "IpAddress":"3fff:3e21:c1ef:e9b2:7691:05c6:94d8:8046",
-    "Billing":{
-        "FirstName":"Grant",
-        "LastName":"Batz",
-        "Address":{
-            "AddressLine1":"2878 Daron Unions",
-            "AddressLine2":"Crooks Brooks",
-            "City":"Paris",
-            "Region":"Ile-de-France",
-            "PostalCode":"75001",
-            "Country":"FR"
+    "IpAddress": "491e:bdf8:c242:ec64:e746:bed9:67a4:0568",
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
         }
     },
-    "Shipping":{
-        "FirstName":"Cristopher",
-        "LastName":"Macejkovic",
-        "Address":{
-            "AddressLine1":"6869 Koepp Villages",
-            "AddressLine2":"Abernathy Village",
-            "City":"Paris",
-            "Region":"Ile-de-France",
-            "PostalCode":"75001",
-            "Country":"FR"
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
         }
     },
-    "Requested3DSVersion":null,
-    "Applied3DSVersion":"V2_1",
-    "RecurringPayinRegistrationId":null
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null,
+    "PreferredCardNetwork": null,
+    "PaymentCategory": "ECommerce",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "VISA",
+        "SubType": null
+    }
 }
 ```  
 
-## 6. Redirect the user to 3DS protocol (if required)  
+## 8. Redirect the user to 3DS protocol (if required)  
 
-Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
+Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication with the <a href="/guides/payment-methods/card/3ds">3DS protocol</a>, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.  
 
 You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.  
 
-See the [3DS](/guides/payment-methods/card/3ds) article for more information.  
+In Sandbox, follow the link returned in the `SecureModeRedirectURL` to access the authentication simulator.
 
-## 7. Redirect the user after payment  
+## 9. Return the user after payment
 
 After the payment, whether it includes 3DS or not and whatever the outcome, the end user is returned to the `SecureModeReturnURL` which you defined.  
 
 The Mangopay API returns your `SecureModeReturnURL` with the `Id` of the pay-in transaction attached as a query parameter in the following format:
 
-<Info> http://example.com?transactionId=`Id`</Info>  
+> http<span>://</span>example.com?transactionId=`Id`
 
 Mangopay updates the `Status` of the pay-in to indicate a successful or failed payment depending on the outcome of the end user's authentication.  
 
-You should set up the following hooks to be notified of the outcome:  
-- PAYIN_NORMAL_CREATED  
+You should  set up [hook notifications](/webhooks) for the following [event types](/webhooks/event-types) to be notified of the outcome:
 - PAYIN_NORMAL_SUCCEEDED  
 - PAYIN_NORMAL_FAILED  
 
-You should also view the pay-in (using its `Id`) to confirm the result of the transaction, allowing you to customize the end user’s experience after the payment.  
-
-<Card title="Guide" href="/webhooks">Hook notifications</Card>  
-
-<Card title="Endpoint" href="/api-reference/direct-card-payins/view-payin-direct-card">View a PayIn</Card>  
+Once your system receives a webhook, call the <a href="/api-reference/direct-card-payins/view-payin-direct-card">GET View a PayIn</a> endpoint (using its `Id`) to confirm the result of the transaction. This allows you to customize the end user’s experience after the payment.  
 
 If the pay-in is successful, the card's `Validity` parameter is set to `Valid` and it can be used for other payments at a later stage.   
+
+## 10. Deactivate the card (if required) 
 
 <Warning>  
 **Warning - End user's approval needed to save card details** 
   
 Under no circumstances should card information be kept without the end user's approval.   
-If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
-</Warning>  
 
-## 8. Deactivate the card (if required)  
+If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
+</Warning>   
 
 Once the pay-in is successful, if the end user did not request to save their card for later, set the card’s `Active` parameter to false to deactivate the card. This action is irreversible.  
 
@@ -1168,10 +1178,6 @@ pprint(deactive_card)
 ```
 </CodeGroup>
 
-
-## Flow diagram  
-
-The overall flow of a card payment is given in the diagram below, indicating the numbered steps of this tutorial.TW a workflow was visible here. Please add it.  
 
 ## Related resources  
 
