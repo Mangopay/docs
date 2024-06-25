@@ -1,29 +1,79 @@
 ---
 title: 'How to process a card payment'
 sidebarTitle: 'How to'
+description: 'Make a card payment to get funds into a Mangopay wallet'
 'og:description': 'Step-by-step guide to processing one-time card payments, including 3DS redirection, and a flow diagram overview.'
 ---
+
 ## Introduction  
 
-This how-to guide will take you through the steps to successfully process a payment by card. With the Mangopay API, this consists in registering a card and making a direct card pay-in. See the flow diagram for an overview.   
+This how-to guide will take you through the steps to successfully simulate a payment by card in the Sandbox testing environment.
 
 <Info>
 **Prerequisites**
 
-- A `ClientId` and an API key ([get a Sandbox account for free](https://hub.mangopay.com/))
-- A User object created for your end userr, and their associated Wallet
-- The end user’s card with which to pay use our test cards
-- The URL of a page on your platform to return the end user to after authentication
+- A `ClientId` and an API key – you can create these in the <a href="https://mangopay.com/hub" target="_blank">Mangopay Hub</a> (<a href="https://mangopay.com/contact" target="_blank">Contact Sales</a> if not already signed up)
 </Info>
 
-The Mangopay API provides two distinct card-related objects:  
-- **Card Registration** - The object to safely tokenize the card and create the Card object.  
-- **Card** - The tokenized version of the card, whose `CardId` will allow you to make payments.  
+<Note>
+**Note – Postman collection contains this flow**
 
+The public Mangopay API Postman collection contains a dedicated folder with the endpoints for this how-to guide.
 
-## 1. Create the Card Registration  
+<a href="/postman" target="_blank">Get started &rarr;</a>
+</Note>
 
-In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId`.  
+## 1. Create a user
+
+In this guide, we'll register a natural user to represent a private individual who just needs to make a payment on your platform.
+
+Payers only need to provide a first name, last name, and email (see the <a href="/guides/users/categories" target="_blank">user categories</a> for more information).
+
+> <a href="/api-reference/users/create-natural-user">POST /v2.01/&lcub;ClientId&rcub;/users/natural</a>
+
+```json
+{
+    "FirstName": "Alex",
+    "LastName": "Smith",
+    "Email":"alex.smith@example.com",
+    "TermsAndConditionsAccepted": false,
+    "UserCategory": "PAYER"
+}
+```
+In response, the API returns an `Id` for the user, which you'll need for the next step.
+```json
+{
+   "Id": "user_m_01HWAR82HD4D8CQ67J02YMKM82"
+}
+```
+
+## 2. Create a wallet for the user
+
+All users need a wallet to which they can pay funds, even it it is immediately transfered to another wallet (for example, to a marketplace seller).
+
+Use the `Id` of the user as the owner of the wallet: 
+
+> <a href="/api-reference/wallets/create-wallet">POST /v2.01/&lcub;ClientId&rcub;/wallets</a>
+
+```json
+{
+    "Owners": ["user_m_01HWAR82HD4D8CQ67J02YMKM82"],
+    "Description": "Custom description",
+    "Currency": "EUR"
+}
+```
+In response, the API returns an `Id` for the wallet, which you'll need to request the payment.
+```json
+{
+   "Id": "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD"
+}
+```
+
+## 3. Create a card registration  
+
+The tokenization process enables your platform to handle sensitive card details with Mangopay. 
+
+Create a Card Registration object to start this process, using the `Id` of the user as the `UserId`.
 
 You also need to define the currency and type of the card at this stage.  
 
@@ -32,9 +82,9 @@ You also need to define the currency and type of the card at this stage.
 <CodeGroup>
 ```json REST
 {
-    "UserId":"user_m_01HQK53VP687RBSH2Q5TJZRR3S",
-    "Currency":"EUR",
-    "CardType":"CB_VISA_MASTERCARD"
+    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
+    "Currency": "EUR",
+    "CardType": "CB_VISA_MASTERCARD"
 }
 ```  
 
@@ -56,7 +106,7 @@ $api->Config->TemporaryFolder = 'tmp/';
 try {
     $cardRegistration = new \MangoPay\CardRegistration();
 
-    $cardRegistration->UserId = 'user_m_01HQK53VP687RBSH2Q5TJZRR3S';
+    $cardRegistration->UserId = 'user_m_01HWAR82HD4D8CQ67J02YMKM82';
     $cardRegistration->CardType = 'CB_VISA_MASTERCARD';
     $cardRegistration->Currency = 'EUR';
     $cardRegistration->Tag = 'Created using Mangopay PHP SDK';
@@ -79,7 +129,7 @@ const mangopay = new mangopayInstance({
 })
 
 let user = {
-    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+    Id: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
   }
 
 let userCardRegistration = {
@@ -117,7 +167,7 @@ handler = APIRequest(sandbox=True)
 
 from mangopay.resources import NaturalUser, CardRegistration
 
-natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+natural_user = NaturalUser.get('user_m_01HWAR82HD4D8CQ67J02YMKM82')
 
 card_registration = CardRegistration(
     user_id = natural_user.id,
@@ -131,14 +181,16 @@ pprint(create_card_registration)
 ```
 </CodeGroup>
 
-```json API response - Create card registration
+In response, the API returns the card registration object:
+
+```json
 {
-    "Id": "198410142",
+    "Id": "cardreg_m_01HWAR88VG9K1PVN6EH07ZHTHT",
     "Tag": null,
-    "CreationDate": 1690194754,
-    "UserId": "197111221",
+    "CreationDate": 1714052932,
+    "UserId": "user_m_01HWAR82HD4D8CQ67J02YMKM82",
     "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
-    "PreregistrationData": "Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
+    "PreregistrationData": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
     "RegistrationData": null,
     "CardId": null,
     "CardType": "CB_VISA_MASTERCARD",
@@ -150,21 +202,22 @@ pprint(create_card_registration)
 }
 ```  
 
-From this response, you will need to save the following values for the next step:  
+From this response, you will need the following values for the next step:  
 - `AccessKey`  
 - `PreregistrationData`  
 - `CardRegistrationURL`  
 
-## 2. Send data to the tokenization server  
+## 4. Send data to the tokenization server  
 
-Thanks to a dedicated tokenization server, you can process a payment with the end user’s card without exposing your platform or your end users to any security risk.  
+The dedicated tokenization server allows your platform to process sensitive card data without exposing you or your end users to any security risk.
 
-<Note>  
-**Best practice - Use Mangopay Vault SDK** 
+<Tip>  
+**Best practice - Use Mangopay's card SDKs** 
   
-If you use the Vault SDK to send data to the tokenization server (Step 2), you won’t need to complete Step 3 because it handles the tokenization process for you to produce the `CardId`.  
-The Vault SDK is available for web, iOS, and Android.  
-</Note>  
+Mangopay's <a href="/sdks/checkout">Checkout SDK</a> and <a href="/sdks/vault/web">Vault SDK</a> take care of the tokenization steps (Steps 2 & 3) for you, and generate a `CardId`.
+
+Simplify your integration on web, iOS, and Android.
+</Tip>  
 
 Make a request to the `CardRegistrationURL` using the previously saved `AccessKey` and `PreregistrationData`, along with the end user’s card details.  
 - Use `AccessKey` data for the `accessKeyRef` parameter  
@@ -211,11 +264,11 @@ For security reasons, it is strictly forbidden to send the card details to your 
 
 ```json REST
 {
-    "accessKeyRef":“1X0m87dmM2LiwFgxPLBJ”,
-    "data":"Qi7oou23Q8d9B3xUpjdMufovK5Cn8mhCtZU6ugQCVb5mXDI2fx0ZVjcnYafUC4U-2ddFLVXdicolcUIkv_kKEA",
-    "cardNumber":"4972485830400072",
-    "cardExpirationDate":"0230",
-    "cardCvx":"123"
+    "accessKeyRef": “1X0m87dmM2LiwFgxPLBJ”,
+    "data": "S2mSVl8PLRVHgaMNATInMmVYAECTzrAc5dfWTT8a8IIJiWHX6X35gAS9zfOm2DJa2ddFLVXdicolcUIkv_kKEA",
+    "cardNumber": "4970107111111119",
+    "cardExpirationDate": "1127",
+    "cardCvx": "123"
 }
 ```  
 
@@ -261,22 +314,21 @@ MangopayVault.tokenizeCard(
       self.showAlert(with: "",title: "Successful 🎉")
   }
 ```  
-</CodeGroup>  
-```json API response - Tokenize the card
+</CodeGroup> 
+
+In response, the API returns an encoded data string:
+ 
+```json
 data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg
 ```  
 
-Save the returned string for the next step (if you’re not using the Vault SDK).  
+You'll need this string for the next step.
 
-## 3. Update the Card Registration with tokenization data  
+## 3. Update the card registration with tokenization data  
 
-<Note>  
-**Note - Not necessary if using Vault SDK** 
-  
-If you’re using the Vault SDK, this step is taken care of for you.  
-</Note>  
+Update the Card Registration object by sending the data token returned by the tokenization server as the `RegistrationData`. 
 
-Update the card registration by sending the data token returned by the tokenization server as the `RegistrationData`. 
+You should also provide the cardholder's name at this stage, which will be added to the Card object.
 
 > [**PUT** /v2.01/&lcub;ClientId&rcub;/cardregistrations/CardRegistrationId](/api-reference/card-registrations/update-card-registration)
 
@@ -284,7 +336,8 @@ Update the card registration by sending the data token returned by the tokenizat
 <CodeGroup>
 ```json REST
 {
-    "RegistrationData":"data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg"
+    "RegistrationData": "data=MUhJV3Pbg1o0ed3o7NNzhTvLnLINzl2C3kJ-jrUvumkNkAmXFAobbBbjtr2ApgdN4oyFyrjhOYh4mRfSMAG97UwoZ_Q54ht04Mp1_JJysuk44VTizvbz9Vsx6XcB6KD70ftIYwFxOdfmDQ5GtM_cIg",
+    "CardHolderName": "ALEX SMITH"
 }
 ```  
 
@@ -327,7 +380,7 @@ const mangopay = new mangopayInstance({
 })
 
 let user = {
-    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+    Id: 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
   }
 
 let userCardRegistration = {
@@ -368,7 +421,7 @@ from mangopay.resources import CardRegistration
 
 user_card_registration = CardRegistration(
    id = 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
-   user_id = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+   user_id = 'user_m_01HWAR82HD4D8CQ67J02YMKM82',
    currency = 'EUR',
    card_type = 'CB_VISA_MASTERCARD',
    registration_data = 'data=R7hxMYui4h4rBkaNwbiH1DvQL35Y-goFSYQI384_jNsDngV32O95BVgk3Pg7vqU_mZIFFs4gFl24VlSBXNiuoi4Be_uieN3jEegz77g8ElaToz_b7S91YuROvHH0w6J40ftIYwFxOdfmDQ5GtM_cIg'
@@ -380,7 +433,9 @@ pprint(update_card_registration)
 ```
 </CodeGroup>
 
-```json API response - Update card registration
+In response, the API returns the `CardId` indicating that the card is registered successfully.
+
+```json
 {
     "Id":"198410142",
     "Tag":null,
@@ -398,18 +453,13 @@ pprint(update_card_registration)
     "Status":"VALIDATED"
 }
 ```  
-
-The card is now registered, and the response contains the `CardId` which can be used to process card payments.  
-
-<Warning>  
-**Caution - Card validation within 24 hours** 
-  
-A successful transaction (preauthorization, pay-in, or recurring) within 24 hours of the card registration is required to validate a card. Otherwise, the card remains invalid and a new card registration will be necessary to make a payment.  
-</Warning>  
+You'll need the `CardId` in the next step to request the payment.
 
 ## 4. Get the end user's session data  
 
-Besides the `CardId`, to process an online card payment, you need to capture information from your end user’s browsing session.  
+In your integration, you'll also need to capture information from your end user’s browsing session to be able to request the payment.
+
+In Sandbox, you can use dummy data.
 
 ### IP address  
 
@@ -420,6 +470,7 @@ You need to send the end user’s IP address in IPV4 or IPV6 format. You can col
 You also need to collect data about the end user’s browser.  
 - On a website, this data can be obtained from the browser.  
 - In a mobile app, you need to open a webview to fetch data from the browser (in the same way as for a website).  
+
 ```javascript Browser information - JavaScript example
 let browserInfo = {
   acceptedHeader: navigator.languages,
@@ -436,6 +487,9 @@ let browserInfo = {
 console.log(browserInfo);
 ```
 
+<Accordion
+  title="See parameter details"
+>
 <table>
     <thead>
         <tr>
@@ -502,15 +556,20 @@ console.log(browserInfo);
         </tr>
     </tbody>
 </table>
+</Accordion>
 
 ## 5. Request the payment (Direct Card PayIn)  
 
+Now that you have a `CardId`, you can request the payment to the wallet using the Direct Card PayIn object.
+
 <Note>  
 **Note - Recurring card payments and preauthorizations require other endpoints** 
-  
+
 The Direct Card PayIn object represents a one-time payment with a registered card.  
-For subscriptions and other recurring card payments, use the Recurring PayIn Registration object.  
-To reserve funds on a card for capture later, use the Preauthorization and Deposit Preauthorization objects.  
+
+For subscriptions and other recurring card payments, use the Recurring PayIn Registration object.
+
+To reserve funds on a card for capture later, use the Preauthorization and Deposit Preauthorization objects.
 </Note>  
 
 Create the pay-in request using:  
@@ -519,13 +578,7 @@ Create the pay-in request using:
 - The `Id` of the User as the `AuthorId`  
 - The `Id` of the user’s Wallet as the `CreditedWalletId`  
 
-<Warning>  
-**Caution - Pay-in to the author’s wallet** 
-  
-When making a pay-in, the funds should arrive on the wallet of the user making the pay-in, before being transferred to another user.  
-</Warning>  
-
-When you make the payment request, you also need to:  
+In your integration, when you make the payment request you also need to:
 - Be ready to handle 3DS authentication (Step 6)  
 - Specify the page to which the user will be returned after payment (Step 7)  
 
