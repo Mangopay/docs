@@ -3,32 +3,40 @@ title: Overview
 sidebarTitle: Overview
 ---
 
+import Sca from '/snippets/glossary/sca.mdx'
+
 **Availability:**
 - All card types
+
+## Process
 
 Processing a one-time card payment is a multi-step process: 
 
 <Steps>
-    <Step title="Tokenization">
+    <Step title="Card tokenization">
         Register the card to tokenize its sensitive data so it can be used for payment.
     </Step>
-    <Step title="Request">
+    <Step title="Payment request">
         Call the <a href="/api-reference/direct-card-payins/create-direct-card-payin">POST Create a Direct Card PayIn</a> endpoint to initiate the payment.
     </Step>
-    <Step title="Redirection">
-        If required by the issuer, redirect the user to complete 3DS authentication.
+    <Step title="3DS redirection">
+        If required by the issuer, redirect the user to the issuer's Access Control Server (ACS) to complete <Sca content="strong customer authentication"/>.
     </Step>
-    <Step title="Result">
-        Handle success and failure cases using [webhooks](/webhooks): 
+    <Step title="Payment outcome">
+        Mangopay updates the `Status`of the pay-in from `CREATAED` to `SUCCEEDED` or `FAILED` to indicate the result.
+
+        Set up [webhooks](/webhooks) for the following event types: 
             - `PAYIN_NORMAL_SUCCEEDED`
             - `PAYIN_NORMAL_FAILED`
+
+        Call the <a href="/api-reference/direct-card-payins/view-payin-direct-card">GET View a PayIn</a> endpoint to confirm the result and customize the user's post-pay experience.
     </Step>
     <Step title="Card deactivation">
-        Call the <a href="/api-reference/cards/deactivate-edit-card">PUT Deactivate or edit a Card</a> endpoint if you don't have the user's permission to save their payment details.
+        Call the <a href="/api-reference/cards/deactivate-edit-card">PUT Deactivate or edit a Card</a> endpoint to disable the `CardId` if you don't have the user's permission to save their payment details.
     </Step>
 </Steps>
 
-See the how-to guide for a detailed walkthrough of these steps:
+See the how-to guide for a detailed walkthrough of these steps you need to take:
 
 <Card
     title="How to"
@@ -37,14 +45,18 @@ See the how-to guide for a detailed walkthrough of these steps:
     Process a one-time card payment
 </Card>
 
-Learn more about 3DS authentication: 
+## Sequence diagram
+The following diagram details the full flow described above: 
 
-<Card 
-    title="Guide" 
-    href="/guides/payment-methods/card/3ds"
->
-    3-D Secure (3DS) 
-</Card>
+{/* Link for diagram below https://swimlanes.io/u/8i-AYs3E8, code at bottom of this page */}
+<div>
+  <iframe 
+    width="100%" 
+    height="700" 
+    src="https://cdn.swimlanes.io/dist/embeded.html#pZXNbtpAEMfvfoo5Jgio2rQXS43k2Ka1CsT1R6ScosUewgrw0t11ED31HfqGfZKOPyg2hlKlF1/W85+Z3/xnN+J6hSY4XGKiIWEyhQ3bDXgGv378hM9iC1zDVsilMgxrs4E3sMWZ4hphMLiFO5YsMUtNCOlbBK4x0yDxW45Kw1yKNRQHuUJpGB9N6PXeDsEukmhBgfw701xkvZ5RCwFpTlj2LEgKLN8zwb8PI7AlMspYBgb4zJWWZaDR/Bea9QSoc5mZYCUJKvUFd33wJcpGrMM065eSTcU4GDdraXVcdfk6zSN0txA1+gfC84LyP/T7wKjgcnopasZXyjiR4ERHe07BUZZuwa1Rnwg4P8E4gniTvmqAZYSX1t55NwS/bbG2c456G6FOFiZ4PrA0lYS0DzMptsQCeDYXcl2VcL7TPZxLCv9k3nrDSgTUhdft3bJDuOJK5Sivi+TVEtVLVSO4GcKNE1L7aSlXLQ+fU40jCG0LAvdr7AWuA3eP4IVh7AZGU7Zb4lRoPuc70AumgeV6Qbl4UrmGq5IzZUovb1qISS5xIlIM6uJKX4aa6VwBU2AHrhW5zoHWKTdWkYdLo3vltClZ7YqviME1JGK9WaHGFGa7hlSLQ0fpASWf744QGBTdCuzwq326z0L3WotEcVjsfzW99wcDi1xTmUjTO0vWXtAJ7q/jGmShH9u26zo0ZCFhZHljgtoW6dzMBHAhxBJ869GbPk3vg4k1fmrptE5q0bO+/uRG8MBxe8bIx0tclf63wdsim3O5/vOC1HRqbB/qNyNFRpZ/ufxm0I3j7P/FojvyVbV6vwE=#pZXwE"
+  >
+  </iframe>
+</div>
 
 ## Related resources
 
@@ -52,4 +64,55 @@ Learn more about 3DS authentication:
     <Card title="Test cards" href="/testing/payment-methods">Use Mangopay's dedicated test cards in Sandbox</Card>
 
     <Card title="Endpoints" href="/api-reference/direct-card-payins/direct-card-payin-object">The Direct Card PayIn object</Card>  
+    
+    <Card title="Guides" href="/guides/payment-methods/card/3ds">Learn more about 3DS and SCA</Card>  
 </CardGroup>
+
+
+{/* ----------------------- */}
+
+{/* 
+
+https://swimlanes.io/u/8i-AYs3E8
+
+Title: Direct card pay-in – How it works
+
+App / website --> Backend: Send payment request from end user
+
+=: **1. Card tokenization**
+Backend -> Mangopay API: POST Create Card Registration
+Mangopay API -> Backend: Return: AccessKey, PreregistrationData, CardRegistrationURL
+Backend -> App / website: Send: AccessKey, PreregistrationData, CardRegistrationURL
+App / website -> Tokenization server: Send: AccessKey, PreregistrationData, CardRegistrationURL, and card details
+Tokenization server -> App / website: Return: RegistrationData
+App / website -> Backend: Send: RegistrationData
+Backend -> Mangopay API: PUT Update Card Registration
+Mangopay API -> Backend: Return CardId
+
+=: **2. Payment request**
+Backend -> App / website: Fetch: IP address, browser information
+App / website -> Backend: Return: IP address, browser information
+Backend -> Mangopay API: POST Create Direct Card PayIn
+Mangopay API -> ACS (issuer): Request payment
+
+=: **3. 3DS redirection**
+if: IF SCA REQUIRED BY ISSUER
+ACS (issuer) -> Mangopay API: Notifiy that authentication is required
+Mangopay API -> Backend: Return: SecureModeRedirectURL, Status as CREATED
+Backend --> App / website: Redirect end user
+App / website --> ACS (issuer): Authentication (SCA) completed by end user
+ACS (issuer) --> ACS (issuer): Verify authentication
+end
+ACS (issuer)-> Mangopay API: Return end user to SecureModeReturnURL
+
+=: **4. Payment outcome**
+Mangopay API -> Backend: Change pay-in Status to SUCCEEDED or FAILED
+Mangopay API --> Backend: Send webhook PAYIN_NORMAL_SUCCEEDED or PAYIN_NORMAL_FAILED
+Backend -> Mangopay API: GET View PayIn
+Mangopay API -> Backend: Return Status
+Backend --> App / website: Confirm payment outcome
+
+=: **5. Card deactivation**
+Backend -> Mangopay API: PUT Deactivate or edit Card
+
+*/}
