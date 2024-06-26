@@ -1,5 +1,5 @@
 ---
-title: 'Reporting'  
+title: 'Reports'  
 'og:description': 'How to leverage the Mangopay API’s reporting endpoints to get the data you need on transaction activity.'  
 ---
   
@@ -9,20 +9,34 @@ Mangopay provides the ability to generate reports so you can download a large am
 
 As of today, two reporting capabilities are provided: Transactions and Wallets. 
 
-<CardGroup cols={2}>  
-<Card title="Transactions report">  
- Provides the pay-ins, payouts, and transfers made on the platform. This includes all natures of transaction (regular, refund, repudiation, and settlement).  
-</Card>  
-<Card title="Wallets report">  
- Provides all the wallets created on the platform, whether they are the end user’s, or the platform’s (repudiation and fees wallets).  
-</Card>  
-</CardGroup>  
+<table class="header-column">
+  <tbody>
+    <tr>
+      <th class="header">Transactions report</th>
+      <td class="table-content">
+        Provides the pay-ins, payouts, transfers, and conversions made on the platform. This includes all natures of transaction (regular, refund, repudiation, and settlement).  
+
+        The report period can’t exceed 6 months, and transactions can’t be more than 36 months past their creation date.
+      </td>
+    </tr>
+    <tr>
+      <th class="header">Wallets report</th>
+      <td class="table-content">
+        Provides all the wallets created on the platform, whether they are the end user’s, or the platform’s (repudiation and fees wallets).  
+
+        The report period can’t exceed 24 months by a wallet’s creation date.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## Report creation flow  
 
 When creating a report with the dedicated endpoints, its `Status` is `PENDING` at first, until it becomes ready for download. There is a short waiting time, (usually a few seconds) which depends on the size of the requested report.  
 
-When the report status becomes `READY_FOR_DOWNLOAD`, a notification is sent to the `CallbackURL` (if set) with the following format: <Info> https://www.example.com?EventType=REPORT_READY_FOR_DOWNLOAD&ResourceId=`ReportId`&Date=`ReportDate`</Info>  
+When the report status becomes `READY_FOR_DOWNLOAD`, a notification is sent to the `CallbackURL` (if set) with the following format: 
+
+> http<span>://www</span>.example.com?EventType=REPORT_READY_FOR_DOWNLOAD&ResourceId=`ReportId`&Date=`ReportDate`
 
 Using the `ReportId`, you can use the View a Report endpoint to get the `DownloadURL`, where the report is available for download.  
 
@@ -260,7 +274,7 @@ When creating a Wallets report, you can add the following values in the `Columns
 
 In order to optimize the report, you can take advantage of a series of filters available in the <a href="/api-reference/reports/create-wallets-report">Create a Wallets Report</a> endpoint documentation.  
 
-Thanks to the `BeforeDate` and `AfterDate` filters, you can define a time range based on the `CreationDate` of the wallets. The date range can’t exceed 24 months, but there is no limitation on how far in the past the transaction occurred.
+Thanks to the `BeforeDate` and `AfterDate` filters, you can define a time range based on the `CreationDate` of the wallets. The date range can’t exceed 24 months.
 
 ## Related resources
 
