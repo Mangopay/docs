@@ -12,15 +12,17 @@ A payout is the process of withdrawing funds from the Mangopay environment to an
 
 As detailed in the prerequisites below, the user must be verified (their `KYCLevel` must be `REGULAR`) and the bank account must be valid and in their name.  
 
-How Mangopay sends funds is determined by:  
+## How Mangopay sends funds
 
-#### 1. The user’s bank account and its type  
+How Mangopay sends a payout is determined by:  
+
+##### 1. The user’s bank account and its type  
 
 Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see prerequisites below).  
 
 The country of registration of a bank account is not linked to its currency. For example, a EUR payout to an account registered in the US requires a US-type account. A CAD payout to an account registered in Italy requires an IBAN-type account.  
 
-#### 2. The currency of the payout  
+##### 2. The currency of the payout  
 
 Mangopay can send payouts in:   
 - AED, AUD, CAD, CHF, CZK, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, USD, ZAR  
@@ -29,7 +31,7 @@ Receiving banks can be anywhere in the world. The currency of the payout combine
 
 For more information, see the <a href="/guides/glossary#bank-wire">bank wire</a> glossary definition and <a href="https://mangopay.com/pricing">pricing</a> page.  
 
-#### 3. The mode requested by the platform (if EUR in SEPA)  
+##### 3. The mode requested by the platform (if EUR in SEPA)  
 
 If the payout is in EUR in the SEPA zone, platforms can choose to request an Instant Payout or not. There are two modes of payout:  
 - Standard - For all currencies and all bank account types, a request to send funds by the quickest route available (see processing times below).  
@@ -64,7 +66,7 @@ You can find all you need to test payouts in Sandbox in the Testing payouts arti
 
 ## Prerequisites  
 
-#### User verification  
+### User verification  
 
 Mangopay has legal obligations to verify the identity of users who wish to make payouts. Therefore, payouts can only be performed to bank accounts whose owner (as defined by the Bank Account object's User) is verified.   
 
@@ -78,7 +80,7 @@ In the production environment, a payout can remain with the `CREATED` status for
 
 In addition, you should pay special attention to the identities of the payout author and bank account owner. Indeed, when the payout author is different from the bank account owner, the Payout `AuthorId` value must be different from the Bank Account `UserId` value as well. Otherwise, Mangopay’s Compliance team will reject the payout.  
 
-#### Bank accounts  
+### Bank accounts  
 
 Different information is required for bank accounts in different countries. This is managed by the Bank Account `Type` parameter, which determines the information that needs to be provided via the dedicated endpoint. The values are:  
 - IBAN - For accounts registered in countries that use IBAN  
