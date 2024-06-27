@@ -1,0 +1,50 @@
+---
+title: 'Data availability periods'
+'og:description': 'Read about durations that data resources remain available via different endpoints of the API, where limits are in place.'
+---
+
+## Transactions
+
+The Mangopay API retains live transaction data for 13 months. This means that any transaction object can be retrieved via the API for 13 months after its `CreationDate`.
+
+This limitation applies: 
+- To transactions of every `Type` (`PAYIN`, `TRANSFER`, `CONVERSION`, `PAYOUT`) and `Nature` (`REGULAR`, `REPUDIATION`, `REFUND`, `SETTLEMENT`) 
+- On all relevant GET endpoints, both to retrieve by Object ID (e.g. <a href="/api-reference/payouts/view-payout">GET View a Payout</a>) and to list transactions (e.g. <a href="/api-reference/transactions/list-transactions-user">GET List Transactions for a User</a>)
+- In both the Production and Sandbox environments
+
+Past the 13-month period, transaction data is archived. Once archived:
+- A GET call on the archived Transaction ID (e.g. GET View a PayIn, GET View a Refund, etc.) returns 404 Not Found
+- A GET call to list transactions call (e.g. for a User) doesn’t return the archived transaction
+
+For example, here is a 404 response on GET View a PayIn:
+
+```json Example - 404 Not Found
+{
+    "Message": "The ressource does not exist",
+    "Type": "ressource_not_found",
+    "Id": "5ca01f7f-99f4-4ba4-82a1-3af3b702f727#1718224387",
+    "Date": 1718224388,
+    "errors": {
+        "RessourceNotFound": "Cannot found the ressource PayIn with the id=158250465 "
+    }
+}
+```
+This limitation does not apply to resources that enable a user to make payments, such as <a href="/api-reference/cards">Cards</a>, <a href="/api-reference/recurring-payin-registrations">Recurring PayIn Registrations</a>, <a href="/api-reference/bank-accounts">Bank Account</a>, and <a href="/api-reference/mandates">Mandates</a>. However, <a href="/api-reference/preauthorizations">Preauthorizations</a> and <a href="/api-reference/deposit-preauthorizations">Deposit Preauthorizations</a>, given their limited validity and use, are also limited to 13 months.
+
+Limiting the duration of data retention is essential to maintain performance. The retention period is sufficient for operational usage (such as refunds, fraud investigations, and user experience) and most auditing purposes.
+
+All data is archived securely and provisions are in place to ensure we address any legal or business requirements that may arise.
+
+## Reports
+
+The <a href="/api-reference/reports/create-transactions-report">POST Create a Transactions Report</a> endpoint can be used to create a report containing transactions whose `CreationDate` is up to 36 months in the past. To do so, use the `AfterDate` child parameter of the `Filters` parameter.
+
+For more information about generating reports, see the <a href="/reports">Reports</a> article.
+
+## Events
+
+<a href="/api-reference/events/list-events">GET List all Events</a> returns events up to 45 days after the `Date` they occur.
+
+## API responses
+
+If an API call contains an idempotency key, it can be retrieved up to 24 hours after the `Date` it was sent, using the <a href="/api-reference/api-responses/view-api-response">GET View an API Response</a> endpoint.
