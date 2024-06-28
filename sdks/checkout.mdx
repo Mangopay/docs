@@ -129,7 +129,7 @@ The flow is described in the following diagram (numbered steps correspond to tho
   <iframe 
     width="100%" 
     height="700" 
-    src="https://cdn.swimlanes.io/dist/embeded.html#rZRLjptAEIb3fYpaRR5rmEiZPJHGEgHioDgDAryIoix6oG23DLTTtGNlVrlDLpCz5Cg5Sap52MDY4yyysgX1+Ovnq4q5ypgJ9oola7FVEDkf4M+Pn/Be7IAr2Am5Lgm5MWE8Bq/gilPFRQFPYEO/56xQkDO1EimULGNJ9Wo8JgTmJZOGMbE2G3gKO3ZXcoVdAikSxlJQok0nv39BL8iYdKXotp+ffdn3zvg9qyQS6EnGVrqj7sBKrapVtxAyx9hGzoPS17p0VEkfDjQSGz0OzUzAp0xCQmUKKVX0AgsSqC2JxZoV/J62kwPwhQneO7Ct0IHQnXpRHFqx598OFQ+9QTXPtRqbZlndS7IlL5Wsa6cockkVwzIDv97SBDWkJoTs65aV6mEy5jRBxuQjLZYCRwUr8NAuP4rBlgwLY2NMC/tp3eihfSFTW1kcTesP2k9rHGOVzDOx7je03gRRdG22Rb7JmGLp6ILouQlfQGW5FQQzFwLr0yVMfX9a/z8FSmv3jG6LZDX8+HPvFDTWFgOk1t8S/PgI/p2ivNjXV3qQ/zA1IUbF38y3HO92ClFsxa5+0O5q0DTUTJ7j7sWeO5Rp8C5s51irE8gpvrD4S128yxkq8woY1fjMw9lN0si7ypvcq0TkuGQ9+Hq9K/CqOofOw8Gw9SvduhutD8/J2Y7SXactpMgPiXvgQtfxQtfW2w2jaye61MAF1kwfiJPUva5FpVzqo4P3CWiDVL3o+CCpv3W9Sy2GfWM1hvh5eaIdpUXa5uj78C9bi0Yctb1iS583II9Ss2e04ayL56O+OrzMeVke7MFV6yd0vHpTsdOcdPzZZuov#rZRuov"
+    src="https://cdn.swimlanes.io/dist/embeded.html#rZRLjptAEIb3fYpaRR5rmEiZPJHGEgLioDgDAryIoix6oG23DLTTtGPNrHKHXCBnyVFyklTz8ADjRxZZ2Wrq8dffX3XMVcZMsFcsWYutgsj5CH9+/IQPYgdcwU7IdUnIjQnjMXgFV5wqLgp4Bht6n7NCQc7USqRQsowl1afxmBCYl0waxsTabOA57NhdyRV2CaRIGEtBiTad/P4FvSBj0pWi23558XXfO+MPrJJIoCcZW+mOugMrtapW3ULIHGMbOU9KX+vSUSV9ONBIbPQ4NDMBT5mEhMoUUqroBRYkUFsSizUr+ANtJwfgCxO892BboQOhO/WiOLRiz78dKh56g2peajU2zbK6l2RLXipZ105R5JIqhmUGfgUZVXpME0L2bctK9TQbk9ooY/KJFkuBw4IVeGiYH8VgS4alsTXmhf28bvTQwJCprSwOpvVH7ac1nrFK55lY9zuab4IoukbbIt9kTLF0dEFYkZqEL6Ay3QqCmQuB9fkSpr4/rf8fQ6U1fEa3RbIaXv/cO4aNtcUAqfW3DJ8ewb9TlBf7+koP8h+mJsSoCJz5luPdTiGKrdjVB+22Bk1DTeU58l7tyUOZBu/idpa2OoMcJQzLv9blu6ShNq+AUQ3QPJzdJI3Aq7zJvUpEjovWw6/fvWKvKtTpPRwOm7/Rzbvh+vk5Ot9Bwuu0hRT5Y+IeutB1vNC19Y7D6NqJLjV0gTXTz8RR8t7WolIu9dOD0oE2WNXrjgdJfd/1PrUo9q3VKOIV80R7Sou0zdGvxL9sLhpx0PiKL/3IATlJzp7ThrUuoid9dXiZ87J8tAfXrZ/Q8epdRU/zsOPPNlN/AQ==#rZRQ"
   >
   </iframe>
 </div>
@@ -206,8 +206,8 @@ Title: Checkout SDK – How it works
  =: ** Tokenization **
   if: IF CARD REGISTRATION
   Checkout SDK->App / website: **[4]** Call card registration delegate
-  App / website->Backend: Request card registration
-  Backend->Mangopay API: POST Create Card Registration
+  App / website->Platform: Request card registration
+  Platform->Mangopay API: POST Create Card Registration
   Mangopay API->Checkout SDK: Return Card Registration
   Checkout SDK->Checkout SDK: Tokenize card
   Checkout SDK->Checkout SDK: Event: onTokenizationCompleted()
@@ -223,10 +223,10 @@ end
 
 =: ** Payment **
  Checkout SDK->App / website: **[5]** Call pay-in delegate
- App / website->Backend: Request pay-in
- Backend->Mangopay API: **[6]** POST Create PayIn (ReturnURL=checkout.mangopay.com)
- Mangopay API-->Backend: Return PayIn
- Backend-->App / website:**[7]** Return PayIn to delegate
+ App / website->Platform: Request pay-in
+ Platform->Mangopay API: **[6]** POST Create PayIn (ReturnURL=checkout.mangopay.com)
+ Mangopay API-->Platform: Return PayIn
+ Platform-->App / website:**[7]** Return PayIn to delegate
  App / website->Checkout SDK: Return PayIn from delegate
 
 if : IF REDIRECTION (3DS, PAYPAL)
