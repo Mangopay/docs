@@ -1,0 +1,43 @@
+---  
+title: 'API - Oct 18, 2023 - Borat'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+'og:description': 'New endpoint to validate the format of a CompanyNumber - New hooks when the format of a User’s CompanyNumber is valid or not - New limit of 5 pages for KYC Documents'  
+---  
+  
+  <div class="pill pill-green rn-pill">Added</div> 
+  
+### New endpoint to validate the format of a CompanyNumber  
+
+Platforms can now avoid an incorrect company number format holding up the Business user verification process, thanks to a new endpoint to check that the value corresponds to the expected format.  
+
+The new endpoint allows platforms to send a value for the `CompanyNumber` along with a `CountryCode` to receive confirmation of the validity of its format for the given country. The endpoint also returns validation rules (regular expressions) for the country.  
+
+<Card title="Endpoint">Validate the format of User data</Card>  
+
+We recommend that platforms use this endpoint to validate the `CompanyNumber` format for Business-type legal users against the country of their `HeadquartersAddress` before submitting KYC Documents for the user. See the new Company number article for more information. 
+  
+### New hooks when the format of a User’s CompanyNumber is valid or not  
+
+Platforms can be notified when the format of a Business-type Legal User’s `CompanyNumber` does not correspond to the expected format for the country of their `HeadquartersAddress`. Two new event types are available for hook notifications.  
+
+#### LEGAL_COMPANY_NUMBER_VALIDATION_SUCCEEDED  
+-ResourceId: UserId  
+-Description: The format of the company number is valid for the headquarters address country of the Business-type Legal User. The format is as expected for the country of registration but the veracity of the data has not yet been verified.  
+
+#### LEGAL_COMPANY_NUMBER_VALIDATION_FAILED  
+-ResourceId: UserId  
+-Description: The format of the company number is not valid for the headquarters address country of the Business-type Legal User. A invalid format blocks verification.  
+
+These hooks can be triggered on the following calls:  
+-Create a Legal User  
+-Update a Legal User  
+
+We recommend that platforms validate the `CompanyNumber` format of a Business-type Legal User before submitting their KYC Documents. See the new Company number article for more information.  
+  <div class="pill pill-blue rn-pill">Changed</div> 
+  
+### New limit of 5 pages for KYC Documents  
+
+The KYC Document object now only accepts a maximum of 5 KYC Document Pages, regardless of the document `Type`. A KYC Document typically has one or two pages (front and back of an ID card, or a translation as a separate file), so this limit prevents unnecessary data from being submitted.  
+
+The HTTP 400 error has been added to the example responses of the Create a KYC Document Page endpoint. The limit has been added to the Document process article, and the How to submit a KYC Document tutorial has also been modified for clarity.

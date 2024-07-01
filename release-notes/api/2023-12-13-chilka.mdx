@@ -1,0 +1,30 @@
+---  
+title: 'API - Dec 13, 2023 - Chilka'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+'og:description': 'New CardInfo parameter returned on card transactions'  
+---  
+  
+  <div class="pill pill-green rn-pill">Added</div> 
+  
+### New CardInfo parameter returned on card transactions  
+
+Endpoints that trigger card authorization now return information about the card used for the transaction.  
+
+The `CardInfo` object parameter has the following child parameters:  
+-BIN – The 6-digit bank identification number (BIN) of the card issuer.  
+-IssuingBank – The name of the card issuer.  
+-IssuerCountryCode – The country where the card was issued.  
+-Type – The type of card product: DEBIT, CREDIT, CHARGE CARD.  
+-Brand – The card brand. Examples include: AMERICAN EXPRESS, DISCOVER, JCB, MASTERCARD, VISA, etc.  
+-SubType – The subtype of the card product. Examples include: CLASSIC, GOLD, PLATINUM, PREPAID, etc.  
+
+Note: The possible returned values for `Brand` and `SubType` are numerous and liable to evolve over time.  
+
+If any datapoint is not available, `null` is returned.  
+
+The `CardInfo` attribute is returned on the following objects:  
+-The Direct Card PayIn object  
+-The Recurring Card PayIn object  
+-The Preauthorization object  
+-The Deposit Preauthorization object
