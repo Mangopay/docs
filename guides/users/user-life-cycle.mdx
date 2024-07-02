@@ -5,27 +5,175 @@ title: 'User life cycle'
 
 A Mangopay user (natural or legal) can pass through different stages during its existence. Mangopay's system is designed to be flexible while maintaining compliance with regulations in force.  
 
-The diagram below gives an overview of the user life cycle. In blue are the actions that you take as a platform partnering with Mangopay. In orange are the actions that Mangopay takes.  
+## Diagram
 
-Find out more by clicking on one of three key actions:  
-- Create user (1)  
-- Request verification (2)  
-- Downgraded (3)
+The diagram below gives an overview of the user life cycle. In purple are the actions that you take as a platform partnering with Mangopay. 
 
-TW a workflow was visible here. Please add it.  
+<img height="400" src="/images/illu_user-life-cycle.svg" />
 
 <Note>  
-**Note - User life cycle depends on platform's business model** 
+**Note - All 3 user states are valid final states** 
   
-The journey and final state of a user on your platform depends on your business model and the actions that the user will want to take. Natural, Owner, and Owner - Verified are all good final states for users depending on their needs.  
+The journey and final state of a user on your platform depends on your business model and the actions that the user will want to take. Payer, Owner, and verified Owner are all good final states for users depending on their needs.  
 </Note>  
 
-<Warning>  
-**Caution - All users can be blocked at any time** 
+## Key stages
+
+The Mangopay system adapts to your specific user base depending on who your users are and in which countries they need to pay funds in and out of the Mangopay environment.
+
+<Note>  
+**Note - All users can be blocked at any time** 
   
 Mangopay may block a user at any time for reasons of risk management. Blocks prevent a user from making pay-ins and/or payouts.  
-If a user is blocked, there may be steps you can take to have them unblocked. For more information, see the Blocked users article.  
-</Warning>  
+
+You need to setup webhooks to be notified of a user being blocked. There may be steps you can take to have them unblocked. For more information, see the <a href="/guides/users/blocked-users">Blocked users</a> article.  
+</Note>  
+
+For all platfroms, there are three key stages that are described in more detail below:
+
+### 1. Create user
+
+<Tabs>
+<Tab title="Overview">
+When you create a user, you must create them as either a Payer or an Owner. Payers only need to provide a few basic details, whereas Owners must provide more extensive information and accept Mangopay's Terms and Conditions.
+
+You can modify an existing Payer to make them an Owner, but an Owner can’t be turned into a Payer.
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/users/types"
+  >
+    Learn more about types of user
+  </Card>
+  <Card
+    title="Guide"
+    href="/guides/users/categories"
+  >
+    Learn more about categories – Payer and Owner
+  </Card>
+</CardGroup>
+
+</Tab>
+<Tab title="Integration">
+Each user corresponds to a <a href="/api-reference/users/natural-user-object">Natural User</a> or <a href="/api-reference/users/legal-user-object">Legal User</a> object in the API, and each of them has a unique identifier (`Id`) known as their User ID.
+
+Whether a user is a Payer or an Owner is determined by the `UserCategory` parameter, and other parameters are required depending on its value.
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/users/categories"
+  >
+    Learn more about integrating user categories – Payer and Owner
+  </Card>
+  <Card
+    title="Endpoints"
+    href="/api-reference/users/create-natural-user"
+  >
+    Create a natural user
+  </Card>
+</CardGroup>
+
+</Tab>
+</Tabs>
+
+### 2. Request verification
+
+<Tabs>
+<Tab title="Overview">
+
+You can request verification for an Owner user, which means that the user provides official documents to prove their identity. The documents are checked and validated by Mangopay to verify the user.
+
+If Mangopay refuses a document, then the user can resubmit it (for example if the quality of the image was not good), or submit another accepted document.
+
+This process is often referred to as KYC – know your customer. For legal users, the process is more extensive and involves other documentation about the entity's registration, activity, and ownership.
+
+Once verified, a user can request a payout to their bank account.
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/users/verification"
+  >
+    Learn more about user verification
+  </Card>
+  <Card
+    title="Guide"
+    href="/guides/users/verification/requirements"
+  >
+    Read about the requirements for different types of user
+  </Card>
+</CardGroup>
+
+</Tab>
+
+<Tab title="Integration">
+
+When a natural or legal user object is created, the `KYCLevel` parameter is returned `LIGHT` by default to indicate that they are not verified. When the user is successfully verified, the value changes to `REGULAR`.
+
+Verification documents (of all types) are submitted as files in pages of a <a href="/api-reference/kyc-documents/kyc-document-object">KYC Document</a> object. See the <a href="/guides/users/verification/documents/submission/how-to">how-to guide</a> to learn more.
+
+For some types of legal users, it may also be necessary to submit a declaration of the entity's <a href="/guides/users/verification/beneficial-owners">beneficial owners</a> using a <a href="/api-reference/ubo-declarations/ubo-object">UBO Declaration</a> object. To learn how to do this, see the <a href="/guides/users/verification/beneficial-owners/how-to">how-to guide</a>.
+
+<CardGroup>
+  <Card
+    title="Guide"
+    href="/guides/users/verification/documents/submission"
+  >
+    Learn more about submitting verification documents
+  </Card>
+  <Card
+    title="Guide"
+    href="/guides/users/verification/documents/submission/id-best-practices"
+  >
+    Learn more about submitting verification documents
+  </Card>
+</CardGroup>
+
+</Tab>
+</Tabs>
+
+### 3. Downgraded
+
+<Tabs>
+<Tab title="Overview">
+
+If your platform changes – or allows a user to change – key information about a user's identity, then they lose their verified status.
+
+This downgrade mechanism targets a restricted set of key details, like a user's name, to  help reduce the risk of financial crime.
+
+<Card
+  title="Guide"
+  href="/guides/users/verification/downgrade"
+>
+Learn more about verification downgrade
+</Card>
+
+</Tab>
+<Tab title="Integration">
+
+Prevent your users from proactively changing their key identity details to limit the possibility of a user losing their verified status. This applies from the moment the user has submitted a document for validation.
+
+Ensure also that you implement the webhooks described in the <a href="/guides/users/verification/downgrade">verification downgrade</a> article. Hooks also exist for all the main stages of the user lifecycle.
+
+<CardGroup>
+<Card
+  title="Guide"
+  href="/guides/users/verification/downgrade"
+>
+Learn more about verification downgrade
+</Card>
+<Card
+  title="Integration resources"
+  href="/webhooks"
+>
+  Learn more about using webhooks to receive notifications
+</Card>
+</CardGroup>
+
+</Tab>
+</Tabs>
 
 ## Related resources  
 
