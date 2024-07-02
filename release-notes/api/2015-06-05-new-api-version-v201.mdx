@@ -14,11 +14,53 @@ This minor API version relates to having more detailed addresses for Users and B
 ### Changes to API objects  
 
 An address is currently used in the following objects:  
--Natural User – Address  
--Legal User – LegalRepresentativeAddress and HeadquartersAddress  
--BankAccounts – OwnerAddress  
+- Natural User – Address  
+- Legal User – LegalRepresentativeAddress and HeadquartersAddress  
+- BankAccounts – OwnerAddress  
 
-In each case, the previous string format is no longer accepted, and a more detailed array of information is required. Further information is available below:TW please add the old table here  
+In each case, the previous string format is no longer accepted, and a more detailed array of information is required. Further information is available below:
+
+<table> 
+<thead>
+<tr>
+<th class="header">Property</th>
+<th class="header">Type</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tr>
+<td class="table-content">`AddressLine1`</td>
+<td class="table-content">string</td>
+<td class="table-content"></td>
+</tr>
+<tr>
+<td class="table-content">`AddressLine2`</td>
+<td class="table-content">string</td>
+<td class="table-content">This is optional</td>
+</tr>
+<tr>
+<td class="table-content">`City`</td>
+<td class="table-content">string</td>
+<td class="table-content"></td>
+</tr>
+<tr>
+<td class="table-content">`Region`</td>
+<td class="table-content">string</td>
+<td class="table-content">Optional unless Country is "MX", "CA" or "US"</td>
+</tr>
+<tr>
+<td class="table-content">`PostalCode`</td>
+<td class="table-content">string</td>
+<td class="table-content">Must be be alphanumeric (or spaces) – not required if the Country is one of "AO", "AG", "AW", "BS", "BZ", "BJ", "BW", "BF", "BI", "CM", "CF", "KM", "CG", "CD", "CK", "CI", "DJ", "DM", "GQ", "ER", "FJ", "TF", "GM", "GH", "GD", "GN", "GY", "HK", "IE", "JM", "KE", "KI", "MO", "MW", "ML", "MR", "MU", "MS", "NR", "AN", "NU", "KP", "PA", "QA", "RW", "KN", "LC", "ST", "SA", "SC", "SL", "SB", "SO", "ZA", "SR", "SY", "TZ", "TL", "TK", "TO", "TT", "TV", "UG", "AE", "VU", "YE", "ZW "</td>
+</tr>
+<tr>
+<td class="table-content">`Country`</td>
+<td class="table-content">string</td>
+<td class="table-content">Must be an ISO 3166-1 alpha-2 code</td>
+</tr>
+<tbody>
+</tbody>
+</table>
 
 As with the previous address fields for the User, it is still optional to provide the address information when creating a User, however if you do provide at least one of the new address fields, you must provide a complete address (except AddressLine2).  
 ```json Example request for POST /v2.01/ClientId/users/natural
