@@ -73,35 +73,23 @@ The rate returned by the API is indicative of the rate offered by Mangopay, but 
 
 <RequestExample>
 ```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.entities.ConversionRate;
-
-import java.lang.reflect.Field;
 
 public class ViewConversionRate {
     public static void main(String[] args) throws Exception {
         MangoPayApi mangopay = new MangoPayApi();
         mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
+        mangopay.getConfig().setClientPassword("your-client-password");
 
         ConversionRate conversionRate = mangopay.getConversionsApi().getConversionRate("EUR", "GBP");
 
-        printObjectFields(conversionRate);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(conversionRate);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-                
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(prettyJson);
     }
 }
 ```

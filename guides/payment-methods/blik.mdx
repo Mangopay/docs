@@ -65,9 +65,40 @@ BLIK is a popular payment method available on mobile banking applications in Pol
     <Step>
         The user enters the code to validate the payment.
     </Step>
+    <Step>
+       The platform makes an API call with `Code`.
+    </Step>
+    <Step>
+        The user is redirected to their banking app.
+    </Step>
+    <Step>
+        The user enters their banking app PIN to confirm the payment. 
+    </Step>
+    <Step>
+        The user is returned to your app or website.
+    </Step>
 </Steps>
 
-## Outcome
+### BLIK OneClick
+
+BLIK then gives users the option to save the merchant (that is, your platform) so future payments can be processed without the temporary 6-digit code – this is known as BLIK OneClick.
+
+There are two options to save a merchant:
+
+- Option 1: On the payment confirmation page, the user clicks Save the shop.
+- Option 2: After entering their card PIN, the user clicks Pay and save to simultaneously confirm the payment and save the merchant. 
+
+Once the merchant is saved, the user sees 2 buttons. They can choose the basic flow by clicking _BLIK with code_, or they can click _BLIK without code_ to use OneClick.
+
+The OneClick flow uses the Create a BLIK PayIn (without code) endpoint:
+
+1. On your app or website, the user selects _BLIK without code_ during checkout.
+2. The user is redirected to their banking app.
+3. The user enters their card PIN to confirm the payment. 
+
+For more information, see the [BLIK Level 0 + OneClick](https://blik.com/lp/payment-without-code/Level_0_%2B_OneClick.html) article on the BLIK documentation.
+
+## Hooks
 
 The transaction is complete when the pay-in status changed from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome.  
 
@@ -75,14 +106,6 @@ You should also set up [hook notifications](/webhooks) for the relevant [event t
 
 - PAYIN_NORMAL_SUCCEEDED  
 - PAYIN_NORMAL_FAILED  
-
-## Constraints
-
-<Note>  
-**Note - Minimum amount in Production** 
-  
-In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).  
-</Note>  
 
 ## Related resources  
 
