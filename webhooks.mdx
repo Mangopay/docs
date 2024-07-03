@@ -3,11 +3,13 @@ title: 'Hook notifications'
 'og:description': 'Understand how webhook notifications work with the Mangopay API, with an example format and notes on retries.'  
 ---
 
+## Introduction
+
 Mangopay provides a webhook feature to submit notifications to other applications whenever a specific event occurs.  
 
 When setting up the Hook for an event type, you define the URL to which the notification is sent.  
 
-- <a href="/webhooks/event-types">List of event types</a>  
+<a href="/webhooks/event-types">List of event types</a> &rarr;
 
 The hook notification has the following format:
 
@@ -16,10 +18,61 @@ The hook notification has the following format:
 Doing a GET call on the `ResourceId` allows you to check that the event is still relevant and ensure that the hook is authentic.  
 
 <Note>  
-**Note – Use a TLS v1.2+ certificate**
+**Note – Use a TLS 1.2 certificate**
   
-Your endpoint should be protected using a TLS 1.2 certificate or better. Endpoints using self-signed certificates, SSL certificates or TLS certificates v1.0 and v1.1 may be rejected by our webhook systems.
+Your endpoint must be protected using a TLS 1.2 certificate. Endpoints using self-signed certificates, SSL certificates or TLS versions 1.0, 1.1, and 1.3 may be rejected by our webhook systems.
 </Note>  
+
+## IP addresses
+Mangopay sends webhook notifications from the IP addresses listed below. Depending on your firewall or network security setup, you may need to add them to an allowlist to receive notifications.
+
+The CIDR ranges and the full lists given below express the same IP addresses. The /30 indicates a block of 4 IPs in ascending decimals from the first, the /29 indicates a block of 8. 
+
+<Note>
+**Note – Contact Mangopay for full list**
+
+The IPs below are redacted for security reasons. When your platform is looking to test webhooks in Sandbox, contact Mangopay <a href="https://hub.mangopay.com/">via the Hub</a> for the full list. 
+</Note>
+
+#### Sandbox
+
+**CIDR ranges**
+- X.XX.XXX.156/30
+- X.XXX.XXX.152/30
+
+**Full list**
+- X.XX.XXX.156
+- X.XX.XXX.157
+- X.XX.XXX.158
+- X.XX.XXX.159
+- X.XXX.XXX.152
+- X.XXX.XXX.153
+- X.XXX.XXX.154
+- X.XXX.XXX.155
+
+#### Production
+**CIDR ranges**
+- X.XX.XXX.176/29
+- X.XXX.XXX.160/29
+
+**Full list**
+- X.XX.XXX.176
+- X.XX.XXX.177
+- X.XX.XXX.178
+- X.XX.XXX.179
+- X.XX.XXX.180
+- X.XX.XXX.181
+- X.XX.XXX.182
+- X.XX.XXX.183
+- X.XXX.XXX.160
+- X.XXX.XXX.161
+- X.XXX.XXX.162
+- X.XXX.XXX.163
+- X.XXX.XXX.164
+- X.XXX.XXX.165
+- X.XXX.XXX.166
+- X.XXX.XXX.167
+
 
 ## Notification failure
 
