@@ -188,6 +188,52 @@ If the end user wires the funds with the incorrect reference, to a different acc
 }
 ```  
 
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+
+try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $walletId = 'wlt_m_01HQT6422EER2N7FPRXWTSDCSV';
+
+    $bankwirePayIn = new \MangoPay\PayIn();
+    $bankwirePayIn->AuthorId = $userId;
+    $bankwirePayIn->CreditedWalletId = $walletId;
+
+    $bankwirePayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsBankWire();
+
+    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds = new \MangoPay\Money();
+    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds->Amount = 1000;
+    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds->Currency = 'EUR';
+
+    $bankwirePayIn->PaymentDetails->DeclaredFees = new \MangoPay\Money();
+    $bankwirePayIn->PaymentDetails->DeclaredFees->Amount = 0;
+    $bankwirePayIn->PaymentDetails->DeclaredFees->Currency = 'EUR';
+    
+    $bankwirePayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+    $bankwirePayIn->ExecutionDetails->Culture = 'FR';
+
+    $response = $api->PayIns->Create($bankwirePayIn);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
   
 ```javascript NodeJS  
 const mangopayInstance = require('mangopay2-nodejs-sdk')
