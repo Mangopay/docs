@@ -8,11 +8,19 @@ sidebarTitle: How to
 
 This how-to guide will show you how to successfully process a refund when, following the pay-in to the Payer’s wallet, a transfer has already been made to the Owner’s wallet.  
 
+<Info>
+**Prerequisites**
+- A `ClientId` and an API key – you can create these in the <a href="https://mangopay.com/hub" target="_blank">Mangopay Hub</a> (or else <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get started)
+- A pay-in to refund (and its corresponding transaction `Id`)
+- The corresponding transfer to refund (and its corresponding transaction `Id`)
+
+</Info>
+
 In a typical integration, the pay-in to the Payer’s wallet triggers a transfer to the Owner’s wallet. To process the refund, you need to refund the transfer first to make sure there are sufficient funds in the Payer’s wallet to refund the pay-in.  
 
 By default, Mangopay’s Refund object reimburses the full amount of the initial transaction’s `DebitedFunds` and any `Fees` taken. To do a partial refund, you need to specify these amounts.
 
-[Learn more about Refunds](/guides/refunds) 
+[Learn more about Refunds](/guides/refunds) **&rarr;**
 
 <Note>  
 **Best practice - Partial transfer refund followed by partial pay-in refund** 
@@ -30,8 +38,8 @@ When doing multiple partial refunds, please note that:
 **Note - Handling fees** 
   
 When creating partial refunds, you can either:  
-Refund the fees by setting a negative value (i.e., the initial value preceded by a -), or  
-Charge additional fees by setting a positive value (thus adding a cost for the refund)  
+- Refund the fees by setting a negative value (i.e., the initial value preceded by a -), or  
+- Charge additional fees by setting a positive value (thus adding a cost for the refund)  
 </Note>  
 
 ## 1. Refund the transfer  
@@ -252,7 +260,7 @@ try {
 
 ## 2. Refund the pay-in  
 
-Proceed with the pay-in refund once the transfer refund status is `SUCCEEDED`. You can be notified of a successful transfer refund by setting up the hook notification:  
+Proceed with the pay-in refund once the transfer refund status is `SUCCEEDED`. You can be notified of a successful transfer refund by setting up the following <a href="/webhooks">event type</a> for webhook notifications:  
 - TRANSFER_REFUND_SUCCEEDED  
 
 <Note>  
