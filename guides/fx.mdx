@@ -12,19 +12,31 @@ Mangopay relies on a dedicated transaction type, conversion, to enable platforms
 
 There are two types of conversion, corresponding to Mangopay’s two FX offerings: 
 
-<CardGroup cols={2}>  
-<Card title="Instant conversion - Spot FX">  
- Instantly convert funds at the current market rate. The rate used is returned in the conversion response, and an indicative rate is available at any time.  
- Spot FX is a one-step feature:  
- Create an Instant Conversion  
-</Card>  
-<Card title="Quoted conversion - Guaranteed FX">  
- Convert funds against a quote, which locks in the conversion rate for a pre-agreed duration. One quote defines the rate and currency pair for one conversion, which must be made before the duration expires.  
- Guaranteed FX is a two-step process:  
- Create a Quote  
- Create a Quoted Conversion  
-</Card>  
-</CardGroup>  
+<table>
+<thead>
+<tr>
+<th class="header">Instant&nbsp;conversion –&nbsp;Spot&nbsp;FX</th>
+<th class="header">Quoted&nbsp;conversion –&nbsp;Guaranteed&nbsp;FX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+Instantly convert funds at the current market rate. The rate used is returned in the conversion response, and an indicative rate is available at any time.
+
+Spot FX is a one-step feature:
+* <a href="/api-reference/conversions/create-instant-conversion">Create an Instant Conversion</a>
+</td>
+<td class="table-content">
+Convert funds against a quote, which locks in the conversion rate for a pre-agreed duration. One quote defines the rate and currency pair for one conversion, which must be made before the duration expires.
+
+Guaranteed FX is a two-step process:
+1. <a href="/api-reference/quotes/create-quote">Create a Quote</a>
+2. <a href="/api-reference/conversions/create-quoted-conversion">Create a Quoted Conversion</a>
+</td>
+</tr>
+</tbody>
+</table>
 
 An indicative rate for a currency pair is available at any time using the [View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint.  
 
@@ -45,8 +57,8 @@ Fees can only be set at creation of a quote and an instant conversion. The fees 
 ## Rates  
 
 The conversion rate offered by Mangopay is expressed in two ways, both as decimal numbers:  
-- **MarketRate** - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
-- **ClientRate** - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
+- `MarketRate` - The market rate is used to convert funds during a conversion using the formula: `DebitedFunds` `Amount` * `MarketRate` = `CreditedFunds` `Amount`. The market rate fluctuates in line with FX market dynamics and is common to all platforms for the currency pair.  
+- `ClientRate` - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
 
 Mangopay's markup is agreed during contracting. You can can calculate it using the formula:  
 - Markup = 1 - (`ClientRate` / `MarketRate`)  
@@ -73,7 +85,9 @@ Mangopay is able to offer the following currencies for both Spot FX and Guarante
 **Note - Activation required for feature and currencies** 
   
 In Production, foreign exchange services are subject to a contract amendment.   
+
 In Sandbox, the features and their specificities (currencies and quote durations) require activation for your API credentials.  
+
 For more information or to activate contact the Support team [via the Hub](https://hub.mangopay.com/).  
 </Note>  
 
@@ -129,9 +143,15 @@ The conversion transaction behaves like other transactions, meaning it appears i
 
 
 <CardGroup cols={2}>
-    <Card title="Endpoint" href="/api-reference/conversion-rates/view-conversion-rate">View an indicative Conversion Rate</Card>  
+    <Card title="Endpoint" href="/api-reference/conversion-rates/view-conversion-rate">
+    View an indicative Conversion Rate
+    </Card>  
 
-    <Card title="Endpoint" href="/api-reference/quotes/quote-object">The Quote object</Card>  
+    <Card title="Endpoint" href="/api-reference/quotes/quote-object">
+    The Quote object
+    </Card>  
 
-    <Card title="Endpoint" href="/api-reference/conversions/conversion-object">The Conversion object</Card>
+    <Card title="Endpoint" href="/api-reference/conversions/conversion-object">
+    The Conversion object
+    </Card>
 </CardGroup>
