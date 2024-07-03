@@ -31,30 +31,46 @@ Here are a few examples:
 
 Mangopay offers three types of disputes depending on the kind of chargeback that occurred. 
 
-<CardGroup cols={2}>  
-    <Card title="Contestable">  
-        Platforms are given the opportunity to contest the dispute by providing proofs to the issuing bank that the transaction was legitimate.  
-    </Card>  
-    <Card title="Non-contestable">  
-        Disputes are automatically closed after the creation. Platforms are required to settle their credit to Mangopay with a dedicated transfer.  
-    </Card>  
-    <Card title="Retrieval">  
-        Specific dispute resulting from the bank issuing a warning regarding a future chargeback. In such cases, repudiation does not occur, but the dispute is still created for the platform to submit proofs.  
-    </Card>  
-</CardGroup>  
+<table class="header-column">
+<tbody>
+<tr>
+<th class="header">Contestable</th>
+<td class="table-content">
+Platforms are given the opportunity to contest the dispute by providing proofs to the issuing bank that the transaction was legitimate.
+</td>
+</tr>
+<tr>
+<th class="header">Non&#8209;contestable</th>
+<td class="table-content">
+Disputes are automatically closed after the creation. Platforms are required to settle their credit to Mangopay with a dedicated transfer.  
+</td>
+</tr>
+<tr>
+<th class="header">Contestable</th>
+<td class="table-content">
+Specific dispute resulting from the bank issuing a warning regarding a future chargeback. 
+
+In such cases, repudiation does not occur, but the dispute is still created for the platform to submit proofs.  
+</td>
+</tr>
+</tbody>
+</table>
 
 <Note>  
     **Note - Disputes and Refunds** 
     
     Disputes cannot be created if a Refund already occurred on the transaction. In the same way, you cannot create a Refund for a transaction subject to a Dispute.  
-    See the Refunds article to learn more.  
+    
+    See the <a href="/guides/refunds">Refunds</a> article to learn more.  
 </Note>  
 
 ### Late failures  
 
-For transactions by direct debit, a dispute can be created due to a late failure. These disputes are non-contestable. See the direct debit article for more details.  
+For transactions by direct debit, a dispute can be created due to a late failure. These disputes are non-contestable. See the direct debit article for more details: 
 
-<Card title="Guide" href="/guides/payment-methods/banking/direct-debit">Direct debit - Late failures and chargebacks</Card>  
+<Card title="Guide" href="/guides/payment-methods/banking/direct-debit">
+Direct debit - Late failures and chargebacks
+</Card>  
 
 ## Dispute process  
 
@@ -73,27 +89,27 @@ For contestable disputes, the process can be broken down into the following step
 <Note>  
     **Best practice - Set up hooks for disputes** 
     
-    Due to the deadline to contest disputes, we strongly advise you to set up hooks to be notified as soon as a dispute is created. See the Disputes category of event types for the set of hooks allowing you to stay up to date throughout the process.  
+    Due to the deadline to contest disputes, we strongly advise you to set up hooks to be notified as soon as a dispute is created. See the <a href="/webhooks/event-types#disputes">Dispute event types</a> for the set of hooks allowing you to stay up to date throughout the process.  
 </Note>  
 
 ### New dispute and repudiation  
 
 When a chargeback occurs, two objects are created on Mangopay’s side:  
-- Dispute - You can view the Dispute by using the View a Dispute endpoint.  
-- Repudiation - Refers to the withdrawal of funds from the platform’s Repudiation Wallet, resulting in a negative balance. You can view the Repudiation by using the View a Repudiation endpoint.  
+- Dispute - You can view the dispute by using the <a href="/api-reference/disputes/view-dispute">GET View a Dispute</a> endpoint.  
+- Repudiation - Refers to the withdrawal of funds from the platform’s Repudiation Wallet, resulting in a negative balance. You can view the Repudiation by using the <a href="/api-reference/repudiations/view-repudiation">GET View a Repudiation</a> endpoint.  
 
 If the dispute is contestable, the next step is creating the Dispute Documents and submitting them before the `ContestDeadline` by using the following endpoints:  
-- Create a Dispute Document and Create a Dispute Document Page  
-- Submit a Dispute Document  
-- Submit a Dispute  
+- <a href="/api-reference/dispute-documents/create-dispute-document">POST Create a Dispute Document</a> and <a href="/api-reference/dispute-documents/create-dispute-document-page">POST Create a Dispute Document Page</a>
+- <a href="/api-reference/dispute-documents/submit-dispute-document">PUT Submit a Dispute Document</a>
+- <a href="/api-reference/disputes/submit-dispute">PUT Submit a Dispute</a>
 
 If the dispute is not contestable, the next step is to settle the dispute by using the following endpoint:  
-- Create a Settlement Transfer  
+- <a href="/api-reference/dispute-settlement/create-settlement-transfer">POST Create a Settlement Transfer</a>
 
 <Note>  
 **Note - Settling several disputes** 
   
-You also have the opportunity to settle disputes by making a Direct Bank Wire PayIn to the platform’s repudiation wallet.  
+You also have the opportunity to settle disputes via bank wire, using the <a href="/api-reference/dispute-settlement/create-direct-bank-wire-payin-to-repudiation-wallet">POST Create a Direct Bank Wire PayIn to the Repudiation Wallet</a> endpoint.
 </Note>  
 
 ### Contesting the dispute  
@@ -114,6 +130,7 @@ In order to contest a dispute, you need to complete the following steps before t
 **Caution - Contesting multiple disputes for the same credit card** 
   
 If the platform has multiple disputes for the same card, the platform needs to send proofs to justify the legitimacy of all the disputed transactions.  
+
 If only some of the transactions are contested, then banks will reject all of them, and all the disputes will be set as `LOST`.  
 </Warning>  
 
@@ -130,7 +147,7 @@ If the documents submitted are not in English, please include a simple translati
     - Certificates of authenticity  
     - Terms and conditions on refund policy  
 
-    More information on which evidence to provide is available in the Dispute reasons section of this article. 
+    More information on which evidence to provide is available in the <a href="#dispute-reasons">Dispute reasons</a> section of this article. 
 </Accordion>  
 
 <Warning>  
@@ -200,11 +217,12 @@ Each dispute created is associated with a reason that determines which forms of 
                 **Evidence to provide**
                 - Invoice or any document with the name of the user, the amount paid, and the details of the purchase. 
                 - Optionally, screenshots of the exchanges between the buyer and the platform or the buyer and the seller.
+                
                 If there are two or more transactions for the same user that were not contested nor reported as fraudulent in the past 120 to 365 days before the contested payment, you also need to provide at least two of the following elements about the user who initiated the chargeback:
-
                 - The IP address
                 - The shipping address
                 - The device ID (for the phone, computer, etc. used for the payment).
+                
                 One of the two pieces of information provided must be the IP address or the device ID.
             </td>
         </tr>
@@ -296,4 +314,6 @@ Each dispute created is associated with a reason that determines which forms of 
 
 ## Related resources  
 
-<Card title="Endpoint" href="/api-reference/disputes/dispute-object">The Dispute object</Card>
+<Card title="Endpoint" href="/api-reference/disputes/dispute-object">
+The Dispute object
+</Card>
