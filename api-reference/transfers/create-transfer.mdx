@@ -285,7 +285,53 @@ myTransfer = {
 createTransfer(myTransfer)  
 ```  
 
-  
+```java Java 
+package com.samples.Wallets.Transfers;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.Transfer;
+
+public class CreateTransfer {
+        public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-client-password");
+
+        var debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var debitedrWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+        var creditedUserId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var creditedWalletId = "wlt_m_01HTF5S9MG0XXBZ8A0550MED3Z";
+        
+        Money debitedFunds = new Money();
+        debitedFunds.setAmount(1000);
+        debitedFunds.setCurrency(CurrencyIso.EUR);
+        
+        Money fees = new Money();
+        fees.setAmount(0);
+        fees.setCurrency(CurrencyIso.EUR);
+
+        Transfer transfer = new Transfer();
+        transfer.setAuthorId(debitedUserId);
+        transfer.setDebitedWalletId(debitedrWalletId);
+        transfer.setCreditedUserId(creditedUserId);
+        transfer.setCreditedWalletId(creditedWalletId);
+        transfer.setDebitedFunds(debitedFunds);
+        transfer.setFees(fees);
+        transfer.setTag("Created using the Mangopay Java SDK"); 
+
+        Transfer createTransfer = mangopay.getTransferApi().create(transfer);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createTransfer);
+
+        System.out.println(prettyJson);
+    }
+```
 ```python Python  
 from pprint import pprint
 
