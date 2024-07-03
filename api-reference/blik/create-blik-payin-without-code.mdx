@@ -1,5 +1,5 @@
 ---
-title: 'Create a BLIK PayIn'  
+title: 'Create a BLIK PayIn (without code)'  
 api: 'POST /v2.01/{ClientId}/payins/payment-methods/blik'  
 ---
 
@@ -22,6 +22,9 @@ import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Code1Response from '/snippets/p-response/Code1Response.mdx';
+import BrowserInfo2Response from '/snippets/p-response/BrowserInfo2Response.mdx';
+import IpAddressResponse from '/snippets/p-response/IpAddressResponse.mdx';
 
 import ProfilingAttemptReference from '/snippets/p-body/ProfilingAttemptReference.mdx';
 import StatementDescriptor from '/snippets/p-body/StatementDescriptor.mdx';
@@ -31,19 +34,9 @@ import DebitedFunds4 from '/snippets/p-body/DebitedFunds4.mdx';
 import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
-  
-
-<Note>  
-**Note – Timeout after 55 seconds** 
-  
-The payment session lasts for 55 seconds, at which point the pay-in fails automatically if no action has been taken by the user.  
-</Note>  
-
-<Note>  
-**Note – Minimum amount in Production** 
-  
-In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).  
-</Note>  
+import IpAddress from '/snippets/p-body/IpAddress.mdx';
+import Code from '/snippets/p-body/Code.mdx';
+import BrowserInfo1 from '/snippets/p-body/BrowserInfo1.mdx';
 
 ### Body parameters  
 
@@ -103,24 +96,29 @@ In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).
 
 <RedirectURLResponse />  
 
-<StatementDescriptorResponse /></Accordion></AccordionGroup>  
+<StatementDescriptorResponse />
+
+<Code1Response />
+
+<BrowserInfo2Response />
+
+<IpAddressResponse /></Accordion></AccordionGroup>  
 
 <ResponseExample>  
 
 ```json 200 - Created  
-
 {
-    "Id": "wt_b7640ff9-52f0-4644-8584-2e9a56789ea4",
+    "Id": "wt_dbb46bf7-71e1-463c-bbd5-8217f3c4b474",
     "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1686304994,
-    "AuthorId": "6659843",
+    "CreationDate": 1715610590,
+    "AuthorId": "user_m_01HWSRS7HK6S0XKKD4CJM3PQ04",
     "DebitedFunds": {
         "Currency": "PLN",
-        "Amount": 500
+        "Amount": 100
     },
     "CreditedFunds": {
         "Currency": "PLN",
-        "Amount": 500
+        "Amount": 100
     },
     "Fees": {
         "Currency": "PLN",
@@ -132,13 +130,17 @@ In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).
     "ExecutionDate": null,
     "Type": "PAYIN",
     "Nature": "REGULAR",
-    "CreditedWalletId": "6659844",
+    "CreditedWalletId": "wlt_m_01HWSSQV8W6550FJ5NTJQE1DE1",
+    "CreditedUserId": "user_m_01HWSRS7HK6S0XKKD4CJM3PQ04",
     "PaymentType": "BLIK",
-    "ExecutionType": "DIRECT",
-    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_b7640ff9-52f0-4644-8584-2e9a56789ea4",
-    "RedirectUrl": "https://r3.girogate.de/ti/dumbdummy?tx=140079915505&rs=lHq9N9ZjKZflFRUlkHFgnmu6xiXDfJFj&cs=2593558777c587470eca7dbf79063dd5ac83fd5157ba2b40b824e1df43905098",
-    "StatementDescriptor": "MGP"
-}  
+    "ExecutionType": "WEB",
+    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_dbb46bf7-71e1-463c-bbd5-8217f3c4b474",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=2246577013&rs=D4a2bjG5roOlXDEvsBOdb2NoCNtPxxKZ&cs=f3452531239c64143ec6a9ccd382553ec71a987cdcdc16a4f2046bc5e3b8d373",
+    "StatementDescriptor": "May2024",
+    "Code": null,
+    "BrowserInfo": null,
+    "IpAddress": null
+}
  ```  
 
 </ResponseExample>  
@@ -147,11 +149,11 @@ In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).
   
 ```json REST  
 {
-    "AuthorId": "6659843",
-    "CreditedWalletId": "6659844",
+    "AuthorId": "user_m_01HWSRS7HK6S0XKKD4CJM3PQ04",
+    "CreditedWalletId": "wlt_m_01HWSSQV8W6550FJ5NTJQE1DE1",
     "DebitedFunds": {
         "Currency": "PLN",
-        "Amount": 500
+        "Amount": 100
     },
     "Fees": {
         "Currency": "PLN",
@@ -159,7 +161,7 @@ In Production, the minimum accepted amount for BLIK is 0.01 PLN (`1`).
     },
     "ReturnUrl": "https://www.mangopay.com/docs/please-ignore",
     "Tag": "Created using the Mangopay API Postman collection",
-    "StatementDescriptor": "MGP"
+    "StatementDescriptor": "May2024"
 }
 ```  
 
@@ -175,19 +177,17 @@ mangopay.apikey='your-api-key'
 from mangopay.api import APIRequest
 handler = APIRequest(sandbox=True)
 
-from mangopay.resources import NaturalUser, BlikPayIn
+from mangopay.resources import BlikPayIn
 from mangopay.utils import Money
 
-natural_user = NaturalUser.get('210513027')
-
 blik_payin = BlikPayIn(
-    author_id = natural_user.id,
+    author_id = 'user_m_01HWSRS7HK6S0XKKD4CJM3PQ04',
     credited_wallet_id = 'wlt_m_01HPS7PB7ZPT24KVYZSFJPBYKH',
-    debited_funds = Money(amount=1000, currency='PLN'),
+    debited_funds = Money(amount=100, currency='PLN'),
     fees = Money(amount=0, currency='PLN'),
     return_url = 'https://www.mangopay.com/docs/please-ignore',
     tag = 'Created using Mangopay Python SDK',
-    statement_descriptor = 'MGP'
+    statement_descriptor = 'May2024'
 )
 
 create_blik_payin = blik_payin.save()
