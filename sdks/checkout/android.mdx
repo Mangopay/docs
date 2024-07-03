@@ -9,9 +9,9 @@ This guide helps you get started with the Checkout SDK on Android.
 <Info>  
 **Prerequisites**
 
-- A Mangopay ClientId and API key (get a Sandbox API key for free)  
+- A Mangopay `ClientId` and API key
 - A User and their associated Wallet to complete the pay-in  
-- A card to register or payment method setup (see Testing - Payment methods for testing information)  
+- A card to register or payment method setup (see <a href="/testing/payment-methods">Testing - Payment methods</a> for testing information)  
 
 For Android:   
 - Android `minSdk = 21`
@@ -19,7 +19,7 @@ For Android: 
 
 ## Installation  
 
-The Mangopay Checkout SDK is published as a Maven artifact on Maven Central Repository.  
+The Mangopay Checkout SDK is published as a Maven artifact on <a href="http://search.maven.org/">Maven Central Repository</a>.  
 
 Add the following code to your `app/build.gradle` file:  
 ```kotlin 
@@ -232,23 +232,24 @@ The SDK automatically handles the card tokenization, updating the Card Registrat
 ### Managing cards  
 
 You can use the following endpoints to manage cards:  
-- View a Card provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
-- Deactivate a Card allows you to irreversibly set the card as inactive  
+- <a href="/api-reference/cards/view-card">View a Card</a> provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
+- <a href="/api-reference/cards/deactivate-edit-card">Deactivate a Card</a> allows you to irreversibly set the card as inactive  
 
 <Warning>  
 **Warning – End user's approval needed to save card details** 
   
 Under no circumstances should card information be kept without the end user's approval.   
+
 If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
 </Warning>  
 
 ### Requesting card pay-ins  
 
 You can use a registered card (`CardId`) for pay-ins with the following objects:  
-- The Direct Card PayIn object, for one-shot card payments  
-- The Recurring PayIn Registration object, for recurring card payments  
-- The Preauthorization object, for 7-day preauthorized card payments  
-- The Deposit Preauthorization object, for 30-day preauthorized card payments  
+- <a href="/api-reference/direct-card-payins/direct-card-payin-object">The Direct Card PayIn object</a>, for one-shot card payments
+- <a href="/api-reference/recurring-card-payins/recurring-payin-registration-object">The Recurring PayIn Registration object</a>, for recurring card payments
+- <a href="/api-reference/preauthorizations/preauthorization-object">The Preauthorization object</a>, for 7-day preauthorized card payments
+- <a href="/api-reference/deposit-preauthorizations/deposit-preauthorization-object">The Deposit Preauthorization object</a>, for 30-day preauthorized card payments
 
 <Note>  
 **Note – 3DS redirection required when requesting card payments** 
@@ -358,7 +359,7 @@ It is highly recommended that you confirm the transaction result from your backe
 <Note>  
 **Note – Google Pay setup required** 
   
-Offering Google Pay requires additional setup by the platform. For more information, see the How to process a Google Pay payment tutorial.   
+Offering Google Pay requires additional setup by the platform. For more information, see the <a href="/guides/payment-methods/google-pay/how-to">How to process a Google Pay payment</a> tutorial.   
 </Note>  
 
 To offer the Google Pay payment method, include the `googlePayConfig` in the `paymentMethodConfig`.  
@@ -412,7 +413,7 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
         <tr>
             <td class="table-content">`merchantName`</td>
             <td class="table-content">String</td>
-            <td class="table-content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”. More information.</td>
+            <td class="table-content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”. <a href="https://developer.android.com/reference/android/content/Context" target="_blank">More information</a>.</td>
         </tr>
         <tr>
             <td class="table-content">`gatewayMerchantId`</td>
@@ -422,7 +423,7 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
         <tr>
             <td class="table-content">`transactionInfo`</td>
             <td class="table-content">TransactionInfo</td>
-            <td class="table-content">Information about the transaction. For more information on this object parameter, see the Google Pay documentation.</td>
+            <td class="table-content">Information about the transaction. For more information on this object parameter, see the <a href="https://developers.google.com/pay/api/android/reference/request-objects#TransactionInfo" target="_blank">Google Pay documentation</a>.</td>
         </tr>
         <tr>
             <td class="table-content">`cardParameters`</td>
@@ -460,7 +461,7 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
 
 #### transactionInfo  
 
-Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the Google Pay documentation.   
+Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the <a href="https://developers.google.com/pay/api/android/reference/request-objects#TransactionInfo" target="_blank">Google Pay documentation</a>.   
 
 ### Handling Google Pay result  
 ```kotlin 
@@ -486,7 +487,7 @@ private var resultLauncher = registerForActivityResult(
 
 ### Requesting Google Pay pay-in  
 
-To request the payment, use the Create a Google Pay PayIn endpoint and include the Google Pay `PaymentData`.  
+To request the payment, use the <a href="/api-reference/google-pay/create-google-pay-payin">Create a Google Pay PayIn</a> endpoint and include the Google Pay `PaymentData`.  
 
 ## Using Card Element  
 
@@ -636,7 +637,7 @@ You can add your theme to the `application` in `AndroidManifest.xml`. 
 
 ### Configuring the Google Pay button  
 
-Configure the Google Pay button for your app in line with Google Pay’s brand guidelines.  
+Configure the Google Pay button for your app in line with Google Pay’s <a href="https://developers.google.com/pay/api/android/guides/brand-guidelines" target="_blank">brand guidelines</a>.  
 ```kotlin Example – Google Pay configuration
 val paymentMethods = JSONArray().put(PaymentsUtil.baseCardPaymentMethod())
 val gpayButtonOption = ButtonOptions.newBuilder()
