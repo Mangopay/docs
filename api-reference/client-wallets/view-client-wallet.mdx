@@ -11,7 +11,11 @@ import Currency23Response from '/snippets/p-response/Currency23Response.mdx';
 import BalanceResponse from '/snippets/p-response/BalanceResponse.mdx';
 import Currency from '/snippets/p-path/Currency.mdx';
 import FundsType from '/snippets/p-path/FundsType.mdx';
-  
+
+import NodeViewClientWallet from '/snippets/code/node-view-client-wallet.mdx';
+import PhpViewClientWallet from '/snippets/code/php-view-client-wallet.mdx';
+import ViewClientWalletJava from '/snippets/code/view-client-wallet-java.mdx';
+import PythonViewClientWallet from '/snippets/code/python-view-client-wallet.mdx';
 
 ### Path parameters  
 
@@ -54,123 +58,8 @@ import FundsType from '/snippets/p-path/FundsType.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myWallet = {
-  FundsType: 'FEES',
-  Currency: 'EUR',
-}
-
-const viewClientWallet = async (fundsType, currency) => {
-  return await mangopay.Clients.getClientWallet(fundsType, currency)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewClientWallet(myWallet.FundsType, myWallet.Currency)  
-```  
-
-  
-```php PHP  
-<?php
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = '/tmp/';
-
-try {
-
-    // $fundsType = MangoPay\FundsType::FEES;
-    $fundsType = MangoPay\FundsType::CREDIT;
-    $response = $api->Clients->GetWallets($fundsType);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.core.enumerations.CurrencyIso;
-import com.mangopay.core.enumerations.FundsType;
-import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-
-public class ViewClientWallet {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        Wallet clientWallet = mangopay.getClientApi().getWallet(FundsType.FEES, CurrencyIso.EUR);
-
-        System.out.println(String.format("id: %s", clientWallet.getId()));
-        printObjectFields(clientWallet);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money 
-                    || value instanceof FundsType 
-                    || value instanceof CurrencyIso)  {
-                    System.out.println(field.getName() + ": " + value);
-			              printObjectFields(value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import ClientWallet
-
-client_wallet = ClientWallet.get(funds_type = 'FEES', currency = 'GBP') 
-
-pprint(vars(client_wallet))  
-```  
-
-  
+    <NodeViewClientWallet />
+    <PhpViewClientWallet />
+    <ViewClientWalletJava />
+    <PythonViewClientWallet />
 </RequestExample>

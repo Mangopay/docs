@@ -39,6 +39,11 @@ import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx'
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import PayInId from '/snippets/p-path/PayInId.mdx';
+
+import PhpViewPayin from '/snippets/code/php-view-payin.mdx';
+import NodeViewPayin from '/snippets/code/node-view-payin.mdx';
+import RubyViewPayin from '/snippets/code/ruby-view-payin.mdx';
+import ViewPayinPython from '/snippets/code/view-payin-python.mdx';
   
 <Note>
 **Note – Pay-in data retained for 13 months**
@@ -213,114 +218,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $payinId = '198161872';
-
-    $response = $api->PayIns->Get($payinId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myPayIn = {
-  Id: '156279887',
-}
-
-const viewPayIn = async (payinId) => {
-  return await mangopay.PayIns.get(payinId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewPayIn(myPayIn.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewPayIn(payinId)
-    begin
-        response = MangoPay::PayIn.fetch(payinId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch PayIn: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPayIn = {
-    Id: '156279887'
-}
-
-viewPayIn(myPayIn[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import PayIn
-
-payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
-
-try:
-    view_payin = PayIn.get(payin_id)
-    pprint(view_payin._data)
-except PayIn.DoesNotExist:
-    print('PayIn {} does not exist.'.format(payin_id))  
-```  
-
-  
+    <PhpViewPayin />
+    <NodeViewPayin />
+    <RubyViewPayin />
+    <ViewPayinPython />
 </RequestExample>
