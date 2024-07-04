@@ -8,6 +8,9 @@ import ScopeBlockedResponse from '/snippets/p-response/ScopeBlockedResponse.mdx'
 import ActionCodeResponse from '/snippets/p-response/ActionCodeResponse.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
   
+import NodeViewUserRegulatoryStatus from '/snippets/code/node-view-user-regulatory-status.mdx';
+import ViewUserRegulatoryStatusJava from '/snippets/code/view-user-regulatory-status-java.mdx';
+import PythonViewUserRegulatoryStatus from '/snippets/code/python-view-user-regulatory-status.mdx';
 
 ### Path parameters  
 
@@ -41,91 +44,8 @@ import UserId from '/snippets/p-path/UserId.mdx';
 
 <RequestExample>  
   
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-const getRegulatoryStatus = async (userId) => {
-  return await mangopay.Users.getRegulatory(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getRegulatoryStatus(user.Id)  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.UserBlockStatus;
-
-import java.lang.reflect.Field;
-
-public class ViewUserRegulatory {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-        
-        var userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
-        UserBlockStatus viewRegulatoryStatus = mangopay.getUserApi().getRegulatory(userId);
-        printObjectFields(viewRegulatoryStatus);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof ScopeBlocked) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import LegalUser
-
-legal_user = LegalUser(
-    id =  '210760575'
-)
-
-user_regulatory_status = LegalUser.get_regulatory(legal_user)
-
-pprint(vars(user_regulatory_status))
-pprint(vars(user_regulatory_status.scope_blocked))  
-```  
-
+    <NodeViewUserRegulatoryStatus />
+    <ViewUserRegulatoryStatusJava />
+    <PythonViewUserRegulatoryStatus />
   
 </RequestExample>

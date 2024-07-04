@@ -7,6 +7,8 @@ import Array_Transactions1Response from '/snippets/p-response/Array_Transactions
 import Currency from '/snippets/p-path/Currency.mdx';
 import FundsType from '/snippets/p-path/FundsType.mdx';
   
+import NodeListTransactionsClientWallet from '/snippets/code/node-list-transactions-client-wallet.mdx';
+import ListClientWalletTransactionsJava from '/snippets/code/list-client-wallet-transactions-java.mdx';
 
 This call returns all the transactions targeting or emitted from the Client Wallet:  
 - Fees wallet – Returns all the payouts made from the wallet.  
@@ -63,77 +65,7 @@ This call returns all the transactions targeting or emitted from the Client Wall
 
 <RequestExample>  
   
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
+    <NodeListTransactionsClientWallet />
+    <ListClientWalletTransactionsJava />
 
-let myWallet = {
-  FundsType: 'FEES',
-  Currency: 'EUR',
-}
-
-const listTransactionsClientWallet = async (fundsType, currency) => {
-  return await mangopay.Clients.getClientWalletTransactions(fundsType, currency)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listTransactionsClientWallet(myWallet.FundsType, myWallet.Currency)  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.core.Pagination;
-import com.mangopay.core.enumerations.CurrencyIso;
-import com.mangopay.core.enumerations.FundsType;
-import com.mangopay.entities.Transaction;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
-public class ListClientWalletTransactions {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        List<Transaction> clientTransactions = mangopay.getClientApi().getWalletTransactions(FundsType.CREDIT, CurrencyIso.EUR, new Pagination(1, 100), null, null);
-
-        for (Transaction clientTransaction : clientTransactions) {
-            System.out.println(String.format("\nid: %s", clientTransaction.getId()));
-            printObjectFields(clientTransaction);
-        }
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money 
-                    || value instanceof FundsType 
-                    || value instanceof CurrencyIso)  {
-                    System.out.println(field.getName() + ": " + value);
-			  printObjectFields(value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
 </RequestExample>

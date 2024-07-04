@@ -11,6 +11,11 @@ import Month from '/snippets/p-path/Month.mdx';
 import Year from '/snippets/p-path/Year.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
   
+import PhpViewUserEmoney from '/snippets/code/php-view-user-emoney.mdx';
+import NodeViewUserEmoney from '/snippets/code/node-view-user-emoney.mdx';
+import RubyViewUserEmoney from '/snippets/code/ruby-view-user-emoney.mdx';
+import ViewUserEmoneyJava from '/snippets/code/view-user-emoney-java.mdx';
+import PythonViewUserEmoney from '/snippets/code/python-view-user-emoney.mdx';
 
 The path parameters `Month` and `Year` are optional. If not given, this call returns all the credited and debited e-money since the user was created.  
 
@@ -56,166 +61,11 @@ The path parameters `Month` and `Year` are optional. If not given, this call ret
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId ='146476890';
-    $year = 2023;
-    $month = 6;
-
-    $response = $api->Users->GetEMoney($userId, $year, $month);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myUser = {
-  Id: '146476890',
-}
-
-// timeframe is optional, if not given, returns all the credited and debited e-money since the user was created.
-let timeframe = {
-  Year: '2023',
-  Month: '04',
-}
-
-const viewClientWallet = async (userId, year, month) => {
-  return await mangopay.Users.getEMoney(userId, year, month)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewClientWallet(myUser.Id, timeframe.Year, timeframe.Month)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewUserEmoney(userId, year, month)
-    begin
-        response = MangoPay::User.emoney(userId, year, month)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch emoney: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '194338122'
-}
-
-# timeframe is optional, if not given, returns all the credited and debited e-money since the user was created.
-timeFrame = {
-    year: 2023,
-    month: 06
-}
-
-viewUserEmoney(myUser[:Id], timeFrame[:year], timeFrame[:month])  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.entities.EMoney;
-
-import java.lang.reflect.Field;
-
-public class ViewUserEMoney {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-        
-        var userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
-        EMoney viewEMoney = mangopay.getUserApi().getEMoney(userId, "2023");
-        printObjectFields(viewEMoney);
-    }
  
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, EMoney
-
-natural_user = NaturalUser.get('213753890')
-
-view_user_emoney = natural_user.get_emoney()
-
-view_user_emoney = view_user_emoney.data[0]
-
-pprint(vars(view_user_emoney))  
-```  
-
+    <PhpViewUserEmoney />
+    <NodeViewUserEmoney />
+    <RubyViewUserEmoney />
+    <ViewUserEmoneyJava />
+    <PythonViewUserEmoney />
   
 </RequestExample>
