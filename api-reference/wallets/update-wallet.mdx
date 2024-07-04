@@ -7,6 +7,12 @@ import Tag6 from '/snippets/p-body/Tag6.mdx';
 import Description1 from '/snippets/p-body/Description1.mdx';
 import WalletId from '/snippets/p-path/WalletId.mdx';
   
+import RestUpdateWallet from '/snippets/code/rest-update-wallet.mdx';
+import PhpUpdateWallet from '/snippets/code/php-update-wallet.mdx';
+import NodeUpdateWallet from '/snippets/code/node-update-wallet.mdx';
+import RubyUpdateWallet from '/snippets/code/ruby-update-wallet.mdx';
+import UpdateWalletJava from '/snippets/code/update-wallet-java.mdx';
+import PythonUpdateWallet from '/snippets/code/python-update-wallet.mdx';
 
 ### Path parameters  
 
@@ -19,181 +25,10 @@ import WalletId from '/snippets/p-path/WalletId.mdx';
 <Tag6 />  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Description": "Customer wallet",
-    "Tag": "Created using Mangopay API Collection Postman"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $walletId = '148968396';
-
-    $wallet = $api->Wallets->Get($walletId);
-    $wallet->Description = 'Updated again EUR Wallet';
-    $wallet->Tag = 'Updated using Mangopay PHP SDK';
-
-    $response = $api->Wallets->Update($wallet);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key'
-})
-
-let myWallet = {
-  Id: '174796439',
-  Description: 'updated description',
-  Tag: 'updated tag',
-}
-
-const updateWallet = async (wallet) => {
-  return await mangopay.Wallets.update(wallet)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateWallet(myWallet)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def updateWallet(walletId, params)
-    begin
-        response = MangoPay::Wallet.update(walletId, params)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to update wallet: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myWallet = {
-  Id: '194311640'
-}
-
-myParams = {
-    Description: 'Updated description',
-    Tag: 'Updated tag'
-}
-
-updateWallet(myWallet[:Id], myParams)  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-
-public class UpdateWallet {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        Wallet wallet = mangopay.getWalletApi().get("wlt_m_01HSV2W1JYHZQMW24EWREKEN62");
-
-        wallet.setTag("Updated using the Mangopay Java SDK");
-
-        Wallet updateWallet = mangopay.getWalletApi().update(wallet);
-        
-        System.out.println(String.format("id: %s", updateWallet.getId()));
-        printObjectFields(updateWallet);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Wallet
-
-natural_user = NaturalUser.get('213753890')
-
-user_wallet = Wallet(
-    id = '215029593',
-    owners=[natural_user],
-    description='EUR Wallet of Rhoda Keeling'
-)
-
-update_wallet = user_wallet.save()
-
-pprint(update_wallet)  
-```  
-
-  
+    <RestUpdateWallet />
+    <PhpUpdateWallet />
+    <NodeUpdateWallet />
+    <RubyUpdateWallet />
+    <UpdateWalletJava />
+    <PythonUpdateWallet />
 </RequestExample>

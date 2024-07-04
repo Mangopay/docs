@@ -15,6 +15,12 @@ import UserId2Response from '/snippets/p-response/UserId2Response.mdx';
 import Type11Response from '/snippets/p-response/Type11Response.mdx';
 import KycDocumentId from '/snippets/p-path/KycDocumentId.mdx';
 
+import PhpViewKycDocument from '/snippets/code/php-view-kyc-document.mdx';
+import NodeViewKycDocument from '/snippets/code/node-view-kyc-document.mdx';
+import RubySubmitKycDocument1 from '/snippets/code/ruby-submit-kyc-document1.mdx';
+import ViewKycDocumentJava from '/snippets/code/view-kyc-document-java.mdx';
+import PythonViewKycDocument from '/snippets/code/python-view-kyc-document.mdx';
+
 [Read more about the KYC Document object →](/api-reference/kyc-documents/kyc-document-object)
 
 ### Path parameters  
@@ -66,165 +72,9 @@ import KycDocumentId from '/snippets/p-path/KycDocumentId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $kycDocumentId = '148967714';
-
-    $response = $api->KycDocuments->Get($kycDocumentId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-let kycDocument = {
-  Id: '148967491',
-}
-
-const getKycDocument = async (userId, kycDocumentId) => {
-  return await mangopay.Users.getKycDocument(userId, kycDocumentId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getKycDocument(user.Id, kycDocument.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewKycDocument(userId, kycDocumentId)
-    begin
-        response = MangoPay::KycDocument.fetch(userId, kycDocumentId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch KYC Document: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '194150513'
-}
-
-myKycDocument = {
-    Id: '194510406',
-}
-
-viewKycDocument(myUser[:Id], myKycDocument[:Id])  
-```  
-
-```java Java
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.KycDocument;
-
-import java.lang.reflect.Field;
-
-public class ViewKycDoc {
-     public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        String userId = "user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ";
-        String kycDocId = "kyc_01HSB6MMPT9RPDFHSG1BN9BKPP";
-
-        KycDocument viewKycDoc = mangopay.getUserApi().getKycDocument(userId, kycDocId);
-
-        System.out.println(String.format("kycDocId: %s", viewKycDoc.getId()));
-        printObjectFields(viewKycDoc);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Address) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id = 'your-client-id'
-mangopay.apikey = 'your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Document
-
-kyc_document = Document(
-    id = '211551193'
-)
-
-try:
-    view_kyc_document = Document.get(kyc_document.id) 
-    pprint(vars(view_kyc_document))
-except Document.DoesNotExist:
-    print('The KYC document {} does not exist'.format(kyc_document.id))  
-```  
-
-  
+    <PhpViewKycDocument />
+    <NodeViewKycDocument />
+    <RubySubmitKycDocument1 />
+    <ViewKycDocumentJava />
+    <PythonViewKycDocument />
 </RequestExample>
