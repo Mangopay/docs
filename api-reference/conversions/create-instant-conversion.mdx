@@ -188,19 +188,19 @@ This call triggers an immediate conversion at the market rate, of the debited fu
     "Nature": "REGULAR",
     "CreationDate": 1708381747,
     "Status": "SUCCEEDED",
-    "AuthorId": "204071581",
-    "DebitedWalletId": "204844308",
-    "CreditedWalletId": "204079338",
+    "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    "DebitedWalletId": "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV",
+    "CreditedWalletId": "wlt_m_01HQT6422EER2N7FPRXWTSDCSV",
     "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 10000
+        "Currency": "GBP",
+        "Amount": 1000
     },
     "CreditedFunds": {
-        "Currency": "GBP",
-        "Amount": 8468
+        "Currency": "EUR",
+        "Amount": 1063
     },
     "Fees": {
-        "Currency": "EUR",
+        "Currency": "GBP",
         "Amount": 100
     },
     "ResultCode": "000000",
@@ -220,23 +220,76 @@ This call triggers an immediate conversion at the market rate, of the debited fu
   
 ```json REST  
 {
-  "AuthorId": "204068024",
-  "DebitedWalletId": "204089031",
-  "CreditedWalletId": "204089144",
+  "AuthorId": "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+  "DebitedWalletId": "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV",
+  "CreditedWalletId": "wlt_m_01HQT6422EER2N7FPRXWTSDCSV",
   "DebitedFunds": {
-       "Currency": "EUR",
-       "Amount": 10000
+       "Currency": "GBP",
+       "Amount": 1000
    },
   "CreditedFunds": {
-       "Currency": "GBP"
+       "Currency": "EUR"
    },
   "Fees": {
-       "Currency": "EUR",
+       "Currency": "GBP",
        "Amount": 100
   },
   "Tag": "Created using the Mangopay API Postman collection"
 }  
 ```  
+
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.Conversion;
+import com.mangopay.entities.CreateInstantConversion;
+
+public class CreatingInstantConversion {
+
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+
+        var debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
+
+        var creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+        CreateInstantConversion instantConversion = new CreateInstantConversion();
+        instantConversion.setAuthorId(debitedUserId);
+        instantConversion.setCreditedWalletId(creditedWalletId);
+        instantConversion.setDebitedWalletId(debitedWalletId);
+
+        Money debitedFunds = new Money();
+        debitedFunds.setCurrency(CurrencyIso.GBP);
+        debitedFunds.setAmount(1000);
+
+        Money creditedFunds = new Money();
+        creditedFunds.setCurrency(CurrencyIso.EUR);
+
+        Money fees = new Money();
+        fees.setCurrency(CurrencyIso.GBP);
+        fees.setAmount(100);
+
+        instantConversion.setCreditedFunds(creditedFunds);
+        instantConversion.setDebitedFunds(debitedFunds);
+        instantConversion.setFees(fees);
+        instantConversion.setTag("Created using the Mangopay Java SDK");
+
+        Conversion createInstantConversion = mangopay.getConversionsApi().createInstantConversion(instantConversion, null);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createInstantConversion);
+
+        System.out.println(prettyJson);
+    }
+}
+```
 
   
 </RequestExample>

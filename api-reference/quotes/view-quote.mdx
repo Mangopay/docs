@@ -100,44 +100,25 @@ import IdResponse from '/snippets/p-response/IdResponse.mdx';
 <RequestExample>  
   
 ```java Java  
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
 import com.mangopay.entities.ConversionQuote;
-import com.mangopay.entities.ConversionRate;
-
-import java.lang.reflect.Field;
 
 public class ViewQuote {
-    public static void main(String[] args) throws Exception {
+        public static void main(String[] args) throws Exception {
         MangoPayApi mangopay = new MangoPayApi();
         mangopay.getConfig().setClientId("your-client-id");
         mangopay.getConfig().setClientPassword("your-api-key");
 
         ConversionQuote quote = mangopay.getConversionsApi().getConversionQuote("cvrquote_01HTFARNTMH993KYYNC8MZ2KH8");
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(quote);
 
-        System.out.println("id: " + quote.getId());
-        printObjectFields(quote);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money || value instanceof ConversionRate) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(prettyJson);
     }
 }
+
 ```  
 
   
