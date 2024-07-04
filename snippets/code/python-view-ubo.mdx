@@ -1,0 +1,30 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+
+legal_user = LegalUser(
+    id = '210602889'  
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210896999'
+)
+
+user_ubo = Ubo(
+    id = '210898223'
+)
+
+try:
+    view_ubo = Ubo.get(reference = user_ubo.id, user_id = legal_user.id, ubo_declaration_id = user_ubo_declaration.id) 
+    pprint(vars(view_ubo))
+except Ubo.DoesNotExist:
+    print('The UBO {} does not exist.'.format(user_ubo_declaration))  
+```

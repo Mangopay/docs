@@ -1,0 +1,46 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import ReportWallets
+from mangopay.utils import ReportWalletsFilters
+
+wallets_report = ReportWallets(
+    tag = 'Created using Mangopay Python SDK',
+    download_format  = 'CSV',
+    callback_url = 'https://mangopay.com/docs/please-ignore',
+    sort = 'CreationDate: ASC',
+    preview = False,
+    filters = ReportWalletsFilters(
+        currency = 'GBP',
+        min_balance_amount = 1,
+        min_balance_currency = 'GBP',
+        max_balance_amount = 100000,
+        max_balance_currency = 'GBP'
+    ),
+    columns = [
+      'Id',
+      'Tag',
+      'CreationDate',
+      'Owners',
+      'Description',
+      'BalanceAmount',
+      'BalanceCurrency',
+      'Currency',
+      'FundsType'
+    ]
+)
+
+create_report = wallets_report.create()
+
+pprint(create_report._data)  
+```

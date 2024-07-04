@@ -1,0 +1,50 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+  WalletId: '148968396',
+}
+
+let myBankAccount = {
+  Id: '154876798',
+}
+
+let myPayout = {
+  DebitedWalletId: myUser.WalletId,
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount.Id,
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'STANDARD',
+  AuthorId: myUser.Id,
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createPayout = async (payout) => {
+  return await mangopay.PayOuts.create(payout)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayout(myPayout)  
+```

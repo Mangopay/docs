@@ -1,0 +1,23 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import DisputeDocument
+
+dispute_doc_id = 'dispdoc_m_01HQTAHCSMH0Q6MRHYWZ0B39M5'
+
+try:
+    view_dispute_doc = DisputeDocument.get(dispute_doc_id)
+    pprint(view_dispute_doc._data)
+except DisputeDocument.DoesNotExist:
+    print('Dispute doc {} does not exist.'.format(view_dispute_doc.id))  
+```

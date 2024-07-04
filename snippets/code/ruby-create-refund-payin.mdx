@@ -1,0 +1,43 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPayInRefund(payInId, refundObject)
+    begin
+        response = MangoPay::PayIn.refund(payInId, refundObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Refund: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    Id: '193930143'
+}
+
+myRefund = {
+    AuthorId: '193930097',
+    Tag: 'Created with Mangopay Ruby SDK',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1188
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: -12
+    }
+  }
+
+createPayInRefund(myPayIn[:Id], myRefund)  
+```

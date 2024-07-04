@@ -1,0 +1,71 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $reportRequest = new \MangoPay\ReportRequest();
+    $reportRequest->ReportType = \MangoPay\ReportType::Transactions;
+    $reportRequest->CallbackURL = 'https://mangopay.com/docs/please-ignore';
+    $reportRequest->Tag = 'Created using Mangopay PHP SDK';
+    
+    $reportRequest->Filters = [
+        'BeforeDate' => 1658838931,
+        'AfterDate' => 1656246931,
+        'Type' => ['PAYIN', 'PAYOUT'],
+        'ResultCode' => ['000000'],
+        'Status' => ['SUCCEEDED'],
+        'Nature' => ['REGULAR'],
+        'MinDebitedFundsAmount' => null,
+        'MinDebitedFundsCurrency' => 'EUR',
+        'MaxDebitedFundsAmount' => null,
+        'MaxDebitedFundsCurrency' => 'EUR',
+        'MinFeesAmount' => 0,
+        'MinFeesCurrency' => 'EUR',
+        'MaxFeesAmount' => 100000,
+        'MaxFeesCurrency' => 'EUR',
+    ];
+
+    $reportRequest->Columns = [
+        'Id',
+        'Tag',
+        'CreationDate',
+        'ExecutionDate',
+        'AuthorId',
+        'CreditedUserId',
+        'DebitedFundsAmount',
+        'DebitedFundsCurrency',
+        'CreditedFundsAmount',
+        'CreditedFundsCurrency',
+        'FeesAmount',
+        'FeesCurrency',
+        'Status',
+        'ResultCode',
+        'ResultMessage',
+        'Type',
+        'Nature',
+        'CreditedWalletId',
+        'DebitedWalletId',
+    ];
+
+    $response = $api->Reports->Create($reportRequest);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

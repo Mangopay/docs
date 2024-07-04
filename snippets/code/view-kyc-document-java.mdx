@@ -1,0 +1,43 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.KycDocument;
+
+import java.lang.reflect.Field;
+
+public class ViewKycDoc {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        String userId = "user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ";
+        String kycDocId = "kyc_01HSB6MMPT9RPDFHSG1BN9BKPP";
+
+        KycDocument viewKycDoc = mangopay.getUserApi().getKycDocument(userId, kycDocId);
+
+        System.out.println(String.format("kycDocId: %s", viewKycDoc.getId()));
+        printObjectFields(viewKycDoc);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

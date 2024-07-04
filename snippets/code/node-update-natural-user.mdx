@@ -1,0 +1,45 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myNaturalUser = {
+  Id: '171666652',
+  Address: {
+    AddressLine1: '15 Edgeware Road',
+    AddressLine2: null,
+    City: 'Manchester',
+    Region: null,
+    PostalCode: 'M1 4HG',
+    Country: 'GB',
+  },
+  FirstName: 'Rupert',
+  LastName: 'Bear',
+  Birthday: 656640000,
+  Nationality: 'GB',
+  CountryOfResidence: 'GB',
+  Tag: 'Created using the Mangopay NodeJS SDK',
+  Email: 'rupert.bear@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const updateNaturalUser = async (user) => {
+  return await mangopay.Users.update(user)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateNaturalUser(myNaturalUser)  
+```

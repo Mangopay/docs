@@ -1,0 +1,30 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PreAuthorization
+
+card_preauthorization = PreAuthorization(
+    id = '213944840'
+)
+
+
+try:
+    view_card_preauthorization = PreAuthorization.get(card_preauthorization.id) 
+    pprint(vars(view_card_preauthorization))
+    pprint(vars(view_card_preauthorization.billing))
+    pprint(vars(view_card_preauthorization.browser_info))
+    pprint(vars(view_card_preauthorization.security_info))
+    pprint(vars(view_card_preauthorization.shipping))
+except PreAuthorization.DoesNotExist:
+    print('The PreAuthorization {} does not exist'.format(card_preauthorization.id))  
+```

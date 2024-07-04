@@ -1,0 +1,47 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: '165863393',
+  Address: {
+    AddressLine1: 'Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'IDF',
+    PostalCode: '75000',
+    Country: 'FR',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+}
+
+let bankAccount = {
+  Type: 'US',
+  OwnerName: user.FirstName + '' + user.LastName,
+  OwnerAddress: user.Address,
+  AccountNumber: '11696419',
+  ABA: '071000288',
+  DepositAccountType: 'CHECKING',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createBankAccount = async (userId, bankAccount) => {
+  return await mangopay.Users.createBankAccount(userId, bankAccount)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankAccount(user.Id, bankAccount)  
+```

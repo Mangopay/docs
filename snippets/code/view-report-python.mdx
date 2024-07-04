@@ -1,0 +1,23 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Report
+
+report_id = 'report_m_01HR4RQ4KX66A4K52AJC3C1Z2R'
+
+try:
+    view_report = Report.get(report_id)
+    pprint(view_report._data)
+except Report.DoesNotExist:
+    print('Report {} does not exist.'.format(report_id))  
+```

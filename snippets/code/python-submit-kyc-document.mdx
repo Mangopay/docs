@@ -1,0 +1,30 @@
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import (Document, LegalUser)
+
+legal_user = LegalUser(
+    id = '210760575'
+)
+
+kyc_document = Document(
+    id = '211551193',
+    user = legal_user,
+    status = 'VALIDATION_ASKED'
+)
+
+submit_kyc_document = kyc_document.save()
+ 
+pprint(submit_kyc_document)  
+```

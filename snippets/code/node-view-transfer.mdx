@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myTransfer = {
+  Id: '174877749',
+}
+
+const viewTransfer = async (transferId) => {
+  return await mangopay.Transfers.get(transferId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewTransfer(myTransfer.Id)  
+```

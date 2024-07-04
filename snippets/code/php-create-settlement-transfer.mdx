@@ -1,0 +1,41 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $repudiationId = '199385843';
+    $repudiation = $api->Disputes->GetRepudiation($repudiationId);
+
+    $settlementTransfer = new \MangoPay\SettlementTransfer();
+
+    $settlementTransfer->AuthorId = $repudiation->AuthorId;
+    $settlementTransfer->DebitedFunds = new \MangoPay\Money();
+    $settlementTransfer->DebitedFunds->Amount = 500;
+    $settlementTransfer->DebitedFunds->Currency = "EUR";
+    $settlementTransfer->Fees = new \MangoPay\Money();
+    $settlementTransfer->Fees->Amount = 0;
+    $settlementTransfer->Fees->Currency = "EUR";
+
+
+    $response = $api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

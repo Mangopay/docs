@@ -1,0 +1,48 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payout = new \MangoPay\PayOut();
+
+    $payout->Tag = 'Created with Mangopay PHP SDK';
+    $payout->AuthorId = '146476890';
+    $payout->DebitedFunds = new \MangoPay\Money();
+    $payout->DebitedFunds->Currency = 'EUR';
+    $payout->DebitedFunds->Amount = 1000;
+    $payout->Fees = new \MangoPay\Money();
+    $payout->Fees->Currency = 'EUR';
+    $payout->Fees->Amount = 0;
+    $payout->DebitedWalletId = '148968396';
+
+    $payout->PayoutPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+    $payout->PayoutPaymentDetails->BankAccountId = '198982485';
+    $payout->PayoutPaymentDetails->BankWireRef = 'MangopayPHP';
+
+    $payout->MeanOfPaymentDetails = $payout->PayoutPaymentDetails;
+    
+    $payout->PaymentType = \MangoPay\PayOutPaymentType::BankWire;
+    $payout->PayoutModeRequested = 'STANDARD';
+
+    $response = $api->PayOuts->Create($payout);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

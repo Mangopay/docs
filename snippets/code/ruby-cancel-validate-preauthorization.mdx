@@ -1,0 +1,55 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+
+# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+def validatePreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '195059241',
+    PaymentStatus: 'VALIDATED'
+  }
+
+validatePreauthorization(myPreauthorization[:Id], myPreauthorization)
+
+# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+def cancelPreauthorization(preauthorizationId, preauthorizationObject)
+    begin
+        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update preauthorization: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorization = {
+    Id: '198156939',
+    PaymentStatus: 'CANCELED'
+  }
+
+cancelPreauthorization(myPreauthorization[:Id], myPreauthorization)  
+```

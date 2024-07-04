@@ -21,7 +21,12 @@ import Active1 from '/snippets/p-body/Active1.mdx';
 import CardHolderName1 from '/snippets/p-body/CardHolderName1.mdx';
 import CardHolderNameResponse from '/snippets/p-response/CardHolderNameResponse.mdx';
 import CardId1 from '/snippets/p-path/CardId1.mdx';
-  
+
+import RestDeactivateCard from '/snippets/code/rest-deactivate-card.mdx';
+import PhpDeactivateCard from '/snippets/code/php-deactivate-card.mdx';
+import NodeDeactivateCard from '/snippets/code/node-deactivate-card.mdx';
+import RubyDeactivateCard from '/snippets/code/ruby-deactivate-card.mdx';
+import PythonDeactivateCard from '/snippets/code/python-deactivate-card.mdx';
 
 This call serves one of two purposes:
 
@@ -118,127 +123,9 @@ Because card information cannot be kept without the end user's approval, you sho
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Active": false,
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $card = new \MangoPay\Card();
-
-    $card->Id = '198660883';
-    $card->Active = false;
-
-    $response = $api->Cards->Update($card);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myCard = {
-  Id: '156285393',
-  Active: false,
-}
-
-const deactivateCard = async (card) => {
-  return await mangopay.Cards.update(card)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-deactivateCard(myCard)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def deactivateCard(cardId, cardObject)
-    begin
-        response = MangoPay::Card.update(cardId, cardObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to deactivate card: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myCard = {
-    Id: '194579926',
-    Active: false
-}
-
-deactivateCard(myCard[:Id], myCard)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Card
-
-user_card = Card(
-    id = '213601128',
-    active = False
-)
-
-deactive_card = user_card.save()
-
-pprint(deactive_card)
-```  
-
-  
+    <RestDeactivateCard />
+    <PhpDeactivateCard />
+    <NodeDeactivateCard />
+    <RubyDeactivateCard />
+    <PythonDeactivateCard />
 </RequestExample>

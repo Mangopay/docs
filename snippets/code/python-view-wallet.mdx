@@ -1,0 +1,27 @@
+  
+```python Python  
+
+from pprint import pprint
+
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('215029593')
+
+
+try:
+    view_wallet = Wallet.get(user_wallet.id) 
+    pprint(vars(view_wallet))
+except Wallet.DoesNotExist:
+    print('The wallet {} does not exist'.format(user_wallet.id))  
+```

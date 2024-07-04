@@ -1,0 +1,52 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringPayinCIT = {
+  Tag: 'Created with Mangopay Nodejs SDK',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 10,
+  },
+  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
+  StatementDescriptor: 'Mangopay',
+  BrowserInfo: {
+    AcceptHeader:
+      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
+    JavaEnabled: true,
+    Language: 'FR-FR',
+    ColorDepth: 4,
+    ScreenHeight: 1800,
+    ScreenWidth: 400,
+    TimeZoneOffset: 60,
+    UserAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+    JavascriptEnabled: true,
+  },
+  IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
+  RecurringPayiNRegistrationId: '192912686',
+}
+
+const createRecurringPayIn = async (recurringPayin) => {
+  return await mangopay.PayIns.createRecurringPayInRegistrationCIT(recurringPayin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRecurringPayIn(myRecurringPayinCIT)  
+```

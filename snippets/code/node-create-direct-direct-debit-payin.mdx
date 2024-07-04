@@ -1,0 +1,42 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  PaymentType: 'DIRECT_DEBIT',
+  ExecutionType: 'DIRECT',
+  AuthorId: '168935886',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '168935886',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '168935920',
+  MandateId: '193168736',
+  StatementDescriptor: 'Mangopay',
+}
+
+const createDirectDirectDebitPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createDirectDirectDebitPayIn(myPayIn)  
+```

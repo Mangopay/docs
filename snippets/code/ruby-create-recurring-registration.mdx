@@ -1,0 +1,78 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createRecurringRegistration(recurringRegistrationObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::Recurring.create(recurringRegistrationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create recurring registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRecurringRegistration = {
+  AuthorId: '146476890',
+  CardId: '169687329',
+  CreditedUserId: '146476890',
+  CreditedWalletId: '148968396',
+  FirstTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  FirstTransactionFees: {
+    Currency: 'EUR',
+    Amount: 10,
+  },
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  EndDate: 1698923634,
+  Frequency: 'Monthly',
+  FixedNextAmount: false,
+  FractionedPayment: false,
+  FreeCycles: 0,
+  NextTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  NextTransactionFees: {
+    Currency: 'EUR',
+    Amount: 10,
+  },
+}
+
+createRecurringRegistration(myRecurringRegistration)  
+```

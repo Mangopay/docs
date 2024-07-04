@@ -1,0 +1,45 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let naturalUser = {
+  Address: {
+    AddressLine1: '2795 Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'Arkansas',
+    PostalCode: '72212',
+    Country: 'US',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+  Birthday: 655772400,
+  Nationality: 'FR',
+  CountryOfResidence: 'US',
+  Tag: 'My first user',
+  Email: 'john.doe@mangopay.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'NATURAL',
+}
+
+const createUser = async (userObject) => {
+  return await mangopay.Users.create(userObject)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createUser(naturalUser)
+  
+```

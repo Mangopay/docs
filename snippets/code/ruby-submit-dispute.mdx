@@ -1,0 +1,57 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+# When submitting a dispute for the first time
+
+def submitDispute(disputeId, contestedFunds)
+    begin
+        response = MangoPay::Dispute.contest(disputeId, contestedFunds)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'194413022'
+}
+
+myContestedFunds = {
+    Currency: 'EUR',
+    Amount: 250
+      }
+
+submitDispute(myDispute[:Id], myContestedFunds)
+
+# When resubmitting the dispute (in case more documents are required)
+
+def resubmitDispute(disputeId)
+    begin
+        response = MangoPay::Dispute.resubmit(disputeId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit Dispute: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id: '194413022'
+}
+
+resubmitDispute(myDispute[:Id])  
+```

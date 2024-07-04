@@ -1,0 +1,53 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPayout(payoutObject)
+    begin
+        response = MangoPay::PayOut::BankWire.create(payoutObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create payout: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: '146476890',
+  WalletId: '148968396'
+}
+
+myBankAccount = {
+  Id: '154876798'
+}
+
+myPayout = {
+  DebitedWalletId: myUser[:WalletId],
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount[:Id],
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'STANDARD',
+  AuthorId: myUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createPayout(myPayout)  
+```

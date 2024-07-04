@@ -1,0 +1,123 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.Shipping;
+import com.mangopay.core.Billing;
+import com.mangopay.core.LineItem;
+import com.mangopay.core.Money;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.User;
+import com.mangopay.entities.subentities.PayInPaymentDetailsKlarna;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.core.enumerations.CultureCode;
+import com.mangopay.core.enumerations.CurrencyIso;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
+public class HandleRequest {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        Address address = new Address();
+        Billing billing = new Billing();
+        Shipping shipping = new Shipping();
+        PayIn payin = new PayIn();
+        PayInExecutionDetailsWeb payinExecutionDetails = new PayInExecutionDetailsWeb();
+        PayInPaymentDetailsKlarna payInPaymentDetailsKlarna = new PayInPaymentDetailsKlarna();
+        Money debitedFunds = new Money();
+        Money fees = new Money();
+        LineItem lineItem1 = new LineItem(null, null, null, null, null);
+        LineItem lineItem2 = new LineItem(null, null, null, null, null);
+        List<LineItem> lineItems = Arrays.asList(lineItem1, lineItem2);
+
+        User myUser = mangopay.getUserApi().get("210513027");
+
+        address.setAddressLine1("2795 Edgewood Road");
+        address.setCity("Little Rock");
+        address.setRegion("Arkansas");
+        address.setPostalCode("72212");
+        address.setCountry(CountryIso.FR);
+
+        billing.setFirstName("Alex");
+        billing.setLastName("Smith");
+        billing.setAddress(address);
+
+        shipping.setFirstName("Alex");
+        shipping.setLastName("Smith");
+        shipping.setAddress(address);
+
+        lineItem1.setName("Running shoes");
+        lineItem1.setQuantity(1);
+        lineItem1.setUnitAmount(200);
+        lineItem1.setTaxAmount(0);
+        lineItem1.setDescription("Seller 1 ID");
+
+        lineItem2.setName("Running shoes");
+        lineItem2.setQuantity(1);
+        lineItem2.setUnitAmount(200);
+        lineItem2.setTaxAmount(0);
+        lineItem2.setDescription("Seller 2 ID");
+
+        debitedFunds.setAmount(400);
+        debitedFunds.setCurrency(CurrencyIso.EUR);
+
+        fees.setAmount(0);
+        fees.setCurrency(CurrencyIso.EUR);
+
+        payinExecutionDetails.setReturnUrl("http://www.mangopay.com/docs/please-ignore");
+
+        payInPaymentDetailsKlarna.setAdditionalData("your-additional-data");
+        payInPaymentDetailsKlarna.setBilling(billing);
+        payInPaymentDetailsKlarna.setCountry(CountryIso.FR);
+        payInPaymentDetailsKlarna.setCulture(CultureCode.FR);
+        payInPaymentDetailsKlarna.setReference("1234");
+        payInPaymentDetailsKlarna.setPhone("[+33][689854321]");
+        payInPaymentDetailsKlarna.setEmail(myUser.getEmail());
+        payInPaymentDetailsKlarna.setLineItems(lineItems);
+
+        payin.setPaymentType(PayInPaymentType.KLARNA);
+        payin.setExecutionType(PayInExecutionType.WEB);
+        payin.setTag("Created with Mangopay Java SDK");
+        payin.setAuthorId(myUser.getId());
+        payin.setDebitedFunds(debitedFunds);
+        payin.setFees(fees);
+        payin.setCreditedWalletId("210514820");
+        payin.setExecutionDetails(payinExecutionDetails);
+        payin.setPaymentDetails(payInPaymentDetailsKlarna);
+        
+        PayIn createdPayIn = mangopay.getPayInApi().create(payin);
+        printPayInDetails(createdPayIn);
+
+    }
+
+    private static void printPayInDetails(PayIn payIn) {
+        System.out.println("PayIn ID: " + payIn.getId());
+        printObjectFields(payIn);
+        printObjectFields(payIn.getExecutionDetails());
+        printObjectFields(payIn.getPaymentDetails());
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }   
+}  
+```

@@ -1,0 +1,30 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listFingerprintCards(fingerprint)
+    begin
+        response = MangoPay::Card.get_by_fingerprint(fingerprint)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch cards for fingerprint: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myCard = {
+    Fingerprint: '36c74d2e60ba474eab6d6f6d46a642b0',
+}
+
+listFingerprintCards(myCard[:Fingerprint])  
+```

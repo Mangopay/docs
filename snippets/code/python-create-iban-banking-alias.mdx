@@ -1,0 +1,34 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, BankingAliasIBAN
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('215029593')
+
+iban_alias = BankingAliasIBAN(
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    credited_user = natural_user,
+    wallet_id = user_wallet.id,
+    tag = 'Create using the Mangopay Python SDK',
+    country = 'FR' 
+)
+
+create_iban_alias = iban_alias.save()
+
+pprint(create_iban_alias)  
+```

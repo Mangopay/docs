@@ -1,0 +1,57 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateLegalUser(legalUserId, legalUserObject)
+    begin
+        response = MangoPay::LegalUser.update(legalUserId, legalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to update User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122',
+    HeadquartersAddress: {
+    AddressLine1: '57 Main Road',
+    AddressLine2: 'PB 456',
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Updated using the Mangopay Ruby SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL'
+}
+
+updateLegalUser(myLegalUser[:Id], myLegalUser)  
+```

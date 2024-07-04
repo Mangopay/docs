@@ -1,0 +1,31 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let myCard = {
+  Id: 'card_m_01HRAB5X7K39MDNS5NV6DD68G8'
+}
+
+let myCardValidation = {
+  Id: '5b0ab172-e1fd-47d7-a1f8-d674986630d2'
+}
+
+  const viewCardValidation = async (cardValidationId) => {
+    return await mangopay.Cards.getCardValidation(myCard.Id, cardValidationId) 
+      .then((response) => {
+        console.info(response)
+        return response
+      })
+      .catch((err) => {
+        console.log(err)
+        return false
+      })
+  }
+  
+  viewCardValidation(myCardValidation.Id)  
+```

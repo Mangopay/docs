@@ -1,0 +1,23 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Refund
+
+refund_id = '214572035'
+
+try:
+    view_refund = Refund.get(refund_id)
+    pprint(vars(view_refund))
+except Refund.DoesNotExist:
+    print('The Refund {} does not exist.'.format(view_refund.id))  
+```

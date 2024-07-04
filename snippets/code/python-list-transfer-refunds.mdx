@@ -1,0 +1,29 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.resources import LegalUser, Transfer, TransferRefund
+
+legal_user = LegalUser.get('211918806')
+
+legal_user_wallet_id = '213754077'
+
+transfer = Transfer.get('214568995')
+
+transfer_refund = TransferRefund(
+    id = transfer.id,
+    author = legal_user,
+    transfer = transfer
+)
+
+transfer_refunds = Transfer.get_refunds(self = transfer_refund)
+
+for transfer_refund in transfer_refunds:
+    pprint(vars(transfer_refund))  
+```

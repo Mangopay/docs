@@ -1,0 +1,42 @@
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+from mangopay.utils import Address
+
+natural_user = NaturalUser(
+    address = Address(
+        address_line_1 = '42 Maple Road',
+        city = 'London',
+        postal_code = 'WC1X 0AA',
+        country = 'GB'
+    ),
+    first_name = 'Olivia',
+    last_name = 'Turner',
+    birthday = 655772400,
+    nationality = 'GB',
+    country_of_residence = 'GB',
+    person_type = 'NATURAL',
+    tag = 'Created with Mangopay Python SDK',
+    email = 'olivia.turner@test.com',
+    terms_and_conditions_accepted = True, 
+    user_category = 'OWNER' 
+)
+
+create_natural_user = natural_user.save()
+
+pprint(create_natural_user)
+
+  
+```

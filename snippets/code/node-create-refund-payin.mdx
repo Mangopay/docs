@@ -1,0 +1,40 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  Id: '192870720',
+}
+
+let myRefund = {
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Nodejs SDK',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 250,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+}
+
+const createPayInRefund = async (payInId, refund) => {
+  return await mangopay.PayIns.createRefund(payInId, refund)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayInRefund(myPayIn.Id, myRefund)  
+```

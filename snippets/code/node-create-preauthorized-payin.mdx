@@ -1,0 +1,41 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPreauthorizedPayIn = {
+  PaymentType: 'PREAUTHORIZED',
+  ExecutionType: 'DIRECT',
+  AuthorId: '192822811',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '192822811',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '192822814',
+  PreauthorizationId: '192823192',
+}
+
+const createPreauthorizedPayin = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPreauthorizedPayin(myPreauthorizedPayIn)  
+```

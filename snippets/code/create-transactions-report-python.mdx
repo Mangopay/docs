@@ -1,0 +1,60 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import ReportTransactions
+from mangopay.utils import ReportTransactionsFilters
+
+transactions_report = ReportTransactions(
+    tag = 'Created using Mangopay Python SDK',
+    download_format  = 'CSV',
+    callback_url = 'https://mangopay.com/docs/please-ignore',
+    sort = 'CreationDate: ASC',
+    preview = False,
+    filters = ReportTransactionsFilters(
+        status = ['SUCCEEDED'],
+        nature = ['REGULAR'],
+        wallet_id = None,
+        author_id = None,
+        min_debited_funds_amount = 0,
+        min_debited_funds_currency = 'EUR',
+        max_debited_funds_amount = 1000000,
+        max_debited_funds_currency = 'EUR',
+    ),
+    columns = [
+        'Id',
+        'Tag',
+        'CreationDate',
+        'ExecutionDate',
+        'AuthorId',
+        'CreditedUserId',
+        'DebitedFundsAmount',
+        'DebitedFundsCurrency',
+        'CreditedFundsAmount',
+        'CreditedFundsCurrency',
+        'FeesAmount',
+        'FeesCurrency',
+        'Status',
+        'ResultCode',
+        'ResultMessage',
+        'Type',
+        'Nature',
+        'CreditedWalletId',
+        'DebitedWalletId'
+    ]
+
+)
+
+create_report = transactions_report.create()
+
+pprint(create_report._data)  
+```

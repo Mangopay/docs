@@ -1,0 +1,48 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createCaBankAccount(userId, caBankAccountObject)
+    begin
+        response = MangoPay::BankAccount.create(userId, caBankAccountObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '165863393'
+}
+
+myCaBankAccount = {
+    Type: 'CA',
+    OwnerName: 'Alex Smith',
+    OwnerAddress: {
+        AddressLine1: 'Edgewood Road',
+        AddressLine2: 'Address line 2',
+        City: 'Little Rock',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR'
+    },
+    AccountNumber: '11696419',
+    InstitutionNumber: '614',
+    BranchCode: '00152',
+    BankName: 'The Bank',
+    Tag: 'Created using Mangopay Ruby SDK'
+  }
+
+createCaBankAccount(myUser[:Id], myCaBankAccount)  
+```

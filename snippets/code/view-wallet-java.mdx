@@ -1,0 +1,41 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.entities.Wallet;
+
+import java.lang.reflect.Field;
+
+public class ViewWallet {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        Wallet wallet = mangopay.getWalletApi().get("wlt_m_01HSV2W1JYHZQMW24EWREKEN62");
+
+        System.out.println(String.format("id: %s", wallet.getId()));
+        printObjectFields(wallet);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Money) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value);
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

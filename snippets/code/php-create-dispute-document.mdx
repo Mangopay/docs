@@ -1,0 +1,34 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+ry {
+    $disputeId = '199385842';
+
+    $document = new \MangoPay\DisputeDocument();
+    $document->Type = \MangoPay\DisputeDocumentType::DeliveryProof;
+    $document->Tag = 'Created using Mangopay PHP SDK';
+
+    
+    $response = $api->Disputes->CreateDisputeDocument($disputeId, $document);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

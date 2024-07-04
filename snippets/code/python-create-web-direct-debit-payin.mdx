@@ -1,0 +1,33 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, DirectDebitWebPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+direct_debit_web_payin = DirectDebitWebPayIn(
+    direct_debit_type = 'GIROPAY',
+    author_id = natural_user.id,
+    debited_funds = Money(amount='1000', currency='EUR'),
+    fees = Money(amount='0', currency='EUR'),
+    credited_wallet_id = '213754077',
+    return_url = 'https://mangopay.com/docs/please-ignore',
+    culture = 'EN',
+    tag = 'Created using the Mangopay Python SDK',
+)
+
+create_direct_debit_web_payin = direct_debit_web_payin.save()
+
+pprint(create_direct_debit_web_payin)  
+```

@@ -1,0 +1,31 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '170853400',
+}
+
+let myUboDeclaration = {
+  Id: '180932134',
+}
+
+const getUboDeclaration = async (userId, uboDeclarationId) => {
+  return await mangopay.UboDeclarations.get(userId, uboDeclarationId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+getUboDeclaration(myUser.Id, myUboDeclaration.Id)  
+```

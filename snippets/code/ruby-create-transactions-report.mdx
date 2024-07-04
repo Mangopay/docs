@@ -1,0 +1,62 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myReport = {
+    ReportType: 'transactions',
+    Tag: 'Created using Mangopay Ruby SDK',
+    DownloadFormat: 'CSV',
+    CallbackURL: 'https://mangopay.com/docs/please-ignore',
+    Sort: 'CreationDate: ASC',
+    Preview: false,
+    Filters: {
+      BeforeDate: 1658838931,
+      AfterDate: 1656246931,
+      Type: ['PAYIN', 'PAYOUT'],
+      ResultCode: ['000000'],
+      Status: ['SUCCEEDED'],
+      Nature: ['REGULAR'],
+      WalletId: nil,
+      AuthorId: nil,
+      MinDebitedFundsAmount: nil,
+      MinDebitedFundsCurrency: 'EUR',
+      MaxDebitedFundsAmount: nil,
+      MaxDebitedFundsCurrency: 'EUR',
+      MinFeesAmount: 0,
+      MinFeesCurrency: 'EUR',
+      MaxFeesAmount: 100000,
+      MaxFeesCurrency: 'EUR'
+    },
+    Columns: [
+        'Id',
+        'Tag',
+        'CreationDate',
+        'ExecutionDate',
+        'AuthorId',
+        'CreditedUserId',
+        'DebitedFundsAmount',
+        'DebitedFundsCurrency',
+        'CreditedFundsAmount',
+        'CreditedFundsCurrency',
+        'FeesAmount',
+        'FeesCurrency',
+        'Status',
+        'ResultCode',
+        'ResultMessage',
+        'Type',
+        'Nature',
+        'CreditedWalletId',
+        'DebitedWalletId'
+    ]
+}
+
+createTransactionsReport(myReport)  
+```

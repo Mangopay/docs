@@ -1,0 +1,51 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '146476890';
+
+    $bankAccount = new \MangoPay\BankAccount();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $details = new \MangoPay\BankAccountDetailsCA();
+    $details->AccountNumber = '11696419';
+    $details->InstitutionNumber = '614';
+    $details->BranchCode = '00152';
+    $details->BankName = 'Bank of Canada';
+
+    $bankAccount->OwnerAddress = $address;
+    $bankAccount->OwnerName = 'Alex Smith';
+    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
+    $bankAccount->Type = 'IBAN';
+    $bankAccount->Details = $details;
+
+    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

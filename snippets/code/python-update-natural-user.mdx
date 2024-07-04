@@ -1,0 +1,31 @@
+  
+```python Python  
+
+# Import pprint for cleaner response formatting
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id = 'your-client-id'
+mangopay.apikey = 'your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser
+from mangopay.utils import Address
+
+natural_user = NaturalUser(
+    id = '210602976', # ID of natural user to update
+    address = Address( # Add elements with update details
+        address_line_1 = '2 Prince Street',
+        city = 'Leeds',
+        postal_code = 'LS1 3CA',
+        country = 'GB'
+    )
+)
+
+update_natural_user = natural_user.save()
+
+pprint(update_natural_user)  
+```

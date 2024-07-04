@@ -1,0 +1,53 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// When submitting a dispute for the first time
+
+let myDispute = {
+  Id: '193572349',
+  contestedFunds: {
+    Currency: 'EUR',
+    Amount: '10',
+  },
+}
+
+const submitDispute = async (disputeId, contestedFunds) => {
+  return await mangopay.Disputes.contestDispute(disputeId, contestedFunds)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+submitDispute(myDispute.Id, myDispute.contestedFunds)
+
+// When resubmitting the dispute (in case more documents are required)
+
+let myDispute = {
+  Id: '192746554',
+}
+
+const resubmitDispute = async (disputeId) => {
+  return await mangopay.Disputes.resubmitDispute(disputeId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+resubmitDispute(myDispute.Id)  
+```

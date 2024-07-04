@@ -1,0 +1,42 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.KycDocument;
+import com.mangopay.core.Pagination;
+
+import java.lang.reflect.Field;
+import java.util.List;
+
+public class ListAllKycDocs {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        Pagination pagination = new Pagination(1, 100);
+
+        List<KycDocument> kycDocs = mangopay.getKycDocumentApi().getAll(pagination, null);
+
+        for (KycDocument kycDoc : kycDocs) {;
+            System.out.println("");
+            System.out.println(String.format("id: %s", kycDoc.getId()));
+            printObjectFields(kycDoc);
+        }
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

@@ -1,0 +1,50 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+from mangopay.utils import Address, Birthplace
+
+legal_user = LegalUser(
+    id = '210602889'  
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210896999'
+)
+
+user_ubo = Ubo(
+    id = '210897219', # ID of UBO we want to update
+    # List ALL details and change what's needed
+    first_name = "Robbie", 
+    last_name = "Adams", 
+    address = Address(
+        address_line_1 = '223 Winchester Street',
+        city = 'Bolton',
+        postal_code = 'BL1 3GA',
+        country = 'GB',
+    ),
+    nationality = 'GB',
+    birthday = 336873600,
+    birthplace = Birthplace(
+        city = 'London',
+        country='GB'
+    ),
+    user = legal_user,
+    ubo_declaration = user_ubo_declaration,
+    isActive = True
+)
+
+update_ubo = user_ubo.save()
+
+pprint(update_ubo)  
+```

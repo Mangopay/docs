@@ -1,0 +1,54 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-mangopay-client-id',
+  clientApiKey: 'your-mangopay-api-key',
+})
+
+let myLegalUser = {
+  HeadquartersAddress: {
+    AddressLine1: '45 Main Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 4RG',
+    Country: 'GB',
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '35 London Road',
+    AddressLine2: null,
+    City: 'London',
+    PostalCode: 'NW1 0AA',
+    Country: 'GB',
+  },
+  Name: 'Executive Consulting',
+  LegalPersonType: 'BUSINESS',
+  LegalRepresentativeFirstName: 'Juliana',
+  LegalRepresentativeLastName: 'Dunn',
+  LegalRepresentativeEmail: 'juliana.dunn@example.com',
+  LegalRepresentativeBirthday: 188301600,
+  LegalRepresentativeNationality: 'GB',
+  LegalRepresentativeCountryOfResidence: 'GB',
+  CompanyNumber: '12345678',
+  Tag: 'Created using the Mangopay NodeJS SDK',
+  Email: 'executive.consulting@example.com',
+  TermsAndConditionsAccepted: true,
+  UserCategory: 'OWNER',
+  PersonType: 'LEGAL',
+}
+
+const createLegalUser = async (legalUser) => {
+  return await mangopay.Users.create(legalUser)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createLegalUser(myLegalUser)  
+```

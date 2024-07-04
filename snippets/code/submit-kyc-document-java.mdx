@@ -1,0 +1,46 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.KycStatus;
+import com.mangopay.entities.KycDocument;
+
+import java.lang.reflect.Field;
+
+public class SubmitKYCDoc {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ";
+
+        KycDocument kycDoc = mangopay.getKycDocumentApi().getKycDocument("kyc_01HSB6MMPT9RPDFHSG1BN9BKPP");
+        kycDoc.setStatus(KycStatus.VALIDATION_ASKED);
+
+        KycDocument submitKycDoc = mangopay.getUserApi().updateKycDocument(userId, kycDoc);
+
+        System.out.println(String.format("id: %s", submitKycDoc.getId()));
+        printObjectFields(submitKycDoc);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

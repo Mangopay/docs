@@ -1,0 +1,32 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '192591410',
+}
+
+let myKycDocument = {
+  Id: '192611019',
+  Status: 'VALIDATION_ASKED',
+}
+
+const submitKyc = async (userId, kycDocument) => {
+  return await mangopay.Users.updateKycDocument(userId, kycDocument)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+submitKyc(myUser.Id, myKycDocument)  
+```

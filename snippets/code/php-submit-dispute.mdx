@@ -1,0 +1,48 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+// To submit a dispute for the first time
+
+try {
+    $disputeId = '199385842';
+
+    $contestedFunds = new \MangoPay\Money();
+    $contestedFunds->Amount = 500;
+    $contestedFunds->Currency = 'EUR';
+
+    $response = $api->Disputes->ContestDispute($disputeId, $contestedFunds);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+
+// To submit a reopened dispute
+try {
+    $disputeId = '199385842';
+
+    $response = $api->Disputes->ResubmitDispute($disputeId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

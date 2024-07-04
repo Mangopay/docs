@@ -1,0 +1,28 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet(
+    owners=[natural_user],
+    description='Wallet of Rhoda Keeling',
+    currency='EUR',
+    tag="Created using the Mangopay Python SDK"
+)
+
+create_wallet = user_wallet.save()
+
+pprint(create_wallet)  
+```

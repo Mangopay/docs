@@ -1,0 +1,33 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: '146476890',
+}
+
+// timeframe is optional, if not given, returns all the credited and debited e-money since the user was created.
+let timeframe = {
+  Year: '2023',
+  Month: '04',
+}
+
+const viewClientWallet = async (userId, year, month) => {
+  return await mangopay.Users.getEMoney(userId, year, month)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+viewClientWallet(myUser.Id, timeframe.Year, timeframe.Month)  
+```

@@ -1,0 +1,30 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myHook = {
+  Id: '144086866',
+  Url: 'https://mangopay.com/docs/please-ignore2',
+  Tag: 'Created using Mangopay NodeJS SDK',
+  Status: 'ENABLED',
+}
+
+const updateHook = async (hook) => {
+  return await mangopay.Hooks.update(hook)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+updateHook(myHook)  
+```

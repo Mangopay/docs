@@ -1,0 +1,28 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Repudiation, SettlementTransfer
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+repudiation = Repudiation.get('repud_m_01HQT8ZRDVYBVT7T8240AWZD3D')
+
+settlement_transfer = SettlementTransfer(
+    author = natural_user,
+    credited_user_id = natural_user.id,
+    debited_funds = Money(amount=4000, currency='GBP'),
+    fees =  Money(amount=0, currency='GBP'),
+    repudiation = repudiation
+)  
+```

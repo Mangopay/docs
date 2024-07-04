@@ -1,0 +1,59 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $reportRequest = new \MangoPay\ReportRequest();
+    $reportRequest->ReportType = \MangoPay\ReportType::Wallets;
+    $reportRequest->CallbackURL = 'https://mangopay.com/docs/please-ignore';
+    $reportRequest->Tag = 'Created using Mangopay PHP SDK';
+    
+    $reportRequest->Filters = [
+        'Currency' => 'EUR',
+        'BalanceAmount' => [
+            'Min' => 1,
+            'Max' => 1000000
+        ],
+        'BeforeDate' => 1658838931,
+        'AfterDate'  => 1656246931,
+        'OwnerId' => null,
+        'MinBalanceAmount' => 1, 
+        'MinBalanceCurrency' => 'EUR',
+        'MaxBalanceAmount' => 100000000,
+        'MaxBalanceCurrency' => 'EUR',
+    ];
+
+    $reportRequest->Columns = [
+        'Id',
+        'CreationDate',
+        'Tag',
+        'Owners',
+        'Description',
+        'BalanceAmount',
+        'BalanceCurrency',
+        'Currency',
+        'FundsType',
+    ];
+
+    $response = $api->Reports->Create($reportRequest);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

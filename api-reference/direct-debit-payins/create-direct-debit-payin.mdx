@@ -36,6 +36,11 @@ import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
 import CreditedUserId from '/snippets/p-body/CreditedUserId.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
   
+import RestCreateADirectDirectDebitPayin from '/snippets/code/rest-create-a-direct-direct-debit-payin.mdx';
+import CreateDirectDirectDebitPayinPhp from '/snippets/code/create-direct-direct-debit-payin-php.mdx';
+import NodeCreateDirectDirectDebitPayin from '/snippets/code/node-create-direct-direct-debit-payin.mdx';
+import RubyCreateDirectDirectDebitPayin from '/snippets/code/ruby-create-direct-direct-debit-payin.mdx';
+import PythonCreateDirectDirectDebitPayin from '/snippets/code/python-create-direct-direct-debit-payin.mdx';
 
 ### Body parameters  
 
@@ -254,190 +259,9 @@ import AuthorId from '/snippets/p-body/AuthorId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "AuthorId":"151452401",
-    "CreditedUserId":"151452401",
-    "CreditedWalletId":"152161972",
-    "DebitedWalletId":null,
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1200
-    },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":12
-    },
-    "Tag":"custom meta",
-    "MandateId":"156620699",
-    "StatementDescriptor":"Nov2022"
-}  
-```  
-
-```php PHP 
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-use MangoPay\Money;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = 'user_m_01HYDWQNXC3M655SJXVGNDP91J';
-    $walletId = 'wlt_m_01HYDWR4NMAF0GRM2GZ25479EG';
-    $mandateId = 'mdt_m_01HYDWRQNDFC7R7P37DWH8C9SP';
-
-    $directDirectDebitPayIn = new \MangoPay\PayIn();
-    $directDirectDebitPayIn->AuthorId = $userId;
-    $directDirectDebitPayIn->CreditedWalletId = $walletId;
-
-    $directDirectDebitPayIn->DebitedFunds = new Money();
-    $directDirectDebitPayIn->DebitedFunds->Amount = 1000;
-    $directDirectDebitPayIn->DebitedFunds->Currency = 'EUR';
-
-    $directDirectDebitPayIn->Fees = new Money();
-    $directDirectDebitPayIn->Fees->Amount = 0;
-    $directDirectDebitPayIn->Fees->Currency = 'EUR';
-
-    $directDirectDebitPayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsDirectDebit();
-    $directDirectDebitPayIn->PaymentDetails->MandateId = $mandateId;
-
-    $directDirectDebitPayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect(); 
-
-    $directDirectDebitPayIn->Tag = 'Created using the Mangopay PHP SDK';
-
-    $createPayIn = $api->PayIns->Create($directDirectDebitPayIn);
-
-    print_r($createPayIn);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}
-```
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myPayIn = {
-  PaymentType: 'DIRECT_DEBIT',
-  ExecutionType: 'DIRECT',
-  AuthorId: '168935886',
-  Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: '168935886',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  CreditedWalletId: '168935920',
-  MandateId: '193168736',
-  StatementDescriptor: 'Mangopay',
-}
-
-const createDirectDirectDebitPayIn = async (payin) => {
-  return await mangopay.PayIns.create(payin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createDirectDirectDebitPayIn(myPayIn)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createDirectDirectDebitPayIn(payInObject)
-    begin
-        response = MangoPay::PayIn::DirectDebit::Direct.create(payInObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create pay-in: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPayIn = {
-    AuthorId:'195074410',
-    Tag: 'Created with Mangopay Ruby SDK',
-    CreditedUserId:'195074410',
-    DebitedFunds: {
-      Currency: 'EUR',
-      Amount: 1000,
-    },
-    Fees: {
-      Currency: 'EUR',
-      Amount: 100,
-    },
-    CreditedWalletId: '195074411',
-    MandateId: '195074413',
-    StatementDescriptor: 'Mangopay',
-  }
-
-createDirectDirectDebitPayIn(myPayIn)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, DirectDebitDirectPayIn, Money
-
-natural_user = NaturalUser.get('213753890')
-
-direct_debit_direct_payin = DirectDebitDirectPayIn(
-    author_id = natural_user.id,
-    credited_wallet_id = '213754077',
-    debited_funds = Money(amount='1000', currency='EUR'),
-    fees = Money(amount='100', currency='EUR'),
-    tag = 'Created using the Mangopay Python SDK',
-    mandate_id = '214224837',
-    statement_descriptor = 'Jan2024'
-)
-
-create_direct_debit_direct_payin = direct_debit_direct_payin.save()
-
-pprint(create_direct_debit_direct_payin)  
-```  
-
-  
+    <RestCreateADirectDirectDebitPayin />
+    <CreateDirectDirectDebitPayinPhp />
+    <NodeCreateDirectDirectDebitPayin />
+    <RubyCreateDirectDirectDebitPayin />
+    <PythonCreateDirectDirectDebitPayin />
 </RequestExample>

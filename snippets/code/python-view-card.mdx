@@ -1,0 +1,25 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Card
+
+natural_user = NaturalUser.get('213600749')
+
+user_card_id = '213601128'
+   
+try:
+    view_user_card = Card.get(user_card_id)
+    pprint(vars(view_user_card))
+except Card.DoesNotExist:
+    print('The Card {} does not exist for User {}'.format(user_card_id, natural_user.id))  
+```

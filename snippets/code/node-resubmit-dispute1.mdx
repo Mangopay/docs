@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '192775714',
+}
+
+const closeDispute = async (disputeId) => {
+  return await mangopay.Disputes.closeDispute(disputeId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+closeDispute(myDispute.Id)  
+```

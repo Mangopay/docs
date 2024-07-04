@@ -1,0 +1,32 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createHook(hookObject)
+    begin
+        response = MangoPay::Hook.create(hookObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Hook: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myHook = {
+    EventType: 'PAYOUT_NORMAL_SUCCEEDED',
+    Url: 'https://mangopay.com/docs/please-ignore',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createHook(myHook)  
+```

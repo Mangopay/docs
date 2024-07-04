@@ -1,0 +1,74 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.entities.Birthplace;
+import com.mangopay.entities.Ubo;
+import com.mangopay.entities.UboDeclaration;
+import com.mangopay.entities.UserLegal;
+
+import java.lang.reflect.Field;
+
+public class CreateUBO {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HQK53VP687RBSH2Q5TJZRR3S");
+    
+        UboDeclaration myUboDeclaration = mangopay.getUboDeclarationApi().get("ubo_m_01HRYRPZDB3KXF0QZ6QZ5C95A8");
+
+        Ubo myUbo = new Ubo();
+
+        Address address = new Address();
+        Birthplace birthplace = new Birthplace();
+
+        address.setAddressLine1(myUser.getHeadquartersAddress().getAddressLine1());
+        address.setAddressLine2(myUser.getHeadquartersAddress().getAddressLine2());
+        address.setCity(myUser.getHeadquartersAddress().getCity());
+        address.setCountry(myUser.getHeadquartersAddress().getCountry());
+        address.setRegion(myUser.getHeadquartersAddress().getRegion());
+        address.setPostalCode(myUser.getHeadquartersAddress().getPostalCode());
+
+        birthplace.setCity("Paris");
+        birthplace.setCountry(CountryIso.FR);
+
+        myUbo.setFirstName(myUser.getLegalRepresentativeFirstName());
+        myUbo.setLastName(myUser.getLegalRepresentativeLastName());
+        myUbo.setAddress(address);
+        myUbo.setNationality(CountryIso.FR);
+        myUbo.setBirthday(336879600);
+        myUbo.setBirthplace(birthplace);
+        myUbo.setActive(true);
+        myUbo.setTag("Created using the Mangopay Java SDK");
+
+        Ubo createMyUbo = mangopay.getUboDeclarationApi().createUbo(myUser.getId(), myUboDeclaration.getId(), myUbo);
+        
+        System.out.println(String.format("id: %s", createMyUbo.getId()));
+        printObjectFields(createMyUbo);
+    }
+
+        private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address
+                    || value instanceof Birthplace) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

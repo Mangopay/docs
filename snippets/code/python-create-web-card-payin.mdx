@@ -1,0 +1,33 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, Money, CardWebPayIn
+
+natural_user = NaturalUser.get('210513027')
+natural_user_wallet = Wallet.get('210514820')
+
+web_card_payin = CardWebPayIn(
+    author_id = natural_user.id,
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    credited_wallet_id = natural_user_wallet.id,
+    return_url = 'https://mangopay.com/docs/please-ignore', 
+    culture = 'EN',
+    card_type = 'CB_VISA_MASTERCARD', 
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_web_card_payin = web_card_payin.save()
+
+pprint(create_web_card_payin)  
+```

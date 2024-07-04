@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let userCardRegistration = {
+    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
+  }
+
+const viewCardRegistration = async (cardRegistrationId) => {
+    return await mangopay.CardRegistrations.get(cardRegistrationId)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+  }
+  
+viewCardRegistration(userCardRegistration.Id)  
+```

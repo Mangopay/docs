@@ -1,0 +1,69 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myPayIn = {
+  PaymentType: 'CARD',
+  ExecutionType: 'WEB',
+  AuthorId: '146476890',
+  Tag: 'Created with Mangopay Node.js SDK',
+  CreditedUserId: '146476890',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 100,
+  },
+  CreditedWalletId: '148968396',
+  ReturnURL: 'https://mangopay.com/docs/please-ignore',
+  CardType: 'CB_VISA_MASTERCARD',
+  Culture: 'EN',
+  SecureMode: 'DEFAULT',
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  StatementDescriptor: 'Nov2023',
+}
+
+const createWebCardPayIn = async (payin) => {
+  return await mangopay.PayIns.create(payin)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWebCardPayIn(myPayIn)  
+```

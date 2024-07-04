@@ -1,0 +1,29 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.resources import NaturalUser, Refund, BankWirePayOut
+
+natural_user = NaturalUser.get('213753890')
+
+natural_user_wallet_id = '213754077'
+
+payout = BankWirePayOut.get('214681617')
+
+payout_refund = Refund(
+    id = payout.id,
+    author = natural_user,
+    payout = payout
+)
+
+payout_refunds = BankWirePayOut.get_refunds(self = payout_refund)
+
+for payout_refund in payout_refunds:
+    pprint(vars(payout_refund))  
+```

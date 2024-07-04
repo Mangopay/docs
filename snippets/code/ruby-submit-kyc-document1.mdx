@@ -1,0 +1,34 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewKycDocument(userId, kycDocumentId)
+    begin
+        response = MangoPay::KycDocument.fetch(userId, kycDocumentId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch KYC Document: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '194150513'
+}
+
+myKycDocument = {
+    Id: '194510406',
+}
+
+viewKycDocument(myUser[:Id], myKycDocument[:Id])  
+```

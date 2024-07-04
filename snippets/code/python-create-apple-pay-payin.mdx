@@ -1,0 +1,36 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, ApplepayPayIn
+from mangopay.utils import Money, ApplepayPaymentData
+
+natural_user = NaturalUser.get('210513027')
+
+applepay_payin = ApplepayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=500, currency='EUR'),
+    fees = Money(amount=50, currency='EUR'),
+    payment_data = ApplepayPaymentData(
+        transaction_id='97e64d87f13a89ff6443cdcc205d5ccf7e15368b0d64126a8a2e0888a3a5c2a0',
+        network='MasterCard',        
+        token_data='{\"data\":\"your-token-data"}'
+    ),
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_applepay_payin = applepay_payin.save()
+
+pprint(create_applepay_payin)
+  
+```

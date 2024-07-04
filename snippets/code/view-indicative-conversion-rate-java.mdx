@@ -1,0 +1,35 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.ConversionRate;
+
+import java.lang.reflect.Field;
+
+public class ViewConversionRate {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        ConversionRate conversionRate = mangopay.getConversionsApi().getConversionRate("EUR", "GBP");
+
+        printObjectFields(conversionRate);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+                
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

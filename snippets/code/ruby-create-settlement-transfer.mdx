@@ -1,0 +1,33 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myRepudiation = {
+    Id: '194618172'
+}
+
+mySettlementTransfer = {
+    Type: 'TRANSFER',
+    Nature: 'SETTLEMENT',
+    AuthorId: '194579896',
+    DebitedFunds: {
+        Currency: 'EUR',
+        Amount: 10000
+    },
+    Fees: {
+        Currency: 'EUR',
+        Amount: 9000
+    }
+
+}
+
+createSettlementTransfer(myRepudiation[:Id], mySettlementTransfer)  
+```

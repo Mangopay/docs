@@ -1,0 +1,29 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import UboDeclaration, LegalUser
+
+legal_user = LegalUser(
+    id = '211158266'  
+)
+
+ubo_declaration = UboDeclaration(
+    id = '211651591', 
+    user = legal_user,
+    status = 'VALIDATION_ASKED'
+)
+
+submit_ubo_declaration = ubo_declaration.save()
+
+pprint(submit_ubo_declaration)  
+```

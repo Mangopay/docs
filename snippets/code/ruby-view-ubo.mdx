@@ -1,0 +1,38 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewUbo(legalUserId, uboDeclarationId, uboId)
+    begin
+        response = MangoPay::Ubo.fetch(legalUserId, uboDeclarationId, uboId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch UBO: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myLegalUser = {
+    Id: '194338122'
+}
+
+myUboDeclaration = {
+    Id: '194511216'
+}
+
+myUbo = {
+    Id: '194511740'
+}
+
+viewUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo[:Id])  
+```

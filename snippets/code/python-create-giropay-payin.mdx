@@ -1,0 +1,31 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, GiropayPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('210513027')
+
+giropay_payin = GiropayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=400, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_giropay_payin = giropay_payin.save()
+
+pprint(create_giropay_payin)  
+```

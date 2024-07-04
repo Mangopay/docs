@@ -1,0 +1,56 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateRecurringRegistration(recurringRegistrationId, recurringRegistrationObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::Recurring.update(recurringRegistrationId, recurringRegistrationObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create recurring registration: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myRecurringRegistration = {
+  Id: '195097427',
+  CardId: '169687329',
+  Status: '',
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des très grandes plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR'
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des très grandes plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR'
+    }
+  }
+}
+
+updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)  
+```

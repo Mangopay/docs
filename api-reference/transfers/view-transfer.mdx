@@ -21,6 +21,11 @@ import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import TransferId from '/snippets/p-path/TransferId.mdx';
 
+import PhpViewTransfer from '/snippets/code/php-view-transfer.mdx';
+import NodeViewTransfer from '/snippets/code/node-view-transfer.mdx';
+import RubyViewTransfer from '/snippets/code/ruby-view-transfer.mdx';
+import PythonViewTransfer from '/snippets/code/python-view-transfer.mdx';
+
 <Note>
 **Note – Transfer data retained for 13 months**
 
@@ -106,135 +111,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $transferId = '155585643';
-
-    $response = $api->Transfers->Get($transferId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myTransfer = {
-  Id: '174877749',
-}
-
-const viewTransfer = async (transferId) => {
-  return await mangopay.Transfers.get(transferId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewTransfer(myTransfer.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewTransfer(transferId)
-    begin
-        response = MangoPay::Transfer.fetch(transferId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch transfer: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-myTransfer = {
-  Id: '194342401'
-}
-
-viewTransfer(myTransfer[:Id])  
-```  
-
-```java Java 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.Transfer;
-
-public class ViewTransfer {
-        public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        Transfer transfer = mangopay.getTransferApi().get("xfer_m_01HTF8FNN1E4N332ZBVEVHRMD2");
-        
-        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
-        String prettyJson = prettyPrint.toJson(transfer);
-
-        System.out.println(prettyJson);
-        
-    }     
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Transfer
-
-try:
-    view_transfer = Transfer.get('214568995')
-    pprint(vars(view_transfer))
-except Transfer.DoesNotExist:
-    print('Transfer {} does not exist'.format(view_transfer.id))
-```  
-
-  
+    <PhpViewTransfer />
+    <NodeViewTransfer />
+    <RubyViewTransfer />
+    <PythonViewTransfer />
 </RequestExample>

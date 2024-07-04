@@ -25,6 +25,11 @@ import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import StatementDescriptorResponse_Refunds from '/snippets/p-response/StatementDescriptorResponse_Refunds.mdx';
 
+import PhpViewRefund from '/snippets/code/php-view-refund.mdx';
+import NodeViewRefund from '/snippets/code/node-view-refund.mdx';
+import RubyViewARefund from '/snippets/code/ruby-view-a-refund.mdx';
+import PythonViewRefund from '/snippets/code/python-view-refund.mdx';
+
 <Note>
 **Note – Refund data retained for 13 months**
 
@@ -127,114 +132,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $refundId = '180925566';
-
-    $response = $api->Refunds->Get($refundId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRefund = {
-  Id: '180925566',
-}
-
-const viewRefund = async (refundId) => {
-  return await mangopay.Refunds.get(refundId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewRefund(myRefund.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewRefund(refundId)
-    begin
-        response = MangoPay::Refund.fetch(refundId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Refund: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRefund = {
-    Id: '180925566'
-}
-
-viewRefund(myRefund[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Refund
-
-refund_id = '214572035'
-
-try:
-    view_refund = Refund.get(refund_id)
-    pprint(vars(view_refund))
-except Refund.DoesNotExist:
-    print('The Refund {} does not exist.'.format(view_refund.id))  
-```  
-
-  
+    <PhpViewRefund />
+    <NodeViewRefund />
+    <RubyViewARefund />
+    <PythonViewRefund />
 </RequestExample>

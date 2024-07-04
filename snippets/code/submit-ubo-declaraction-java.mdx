@@ -1,0 +1,39 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.UboDeclaration;
+import com.mangopay.entities.UserLegal;
+
+import java.lang.reflect.Field;
+
+public class SubmitUBODeclaraction {
+     public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UboDeclaration uboDeclaration = mangopay.getUboDeclarationApi().get("ubo_m_01HRYRPZDB3KXF0QZ6QZ5C95A8");
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HQK53VP687RBSH2Q5TJZRR3S");
+    
+        UboDeclaration submitUboDeclaration = mangopay.getUboDeclarationApi().submitForValidation(myUser.getId(), uboDeclaration.getId());
+
+        System.out.println(String.format("id: %s", submitUboDeclaration.getId()));
+        printObjectFields(submitUboDeclaration);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

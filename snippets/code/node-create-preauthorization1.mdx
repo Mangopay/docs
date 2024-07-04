@@ -1,0 +1,51 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+// To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+let myPreauthorization = {
+  Id: '192870038',
+  PaymentStatus: 'CANCELED',
+}
+
+const cancelPreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+cancelPreauthorization(myPreauthorization)
+
+// To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+let myPreauthorization = {
+  Id: '192870038',
+  PaymentStatus: 'VALIDATED',
+}
+
+const validatePreauthorization = async (preauthorization) => {
+  return await mangopay.CardPreAuthorizations.update(preauthorization)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+validatePreauthorization(myPreauthorization)  
+```

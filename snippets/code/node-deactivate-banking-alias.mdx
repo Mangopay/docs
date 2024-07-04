@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myBankingAlias = {
+  Id: '169741679',
+}
+
+const deactivateBankingAlias = async (bankingAliasId) => {
+  return await mangopay.BankingAliases.deactivate(bankingAliasId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+deactivateBankingAlias(myBankingAlias.Id)  
+```

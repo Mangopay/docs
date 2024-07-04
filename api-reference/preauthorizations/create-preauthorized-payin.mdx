@@ -30,7 +30,11 @@ import DebitedFunds9 from '/snippets/p-body/DebitedFunds9.mdx';
 import CreditedUserId from '/snippets/p-body/CreditedUserId.mdx';
 import AuthorId2 from '/snippets/p-body/AuthorId2.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
-  
+
+import RestCreatePreauthorizedPayin from '/snippets/code/rest-create-preauthorized-payin.mdx';
+import NodeCreatePreauthorizedPayin from '/snippets/code/node-create-preauthorized-payin.mdx';
+import RubyCreatePreauthorizedPayin from '/snippets/code/ruby-create-preauthorized-payin.mdx';
+import PythonCreatePreauthorizedPayin from '/snippets/code/python-create-preauthorized-payin.mdx';
 
 ### Body parameters  
 
@@ -234,134 +238,8 @@ import Tag from '/snippets/p-body/Tag.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "CreditedWalletId": "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 2000
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 200
-    },
-    "PreauthorizationId": "preauth_m_01HYG88W1QWJNNBGJJG0KQGX42"
-}
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myPreauthorizedPayIn = {
-  PaymentType: 'PREAUTHORIZED',
-  ExecutionType: 'DIRECT',
-  AuthorId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-  Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
-  PreauthorizationId: 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42',
-}
-
-const createPreauthorizedPayin = async (payin) => {
-  return await mangopay.PayIns.create(payin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createPreauthorizedPayin(myPreauthorizedPayIn)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createPreauthorizedPayIn(payInObject)
-    begin
-        response = MangoPay::PayIn::PreAuthorized::Direct.create(payInObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create preauthorized payin: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPreauthorizedPayIn = {
-    AuthorId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-    Tag: 'Created with Mangopay Ruby SDK',
-    CreditedUserId: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-    DebitedFunds: {
-      Currency: 'EUR',
-      Amount: 900,
-    },
-    Fees: {
-      Currency: 'EUR',
-      Amount: 100,
-    },
-    CreditedWalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
-    PreauthorizationId: 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42'
-  }
-
-createPreauthorizedPayIn(myPreauthorizedPayIn)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, PreAuthorizedPayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
-
-preauthorization_payin = PreAuthorizedPayIn(
-    author_id = natural_user.id,
-    debited_funds =  Money(amount=1000, currency='GBP'),
-    fees = Money(amount=0, currency='GBP'),
-    credited_wallet_id = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
-    preauthorization_id = 'preauth_m_01HYG88W1QWJNNBGJJG0KQGX42',
-    tag='Created using the Mangopay Python SDK'
-)
-
-create_preauthorization_payin = preauthorization_payin.save()
-pprint(create_preauthorization_payin)
-```  
-
-  
+    <RestCreatePreauthorizedPayin />
+    <NodeCreatePreauthorizedPayin />
+    <RubyCreatePreauthorizedPayin />
+    <PythonCreatePreauthorizedPayin />
 </RequestExample>

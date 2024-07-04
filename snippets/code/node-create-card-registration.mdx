@@ -1,0 +1,33 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let user = {
+    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  }
+
+let userCardRegistration = {
+    UserId: user.Id,
+    Currency: 'EUR',
+    CardType: 'CB_VISA_MASTERCARD'
+}
+
+const createCardRegistration = async(cardRegistration) => {
+    return await mangopay.CardRegistrations.create(cardRegistration)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+
+createCardRegistration(userCardRegistration)  
+```

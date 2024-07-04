@@ -1,0 +1,35 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def submitKycDocument(userId, kycDocumentId, kycDocument)
+    begin
+        response = MangoPay::KycDocument.update(userId, kycDocumentId, kycDocument)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to submit KYC Document: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: '194150513'
+}
+
+myKycDocument = {
+    Id: '194510406',
+    Status: 'VALIDATION_ASKED'
+}
+
+submitKycDocument(myUser[:Id], myKycDocument[:Id], myKycDocument)  
+```

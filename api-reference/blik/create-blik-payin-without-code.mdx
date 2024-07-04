@@ -38,6 +38,9 @@ import IpAddress from '/snippets/p-body/IpAddress.mdx';
 import Code from '/snippets/p-body/Code.mdx';
 import BrowserInfo1 from '/snippets/p-body/BrowserInfo1.mdx';
 
+import RestCreateBlikPayinWithoutCode from '/snippets/code/rest-create-blik-payin-without-code.mdx';
+import PythonCreateBlikPayinWithoutCode from '/snippets/code/python-create-blik-payin-without-code.mdx';
+
 ### Body parameters  
 
 <AuthorId />  
@@ -145,55 +148,7 @@ import BrowserInfo1 from '/snippets/p-body/BrowserInfo1.mdx';
 
 </ResponseExample>  
 
-<RequestExample>  
-  
-```json REST  
-{
-    "AuthorId": "user_m_01HWSRS7HK6S0XKKD4CJM3PQ04",
-    "CreditedWalletId": "wlt_m_01HWSSQV8W6550FJ5NTJQE1DE1",
-    "DebitedFunds": {
-        "Currency": "PLN",
-        "Amount": 100
-    },
-    "Fees": {
-        "Currency": "PLN",
-        "Amount": 0
-    },
-    "ReturnUrl": "https://www.mangopay.com/docs/please-ignore",
-    "Tag": "Created using the Mangopay API Postman collection",
-    "StatementDescriptor": "May2024"
-}
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import BlikPayIn
-from mangopay.utils import Money
-
-blik_payin = BlikPayIn(
-    author_id = 'user_m_01HWSRS7HK6S0XKKD4CJM3PQ04',
-    credited_wallet_id = 'wlt_m_01HPS7PB7ZPT24KVYZSFJPBYKH',
-    debited_funds = Money(amount=100, currency='PLN'),
-    fees = Money(amount=0, currency='PLN'),
-    return_url = 'https://www.mangopay.com/docs/please-ignore',
-    tag = 'Created using Mangopay Python SDK',
-    statement_descriptor = 'May2024'
-)
-
-create_blik_payin = blik_payin.save()
-
-pprint(create_blik_payin)  
-```  
-
-  
+<RequestExample>
+    <RestCreateBlikPayinWithoutCode />,
+    <PythonCreateBlikPayinWithoutCode />
 </RequestExample>

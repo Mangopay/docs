@@ -1,0 +1,35 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let user = {
+    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  }
+
+let userCardRegistration = {
+    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
+    UserId: user.Id,
+    Currency: 'EUR',
+    CardType: 'CB_VISA_MASTERCARD',
+    RegistrationData: 'data=acIcnwwLleiAvlZUea5VxT5mw_fK696E0m-dvIdK-KnTCrftajOU7W3fTvYLnKiF68q7RUkmAEL86Wi8c0oX7wHD6vfA3lowMRD7SvlcCCl6Xl3Esy_DIyBzznraJzm70ftIYwFxOdfmDQ5GtM_cIg'
+}
+
+const updateCardRegistration = async(cardRegistration) => {
+    return await mangopay.CardRegistrations.update(cardRegistration)
+    .then((response) => {
+        console.info(response)
+        return response
+    })
+    .catch((err) => {
+        console.log(err)
+        return false
+    })
+}
+
+updateCardRegistration(userCardRegistration)  
+```

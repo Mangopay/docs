@@ -1,0 +1,69 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardPreauthorization = new \MangoPay\CardPreAuthorization();
+    $cardPreauthorization->AuthorId = '146476890';
+    $cardPreauthorization->DebitedFunds = new \MangoPay\Money();
+    $cardPreauthorization->DebitedFunds->Currency = 'EUR';
+    $cardPreauthorization->DebitedFunds->Amount = 1000;
+    $cardPreauthorization->SecureMode = 'DEFAULT';
+    $cardPreauthorization->CardId = '193935874';
+    $cardPreauthorization->SecureModeReturnURL = 'https://mangopay.com/docs/please-ignore';
+    $cardPreauthorization->Tag = 'Created using Mangopay PHP SDK';
+    $cardPreauthorization->StatementDescriptor = 'Mangopay';
+
+    $cardPreauthorization->BrowserInfo = new \MangoPay\BrowserInfo();
+    $cardPreauthorization->BrowserInfo->AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8";;
+    $cardPreauthorization->BrowserInfo->JavaEnabled = true;
+    $cardPreauthorization->BrowserInfo->Language = "FR-FR";
+    $cardPreauthorization->BrowserInfo->ColorDepth = 4;
+    $cardPreauthorization->BrowserInfo->ScreenHeight = 1800;
+    $cardPreauthorization->BrowserInfo->ScreenWidth = 400;
+    $cardPreauthorization->BrowserInfo->TimeZoneOffset = 60;
+    $cardPreauthorization->BrowserInfo->UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+    $cardPreauthorization->BrowserInfo->JavascriptEnabled = true;
+
+    $cardPreauthorization->Culture = 'EN';
+    $cardPreauthorization->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = '4 rue des Plantes';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75009';
+    $address->Region = 'IDF';
+
+    $shipping = new \MangoPay\Shipping();
+    $shipping->FirstName = 'Alex';
+    $shipping->LastName = 'Smith';
+    $shipping->Address = $address;
+
+    $billing = new \MangoPay\Billing();
+    $billing->FirstName = 'Alex';
+    $billing->LastName = 'Smith';
+    $billing->Address = $address;
+
+    $response = $api->CardPreAuthorizations->Create($cardPreauthorization);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

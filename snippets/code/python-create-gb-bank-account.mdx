@@ -1,0 +1,39 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+from mangopay.utils import Address
+
+natural_user = NaturalUser.get('213753890')
+
+gb_bank_account = BankAccount(
+    user_id = natural_user.id,
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    owner_address = Address(
+        address_line_1 = natural_user.address.address_line_1,
+        address_line_2 = natural_user.address.address_line_2,
+        city = natural_user.address.city,
+        region = natural_user.address.region,
+        postal_code = natural_user.address.postal_code,
+        country = natural_user.address.country,
+    ),
+    account_number = '11696419',
+    sort_code = '010039',
+    type = 'GB',
+    tag = 'Created using the Mangopay Python SDK',
+)
+
+create_gb_bank_account = gb_bank_account.save()
+
+pprint(create_gb_bank_account)  
+```

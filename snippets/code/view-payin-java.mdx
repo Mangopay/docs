@@ -1,0 +1,45 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.core.enumerations.CountryIso;
+
+import java.lang.reflect.Field;
+
+public class HandleRequest {
+    public static void main(String[] args) {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+PayIn payin = mangopay.getPayInApi().get("wt_4988a6e9-cc9b-47a7-a754-1f7e3eed8365");
+
+        printPayInId(payin);
+        printObjectFields(payin);
+        printObjectFields(payin.getExecutionDetails());
+        printObjectFields(payin.getPaymentDetails());
+    }
+
+    private static void printPayInId(PayIn payIn) {
+        System.out.println("PayIn ID: " + payIn.getId());
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                System.out.println(field.getName() + ": " + value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

@@ -1,0 +1,61 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PayPalWebPayIn
+from mangopay.utils import Money, LineItem, Shipping, Address
+
+natural_user = NaturalUser.get('210513027')
+
+paypal_payin = PayPalWebPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=1500, currency='EUR'),
+    fees = Money(amount=300, currency='EUR'),
+    culture = 'FR',
+    return_url = 'https://www.mangopay.com/docs/please-ignore',
+    line_items = [
+        LineItem(
+            name = 'Running shoes',
+            quantity=1,
+            unit_amount=400,
+            tax_amount=100,
+            description='ID of Seller 1'),
+        LineItem(
+            name = 'Walking shoes',
+            quantity=2,
+            unit_amount=400,
+            tax_amount=100,
+            description='ID of Seller 2')
+        ],
+    shipping = Shipping(
+        first_name = natural_user.first_name,
+        last_name = natural_user.last_name,
+        address = Address(
+            address_line_1 = natural_user.address.address_line_1,
+            address_line_2 = natural_user.address.address_line_2,
+            city = natural_user.address.city,
+            region = natural_user.address.region,
+            postal_code = natural_user.address.postal_code,
+            country = natural_user.address.country,
+        )
+    ),
+    shipping_preference = 'SET_PROVIDED_ADDRESS',
+    reference = '1234',
+    statement_descriptor = 'MGP',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_paypal_payin = paypal_payin.save()
+
+pprint(create_paypal_payin)  
+```

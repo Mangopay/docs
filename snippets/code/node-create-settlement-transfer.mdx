@@ -1,0 +1,43 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myDispute = {
+  Id: '192775714',
+  RepudiationId: '192775715',
+}
+
+let mySettlementTransfer = {
+  AuthorId: '180749339',
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: '1000',
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+}
+
+const createSettlementTransfer = async (settlementTransfer, repudiationId) => {
+  return await mangopay.Disputes.createSettlementTransfer(
+    settlementTransfer,
+    repudiationId
+  )
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createSettlementTransfer(mySettlementTransfer, myDispute.RepudiationId)  
+```

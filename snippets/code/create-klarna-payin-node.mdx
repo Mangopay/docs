@@ -1,0 +1,88 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+})
+
+let myPayIn = {
+    PaymentType: 'KLARNA',
+    ExecutionType: 'WEB',
+    AuthorId: '210513027',
+    Tag: 'Created with Mangopay Node.js SDK',
+    CreditedUserId: '210513027',
+    DebitedFunds: { 
+        Currency: 'EUR', 
+        Amount: 400 
+    },
+    Fees: { 
+        Currency: 'EUR', 
+        Amount: 10 
+    },
+    LineItems: [
+        {
+            Name: "Running shoes",
+            Quantity: 1,
+            UnitAmount: 200,
+            TaxAmount: 0,
+            Description: "seller1 ID"
+        },
+        {
+            Name: "Running shoes",
+            Quantity: 1,
+            UnitAmount: 200,
+            TaxAmount: 0,
+            Description: "seller2 ID"
+        }
+    ],
+    Country: 'FR',
+    Phone: '33#607080900',
+    Email: 'mango@mangopay.com',
+    CreditedWalletId: '210514820',
+    ReturnURL: 'https://mangopay.com/docs/please-ignore',
+    Culture: 'FR',
+    Billing: {
+        FirstName: 'Alex',
+        LastName: 'Smith',
+        Address: {
+          AddressLine1: 'Rue des plantes',
+          AddressLine2: 'The Oasis',
+          City: 'Paris',
+          Region: 'IDF',
+          PostalCode: '75000',
+          Country: 'FR',
+        },
+    },
+    Shipping: {
+        FirstName: 'Alex',
+        LastName: 'Smith',
+        Address: {
+            AddressLine1: 'Rue des plantes',
+            AddressLine2: 'The Oasis',
+            City: 'Paris',
+            Region: 'IDF',
+            PostalCode: '75000',
+            Country: 'FR',
+        },
+    },
+    AdditionalData: 'your-additional-data',
+    StatementDescriptor: 'Feb2024',
+    Reference: 'afd48-879d-48fg'
+}
+
+const createKlarnaPayIn = async (payin) => {
+    return await mangopay.PayIns.create(payin)
+      .then((response) => {
+        console.info(response)
+        return response
+      })
+      .catch((err) => {
+        console.log(err)
+        return false
+      })
+  }
+  
+createKlarnaPayIn(myPayIn)  
+```

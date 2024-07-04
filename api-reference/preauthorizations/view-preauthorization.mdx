@@ -38,7 +38,11 @@ import Tag5Response from '/snippets/p-response/Tag5Response.mdx';
 import Id3Response from '/snippets/p-response/Id3Response.mdx';
 import PreauthorizationId from '/snippets/p-path/PreauthorizationId.mdx';
 import PaymentCategoryResponse from '/snippets/p-response/PaymentCategoryResponse.mdx';
-  
+
+import PhpViewPreauthorization from '/snippets/code/php-view-preauthorization.mdx';
+import NodeViewPreauthorization from '/snippets/code/node-view-preauthorization.mdx';
+import RubyViewPreauthorization from '/snippets/code/ruby-view-preauthorization.mdx';
+import PythonViewPreauthorization from '/snippets/code/python-view-preauthorization.mdx';
 
 ### Path parameters  
 
@@ -810,121 +814,8 @@ import PaymentCategoryResponse from '/snippets/p-response/PaymentCategoryRespons
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $preauthorizationId = '169687442';
-
-    $response = $api->CardPreAuthorizations->Get($preauthorizationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myPreauthorization = {
-  Id: '169687442',
-}
-
-const viewPreauthorization = async (preauthorizationId) => {
-  return await mangopay.CardPreAuthorizations.get(preauthorizationId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewPreauthorization(myPreauthorization.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewPreauthorization(preauthorizationId)
-    begin
-        response = MangoPay::PreAuthorization.fetch(preauthorizationId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch preauthorization: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPreauthorization = {
-    Id:'195059241'
-}
-
-viewPreauthorization(myPreauthorization[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import PreAuthorization
-
-card_preauthorization = PreAuthorization(
-    id = '213944840'
-)
-
-
-try:
-    view_card_preauthorization = PreAuthorization.get(card_preauthorization.id) 
-    pprint(vars(view_card_preauthorization))
-    pprint(vars(view_card_preauthorization.billing))
-    pprint(vars(view_card_preauthorization.browser_info))
-    pprint(vars(view_card_preauthorization.security_info))
-    pprint(vars(view_card_preauthorization.shipping))
-except PreAuthorization.DoesNotExist:
-    print('The PreAuthorization {} does not exist'.format(card_preauthorization.id))  
-```  
-
-  
+    <PhpViewPreauthorization />
+    <NodeViewPreauthorization />
+    <RubyViewPreauthorization />
+    <PythonViewPreauthorization />
 </RequestExample>

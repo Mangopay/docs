@@ -1,0 +1,25 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankAccount
+
+bank_account_id = '214651521'
+
+natural_user_id = '213753890'
+
+try:
+    view_bank_account_id = BankAccount.get(reference = bank_account_id, user_id = natural_user_id)
+    pprint(vars(view_bank_account))
+except BankAccount.DoesNotExist:
+    print('The Bank Account {} does not exist.'.format(bank_account_id))  
+```

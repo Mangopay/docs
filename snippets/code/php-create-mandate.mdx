@@ -1,0 +1,35 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $bankAccountId = '198982529'; 
+
+    $mandate = new \MangoPay\Mandate();
+    $mandate->BankAccountId = $bankAccountId;
+    $mandate->Culture = 'EN'; 
+    $mandate->ReturnURL = 'https://mangopay.com/docs/please-ignore';
+    $mandate->Tag = 'Created using Mangopay PHP SDK';
+    
+    $response = $api->Mandates->Create($mandate);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

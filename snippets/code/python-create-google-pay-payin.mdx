@@ -1,0 +1,45 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, GooglepayPayIn
+from mangopay.utils import BrowserInfo, Money
+
+natural_user = NaturalUser.get('210513027')
+
+google_pay_payin = GooglepayPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '210514820',
+    debited_funds = Money(amount=200, currency='EUR'),
+    fees = Money(amount=50, currency='EUR'),
+    ip_addres = '159.180.248.187',
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    payment_data = '{\"signature\":\"your-payment-data"}\"}',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_google_pay_payin = google_pay_payin.save()
+
+pprint(create_google_pay_payin)  
+```

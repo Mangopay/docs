@@ -1,0 +1,35 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDisputeDocument(disputeId, disputeDocumentObject)
+    begin
+        response = MangoPay::Dispute.create_document(disputeId, disputeDocumentObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create Document: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'194413022'
+}
+
+myDocument = {
+    Type:'DELIVERY_PROOF',
+    Tag:'Created using Mangopay Ruby SDK'
+}
+
+createDisputeDocument(myDispute[:Id], myDocument)  
+```

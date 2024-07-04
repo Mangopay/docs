@@ -1,0 +1,41 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createDirectBankWirePayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::BankWire::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create pay-in: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPayIn = {
+    AuthorId: '146476890',
+    Tag: 'Created with Mangopay Node.js SDK',
+    CreditedUserId: '146476890',
+    DeclaredDebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    DeclaredFees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '148968396',
+  }
+
+createDirectBankWirePayIn(myPayIn)  
+```

@@ -1,0 +1,34 @@
+  
+```php PHP  
+
+<?php
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-api-key';
+    $api->Config->TemporaryFolder = 'tmp/';
+    
+    try {
+        $kycDocumentPage = new \MangoPay\KycPage();
+
+        $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+
+        $kycDocumentId = 'kyc_01HQTV51JVND500S8TWZC86EJ4';
+
+        $kycDocumentPage->File = "<your file data>";
+
+        $response = $api->Users->CreateKycPage($userId, $kycDocumentId, $kycDocumentPage);    
+
+        print_r($response);
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }  
+```

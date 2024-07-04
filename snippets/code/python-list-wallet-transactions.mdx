@@ -1,0 +1,27 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, Transaction
+
+natural_user = NaturalUser.get('213753890')
+
+user_wallet = Wallet.get('213754077')
+
+transactions = Transaction.all(user_id = natural_user.id, wallet_id = user_wallet.id)
+
+print('=== Transactions for Wallet {} ==='.format(user_wallet.id))
+
+for transaction in transactions:
+    print()
+    pprint(transaction._data)  
+```

@@ -1,0 +1,24 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import User
+
+# Page always needs to be 1. Set per_page to however many users you want displayed.
+# Set per_page as the minimum number of user you want to see.
+users = User.all(page=1, per_page=50) 
+
+for user in users:
+    documents = user.documents.all()
+    for document in documents:
+        pprint(document)  
+```

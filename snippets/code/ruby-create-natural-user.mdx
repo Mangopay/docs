@@ -1,0 +1,45 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createNaturalUser(naturalUserObject)
+    begin
+        response = MangoPay::NaturalUser.create(naturalUserObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create User: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myNaturalUser = {
+    Tag: 'Created using Mangopay Ruby SDK',
+    Email: 'john.ruby@test.com',
+    FirstName: 'John',
+    LastName: 'Doe',
+    Address: {
+        AddressLine1: '2795 Edgewood Road',
+        City: 'Little Rock',
+        Region: 'Arkansas',
+        PostalCode: '72212',
+        Country: 'US'
+    },
+    Birthday: 655772400,
+    Nationality: 'FR',
+    CountryOfResidence: 'US',
+    TermsAndConditionsAccepted: true,
+    UserCategory: 'OWNER'
+}
+
+createNaturalUser(myNaturalUser)  
+```

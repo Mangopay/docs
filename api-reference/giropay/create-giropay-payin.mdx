@@ -31,6 +31,9 @@ import DebitedFunds2 from '/snippets/p-body/DebitedFunds2.mdx';
 import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
 
+import CreateGiropayPayinRest from '/snippets/code/create-giropay-payin-rest.mdx';
+import PythonCreateGiropayPayin from '/snippets/code/python-create-giropay-payin.mdx';
+
 <Warning>
 **Warning – Giropay no longer available after June 30, 2024**
 
@@ -158,55 +161,6 @@ In Production, pay-ins lower than this amount will fail.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "AuthorId": "6672704",
-    "CreditedWalletId": "6672709",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 1000
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 0
-    },
-    "ReturnURL": "https://www.mangopay.com/docs/please-ignore", 
-    "Tag": "Created using the Mangopay API Postman collection", 
-    "StatementDescriptor": "MGP"
-}  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, GiropayPayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('210513027')
-
-giropay_payin = GiropayPayIn(
-    author_id = natural_user.id,
-    credited_wallet_id = '210514820',
-    debited_funds = Money(amount=400, currency='EUR'),
-    fees = Money(amount=0, currency='EUR'),
-    return_url = 'https://www.mangopay.com/docs/please-ignore',
-    tag = 'Created using Mangopay Python SDK'
-)
-
-create_giropay_payin = giropay_payin.save()
-
-pprint(create_giropay_payin)  
-```  
-
-  
+    <CreateGiropayPayinRest />
+    <PythonCreateGiropayPayin />  
 </RequestExample>

@@ -1,0 +1,49 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, LegalUser, Wallet, Card, DirectPayIn
+from mangopay.utils import Money, BrowserInfo
+
+legal_user = LegalUser.get('211918806')
+legal_user_wallet = Wallet.get('214564765')
+
+natural_user = NaturalUser.get('213753890')
+natural_user_card= Card.get('213944219')
+
+direct_payin = DirectPayIn(
+    author = natural_user,
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=1, currency='EUR'),
+    credited_wallet_id = legal_user_wallet.id,
+    card_id = natural_user_card,
+    secure_mode = 'DEFAULT',
+    secure_mode_return_url = "https://mangopay.com/docs/please-ignore",
+    tag = 'Created with Mangopay Python SDK',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187',
+)
+
+create_direct_payin = direct_payin.save()
+
+pprint(create_direct_payin)  
+```

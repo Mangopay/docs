@@ -1,0 +1,39 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+
+from mangopay.resources import PreAuthorization
+
+# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'VALIDATED'
+)
+
+validate_preauthorization = card_preauthorization.save()
+
+pprint(validate_preauthorization)
+
+
+# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
+
+card_preauthorization = PreAuthorization(
+    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
+    payment_status = 'CANCEL'
+)
+
+cancel_preauthorization = card_preauthorization.save()
+
+pprint(cancel_preauthorization)  
+```

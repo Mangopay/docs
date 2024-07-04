@@ -1,0 +1,35 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, Wallet, Transfer
+from mangopay.utils import Money
+
+credited_natural_user = NaturalUser.get('213753890')
+credited_natural_user_wallet = Wallet.get('213754077')
+
+debited_natural_user = NaturalUser.get('210513027')
+debited_natural_user_wallet = Wallet.get('210514820')
+
+transfer = Transfer(
+    author = debited_natural_user,
+    credited_user = credited_natural_user,
+    debited_funds = Money(amount=1000, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    debited_wallet=debited_natural_user_wallet,
+    credited_wallet=credited_natural_user_wallet
+ )
+
+create_transfer = transfer.save()
+
+pprint(create_transfer)  
+```

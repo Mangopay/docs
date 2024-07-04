@@ -1,0 +1,94 @@
+  
+```php PHP  
+
+<?php
+    require_once 'vendor/autoload.php';
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+    
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-client-id';
+    $api->Config->ClientPassword = 'your-api-key';
+    $api->Config->TemporaryFolder = 'tmp/';
+
+    
+    try {
+
+
+        $user = $api->Users->Get('210513027');
+
+        $payIn = new \MangoPay\PayIn();
+        $payIn->Tag = "Created using Mangopay PHP SDK";
+        $payIn->CreditedWalletId = "210514820";
+        $payIn->PaymentType = "KLARNA";
+        $payIn->AuthorId = $user->Id;
+
+        $payIn->DebitedFunds = new \MangoPay\Money();
+        $payIn->DebitedFunds->Currency = 'EUR';
+        $payIn->DebitedFunds->Amount = 1500;
+
+        $payIn->Fees = new \MangoPay\Money();
+        $payIn->Fees->Currency = 'EUR';
+        $payIn->Fees->Amount = 300;
+        
+        $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsWeb();
+        $payIn->ExecutionDetails->ReturnURL = "https://mangopay.com/docs/please-ignore"; 
+        $payIn->ExecutionDetails->Culture = 'FR';
+    
+        $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsKlarna();
+        $payIn->PaymentDetails->Email = $user->Email;
+        $payIn->PaymentDetails->Phone = '[+33][689854321]';
+        $payIn->PaymentDetails->Country = $user->Address->Country;
+        $payIn->PaymentDetails->AdditionalData = "your-additional-data"
+        $payIn->PaymentDetails->Reference = '8569';
+
+        $payIn->ExecutionDetails->Billing = new \MangoPay\Billing();
+        $payIn->ExecutionDetails->Billing->FirstName = $user->FirstName;
+        $payIn->ExecutionDetails->Billing->LastName = $user->LastName;
+        $payIn->ExecutionDetails->Billing->Address = new \MangoPay\Address();
+        $payIn->ExecutionDetails->Billing->Address->AddressLine1 =$user->Address->AddressLine1;
+        $payIn->ExecutionDetails->Billing->Address->AddressLine2 =$user->Address->AddressLine2;
+        $payIn->ExecutionDetails->Billing->Address->Region = $user->Address->Region;
+        $payIn->ExecutionDetails->Billing->Address->City = $user->Address->City;
+        $payIn->ExecutionDetails->Billing->Address->PostalCode = $user->Address->PostalCode;
+        $payIn->ExecutionDetails->Billing->Address->Country = $user->Address->Country;
+
+        $payIn->PaymentDetails->Shipping = new \MangoPay\Shipping();
+        $payIn->PaymentDetails->Shipping->FirstName = $user->FirstName;
+        $payIn->PaymentDetails->Shipping->LastName = $user->LastName;
+        $payIn->PaymentDetails->Shipping->Address = new \MangoPay\Address();
+        $payIn->PaymentDetails->Shipping->Address->AddressLine1 =$user->Address->AddressLine1;
+        $payIn->PaymentDetails->Shipping->Address->AddressLine2 =$user->Address->AddressLine2;
+        $payIn->PaymentDetails->Shipping->Address->Region = $user->Address->Region;
+        $payIn->PaymentDetails->Shipping->Address->City = $user->Address->City;
+        $payIn->PaymentDetails->Shipping->Address->PostalCode = $user->Address->PostalCode;
+        $payIn->PaymentDetails->Shipping->Address->Country = $user->Address->Country;
+        
+        $lineItem1 = new \MangoPay\LineItem();
+        $lineItem1->Name = 'Running shoes';
+        $lineItem1->Quantity = 1;
+        $lineItem1->UnitAmount = 400;
+        $lineItem1->TaxAmount = 100;
+        $lineItem1->Description = 'ID of Seller 1';
+
+        $lineItem2 = new \MangoPay\LineItem();
+        $lineItem2->Name = 'Walking shoes';
+        $lineItem2->Quantity = 2;
+        $lineItem2->UnitAmount = 400;
+        $lineItem2->TaxAmount = 100;
+        $lineItem2->Description = 'ID of Seller 2';
+
+        $payIn->PaymentDetails->LineItems = array($lineItem1, $lineItem2);
+        
+        $response = $api->PayIns->Create($payIn);
+    
+        print_r($response);
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }  
+```

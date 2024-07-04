@@ -1,0 +1,31 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardPreAuthorizedDepositPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+preauthorized_deposit_payin = CardPreAuthorizedDepositPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    deposit_id = '3766b5f6-717b-4863-b0e9-aab4d174ad88',
+    debited_funds =  Money(amount=10, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    tag='Created using the Mangopay Python SDK'
+)
+
+create_preauthorized_deposit_payin = preauthorized_deposit_payin.save()
+
+pprint(create_preauthorized_deposit_payin)  
+```

@@ -1,0 +1,29 @@
+```json REST  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def listDocumentsForDispute(disputeId)
+    begin
+        response = MangoPay::Dispute.fetch_documents(disputeId)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch Dispute Documents: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myDispute = {
+    Id:'192746554'
+}
+
+listDocumentsForDispute(myDispute[:Id])  
+```

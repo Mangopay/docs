@@ -1,0 +1,77 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myRecurringRegistration = {
+  PaymentType: 'CARD',
+  ExecutionType: 'DIRECT',
+  AuthorId: '146476890',
+  CardId: '169687329',
+  CreditedUserId: '146476890',
+  CreditedWalletId: '148968396',
+  FirstTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  FirstTransactionFees: {
+    Currency: 'EUR',
+    Amount: 10,
+  },
+  Billing: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  Shipping: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: 'Rue des plantes',
+      AddressLine2: 'The Oasis',
+      City: 'Paris',
+      Region: 'IDF',
+      PostalCode: '75000',
+      Country: 'FR',
+    },
+  },
+  EndDate: 1698923634,
+  Frequency: 'Monthly',
+  FixedNextAmount: false,
+  FractionedPayment: false,
+  FreeCycles: 0,
+  NextTransactionDebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1000,
+  },
+  NextTransactionFees: {
+    Currency: 'EUR',
+    Amount: 10,
+  },
+}
+
+const createRecurringRegistration = async (recurringRegistration) => {
+  return await mangopay.PayIns.createRecurringPayment(recurringRegistration)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createRecurringRegistration(myRecurringRegistration)  
+```

@@ -1,0 +1,56 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $user = new \MangoPay\UserLegal();
+    $user->Name = 'Smith corp';
+    $user->Email = 'smith@example.com';
+    $user->LegalPersonType = \MangoPay\LegalPersonType::Business;
+    
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+    
+    $user->HeadquartersAddress = $address;
+    $user->LegalRepresentativeAddress = $address;
+    
+    $user->LegalRepresentativeFirstName = 'Alex';
+    $user->LegalRepresentativeLastName = 'Smith';
+    $user->LegalRepresentativeEmail = 'asmith@example.com';
+    $user->LegalRepresentativeBirthday = mktime(0, 0, 0, 12, 21, 1975);
+    $user->LegalRepresentativeNationality = 'FR';
+    $user->LegalRepresentativeCountryOfResidence = 'FR';
+    $user->CompanyNumber = 'LU123456';
+    
+    $user->Tag = 'Created using Mangopay PHP SDK';
+    
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Create($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

@@ -1,0 +1,47 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserLegal;
+
+import java.lang.reflect.Field;
+
+public class UpdateLegalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HRS7PQEGE4YGCM1AZK1ENTGE");
+
+        myUser.setName("C. Dickinson");
+        myUser.setEmail("best@dickinson.com");
+
+        User updateUser = mangopay.getUserApi().update(myUser);
+        
+        System.out.println(String.format("id: %s", updateUser.getId()));
+        printObjectFields(updateUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myCard = {
+  fingerprint: '48d63bbcfc2c47fcbc19df35e47b2f8d',
+}
+
+const listCardsFingerprint = async (fingerprint) => {
+  return await mangopay.Cards.getByFingerprint(fingerprint)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+listCardsFingerprint(myCard.fingerprint)  
+```

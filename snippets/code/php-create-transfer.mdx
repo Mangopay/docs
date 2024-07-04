@@ -1,0 +1,40 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $transfer = new \MangoPay\Transfer();
+    $transfer->AuthorId = '146476890';
+    $transfer->CreditedUserId = '174796429 ';
+    $transfer->Tag = 'Created using Mangopay PHP SDK';
+    $transfer->DebitedFunds = new \MangoPay\Money();
+    $transfer->DebitedFunds->Currency = "EUR";
+    $transfer->DebitedFunds->Amount = 1000;
+    $transfer->Fees = new \MangoPay\Money();
+    $transfer->Fees->Currency = "EUR";
+    $transfer->Fees->Amount = 0;
+    $transfer->CreditedWalletId = '174796439';
+    $transfer->DebitedWalletId = '148968396';
+
+    $response = $api->Transfers->Create($transfer);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

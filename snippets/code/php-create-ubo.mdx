@@ -1,0 +1,52 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = '198557165';
+    $uboDeclarationId = '198692872';
+
+    $ubo = new \MangoPay\Ubo();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $ubo->Address = $address;
+    $ubo->FirstName = 'John';
+    $ubo->LastName = 'Doe';
+    $ubo->Nationality = 'FR';
+    $ubo->Birthday = mktime(0, 0, 0, 12, 21, 1975); 
+
+    $Birthplace = new \MangoPay\Birthplace();
+    $Birthplace->City = 'Paris';
+    $Birthplace->Country = 'FR';
+
+    $ubo->Birthplace = $Birthplace;
+
+    $response = $api->UboDeclarations->CreateUbo($userId, $uboDeclarationId, $ubo);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

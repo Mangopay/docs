@@ -1,0 +1,123 @@
+  
+```aspnet .Net  
+
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.POST;
+using System.Reflection;
+
+class CreateKlarnaPayIn {
+    static void Main(string[] args)
+
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var myUser =  await Task.Run(() => api.Users.GetNaturalAsync("210513027"));
+
+            List<LineItem> LineItems = new List<LineItem>();
+
+            var myPayIn = new PayInKlarnaWebPostDTO(
+                authorId: myUser.Id,
+                debitedFunds: new Money {
+                    Amount = 1500,
+                    Currency = CurrencyIso.EUR
+                },
+               fees: new Money {
+                Amount = 300,
+                Currency = CurrencyIso.EUR
+               },
+                creditedWalletId: "210514820",
+                returnUrl: "http://www.mangopay.com/docs/please-ignore",
+                lineItems: new List<LineItem>{
+                    new LineItem
+                        {
+                            Name = "Running shoes",
+                            Quantity = 1,
+                            UnitAmount = 400,
+                            TaxAmount = 100,
+                            Description = "ID of Seller 1"
+                        },
+                        new LineItem
+                        {
+                            Name = "Walking shoes",
+                            Quantity = 2,
+                            UnitAmount = 400,
+                            TaxAmount = 100,
+                            Description = "ID of Seller 2"
+                        }
+                },
+                country: "FR",
+                phone: "[+33][689854321]",
+                email: myUser.Email,
+                additionalData: "{your-additional-data}",
+                billing: new Billing{
+                    FirstName = myUser.FirstName,
+                    LastName = myUser.LastName,
+                    Address = new Address {
+                        AddressLine1 = myUser.Address.AddressLine1,
+                        AddressLine2 = myUser.Address.AddressLine2,
+                        City = myUser.Address.City,
+                        Region = myUser.Address.Region,
+                        PostalCode = myUser.Address.PostalCode,
+                        Country = myUser.Address.Country
+                    },
+                },
+                reference: "2345",
+                culture: "FR",
+                tag: "Created using the Mangopay .NET SDK"
+            );
+       
+            var createKlarnaPayIn = await api.PayIns.CreateKlarnaWebAsync(myPayIn);
+
+            foreach (PropertyInfo prop in createKlarnaPayIn.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(createKlarnaPayIn);
+                if (propValue != null)
+                {
+                    Console.Write($"{prop.Name}: ");
+
+                    if (prop.Name == "Billing")
+                    {
+                        var billing = propValue as Billing;
+                        if (billing != null)
+                        {
+                            Console.WriteLine($"{billing.FirstName} {billing.LastName}");
+                            Console.WriteLine($"Billing Address: {billing.Address.AddressLine1}, {billing.Address.AddressLine2}, {billing.Address.City}, {billing.Address.PostalCode}, {billing.Address.Country}");
+                        }
+                    }
+                    else if (prop.Name == "LineItems")
+                    {
+                        var lineItems = propValue as List<LineItem>;
+                        if (lineItems != null)
+                        {
+                            var counter = 1;
+                            foreach (var item in lineItems) {
+                                Console.WriteLine($"\nLine Item {counter}:");
+                                Console.WriteLine($"- Name: {item.Name} \n- Quantity: {item.Quantity} \n- Unit Amount: {item.UnitAmount} \n- Tax Amount: {item.TaxAmount} \n- Description: {item.Description}");
+                                counter++;
+                            }
+                        }
+                    }
+                    else if (propValue is Money)
+                    {
+                        var money = propValue as Money;
+                        if (money != null)
+                            Console.WriteLine($"Amount: {money.Amount}, Currency: {money.Currency}");
+                    }
+                    else
+                    {
+                        Console.WriteLine(propValue);
+                    }
+                }
+            }
+        }).GetAwaiter().GetResult();
+    }
+}
+  
+```

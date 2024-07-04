@@ -1,0 +1,31 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, DirectDebitDirectPayIn, Money
+
+natural_user = NaturalUser.get('213753890')
+
+direct_debit_direct_payin = DirectDebitDirectPayIn(
+    author_id = natural_user.id,
+    credited_wallet_id = '213754077',
+    debited_funds = Money(amount='1000', currency='EUR'),
+    fees = Money(amount='100', currency='EUR'),
+    tag = 'Created using the Mangopay Python SDK',
+    mandate_id = '214224837',
+    statement_descriptor = 'Jan2024'
+)
+
+create_direct_debit_direct_payin = direct_debit_direct_payin.save()
+
+pprint(create_direct_debit_direct_payin)  
+```

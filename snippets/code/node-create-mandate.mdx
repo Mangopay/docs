@@ -1,0 +1,29 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myMandate = {
+  BankAccountId: '151467634',
+  Culture: 'EN',
+  ReturnUrl: 'https://mangopay.com/docs/please-ignore',
+}
+
+const createMandate = async (mandate) => {
+  return await mangopay.Mandates.create(mandate)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createMandate(myMandate)  
+```

@@ -1,0 +1,45 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myReport = {
+    ReportType: 'wallets',
+    Tag: 'Created with Mangopay Ruby SDK',
+    DownloadFormat: 'CSV',
+    CallbackURL: 'https://mangopay.com/docs/please-ignore',
+    Sort: 'CreationDate:ASC',
+    Preview: false,
+    Filters: {
+      BeforeDate: 1658838931,
+      AfterDate: 1656246931,
+      OwnerId: nil,
+      Currency: 'EUR',
+      MinBalanceAmount: 1,
+      MinBalanceCurrency: 'EUR',
+      MaxBalanceAmount: 1000000,
+      MaxBalanceCurrency: 'EUR'
+    },
+    Columns: [
+      'Id',
+      'Tag',
+      'CreationDate',
+      'Owners',
+      'Description',
+      'BalanceAmount',
+      'BalanceCurrency',
+      'Currency',
+      'FundsType'
+    ]
+
+}
+
+createWalletsReport(myReport)  
+```

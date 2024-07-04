@@ -1,0 +1,31 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PayInRefund, DirectDebitDirectPayIn
+from mangopay.utils import Money
+
+natural_user = NaturalUser.get('213753890')
+
+natural_user_wallet_id = '213754077'
+
+user_payin = DirectDebitDirectPayIn.get('214568733')
+
+payin_refund = PayInRefund(
+    author = natural_user,
+    payin = user_payin
+)
+
+create_payin_refund = payin_refund.save()
+
+pprint(create_payin_refund)  
+```

@@ -1,0 +1,49 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Ubo, UboDeclaration, LegalUser
+from mangopay.utils import Address, Birthplace
+
+legal_user = LegalUser(
+    id = '210760575'
+)
+
+user_ubo_declaration = UboDeclaration(
+    id = '210863422'
+)
+
+user_ubo = Ubo(
+    first_name = “Ellie”, 
+    last_name = “Adams”, 
+    address = Address(
+        address_line_1 = ’23 Brook Road’,
+        city = 'London',
+        postal_code = 'NE1 0AA',
+        country = 'GB',
+    ),
+    nationality = 'GB',
+    birthday = 336672000,
+    birthplace = Birthplace(
+        city = 'London',
+        country = 'GB'
+    ),
+    user = legal_user,
+    ubo_declaration = user_ubo_declaration,
+    isActive = True
+)
+
+create_ubo = user_ubo.save()
+
+pprint(create_ubo)
+  
+```

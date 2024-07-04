@@ -1,0 +1,28 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import Mandate
+
+bank_account_id = '214050174'
+
+mandate = Mandate(
+    bank_account_id = bank_account_id,
+    culture = 'EN',
+    return_url = 'https://mangopay.com/docs/please-ignore',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_mandate = mandate.save()
+
+pprint(create_mandate)  
+```

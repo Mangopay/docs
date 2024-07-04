@@ -1,0 +1,64 @@
+  
+```aspnet .Net  
+
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using System.Reflection;
+
+class ViewKlarnaPayIn {
+    static void Main(string[] args)
+    {
+        Task.Run(async () => {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var myKlarnaPayIn =  await Task.Run(() => api.PayIns.GetKlarnaAsync("wt_d822a98d-18c5-4cd0-9cc2-cac6cb635be5"));
+
+            foreach (PropertyInfo prop in myKlarnaPayIn.GetType().GetProperties())
+            {
+                var propValue = prop.GetValue(myKlarnaPayIn);
+                if (propValue != null)
+                {
+                    Console.Write($"{prop.Name}: ");
+
+                    if (prop.Name == "Billing")
+                    {
+                        var billing = propValue as Billing;
+                        if (billing != null)
+                        {
+                            Console.WriteLine($"{billing.FirstName} {billing.LastName}");
+                            Console.WriteLine($"Billing Address: {billing.Address.AddressLine1}, {billing.Address.AddressLine2}, {billing.Address.City}, {billing.Address.PostalCode}, {billing.Address.Country}");
+                        }
+                    }
+                    else if (prop.Name == "LineItems")
+                    {
+                        var lineItems = propValue as List<LineItem>;
+                        if (lineItems != null)
+                        {
+                            var counter = 1;
+                            foreach (var item in lineItems) {
+                                Console.WriteLine($"\nLine Item {counter}:");
+                                Console.WriteLine($"- Name: {item.Name} \n- Quantity: {item.Quantity} \n- Unit Amount: {item.UnitAmount} \n- Tax Amount: {item.TaxAmount} \n- Description: {item.Description}");
+                                counter++;
+                            }
+
+                        }
+                    }
+                    else if (propValue is Money)
+                    {
+                        var money = propValue as Money;
+                        if (money != null)
+                            Console.WriteLine($"Amount: {money.Amount}, Currency: {money.Currency}");
+                    }
+                    else
+                    {
+                        Console.WriteLine(propValue);
+                    }
+                }
+            }
+        }).GetAwaiter().GetResult();
+    }
+}  
+```

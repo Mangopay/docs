@@ -1,0 +1,42 @@
+  
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPreauthorizedPayIn(payInObject)
+    begin
+        response = MangoPay::PayIn::PreAuthorized::Direct.create(payInObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create preauthorized payin: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myPreauthorizedPayIn = {
+    AuthorId: '192822811',
+    Tag: 'Created with Mangopay Ruby SDK',
+    CreditedUserId: '192822811',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 900,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 100,
+    },
+    CreditedWalletId: '192822814',
+    PreauthorizationId: '195059241'
+  }
+
+createPreauthorizedPayIn(myPreauthorizedPayIn)  
+```

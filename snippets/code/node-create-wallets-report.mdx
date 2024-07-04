@@ -1,0 +1,53 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+    clientId: 'your-client-id',
+    clientApiKey: 'your-api-key',
+})
+
+let myWalletsReport = {
+  ReportType: 'WALLET',
+  Tag: 'Created with Mangopay NodeJs SDK',
+  DownloadFormat: 'CSV',
+  CallbackURL: 'https://mangopay.com/docs/please-ignore',
+  Sort: 'CreationDate:ASC',
+  Preview: false,
+  Filters: {
+    BeforeDate: 1658838931,
+    AfterDate: 1656246931,
+    OwnerId: null,
+    Currency: 'EUR',
+    MinBalanceAmount: 1,
+    MinBalanceCurrency: 'EUR',
+    MaxBalanceAmount: 1000000,
+    MaxBalanceCurrency: 'EUR',
+  },
+  Columns: [
+    'Id',
+    'Tag',
+    'CreationDate',
+    'Owners',
+    'Description',
+    'BalanceAmount',
+    'BalanceCurrency',
+    'Currency',
+    'FundsType',
+  ],
+}
+
+const createWalletsReport = async (report) => {
+  return await mangopay.Reports.create(report)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createWalletsReport(myWalletsReport)  
+```

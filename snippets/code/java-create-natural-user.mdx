@@ -1,0 +1,64 @@
+  
+```java Java  
+
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.entities.User;
+import com.mangopay.entities.UserNatural;
+import com.mangopay.core.enumerations.UserCategory;
+import com.mangopay.core.enumerations.CountryIso;
+
+import java.lang.reflect.Field;
+
+public class CreateNaturalUser {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        UserNatural user = new UserNatural();
+        Address address = new Address();
+
+        address.setAddressLine1("27 Rue de Rivoli");
+        address.setCity("Paris");
+        address.setRegion("Île-de-France");
+        address.setPostalCode("75001");
+        address.setCountry(CountryIso.FR);
+
+        user.setFirstName("Alex");
+        user.setLastName("Smith");
+        user.setEmail("alex.smith@mgp.com");
+        user.setAddress(address);
+        user.setBirthday(655772400);
+        user.setNationality(CountryIso.FR);
+        user.setCountryOfResidence(CountryIso.FR);
+        user.setTermsAndConditionsAccepted(true);
+        user.setTag("Created using the Mangopay Java SDK");
+        user.setUserCategory(UserCategory.PAYER);
+
+        User createUser = mangopay.getUserApi().create(user);  
+        
+        System.out.println(String.format("id: %s", createUser.getId()));
+        printObjectFields(createUser);
+    }
+
+    private static void printObjectFields(Object obj) {
+        Class<?> objClass = obj.getClass();
+        Field[] fields = objClass.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(obj);
+                if (value instanceof Address) {
+                    System.out.println(field.getName() + ": ");
+                    printObjectFields(value); 
+                } else {
+                    System.out.println(field.getName() + ": " + value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}  
+```

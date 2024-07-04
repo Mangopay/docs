@@ -1,0 +1,32 @@
+  
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cardRegistration = new \MangoPay\CardRegistration();
+
+    $cardRegistration->Id = '198660792';
+    $cardRegistration->RegistrationData = 'data=EwQibNkLWbGepaBektTHQcnk7KxDDpQybRm3BWmKLu4DKdgmC-JI0b4bK9UW5C3u1L4A4AkhT3LJqC3_FAvbwYQXIPvj1ElxL2OIJfvlS3YXlJyOctdX1PGkkgCkgl3j0ftIYwFxOdfmDQ5GtM_cIg';
+
+    $response = $api->CardRegistrations->Update($cardRegistration);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

@@ -1,0 +1,42 @@
+  
+```python Python  
+
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, PreAuthorization
+from mangopay.utils import Money, BrowserInfo
+
+natural_user = NaturalUser.get('213600749')
+
+card_preauthorization = PreAuthorization(
+    author = natural_user,
+    debited_funds = Money(amount=100, currency='GBP'),
+    card_id = '213635147',
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    ip_address = '159.180.248.187', 
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_card_preauthorization = card_preauthorization.save()
+
+pprint(create_card_preauthorization)  
+```

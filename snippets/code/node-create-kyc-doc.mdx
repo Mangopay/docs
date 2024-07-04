@@ -1,0 +1,22 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key",
+});
+
+let kycDocument = {
+    Type: 'IDENTITY_PROOF',
+    Tag: "Created by the NodeJs SDK"
+};
+
+await mangopay.Users.createKycDocument(userId, kycDocument)
+                    .then((response) => {
+                        res.send(response);
+                    }).catch((err) => {
+                        console.log(err);
+                        res.sendStatus(500);
+                    });  
+```

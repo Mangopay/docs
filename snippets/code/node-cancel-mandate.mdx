@@ -1,0 +1,27 @@
+  
+```javascript NodeJS  
+
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myMandate = {
+  Id: '192790303',
+}
+
+const cancelMandate = async (mandateId) => {
+  return await mangopay.Mandates.cancel(mandateId)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+cancelMandate(myMandate.Id)  
+```
