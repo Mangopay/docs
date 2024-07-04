@@ -22,6 +22,10 @@ import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import SettlementId from '/snippets/p-path/SettlementId.mdx';
   
+import PhpViewRepudiation1 from '/snippets/code/php-view-repudiation1.mdx';
+import NodeViewSettlementTransfer from '/snippets/code/node-view-settlement-transfer.mdx';
+import RubyViewSettlementTransfer from '/snippets/code/ruby-view-settlement-transfer.mdx';
+import ViewSettlementTransferPython from '/snippets/code/view-settlement-transfer-python.mdx';
 
 <Note>
 **Note – Settlement transfer data retained for 13 months**
@@ -111,109 +115,9 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <RequestExample>  
   
-```php PHP  
-<?php 
+    <PhpViewRepudiation1 />
+    <NodeViewSettlementTransfer />
+    <RubyViewSettlementTransfer />
+    <ViewSettlementTransferPython />
 
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $settlementTransferId = '199394630';
-
-    $response = $api->Disputes->GetSettlementTransfer($settlementTransferId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let mySettlementTransfer = {
-  Id: '192776141',
-}
-
-const viewSettlementTransfer = async (settlementTransferId) => {
-  return await mangopay.Disputes.getSettlementTransfer(settlementTransferId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewSettlementTransfer(settlementTransferId)
-    begin
-        response = MangoPay::Dispute.fetch_settlement_transfer(settlementTransferId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch settlement transfer: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-mySettlementTransfer = {
-    Id: '194996201'
-}
-
-viewSettlementTransfer(mySettlementTransfer[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import SettlementTransfer
-
-try:
-    view_settlement_transfer = SettlementTransfer.get('repudstl_m_01HQWXSKCQHTNN45341N23GHPT')
-    pprint(view_settlement_transfer._data)
-except SettlementTransfer.DoesNotExist:
-    print('Settlement Transfer {} does not exist.'.format(view_settlement_transfer))  
-```  
-
-  
 </RequestExample>

@@ -27,6 +27,10 @@ import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx'
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import PayInId from '/snippets/p-path/PayInId.mdx';
+
+
+import ViewPayinPhp from '/snippets/code/view-payin-php.mdx';
+import ViewPayinPython from '/snippets/code/view-payin-python.mdx';
   
 
 <Note>
@@ -155,56 +159,7 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <RequestExample>  
   
-```php PHP 
-<?php 
+    <ViewPayinPhp />
+    <ViewPayinPython />
 
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-
-try {
-    $payinId = 'wt_ec4590a3-3ef0-40ef-a6df-945c84729726';
-
-    $response = $api->PayIns->Get($payinId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```
-
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import PayIn
-
-payin_id = 'wt_4fdf7754-6213-4016-be88-84587f093623'
-
-try:
-    view_payin = PayIn.get(payin_id)
-    pprint(view_payin._data)
-except PayIn.DoesNotExist:
-    print('PayIn {} does not exist.'.format(payin_id))  
-```  
-
-  
 </RequestExample>

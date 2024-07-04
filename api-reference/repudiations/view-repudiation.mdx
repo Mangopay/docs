@@ -23,6 +23,10 @@ import CreditedUserId1Response from '/snippets/p-response/CreditedUserId1Respons
 import AuthorId3Response from '/snippets/p-response/AuthorId3Response.mdx';
 import RepudiationId from '/snippets/p-path/RepudiationId.mdx';
   
+import PhpViewRepudiation from '/snippets/code/php-view-repudiation.mdx';
+import NodeViewRepudiation from '/snippets/code/node-view-repudiation.mdx';
+import RubyViewRepudiation from '/snippets/code/ruby-view-repudiation.mdx';
+import ViewRepudationPython from '/snippets/code/view-repudation-python.mdx';
 
 ### Path parameters  
 
@@ -108,112 +112,9 @@ import RepudiationId from '/snippets/p-path/RepudiationId.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
+    <PhpViewRepudiation />
+    <NodeViewRepudiation />
+    <RubyViewRepudiation />
+    <ViewRepudationPython />
 
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $repudiationId = '199385843';
-
-    $response = $api->Disputes->GetRepudiation($repudiationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRepudiation = {
-  Id: '192775715',
-}
-
-const viewRedpudiation = async (repudiationId) => {
-  return await mangopay.Disputes.getRepudiation(repudiationId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewRedpudiation(myRepudiation.Id)  
-```  
-
-  
-```json REST  
-
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewRepudiation(repudiationId)
-    begin
-        response = MangoPay::Dispute.fetch_repudiation(repudiationId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Repudiation: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRepudiation = {
-    Id:'192775715'
-}
-
-viewRepudiation(myRepudiation[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Repudiation
-
-try:
-    repudiation = Repudiation.get('repud_m_01HQT6XRGWQWKCGF4GYRVTAKC1')
-    pprint(repudiation._data)
-except Repudiation.DoesNotExist:
-    print('Repudiation {} does not exist.'.format(repudiation))  
-```  
-
-  
 </RequestExample>

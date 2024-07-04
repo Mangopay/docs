@@ -33,6 +33,11 @@ import CreditedUserId from '/snippets/p-body/CreditedUserId.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
   
+import RestDirectBankWirePayin from '/snippets/code/rest-direct-bank-wire-payin.mdx';
+import PhpCreateADirectBankWirePayin from '/snippets/code/php-create-a-direct-bank-wire-payin.mdx';
+import NodeCreateDirectBankwirePayin from '/snippets/code/node-create-direct-bankwire-payin.mdx';
+import RubyCreateDirectBankwirePayin from '/snippets/code/ruby-create-direct-bankwire-payin.mdx';
+import PythonCreateDirectBankWirePayin from '/snippets/code/python-create-direct-bank-wire-payin.mdx';
 
 The object expires 1 month after creation if no funds are received.  
 
@@ -171,180 +176,10 @@ If the end user wires the funds with the incorrect reference, to a different acc
 
 <RequestExample>  
   
-```json REST  
-{
-    "Tag": "Custom meta",
-    "AuthorId": "156671912",
-    "CreditedUserId": "156671912",
-    "CreditedWalletId": "156683554",
-    "DeclaredDebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 1000
-    },
-    "DeclaredFees": {
-        "Currency": "EUR",
-        "Amount": 0
-    },
-}
-```  
-
-```php PHP 
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-
-try {
-    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
-    $walletId = 'wlt_m_01HQT6422EER2N7FPRXWTSDCSV';
-
-    $bankwirePayIn = new \MangoPay\PayIn();
-    $bankwirePayIn->AuthorId = $userId;
-    $bankwirePayIn->CreditedWalletId = $walletId;
-
-    $bankwirePayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsBankWire();
-
-    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds = new \MangoPay\Money();
-    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds->Amount = 1000;
-    $bankwirePayIn->PaymentDetails->DeclaredDebitedFunds->Currency = 'EUR';
-
-    $bankwirePayIn->PaymentDetails->DeclaredFees = new \MangoPay\Money();
-    $bankwirePayIn->PaymentDetails->DeclaredFees->Amount = 0;
-    $bankwirePayIn->PaymentDetails->DeclaredFees->Currency = 'EUR';
+    <RestDirectBankWirePayin />
+    <PhpCreateADirectBankWirePayin />
+    <NodeCreateDirectBankwirePayin />
+    <RubyCreateDirectBankwirePayin />
+    <PythonCreateDirectBankWirePayin />
     
-    $bankwirePayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
-    $bankwirePayIn->ExecutionDetails->Culture = 'FR';
-
-    $response = $api->PayIns->Create($bankwirePayIn);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}
-```
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDirectBankWirePayIn = {
-  PaymentType: 'BANK_WIRE',
-  ExecutionType: 'DIRECT',
-  AuthorId: '146476890',
-  Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: '146476890',
-  DeclaredDebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  DeclaredFees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  CreditedWalletId: '148968396',
-}
-
-const createDirectBankWirePayIn = async (payin) => {
-  return await mangopay.PayIns.create(payin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createDirectBankWirePayIn(myDirectBankWirePayIn)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createDirectBankWirePayIn(payInObject)
-    begin
-        response = MangoPay::PayIn::BankWire::Direct.create(payInObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create pay-in: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPayIn = {
-    AuthorId: '146476890',
-    Tag: 'Created with Mangopay Node.js SDK',
-    CreditedUserId: '146476890',
-    DeclaredDebitedFunds: {
-      Currency: 'EUR',
-      Amount: 1000,
-    },
-    DeclaredFees: {
-      Currency: 'EUR',
-      Amount: 100,
-    },
-    CreditedWalletId: '148968396',
-  }
-
-createDirectBankWirePayIn(myPayIn)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Wallet, BankWirePayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('213753890')
-
-user_wallet = Wallet.get('215029593')
-
-direct_bank_wire_payin = BankWirePayIn(
-    author_id=natural_user,
-    credited_wallet_id=user_wallet.id,
-    declared_debited_funds=Money(amount=1000, currency='EUR'),
-    declared_fees=Money(amount=50, currency='EUR')
-)
-
-create_direct_bank_wire_payin = direct_bank_wire_payin.save()
-
-pprint(create_direct_bank_wire_payin)  
-```  
-
-  
 </RequestExample>
