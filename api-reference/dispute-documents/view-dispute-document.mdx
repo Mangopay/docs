@@ -13,7 +13,12 @@ import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Type4Response from '/snippets/p-response/Type4Response.mdx';
 import DisputeIdResponse from '/snippets/p-response/DisputeIdResponse.mdx';
 import DisputeDocumentId from '/snippets/p-path/DisputeDocumentId.mdx';
-  
+
+import PhpViewDisputeDocument from '/snippets/code/php-view-dispute-document.mdx';
+import NodeViewDisputeDocument from '/snippets/code/node-view-dispute-document.mdx';
+import RubyViewDisputeDocument from '/snippets/code/ruby-view-dispute-document.mdx';
+import ViewDisputeDocumentPython from '/snippets/code/view-dispute-document-python.mdx';
+
 
 ### Path parameters  
 
@@ -61,114 +66,8 @@ import DisputeDocumentId from '/snippets/p-path/DisputeDocumentId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $disputeDocumentId = '199387308';
-
-    $response = $api->DisputeDocuments->Get($disputeDocumentId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDisputeDocument = {
-  Id: '192747541',
-}
-
-const viewDisputeDocument = async (disputeDocumentId) => {
-  return await mangopay.DisputeDocuments.get(disputeDocumentId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewDisputeDocument(myDisputeDocument.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewDisputeDocument(disputeDocumentId)
-    begin
-        response = MangoPay::Dispute.fetch_document(disputeDocumentId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Document: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDocument = {
-    Id:'159188418'
-}
-
-viewDisputeDocument(myDocument[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import DisputeDocument
-
-dispute_doc_id = 'dispdoc_m_01HQTAHCSMH0Q6MRHYWZ0B39M5'
-
-try:
-    view_dispute_doc = DisputeDocument.get(dispute_doc_id)
-    pprint(view_dispute_doc._data)
-except DisputeDocument.DoesNotExist:
-    print('Dispute doc {} does not exist.'.format(view_dispute_doc.id))  
-```  
-
-  
+  <PhpViewDisputeDocument />
+  <NodeViewDisputeDocument />
+  <RubyViewDisputeDocument />
+  <ViewDisputeDocumentPython />
 </RequestExample>

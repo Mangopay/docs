@@ -6,6 +6,11 @@ api: 'GET /v2.01/{ClientId}/users/{UserId}/disputes'
 import Array_DisputesResponse from '/snippets/p-response/Array_DisputesResponse.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
   
+import PhpListDisputesUser from '/snippets/code/php-list-disputes-user.mdx';
+import NodeListDisputesUser from '/snippets/code/node-list-disputes-user.mdx';
+import RubyListDisputesUser from '/snippets/code/ruby-list-disputes-user.mdx';
+import ListUserDisputesPython from '/snippets/code/list-user-disputes-python.mdx';
+
 
 ### Path parameters  
 
@@ -57,114 +62,10 @@ import UserId from '/snippets/p-path/UserId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
 
-require_once 'vendor/autoload.php';
+  <PhpListDisputesUser />
+  <NodeListDisputesUser />
+  <RubyListDisputesUser />
+  <ListUserDisputesPython />
 
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890';
-
-    $response = $api->Disputes->GetDisputesForUser($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myUser = {
-  Id: '146476890',
-}
-
-const listDisputesUser = async (userId) => {
-  return await mangopay.Disputes.getDisputesForUser(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listDisputesUser(myUser.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listUserDisputes(userId)
-    begin
-        response = MangoPay::Dispute.fetch_for_user(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Dispute: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '146476890'
-}
-
-listUserDisputes(myUser[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Dispute
-
-natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
-
-disputes = Dispute.all(user_id = natural_user.id)
-
-for dispute in disputes:   
-    print()
-    pprint(dispute._data)  
-```  
-
-  
 </RequestExample>

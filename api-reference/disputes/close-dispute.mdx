@@ -21,7 +21,12 @@ import InitialTransactionNatureResponse from '/snippets/p-response/InitialTransa
 import InitialTransactionTypeResponse from '/snippets/p-response/InitialTransactionTypeResponse.mdx';
 import InitialTransactionIdResponse from '/snippets/p-response/InitialTransactionIdResponse.mdx';
 import DisputeId from '/snippets/p-path/DisputeId.mdx';
-  
+
+import RestCloseDispute from '/snippets/code/rest-close-dispute.mdx';
+import PhpCloseDispute from '/snippets/code/php-close-dispute.mdx';
+import NodeResubmitDispute1 from '/snippets/code/node-resubmit-dispute1.mdx';
+import RubyCloseDispute from '/snippets/code/ruby-close-dispute.mdx';
+import CloseDisputePython from '/snippets/code/close-dispute-python.mdx';
 
 <Note>  
 **Note – Empty body required** 
@@ -108,120 +113,9 @@ For the call to be successful, you need to pass an empty body.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $disputeId = '199385514';
-    
-    $response = $api->Disputes->CloseDispute($disputeId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '192775714',
-}
-
-const closeDispute = async (disputeId) => {
-  return await mangopay.Disputes.closeDispute(disputeId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-closeDispute(myDispute.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def closeDispute(disputeId)
-    begin
-        response = MangoPay::Dispute.close(disputeId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to close Dispute: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDispute = {
-    Id: '194618171'
-}
-
-closeDispute(myDispute[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Dispute
-
-dispute = Dispute(
-    id = 'dispute_m_01HQT6XRGC0JNZ27E339AX8QBB'
-)
-
-close_dispute = dispute.close()
-
-pprint(close_dispute._data)  
-```  
-
-  
+  <RestCloseDispute />
+  <PhpCloseDispute />
+  <NodeResubmitDispute1 />
+  <RubyCloseDispute />
+  <CloseDisputePython />
 </RequestExample>
