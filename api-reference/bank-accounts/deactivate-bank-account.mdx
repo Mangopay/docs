@@ -17,6 +17,10 @@ import Active from '/snippets/p-body/Active.mdx';
 import BankAccountId from '/snippets/p-path/BankAccountId.mdx';
 import UserId1 from '/snippets/p-path/UserId1.mdx';
   
+import RestDeactivateBankAccount from '/snippets/code/rest-deactivate-bank-account.mdx';
+import NodeDeactivateBankAccount from '/snippets/code/node-deactivate-bank-account.mdx';
+import RubyDeactivateBankAccount from '/snippets/code/ruby-deactivate-bank-account.mdx';
+import PythonDeactivateBankAccount from '/snippets/code/python-deactivate-bank-account.mdx';
 
 ### Path parameters  
 
@@ -81,107 +85,9 @@ import UserId1 from '/snippets/p-path/UserId1.mdx';
 
 <RequestExample>  
   
-```json REST  
-{
-    "Active":false
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '165863393',
-}
-
-let bankAccount = {
-  Id: '172327870',
-}
-
-const deactivateBankAccount = async (userId, bankAccountId) => {
-  return await mangopay.Users.deactivateBankAccount(userId, bankAccountId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-deactivateBankAccount(user.Id, bankAccount.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def deactivateBankAccount(userId, bankAccountId, params)
-    begin
-        response = MangoPay::BankAccount.update(userId, bankAccountId, params)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to deactivate bank account: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '165863393'
-}
-
-myBankAccount = {
-    Id: '194239783',
-}
-
-myParams = {
-    Active: false,
-}
-
-deactivateBankAccount(myUser[:Id], myBankAccount[:Id], myParams)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, BankAccount
-
-natural_user = NaturalUser.get('213753890')
-
-bank_account = BankAccount(
-    user_id = natural_user.id,
-    id = '214328750',
-    active = False
-)
-
-deactivate_bank_account = bank_account.save()
-
-pprint(deactivate_bank_account)  
-```  
-
+  <RestDeactivateBankAccount />
+  <NodeDeactivateBankAccount />
+  <RubyDeactivateBankAccount />
+  <PythonDeactivateBankAccount />
   
 </RequestExample>
