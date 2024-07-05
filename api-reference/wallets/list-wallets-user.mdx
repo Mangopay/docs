@@ -7,6 +7,12 @@ import Array_WalletsResponse from '/snippets/p-response/Array_WalletsResponse.md
 import UserId from '/snippets/p-path/UserId.mdx';
   
 
+import PhpListWallet from '/snippets/code/php-list-wallet.mdx';
+import NodeListWalletsUser from '/snippets/code/node-list-wallets-user.mdx';
+import RubyListWalletsUser from '/snippets/code/ruby-list-wallets-user.mdx';
+import JavaListUserWallets from '/snippets/code/list-user-wallets-java.mdx';
+import PythonListUserWallets from '/snippets/code/python-list-user-wallets.mdx';
+
 ### Path parameters  
 
 <UserId />  
@@ -59,157 +65,10 @@ import UserId from '/snippets/p-path/UserId.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890';
-
-    $response = $api->Users->GetWallets($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-const listUserWallets = async (userId) => {
-  return await mangopay.Users.getWallets(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUserWallets(user.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listUserWallets(userId)
-    begin
-        response = MangoPay::User.wallets(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch wallets for the user: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '146476890',
-}
-
-listUserWallets(myUser[:Id])  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
-public class ListUserWallets {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-clientid");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        var userId = "user_m_01HSAVT2J0REPGV5ZRPNK079K9";
-
-        List<Wallet> wallets = mangopay.getUserApi().getWallets(userId);
-
-        for (Wallet wallet : wallets) {
-            wallet = mangopay.getWalletApi().get(wallet.getId());
-		    System.out.println(String.format("\nid: %s", wallet.getId()));
-            printObjectFields(wallet);
-        }
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser
-
-natural_user = NaturalUser.get('213753890')
-
-wallets = natural_user.wallets
-
-for wallet in wallets:
-    pprint(vars(wallet))  
-```  
-
+    <PhpListWallet />
+    <NodeListWalletsUser />
+    <RubyListWalletsUser />
+    <JavaListUserWallets />
+    <PythonListUserWallets />
   
 </RequestExample>

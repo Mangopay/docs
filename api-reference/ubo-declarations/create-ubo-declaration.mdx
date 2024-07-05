@@ -13,6 +13,12 @@ import UserId2Response from '/snippets/p-response/UserId2Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
 
+import PhpCreateUboDeclaration from '/snippets/code/php-create-ubo-declaration.mdx';
+import NodeCreateUboDeclaration from '/snippets/code/node-create-ubo-declaration.mdx';
+import RubyCreateUboDeclaration from '/snippets/code/ruby-create-ubo-declaration.mdx';
+import JavaCreateUboDeclaration from '/snippets/code/create-ubo-declaration-java.mdx';
+import PythonCreateUboDeclaration from '/snippets/code/python-create-ubo-declaration.mdx';
+
 [Read more about the UBO Declaration object →](/api-reference/ubo-declarations/ubo-declaration-object)
 
 ### Path parameters  
@@ -102,150 +108,10 @@ import UserId from '/snippets/p-path/UserId.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '199463368';
-
-    $response = $api->UboDeclarations->Create($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myUser = {
-  Id: '170853400',
-}
-
-const createUboDeclaration = async (userId) => {
-  return await mangopay.UboDeclarations.create(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createUboDeclaration(myUser.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createUboDeclaration(legalUserId)
-    begin
-        response = MangoPay::UboDeclaration.create(legalUserId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create UBO Declaration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myLegalUser = {
-    Id: '194338122'
-}
-
-createUboDeclaration(myLegalUser[:Id])  
-```  
-
-```java Java
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.UboDeclaration;
-import com.mangopay.entities.UserLegal;
-
-import java.lang.reflect.Field;
-
-public class CreateUBODeclaraction {
-     public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HQK53VP687RBSH2Q5TJZRR3S");
-    
-        UboDeclaration createUboDeclaration = mangopay.getUboDeclarationApi().create(myUser.getId());
-
-        System.out.println(String.format("id: %s", createUboDeclaration.getId()));
-        printObjectFields(createUboDeclaration);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import UboDeclaration, LegalUser
-
-legal_user = LegalUser(
-    id = '210760575'
-)
-
-ubo_declaration = UboDeclaration(user=legal_user)
-create_ubo_declaration = ubo_declaration.save()
-
-pprint(create_ubo_declaration)  
-```  
-
+    <PhpCreateUboDeclaration />
+    <NodeCreateUboDeclaration />
+    <RubyCreateUboDeclaration />
+    <JavaCreateUboDeclaration />
+    <PythonCreateUboDeclaration />
   
 </RequestExample>

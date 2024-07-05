@@ -8,6 +8,10 @@ import AfterDate from '/snippets/p-query/AfterDate.mdx';
 import BeforeDate from '/snippets/p-query/BeforeDate.mdx';
 import EventType from '/snippets/p-query/EventType.mdx';
   
+import PhpListEvents from '/snippets/code/php-list-events.mdx';
+import NodeListEvents from '/snippets/code/node-list-events.mdx';
+import RubyListEvents from '/snippets/code/ruby-list-events.mdx';
+import PythonListEvents from '/snippets/code/list-events-python.mdx';
 
 <Note>  
 **Note** 
@@ -75,103 +79,10 @@ Events are returned up to 45 days after they occur. Any request attempting to ac
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
 
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $response = $api->Events->GetAll();
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-const listEvents = async () => {
-  return await mangopay.Events.getAll()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listEvents()  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listEvents()
-    begin
-        response = MangoPay::Event.fetch()
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch events: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-listEvents()  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Event
-
-events = Event.all()
-
-for event in events:
-    pprint(event._data)
-    print()  
-```  
-
+    <PhpListEvents />
+    <NodeListEvents />
+    <RubyListEvents />
+    <PythonListEvents />
   
 </RequestExample>

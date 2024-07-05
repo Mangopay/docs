@@ -7,6 +7,10 @@ import Array_CardsResponse from '/snippets/p-response/Array_CardsResponse.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
 import Active1 from '/snippets/p-query/Active1.mdx';
   
+import PhpListCardsUser from '/snippets/code/list-cards-user-php.mdx';
+import NodeListCardsUser from '/snippets/code/node-list-cards-user.mdx';
+import RubyListCardsUser from '/snippets/code/ruby-list-cards-user.mdx';
+import PythonListUserCards from '/snippets/code/python-list-user-cards.mdx';
 
 ### Query parameters  
 
@@ -68,113 +72,10 @@ import Active1 from '/snippets/p-query/Active1.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
 
-require_once 'vendor/autoload.php';
+    <PhpListCardsUser />
+    <NodeListCardsUser />
+    <RubyListCardsUser />
+    <PythonListUserCards />
 
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890';
-
-    $response = $api->Users->GetCards($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-const listUserCards = async (userId) => {
-  return await mangopay.Users.getCards(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUserCards(user.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listUserCards(userId)
-    begin
-        response = MangoPay::User.cards(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch cards for the user: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '146476890'
-}
-
-listUserCards(myUser[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser
-
-natural_user = NaturalUser.get('211919260')
-
-cards = natural_user.cards.all()
-
-for card in cards:
-    pprint(vars(card))  
-```  
-
-  
 </RequestExample>
