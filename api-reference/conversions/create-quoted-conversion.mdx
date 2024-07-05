@@ -25,6 +25,7 @@ import DebitedWalletId1 from '/snippets/p-body/DebitedWalletId1.mdx';
 import AuthorId4 from '/snippets/p-body/AuthorId4.mdx';
 import QuoteId from '/snippets/p-body/QuoteId.mdx';
   
+import RestCreateQuotedConversion from '/snippets/code/rest-create-quoted-conversion.mdx'
 
 This call triggers a conversion, at the rate guaranteed by its quote, of the debited funds to the credited wallet.  
 
@@ -210,54 +211,5 @@ Each quoted conversion requires a dedicated Quote object, linked in the `QuoteId
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "QuoteId": "cvrquote_01HP1H6EK4H39SCQ8WJ349WMBB",
-    "AuthorId": "204071581",
-    "DebitedWalletId": "204079338",
-    "CreditedWalletId": "209408867",
-    "Tag": "Created using the Mangopay API Postman collection"
-}  
-```  
-
-```java Java 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.Conversion;
-import com.mangopay.entities.CreateQuotedConversion;
-
-public class CreatingQuotedConversion {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-
-        var debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
-        var debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
-
-        var creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
-
-        var quoteId = "cvrquote_01J1YPZQXF6A5AAG7YCZAM9D9N";
-
-        CreateQuotedConversion quotedConversion = new CreateQuotedConversion();
-        
-        quotedConversion.setQuoteId(quoteId);
-        quotedConversion.setAuthorId(debitedUserId);
-        quotedConversion.setDebitedWalletId(debitedWalletId);
-        quotedConversion.setCreditedWalletId(creditedWalletId);
-        quotedConversion.setTag("Created using the Mangopay Java SDK");
-
-        Conversion createQuotedConversion = mangopay.getConversionsApi().createQuotedConversion(quotedConversion, null);
-
-        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
-        String prettyJson = prettyPrint.toJson(createQuotedConversion);
-
-        System.out.println(prettyJson);
-    }
-}
-```
-  
+    <RestCreateQuotedConversion />
 </RequestExample>

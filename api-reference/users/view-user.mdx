@@ -41,7 +41,12 @@ import LastName1Response from '/snippets/p-response/LastName1Response.mdx';
 import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
 import Address3Response from '/snippets/p-response/Address3Response.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
-  
+
+import PhpViewUser from '/snippets/code/php-view-user.mdx';
+import NodeViewUser from '/snippets/code/node-view-user.mdx';
+import RubyViewUser from '/snippets/code/ruby-view-user.mdx';
+import JavaViewUser from '/snippets/code/java-view-user.mdx';
+import PythonViewUser from '/snippets/code/python-view-user.mdx';
 
 ### Path parameters  
 
@@ -319,155 +324,9 @@ import UserId from '/snippets/p-path/UserId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '198675834';
- 
-    $response = $user = $api->Users->Get($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-const getUser = async (userId) => {
-  return await mangopay.Users.get(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getUser(user.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewUser(userId)
-    begin
-        response = MangoPay::User.fetch(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch User: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '146476890'
-}
-
-viewUser(myUser[:Id])  
-```  
-
-
-```java Java
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Address;
-import com.mangopay.entities.User;
-
-import java.lang.reflect.Field;
-
-public class ViewUser {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-        
-        User user = mangopay.getUserApi().get("user_m_01HYG97J92QXDDVAWS9QW8C3FF");
-        System.out.println(String.format("id: %s", user.getId()));
-        printObjectFields(user);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Address) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id = 'your-client-id'
-mangopay.apikey = 'your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser
-
-natural_user = NaturalUser(
-    id = '210679673'
-)
-
-try:
-    view_natural_user = NaturalUser.get(natural_user.id) 
-    pprint(vars(view_natural_user))
-except NaturalUser.DoesNotExist:
-    print('The user {} does not exist'.format(natural_user.id))  
-```  
-
-  
+    <PhpViewUser />
+    <NodeViewUser />
+    <RubyViewUser />
+    <JavaViewUser />
+    <PythonViewUser />
 </RequestExample>

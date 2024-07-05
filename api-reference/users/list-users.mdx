@@ -8,6 +8,11 @@ import Sort from '/snippets/p-query/Sort.mdx';
 import per_page from '/snippets/p-query/per_page.mdx';
 import page from '/snippets/p-query/page.mdx';
   
+import PhpListUsers from '/snippets/code/php-list-users.mdx';
+import NodeListUser from '/snippets/code/node-list-user.mdx';
+import RubyListKycDocuments1 from '/snippets/code/ruby-list-kyc-documents1.mdx';
+import PythonListUsers from '/snippets/code/python-list-users.mdx';
+import JavaListUsers from '/snippets/code/java-list-users.mdx';
 
 This endpoint returns key information for each user created by the platform.  
 
@@ -73,153 +78,9 @@ This endpoint returns key information for each user created by the platform.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $response = $api->Users->GetAll();
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-mangopay-client-id',
-  clientApiKey: 'your-mangopay-api-key',
-})
-
-const listUsers = async () => {
-  return await mangopay.Users.getAll()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUsers()  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listAllUsers()
-    begin
-        response = MangoPay::User.fetch()
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Users #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-listAllUsers()  
-```  
-
-```java Java
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Address;
-import com.mangopay.core.Pagination;
-import com.mangopay.core.Sorting;
-import com.mangopay.core.enumerations.SortDirection;
-import com.mangopay.entities.User;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
-public class ListAllUsers {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-        
-        Pagination pagination = new Pagination(1, 100);
-        Sorting sort = new Sorting();
-        sort.addField("CreationDate", SortDirection.desc);
-
-        List<User> users = mangopay.getUserApi().getAll(pagination, sort);
-
-        for (User user : users) {
-            user = mangopay.getUserApi().get(user.getId());
-            System.out.println("\nid: " + user.getId());
-            printObjectFields(user);
-        }
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Address) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-
-
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id = 'your-client-id'
-mangopay.apikey = 'your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import User
-
-users = User.all(page=1, per_page=50) 
-
-for user in users:
-    pprint(vars(user))  
-```  
-
-  
+    <PhpListUsers />
+    <NodeListUser />
+    <RubyListKycDocuments1 />
+    <PythonListUsers />
+    <JavaListUsers />
 </RequestExample>

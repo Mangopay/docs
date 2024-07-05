@@ -19,7 +19,12 @@ import Tag3 from '/snippets/p-body/Tag3.mdx';
 import Country4 from '/snippets/p-body/Country4.mdx';
 import OwnerName1 from '/snippets/p-body/OwnerName1.mdx';
 import WalletId from '/snippets/p-path/WalletId.mdx';
-  
+
+import RestCreateibanBankingAlias from '/snippets/code/rest-createiban-banking-alias.mdx';
+import PhpCreateBankingAlias from '/snippets/code/php-create-banking-alias.mdx';
+import NodeCreateIbanBankingAlias from '/snippets/code/node-create-iban-banking-alias.mdx';
+import RubyViewBankingAlias1 from '/snippets/code/ruby-view-banking-alias1.mdx';
+import PythonCreateIbanBankingAlias from '/snippets/code/python-create-iban-banking-alias.mdx';
 
 ### Path parameters  
 
@@ -175,152 +180,9 @@ import WalletId from '/snippets/p-path/WalletId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "OwnerName": "John Doe",
-    "Country": "FR",
-    "Tag": "custom meta"
-}
-```  
-
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $walletId = '194311530';
-
-    $bankingAlias = new \MangoPay\BankingAliasIBAN();
-    $bankingAlias->OwnerName = 'Alex Smith';
-    $bankingAlias->Tag = 'Updated using Mangopay PHP SDK';
-    $bankingAlias->Country ='FR';
-    $bankingAlias->WalletId = $walletId;
-    
-    $response = $api->BankingAliases->Create($bankingAlias);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myBankingAlias = {
-  OwnerName: 'John',
-  Tag: 'Created with Mangopay NodeJS SDK',
-  Country: 'FR',
-  Type: 'IBAN',
-  WalletId: '172463559',
-}
-
-const createBankingAlias = async (bankingAlias) => {
-  return await mangopay.BankingAliases.create(bankingAlias)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createBankingAlias(myBankingAlias)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createBankingAlias(bankingAliasObject, walletId)
-    begin
-        response = MangoPay::BankingAliasesIBAN.create(bankingAliasObject, walletId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create banking alias: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-myBankingAlias = {
-    OwnerName: 'John',
-    Tag: 'Created with Mangopay NodeJS SDK',
-    Country: 'FR',
-    Type: 'IBAN',
-    WalletId: '194311640'
-}
-
-myWallet = {
-    Id: '194311640'
-}
-
-createBankingAlias(myBankingAlias, myWallet[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Wallet, BankingAliasIBAN
-
-natural_user = NaturalUser.get('213753890')
-
-user_wallet = Wallet.get('215029593')
-
-iban_alias = BankingAliasIBAN(
-    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
-    credited_user = natural_user,
-    wallet_id = user_wallet.id,
-    tag = 'Create using the Mangopay Python SDK',
-    country = 'FR' 
-)
-
-create_iban_alias = iban_alias.save()
-
-pprint(create_iban_alias)  
-```  
-
-  
+    <RestCreateibanBankingAlias />
+    <PhpCreateBankingAlias />
+    <NodeCreateIbanBankingAlias />
+    <RubyViewBankingAlias1 />
+    <PythonCreateIbanBankingAlias />
 </RequestExample>

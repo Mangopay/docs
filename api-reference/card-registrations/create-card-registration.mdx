@@ -20,6 +20,11 @@ import Currency2 from '/snippets/p-body/Currency2.mdx';
 import CardType from '/snippets/p-body/CardType.mdx';
 import UserId from '/snippets/p-body/UserId.mdx';
 import Tag1 from '/snippets/p-body/Tag1.mdx';
+
+import RestCreateCardRegistration from '/snippets/code/rest-create-card-registration.mdx';
+import PhpCreateCardRegistration from '/snippets/code/php-create-card-registration.mdx';
+import NodeCreateCardRegistration from '/snippets/code/node-create-card-registration.mdx';
+import PythonCreateCardRegistration from '/snippets/code/python-create-card-registration.mdx';
   
 [Read more about the Card Registration object →](/api-reference/card-registrations/card-registration-object)
 
@@ -88,109 +93,8 @@ import Tag1 from '/snippets/p-body/Tag1.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Tag": null,
-    "UserId": "142036728",
-    "CardType": "CB_VISA_MASTERCARD",
-    "Currency": "EUR"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $cardRegistration = new \MangoPay\CardRegistration();
-
-    $cardRegistration->UserId = '195627761';
-    $cardRegistration->CardType = 'CB_VISA_MASTERCARD';
-    $cardRegistration->Currency = 'EUR';
-    $cardRegistration->Tag = 'Created using Mangopay PHP SDK';
-
-    $response = $api->CardRegistrations->Create($cardRegistration);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk');
-const mangopay = new mangopayInstance({
-    clientId: "your-client-id",
-    clientApiKey: "your-api-key",
-})
-
-let user = {
-    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-  }
-
-let userCardRegistration = {
-    UserId: user.Id,
-    Currency: 'EUR',
-    CardType: 'CB_VISA_MASTERCARD'
-}
-
-const createCardRegistration = async(cardRegistration) => {
-    return await mangopay.CardRegistrations.create(cardRegistration)
-    .then((response) => {
-        console.info(response)
-        return response
-    })
-    .catch((err) => {
-        console.log(err)
-        return false
-    })
-}
-
-createCardRegistration(userCardRegistration)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, CardRegistration
-
-natural_user = NaturalUser.get('213600749')
-
-card_registration = CardRegistration(
-    user_id = natural_user.id,
-    currency = 'GBP',
-    card_type =  'CB_VISA_MASTERCARD'
-)
-
-create_card_registration = card_registration.save()
-
-pprint(create_card_registration)  
-```  
-
-  
+    <RestCreateCardRegistration />
+    <PhpCreateCardRegistration />
+    <NodeCreateCardRegistration />
+    <PythonCreateCardRegistration />
 </RequestExample>

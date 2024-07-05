@@ -22,6 +22,11 @@ import RegistrationData from '/snippets/p-body/RegistrationData.mdx';
 import CardRegistrationId from '/snippets/p-path/CardRegistrationId.mdx';
 import CardHolderName from '/snippets/p-body/CardHolderName.mdx';
 
+import RestUpdateCardRegistration from '/snippets/code/rest-update-card-registration.mdx';
+import PhpUpdateCardRegistration from '/snippets/code/php-update-card-registration.mdx';
+import NodeUpdateCardRegistration from '/snippets/code/node-update-card-registration.mdx';
+import PythonUpdateCardRegistration from '/snippets/code/python-update-card-registration.mdx';
+
 This call is strictly used to add the string acquired from the tokenization to the Card Registration object in the parameter `RegistrationData`, thereby validating the registration. You cannot update any other parameters.  
 
 As a result, the Card object will be created (and the corresponding `CardId` returned).  
@@ -135,104 +140,8 @@ As a result, the Card object will be created (and the corresponding `CardId` ret
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "RegistrationData": "data=R7hxMYui4h4rBkaNwbiH1PcCheeXpguO2974jNGgynAVfsmychzXX2Wj-MoseJpnl8C1taMnTBqWmjbSWmgMQNE2bMetrwzREAFpp6SMaYi3vFHtOVUf5ZCUjtEbhayaNx0xgKTVnyDj15oG8jR88g",
-    "CardHolderName": "Alex Smith"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $cardRegistration = new \MangoPay\CardRegistration();
-
-    $cardRegistration->Id = '198660792';
-    $cardRegistration->RegistrationData = 'data=EwQibNkLWbGepaBektTHQcnk7KxDDpQybRm3BWmKLu4DKdgmC-JI0b4bK9UW5C3u1L4A4AkhT3LJqC3_FAvbwYQXIPvj1ElxL2OIJfvlS3YXlJyOctdX1PGkkgCkgl3j0ftIYwFxOdfmDQ5GtM_cIg';
-
-    $response = $api->CardRegistrations->Update($cardRegistration);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk');
-const mangopay = new mangopayInstance({
-    clientId: "your-client-id",
-    clientApiKey: "your-api-key",
-})
-
-let user = {
-    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
-  }
-
-let userCardRegistration = {
-    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
-    UserId: user.Id,
-    Currency: 'EUR',
-    CardType: 'CB_VISA_MASTERCARD',
-    RegistrationData: 'data=acIcnwwLleiAvlZUea5VxT5mw_fK696E0m-dvIdK-KnTCrftajOU7W3fTvYLnKiF68q7RUkmAEL86Wi8c0oX7wHD6vfA3lowMRD7SvlcCCl6Xl3Esy_DIyBzznraJzm70ftIYwFxOdfmDQ5GtM_cIg'
-}
-
-const updateCardRegistration = async(cardRegistration) => {
-    return await mangopay.CardRegistrations.update(cardRegistration)
-    .then((response) => {
-        console.info(response)
-        return response
-    })
-    .catch((err) => {
-        console.log(err)
-        return false
-    })
-}
-
-updateCardRegistration(userCardRegistration)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import CardRegistration
-
-user_card_registration = CardRegistration(
-   id = '213600973',
-   registration_data = 'data=R7hxMYui4h4rBkaNwbiH1DvQL35Y-goFSYQI384_jNsDngV32O95BVgk3Pg7vqU_mZIFFs4gFl24VlSBXNiuoi4Be_uieN3jEegz77g8ElaToz_b7S91YuROvHH0w6J40ftIYwFxOdfmDQ5GtM_cIg'
-)
-
-update_card_registration = user_card_registration.save()
-
-pprint(update_card_registration)  
-```  
-
-  
+    <RestUpdateCardRegistration />
+    <PhpUpdateCardRegistration />
+    <NodeUpdateCardRegistration />
+    <PythonUpdateCardRegistration />
 </RequestExample>

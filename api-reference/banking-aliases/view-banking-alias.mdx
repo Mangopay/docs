@@ -15,7 +15,10 @@ import BIC2Response from '/snippets/p-response/BIC2Response.mdx';
 import IBAN2Response from '/snippets/p-response/IBAN2Response.mdx';
 import OwnerName1Response from '/snippets/p-response/OwnerName1Response.mdx';
 import BankingAliasId from '/snippets/p-query/BankingAliasId.mdx';
-  
+
+import PhpViewBankingAlias from '/snippets/code/php-view-banking-alias.mdx';
+import NodeViewBankingAlias from '/snippets/code/node-view-banking-alias.mdx';
+import RubyViewBankingAlias from '/snippets/code/ruby-view-banking-alias.mdx';
 
 ### Query parameters  
 
@@ -120,92 +123,7 @@ import BankingAliasId from '/snippets/p-query/BankingAliasId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $bankingAliasId = '157608228';
-
-    $response = $api->BankingAliases->Get($bankingAliasId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let bankingAlias = {
-  Id: '172463615',
-}
-
-const getBankingAlias = async (bankingAliasId) => {
-  return await mangopay.BankingAliases.get(bankingAliasId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getBankingAlias(bankingAlias.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewBankingAlias(bankingAliasId)
-    begin
-        response = MangoPay::BankingAliases.fetch(bankingAliasId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch banking alias: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-myBankingAlias = {
-  Id: '157608228'
-}
-
-viewBankingAlias(myBankingAlias[:Id])  
-```  
-
-  
+  <PhpViewBankingAlias />
+  <NodeViewBankingAlias />
+  <RubyViewBankingAlias />
 </RequestExample>

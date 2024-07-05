@@ -16,6 +16,8 @@ import Tag from '/snippets/p-body/Tag.mdx';
 import CreditedFunds from '/snippets/p-body/CreditedFunds.mdx';
 import DebitedFunds from '/snippets/p-body/DebitedFunds.mdx';
   
+import RestCreateQuote from '/snippets/code/rest-create-quote.mdx';
+import CreateQuoteJava from '/snippets/code/create-quote-java.mdx';
 
 This call guarantees a conversion rate to let you Create a Quoted Conversion.  
 
@@ -124,62 +126,6 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-  "DebitedFunds": {
-       "Currency": "GBP",
-       "Amount": 1000
-   },
-  "CreditedFunds": {
-       "Currency": "EUR"
-   },
-  "Fees": {
-       "Currency": "GBP",
-       "Amount": 100
-   },
-   "Duration": 90,
-   "Tag": "Created using the Mangopay API Postman collection"
-}
-```  
-
-```java Java
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.core.enumerations.CurrencyIso;
-import com.mangopay.entities.ConversionQuote;
-import com.mangopay.entities.CreateConversionQuote;
-
-public class CreateQuote {
-        public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        CreateConversionQuote quote = new CreateConversionQuote();
-
-        Money debitedFunds = new Money();
-        debitedFunds.setCurrency(CurrencyIso.GBP);
-
-        Money creditedFunds = new Money();
-        creditedFunds.setCurrency(CurrencyIso.USD);
-        creditedFunds.setAmount(1000);
-
-        quote.setDebitedFunds(debitedFunds);
-        quote.setCreditedFunds(creditedFunds);
-        quote.setDuration(300);
-        quote.setTag("Created using the Mangopay Java SDK");
-
-        ConversionQuote createQuote = mangopay.getConversionsApi().createConversionQuote(quote, null);
-    
-        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
-        String prettyJson = prettyPrint.toJson(createQuote);
-
-        System.out.println(prettyJson);
-    }
-}
-
-```
+    <RestCreateQuote />
+    <CreateQuoteJava />
 </RequestExample>

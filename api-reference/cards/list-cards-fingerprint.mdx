@@ -5,7 +5,11 @@ api: 'GET /v2.01/{ClientId}/cards/fingerprints/{Fingerprint}'
 
 import Array_CardsResponse from '/snippets/p-response/Array_CardsResponse.mdx';
 import Fingerprint from '/snippets/p-path/Fingerprint.mdx';
-  
+
+import PhpListCardsFingerprint from '/snippets/code/php-list-cards-fingerprint.mdx';
+import NodeListCardsFingerprint from '/snippets/code/node-list-cards-fingerprint.mdx';
+import RubyListCardsFingerprint from '/snippets/code/ruby-list-cards-fingerprint.mdx';
+import PythonListFingerprintCards from '/snippets/code/python-list-fingerprint-cards.mdx';
 
 This call returns all the cards with the same `Fingerprint` value. This can be useful to detect abnormal or fraudulent behavior.  
 
@@ -67,113 +71,8 @@ This call returns all the cards with the same `Fingerprint` value. This can be u
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $fingerprint = '36c74d2e60ba474eab6d6f6d46a642b0';
-
-    $response = $api->Cards->GetByFingerprint($fingerprint);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myCard = {
-  fingerprint: '48d63bbcfc2c47fcbc19df35e47b2f8d',
-}
-
-const listCardsFingerprint = async (fingerprint) => {
-  return await mangopay.Cards.getByFingerprint(fingerprint)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listCardsFingerprint(myCard.fingerprint)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listFingerprintCards(fingerprint)
-    begin
-        response = MangoPay::Card.get_by_fingerprint(fingerprint)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch cards for fingerprint: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myCard = {
-    Fingerprint: '36c74d2e60ba474eab6d6f6d46a642b0',
-}
-
-listFingerprintCards(myCard[:Fingerprint])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Card
-
-fingerprint = '48d63bbcfc2c47fcbc19df35e47b2f8d'
-
-cards = Card.get_by_fingerprint(fingerprint)
-
-for card in cards:
-    pprint(vars(card))  
-```  
-
-  
+    <PhpListCardsFingerprint />
+    <NodeListCardsFingerprint />
+    <RubyListCardsFingerprint />
+    <PythonListFingerprintCards />
 </RequestExample>

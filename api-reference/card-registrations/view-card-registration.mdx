@@ -19,6 +19,10 @@ import Tag1Response from '/snippets/p-response/Tag1Response.mdx';
 import Id1Response from '/snippets/p-response/Id1Response.mdx';
 import CardRegistrationId from '/snippets/p-path/CardRegistrationId.mdx';
   
+import PhpViewCardRegistration from '/snippets/code/php-view-card-registration.mdx';
+import NodeViewCardRegistration from '/snippets/code/node-view-card-registration.mdx';
+import RubyViewCardregistration from '/snippets/code/ruby-view-cardregistration.mdx';
+import PythonViewCardRegistration from '/snippets/code/python-view-card-registration.mdx';
 
 ### Path parameters  
 
@@ -81,116 +85,8 @@ import CardRegistrationId from '/snippets/p-path/CardRegistrationId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $cardRegistrationId = '192900791';
-
-    $response = $api->CardRegistrations->Get($cardRegistrationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk');
-const mangopay = new mangopayInstance({
-    clientId: "your-client-id",
-    clientApiKey: "your-api-key",
-})
-
-let userCardRegistration = {
-    Id: 'cardreg_m_01HRETW28RKJFC8RB9H625RVBD',
-  }
-
-const viewCardRegistration = async (cardRegistrationId) => {
-    return await mangopay.CardRegistrations.get(cardRegistrationId)
-    .then((response) => {
-        console.info(response)
-        return response
-    })
-    .catch((err) => {
-        console.log(err)
-        return false
-    })
-  }
-  
-viewCardRegistration(userCardRegistration.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewCardRegistration(cardRegistrationId)
-    begin
-        response = MangoPay::CardRegistration.fetch(cardRegistrationId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Card Registration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myCardRegistration = {
-    Id: '195067583'
-  }
-
-viewCardRegistration(myCardRegistration[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import CardRegistration
-
-card_registration = CardRegistration(
-    id = '213600973'
-)
-
-try:
-    view_card_registration = CardRegistration.get(card_registration.id) 
-    pprint(vars(view_card_registration))
-except CardRegistration.DoesNotExist:
-    print('Card registration {} does not exist.'.format(view_card_registration.id))  
-```  
-
-  
+    <PhpViewCardRegistration />
+    <NodeViewCardRegistration />
+    <RubyViewCardregistration />
+    <PythonViewCardRegistration /> 
 </RequestExample>

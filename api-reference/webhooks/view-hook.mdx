@@ -11,7 +11,11 @@ import Validity1Response from '/snippets/p-response/Validity1Response.mdx';
 import Status7Response from '/snippets/p-response/Status7Response.mdx';
 import UrlResponse from '/snippets/p-response/UrlResponse.mdx';
 import HookId from '/snippets/p-path/HookId.mdx';
-  
+
+import PhpViewHook from '/snippets/code/php-view-hook.mdx';
+import NodeViewHook from '/snippets/code/node-view-hook.mdx';
+import RubyViewHook from '/snippets/code/ruby-view-hook.mdx';
+import ViewHookPython from '/snippets/code/view-hook-python.mdx';
 
 ### Path parameters  
 
@@ -53,114 +57,8 @@ import HookId from '/snippets/p-path/HookId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $hookId = '198685419';
-
-    $response = $api->Hooks->Get($hookId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let hook = {
-  Id: '144086866',
-}
-
-const getHook = async (hookId) => {
-  return await mangopay.Hooks.get(hookId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getHook(hook.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewHook(hookId)
-    begin
-        response = MangoPay::Hook.fetch(hookId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Hook: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myHook = {
-    Id: '194445815'
-}
-
-viewHook(myHook[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Notification
-
-hook_id = 'hook_m_01HR4KJ27QBRPNZG351R3SBA0B'
-
-try:
-    view_hook = Notification.get(hook_id)
-    pprint(view_hook._data)
-except Notification.DoesNotExist:
-    print('Hook {} does not exist.'.format(hook_id))  
-```  
-
-  
+    <PhpViewHook />
+    <NodeViewHook />
+    <RubyViewHook />
+    <ViewHookPython />
 </RequestExample>
