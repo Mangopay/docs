@@ -24,6 +24,11 @@ import AccountNumber from '/snippets/p-body/AccountNumber.mdx';
 import OwnerAddress from '/snippets/p-body/OwnerAddress.mdx';
 import UserId1 from '/snippets/p-path/UserId1.mdx';
   
+import RestCreateCaBankAccount from '/snippets/code/rest-create-ca-bank-account.mdx';
+import PhpCreateCaBankAccount from '/snippets/code/php-create-ca-bank-account.mdx';
+import NodeCreateCaBankAccount from '/snippets/code/node-create-ca-bank-account.mdx';
+import RubyCreateCaBankAccount from '/snippets/code/ruby-create-ca-bank-account.mdx';
+import PythonCreateCaBankAccount from '/snippets/code/python-create-ca-bank-account.mdx';
 
 ### Path parameters  
 
@@ -119,212 +124,10 @@ import UserId1 from '/snippets/p-path/UserId1.mdx';
 
 <RequestExample>  
   
-```json REST  
-{
-    "OwnerAddress":{
-        "AddressLine1":"The Oasis",
-        "AddressLine2":"Rue des plantes",
-        "City":"Paris",
-        "Region":"Ile de France",
-        "PostalCode":"75001",
-        "Country":"FR"
-    },
-    "AccountNumber":"11696419",
-    "InstitutionNumber":"614",
-    "BranchCode":"00152",
-    "BankName":"The Bank",
-    "OwnerName":"Joe Blogs",
-    "Tag":"custom meta",
-}  
-```  
+    <RestCreateCaBankAccount />
+    <PhpCreateCaBankAccount />
+    <NodeCreateCaBankAccount />
+    <RubyCreateCaBankAccount />
+    <PythonCreateCaBankAccount />
 
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890';
-
-    $bankAccount = new \MangoPay\BankAccount();
-
-    $address = new \MangoPay\Address();
-    $address->AddressLine1 = 'Address line 1';
-    $address->AddressLine2 = 'Address line 2';
-    $address->City = 'Paris';
-    $address->Country = 'FR';
-    $address->PostalCode = '75000';
-    $address->Region = 'Region';
-
-    $details = new \MangoPay\BankAccountDetailsCA();
-    $details->AccountNumber = '11696419';
-    $details->InstitutionNumber = '614';
-    $details->BranchCode = '00152';
-    $details->BankName = 'Bank of Canada';
-
-    $bankAccount->OwnerAddress = $address;
-    $bankAccount->OwnerName = 'Alex Smith';
-    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
-    $bankAccount->Type = 'IBAN';
-    $bankAccount->Details = $details;
-
-    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '165863393',
-  Address: {
-    AddressLine1: 'Edgewood Road',
-    AddressLine2: null,
-    City: 'Little Rock',
-    Region: 'IDF',
-    PostalCode: '75000',
-    Country: 'FR',
-  },
-  FirstName: 'John',
-  LastName: 'Doe',
-}
-
-let bankAccount = {
-  Type: 'CA',
-  OwnerName: user.FirstName + '' + user.LastName,
-  OwnerAddress: user.Address,
-  AccountNumber: '11696419',
-  InstitutionNumber: '614',
-  BranchCode: '00152',
-  BankName: 'The Bank',
-  Tag: 'Created using Mangopay NodeJS SDK',
-}
-
-const createBankAccount = async (userId, bankAccount) => {
-  return await mangopay.Users.createBankAccount(userId, bankAccount)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createBankAccount(user.Id, bankAccount)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createCaBankAccount(userId, caBankAccountObject)
-    begin
-        response = MangoPay::BankAccount.create(userId, caBankAccountObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create bank account: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '165863393'
-}
-
-myCaBankAccount = {
-    Type: 'CA',
-    OwnerName: 'Alex Smith',
-    OwnerAddress: {
-        AddressLine1: 'Edgewood Road',
-        AddressLine2: 'Address line 2',
-        City: 'Little Rock',
-        Region: 'IDF',
-        PostalCode: '75000',
-        Country: 'FR'
-    },
-    AccountNumber: '11696419',
-    InstitutionNumber: '614',
-    BranchCode: '00152',
-    BankName: 'The Bank',
-    Tag: 'Created using Mangopay Ruby SDK'
-  }
-
-createCaBankAccount(myUser[:Id], myCaBankAccount)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, BankAccount
-from mangopay.utils import Address
-
-natural_user = NaturalUser.get('213753890')
-
-ca_bank_account = BankAccount(
-    user_id = natural_user.id,
-    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
-    owner_address = Address(
-        address_line_1 = natural_user.address.address_line_1,
-        address_line_2 = natural_user.address.address_line_2,
-        city = natural_user.address.city,
-        region = natural_user.address.region,
-        postal_code = natural_user.address.postal_code,
-        country = natural_user.address.country,
-    ),
-    account_number = '11696419',
-    institution_number = '614',
-    branch_code = '00152', 
-    bank_name = 'The Bank', 
-    type = 'CA',
-    tag = 'Created using the Mangopay Python SDK',
-)
-
-create_ca_bank_account = ca_bank_account.save()
-
-pprint(create_ca_bank_account)  
-```  
-
-  
 </RequestExample>
