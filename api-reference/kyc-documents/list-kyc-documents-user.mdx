@@ -7,6 +7,13 @@ import Array_KYCDocumentResponse from '/snippets/p-response/Array_KYCDocumentRes
 import UserId from '/snippets/p-path/UserId.mdx';
 import Status1 from '/snippets/p-query/Status1.mdx';
 
+
+import PhpListKycDocumentsUser from '/snippets/code/php-list-kyc-documents-user.mdx';
+import NodeListKycUser from '/snippets/code/node-list-kyc-user.mdx';
+import RubyListKycDocumentsUser from '/snippets/code/ruby-list-kyc-documents-user.mdx';
+import ListUserKycDocumentsJava from '/snippets/code/list-user-kyc-documents-java.mdx';
+import PythonListKycDocumentsForUser from '/snippets/code/python-list-kyc-documents-for-user.mdx';
+
 [Read more about the KYC Document object →](/api-reference/kyc-documents/kyc-document-object)
 
 ### Query parameters  
@@ -60,157 +67,11 @@ import Status1 from '/snippets/p-query/Status1.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
 
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId ='146476890';
-
-    $response = $api->KycDocuments->GetAll($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '146476890',
-}
-
-const listUserKycDocs = async (userId) => {
-  return await mangopay.Users.getKycDocuments(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUserKycDocs(user.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listKycDocumentsforUser(userId)
-    begin
-        response = MangoPay::KycDocument.fetch_all(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch KYC Documents #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '146476890'
-}
-
-listKycDocumentsforUser(myUser[:Id])  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.KycDocument;
-import com.mangopay.core.Pagination;
-
-import java.lang.reflect.Field;
-import java.util.List;
-
-public class ListUserKycDocs {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-        
-        String userId = "user_m_01HR9SZTXDRY1PCFHSJFAPC0YJ";
-
-        Pagination pagination = new Pagination(1, 100);
-
-        List<KycDocument> kycDocs = mangopay.getUserApi().getKycDocuments(userId, pagination, null);
-
-        for (KycDocument kycDoc : kycDocs) {
-            kycDoc = mangopay.getUserApi().getKycDocument(userId, kycDoc.getId());
-            System.out.println("");
-            System.out.println(String.format("id: %s", kycDoc.getId()));
-            printObjectFields(kycDoc);
-        }
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id = 'your-client-id'
-mangopay.apikey = 'your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import LegalUser
-
-legal_user = LegalUser(
-    id = '210760575'
-)
-
-documents = legal_user.documents.all()
-
-for document in documents:
-    pprint(vars(document))  
-```  
-
+            <PhpListKycDocumentsUser />
+            <NodeListKycUser />
+            <RubyListKycDocumentsUser />
+            <ListUserKycDocumentsJava />
+            <PythonListKycDocumentsForUser />
   
 </RequestExample>

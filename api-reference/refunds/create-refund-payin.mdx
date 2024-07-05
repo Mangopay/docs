@@ -31,6 +31,11 @@ import PayInId from '/snippets/p-path/PayInId.mdx';
 import StatementDescriptor_Refunds from '/snippets/p-body/StatementDescriptor_Refunds.mdx';
 import StatementDescriptorResponse_Refunds from '/snippets/p-response/StatementDescriptorResponse_Refunds.mdx';
   
+import RestCreateRefundPayin from '/snippets/code/rest-create-refund-payin.mdx';
+import PhpCreateRefundPayin from '/snippets/code/php-create-refund-payin.mdx';
+import NodeCreateRefundPayin from '/snippets/code/node-create-refund-payin.mdx';
+import RubyCreateRefundPayin from '/snippets/code/ruby-create-refund-payin.mdx';
+import PythonCreateRefundPayin from '/snippets/code/python-create-refund-payin.mdx';
 
 The pay-in refund is a request to reimburse a pay-in and is supported for most payment methods. You can make partial refunds by providing a debited funds `Amount` value lower than the initial transaction amount.  
 
@@ -212,172 +217,10 @@ The pay-in refund is a request to reimburse a pay-in and is supported for most p
 
 <RequestExample>  
   
-```json REST  
-{
-    "Tag": "Created using Mangopay API Postman Collection",
-    "AuthorId": "user_m_01HSDQD2RPPQ8NMM36EDGYBMEY",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 2000
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": -100
-    }
-}
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $payinId = '199478487';
-
-    $refund = new \MangoPay\Refund();
-    $refund->AuthorId = '146476890';
-    $refund->DebitedFunds = new \MangoPay\Money();
-    $refund->DebitedFunds->Amount = 1000;
-    $refund->DebitedFunds->Currency = 'EUR';
-    $refund->Fees = new \MangoPay\Money();
-    $refund->Fees->Amount = 0;
-    $refund->Fees->Currency = 'EUR';
-    $refund->Tag = 'Created using Mangopay PHP SDK';
-    
-    $response = $api->PayIns->CreateRefund($payinId, $refund);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myPayIn = {
-  Id: '192870720',
-}
-
-let myRefund = {
-  AuthorId: '192822811',
-  Tag: 'Created with Mangopay Nodejs SDK',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 250,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 0,
-  },
-}
-
-const createPayInRefund = async (payInId, refund) => {
-  return await mangopay.PayIns.createRefund(payInId, refund)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createPayInRefund(myPayIn.Id, myRefund)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createPayInRefund(payInId, refundObject)
-    begin
-        response = MangoPay::PayIn.refund(payInId, refundObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create Refund: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPayIn = {
-    Id: '193930143'
-}
-
-myRefund = {
-    AuthorId: '193930097',
-    Tag: 'Created with Mangopay Ruby SDK',
-    DebitedFunds: {
-      Currency: 'EUR',
-      Amount: 1188
-    },
-    Fees: {
-      Currency: 'EUR',
-      Amount: -12
-    }
-  }
-
-createPayInRefund(myPayIn[:Id], myRefund)  
-```  
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, PayInRefund, DirectDebitDirectPayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('213753890')
-
-natural_user_wallet_id = '213754077'
-
-user_payin = DirectDebitDirectPayIn.get('214568733')
-
-payin_refund = PayInRefund(
-    author = natural_user,
-    payin = user_payin
-)
-
-create_payin_refund = payin_refund.save()
-
-pprint(create_payin_refund)  
-```  
-
+    <RestCreateRefundPayin />
+    <PhpCreateRefundPayin />
+    <NodeCreateRefundPayin />
+    <RubyCreateRefundPayin />
+    <PythonCreateRefundPayin />
   
 </RequestExample>

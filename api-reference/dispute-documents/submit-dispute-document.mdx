@@ -15,7 +15,13 @@ import DisputeIdResponse from '/snippets/p-response/DisputeIdResponse.mdx';
 import Status from '/snippets/p-body/Status.mdx';
 import DisputeDocumentId from '/snippets/p-path/DisputeDocumentId.mdx';
 import DisputeId from '/snippets/p-path/DisputeId.mdx';
-  
+
+import RestSubmitDisputeDocument from '/snippets/code/rest-submit-dispute-document.mdx';
+import PhpSubmitDisputeDocument from '/snippets/code/php-submit-dispute-document.mdx';
+import NodeSubmitDisputeDocument from '/snippets/code/node-submit-dispute-document.mdx';
+import RubySubmitDisputeDocument from '/snippets/code/ruby-submit-dispute-document.mdx';
+import SubmitDisputeDocumentPython from '/snippets/code/submit-dispute-document-python.mdx';
+
 
 ### Path parameters  
 
@@ -69,135 +75,9 @@ import DisputeId from '/snippets/p-path/DisputeId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Status": "VALIDATION_ASKED"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $disputeId = '199385842';
-    $disputeDocumentId = '199387308';
-
-    $disputeDocument = $api->DisputeDocuments->Get($disputeDocumentId);
-    $disputeDocument->Status = \MangoPay\DisputeDocumentStatus::ValidationAsked;
-
-    $response = $api->Disputes->UpdateDisputeDocument($disputeId, $disputeDocument);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '192746554',
-}
-
-let myDisputeDocument = {
-  Id: '192747541',
-  Status: 'VALIDATION_ASKED',
-}
-
-const submitDisputeDocument = async (disputeId, disputeDocument) => {
-  return await mangopay.Disputes.updateDisputeDocument(disputeId, disputeDocument)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-submitDisputeDocument(myDispute.Id, myDisputeDocument)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def submitDisputeDocument(disputeId, disputeDocumentId, disputeDocumentObject)
-    begin
-        response = MangoPay::Dispute.update_document(disputeId, disputeDocumentId, disputeDocumentObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to submit Document: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDispute = {
-    Id:'194413022'
-}
-
-myDocument = {
-    Id:'194643965',
-    Status:'VALIDATION_ASKED'
-}
-
-submitDisputeDocument(myDispute[:Id], myDocument[:Id], myDocument)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-dispute_doc = DisputeDocument(
-    id = 'dispdoc_m_01HQTAHCSMH0Q6MRHYWZ0B39M5',
-    dispute = dispute,
-    status = 'VALIDATION_ASKED'
-)
-
-submit_dispute = dispute_doc.submit()
-
-pprint(submit_dispute)  
-```  
-
-  
+  <RestSubmitDisputeDocument />
+  <PhpSubmitDisputeDocument />
+  <NodeSubmitDisputeDocument />
+  <RubySubmitDisputeDocument />
+  <SubmitDisputeDocumentPython />
 </RequestExample>

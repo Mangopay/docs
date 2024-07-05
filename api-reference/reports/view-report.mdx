@@ -19,7 +19,12 @@ import Tag3Response from '/snippets/p-response/Tag3Response.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import ReportId from '/snippets/p-path/ReportId.mdx';
-  
+
+import PhpViewReport from '/snippets/code/php-view-report.mdx';
+import NodeViewReport from '/snippets/code/node-view-report.mdx';
+import RubyViewReport from '/snippets/code/ruby-view-report.mdx';
+import ViewReportPython from '/snippets/code/view-report-python.mdx';
+
 
 ### Path parameters  
 
@@ -124,114 +129,8 @@ import ReportId from '/snippets/p-path/ReportId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $reportId = '192900155';
-
-    $response = $api->Reports->Get($reportId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myReport = {
-  Id: '192900155',
-}
-
-const viewReport = async (reportId) => {
-  return await mangopay.Reports.get(reportId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewReport(myReport.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewReport(reportId)
-    begin
-        response = MangoPay::Report.fetch(reportId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Report: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myReport = {
-    Id: '195000676'
-}
-
-viewReport(myReport[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Report
-
-report_id = 'report_m_01HR4RQ4KX66A4K52AJC3C1Z2R'
-
-try:
-    view_report = Report.get(report_id)
-    pprint(view_report._data)
-except Report.DoesNotExist:
-    print('Report {} does not exist.'.format(report_id))  
-```  
-
-  
+  <PhpViewReport />
+  <NodeViewReport />
+  <RubyViewReport />
+  <ViewReportPython />
 </RequestExample>

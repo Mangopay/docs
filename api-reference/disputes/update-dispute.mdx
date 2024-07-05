@@ -21,7 +21,12 @@ import InitialTransactionNatureResponse from '/snippets/p-response/InitialTransa
 import InitialTransactionTypeResponse from '/snippets/p-response/InitialTransactionTypeResponse.mdx';
 import InitialTransactionIdResponse from '/snippets/p-response/InitialTransactionIdResponse.mdx';
 import DisputeId from '/snippets/p-path/DisputeId.mdx';
-  
+
+import RestUpdateDispute from '/snippets/code/rest-update-dispute.mdx';
+import PhpUpdateDispute from '/snippets/code/php-update-dispute.mdx';
+import NodeUpdateDispute from '/snippets/code/node-update-dispute.mdx';
+import RubyUpdateDispute from '/snippets/code/ruby-update-dispute.mdx';
+import UpdateADisputePython from '/snippets/code/update-a-dispute-python.mdx';
 
 ### Path parameters  
 
@@ -102,127 +107,9 @@ import DisputeId from '/snippets/p-path/DisputeId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Tag": "Updated tag"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $disputeId = '192746554';
-    $dispute = $api->Disputes->Get($disputeId);
-    
-    $dispute->Tag = 'Updated using Mangopay PHP SDK';
-    
-    $response = $api->Disputes->Update($dispute);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '192746554',
-  Tag: 'Created using Mangopay NodeJS SDK',
-}
-
-const updateDispute = async (dispute) => {
-  return await mangopay.Disputes.update(dispute)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateDispute(myDispute)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def updateDispute(disputeId, disputeObject)
-    begin
-        response = MangoPay::Dispute.update(disputeId, disputeObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to update Dispute: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDispute = {
-    Id:'194413022',
-    Tag: 'Updated using Mangopay Ruby SDK'
-}
-
-updateDispute(myDispute[:Id], myDispute)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Dispute
-
-dispute = Dispute(
-    id = 'dispute_m_01HQT6F2162Q1791CZR5RM4WSD',
-    tag = 'Updated using the Mangopay Python SDK'
-)
-
-update_dispute = dispute.save()
-
-pprint(update_dispute)  
-```  
-
-  
+  <RestUpdateDispute />
+  <PhpUpdateDispute />
+  <NodeUpdateDispute />
+  <RubyUpdateDispute />
+  <UpdateADisputePython />
 </RequestExample>

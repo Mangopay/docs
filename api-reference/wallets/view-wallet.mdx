@@ -13,6 +13,11 @@ import OwnersResponse from '/snippets/p-response/OwnersResponse.mdx';
 import Description1Response from '/snippets/p-response/Description1Response.mdx';
 import WalletId from '/snippets/p-path/WalletId.mdx';
   
+import PhpViewWallet from '/snippets/code/php-view-wallet.mdx';
+import NodeViewWallet from '/snippets/code/node-view-wallet.mdx';
+import RubyViewWallet from '/snippets/code/ruby-view-wallet.mdx';
+import JavaViewWallet from '/snippets/code/view-wallet-java.mdx';
+import PythonViewWallet from '/snippets/code/python-view-wallet.mdx';
 
 ### Path parameters  
 
@@ -62,155 +67,10 @@ import WalletId from '/snippets/p-path/WalletId.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $walletId = '193572861';
-
-    $response = $api->Wallets->Get($walletId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myWallet = {
-  Id: '148968396',
-}
-const viewWallet = async (walletId) => {
-  return await mangopay.Wallets.get(walletId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewWallet(myWallet.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewWallet(walletId)
-    begin
-        response = MangoPay::Wallet.fetch(walletId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch wallet: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myWallet = {
-  Id: '194311640',
-}
-
-viewWallet(myWallet[:Id])  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Money;
-import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-
-public class ViewWallet {
-    public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        Wallet wallet = mangopay.getWalletApi().get("wlt_m_01HSV2W1JYHZQMW24EWREKEN62");
-
-        System.out.println(String.format("id: %s", wallet.getId()));
-        printObjectFields(wallet);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Wallet
-
-natural_user = NaturalUser.get('213753890')
-
-user_wallet = Wallet.get('215029593')
-
-
-try:
-    view_wallet = Wallet.get(user_wallet.id) 
-    pprint(vars(view_wallet))
-except Wallet.DoesNotExist:
-    print('The wallet {} does not exist'.format(user_wallet.id))  
-```  
-
+    <PhpViewWallet />
+    <NodeViewWallet />
+    <RubyViewWallet />
+    <JavaViewWallet />
+    <PythonViewWallet />
   
 </RequestExample>

@@ -16,6 +16,12 @@ import UboId from '/snippets/p-path/UboId.mdx';
 import UboDeclarationId from '/snippets/p-path/UboDeclarationId.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
 
+import PhpViewUbo from '/snippets/code/php-view-ubo.mdx';
+import NodeViewUbo from '/snippets/code/node-view-ubo.mdx';
+import RubyViewUbo from '/snippets/code/ruby-view-ubo.mdx';
+import JavaViewUbo from '/snippets/code/view-ubo-java.mdx';
+import PythonViewUbo from '/snippets/code/python-view-ubo.mdx';
+
 [Read more about the UBO object →](/api-reference/ubo-declarations/ubo-object)
 
 ### Path parameters  
@@ -79,183 +85,10 @@ import UserId from '/snippets/p-path/UserId.mdx';
 
 <RequestExample>  
   
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '198557165';
-    $uboDeclarationId = '198692872';
-    $uboId = '198693429';
-
-    $response = $api->UboDeclarations->GetUbo($userId, $uboDeclarationId, $uboId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myUser = {
-  Id: '170853400',
-}
-
-let myUboDeclaration = {
-  Id: '180932134',
-}
-
-let myUbo = {
-  Id: '180945113',
-}
-
-const getUbo = async (userId, uboDeclarationId, uboId) => {
-  return await mangopay.UboDeclarations.getUbo(userId, uboDeclarationId, uboId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getUbo(myUser.Id, myUboDeclaration.Id, myUbo.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewUbo(legalUserId, uboDeclarationId, uboId)
-    begin
-        response = MangoPay::Ubo.fetch(legalUserId, uboDeclarationId, uboId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch UBO: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myLegalUser = {
-    Id: '194338122'
-}
-
-myUboDeclaration = {
-    Id: '194511216'
-}
-
-myUbo = {
-    Id: '194511740'
-}
-
-viewUbo(myLegalUser[:Id], myUboDeclaration[:Id], myUbo[:Id])  
-```  
-
-```java Java 
-import com.mangopay.MangoPayApi;
-import com.mangopay.core.Address;
-import com.mangopay.entities.Birthplace;
-import com.mangopay.entities.Ubo;
-
-import java.lang.reflect.Field;
-
-public class ViewUbo {
-     public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        String userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
-        String uboDeclarationId = "ubo_m_01HRYRKZN51BFXDWD6CCE22PHN";
-        String uboId = "ubo_m_01HRYTZJS07SP4GAMKYMB9YPCG";
-
-        Ubo viewUbo = mangopay.getUboDeclarationApi().getUbo(userId, uboDeclarationId, uboId);
-
-        System.out.println(String.format("id: %s", viewUbo.getId()));
-        printObjectFields(viewUbo);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Address
-                    || value instanceof Birthplace) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.resources import Ubo, UboDeclaration, LegalUser
-
-legal_user = LegalUser(
-    id = '210602889'  
-)
-
-user_ubo_declaration = UboDeclaration(
-    id = '210896999'
-)
-
-user_ubo = Ubo(
-    id = '210898223'
-)
-
-try:
-    view_ubo = Ubo.get(reference = user_ubo.id, user_id = legal_user.id, ubo_declaration_id = user_ubo_declaration.id) 
-    pprint(vars(view_ubo))
-except Ubo.DoesNotExist:
-    print('The UBO {} does not exist.'.format(user_ubo_declaration))  
-```  
-
+    <PhpViewUbo />
+    <NodeViewUbo />
+    <RubyViewUbo />
+    <JavaViewUbo />
+    <PythonViewUbo />
   
 </RequestExample>
