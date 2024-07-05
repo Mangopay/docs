@@ -15,6 +15,12 @@ import Status5 from '/snippets/p-body/Status5.mdx';
 import UboDeclarationId from '/snippets/p-path/UboDeclarationId.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
   
+import RestSubmitUboDeclaration from '/snippets/code/rest-submit-ubo-declaration.mdx';
+import PhpSubmitUboDeclaration from '/snippets/code/php-submit-ubo-declaration.mdx';
+import NodeSubmitUboDeclaration from '/snippets/code/node-submit-ubo-declaration.mdx';
+import SubmitUboDeclaractionJava from '/snippets/code/submit-ubo-declaraction-java.mdx';
+import PythonSubmitUboDeclaration from '/snippets/code/python-submit-ubo-declaration.mdx';
+
 [Read more about the UBO Declaration object →](/api-reference/ubo-declarations/ubo-declaration-object)
 
 Submitting a UBO Declaration consists in updating the object `Status` parameter value to `VALIDATION_ASKED`.  
@@ -93,139 +99,10 @@ From there, Mangopay Compliance team will validate, indicate as incomplete, or r
 
 <RequestExample>  
   
-```json REST  
-{
-    "Status": "VALIDATION_ASKED",
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '199385330';
-    $uboDeclarationId = '199461371';
-
-    $response = $api->UboDeclarations->SubmitForValidation($userId, $uboDeclarationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-mangopay-client-id',
-  clientApiKey: 'your-mangopay-api-key',
-})
-
-let myUser = {
-  Id: '170853400',
-}
-
-let myUboDeclaration = {
-  Id: '180932134',
-  Status: 'VALIDATION_ASKED',
-}
-
-const updateUboDeclaration = async (userId, uboDeclaration) => {
-  return await mangopay.UboDeclarations.update(userId, uboDeclaration)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateUboDeclaration(myUser.Id, myUboDeclaration)  
-```  
-
-```java Java
-import com.mangopay.MangoPayApi;
-import com.mangopay.entities.UboDeclaration;
-import com.mangopay.entities.UserLegal;
-
-import java.lang.reflect.Field;
-
-public class SubmitUBODeclaraction {
-     public static void main(String[] args) throws Exception {
-        MangoPayApi mangopay = new MangoPayApi();
-        mangopay.getConfig().setClientId("your-client-id");
-        mangopay.getConfig().setClientPassword("your-api-key");
-
-        UboDeclaration uboDeclaration = mangopay.getUboDeclarationApi().get("ubo_m_01HRYRPZDB3KXF0QZ6QZ5C95A8");
-        UserLegal myUser = mangopay.getUserApi().getLegal("user_m_01HQK53VP687RBSH2Q5TJZRR3S");
-    
-        UboDeclaration submitUboDeclaration = mangopay.getUboDeclarationApi().submitForValidation(myUser.getId(), uboDeclaration.getId());
-
-        System.out.println(String.format("id: %s", submitUboDeclaration.getId()));
-        printObjectFields(submitUboDeclaration);
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import UboDeclaration, LegalUser
-
-legal_user = LegalUser(
-    id = '211158266'  
-)
-
-ubo_declaration = UboDeclaration(
-    id = '211651591', 
-    user = legal_user,
-    status = 'VALIDATION_ASKED'
-)
-
-submit_ubo_declaration = ubo_declaration.save()
-
-pprint(submit_ubo_declaration)  
-```  
-
+    <RestSubmitUboDeclaration />
+    <PhpSubmitUboDeclaration />
+    <NodeSubmitUboDeclaration />
+    <SubmitUboDeclaractionJava />
+    <PythonSubmitUboDeclaration />
   
 </RequestExample>
