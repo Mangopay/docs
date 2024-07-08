@@ -12,12 +12,11 @@ let myUser = {
 }
 
 let myKycDocument = {
-    Type: 'IDENTITY_PROOF',
-    Tag: "Created by the NodeJs SDK"
+    Id: 'your-kyc-document-id'
 }
 
-const createKycDocument = async (userId, kycDocument) => {
-    return await mangopay.Users.createKycDocument(userId, kycDocument)
+const createKycDocumentPage = async (userId, kycDocumentId, file) => {
+    return await mangopay.Users.createKycPageFromFile(userId, kycDocumentId, file)
         .then((response) => {
             console.info(response)
             return response
@@ -27,5 +26,5 @@ const createKycDocument = async (userId, kycDocument) => {
         }); 
 }
 
-createKycDocument(myUser.Id, myKycDocument)
+createKycDocument(myUser.Id, myKycDocument.Id, 'your-file')
 ```
