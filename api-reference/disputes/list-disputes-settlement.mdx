@@ -5,6 +5,9 @@ api: 'GET /v2.01/{ClientId}/disputes/pendingsettlement'
 
 import Array_DisputesResponse from '/snippets/p-response/Array_DisputesResponse.mdx';
 
+import NodeListDisputesPendingSettlement from '/snippets/code/node-list-disputes-pending-settlement.mdx';
+import ListDisputesPendingSettlementPython from '/snippets/code/list-disputes-pending-settlement-python.mdx';
+
 This call lists all the disputes for which you need to make a settlement transfer.  
 
 ### Responses  
@@ -53,49 +56,6 @@ This call lists all the disputes for which you need to make a settlement transfe
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-const listDisputesPendingSettlement = async () => {
-  return await mangopay.Disputes.getPendingSettlement()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listDisputesPendingSettlement()  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Dispute
-
-disputes = Dispute.all(status = 'PENDING_CLIENT_ACTION')
-
-for dispute in disputes:
-    print()
-    pprint(dispute._data)  
-```  
-
-  
+    <NodeListDisputesPendingSettlement />
+    <ListDisputesPendingSettlementPython />
 </RequestExample>

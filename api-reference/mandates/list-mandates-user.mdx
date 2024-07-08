@@ -5,7 +5,11 @@ api: 'GET /v2.01/{ClientId}/users/{UserId}/mandates'
 
 import Array_MandatesResponse from '/snippets/p-response/Array_MandatesResponse.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
-  
+
+import PhpListMandatesUser from '/snippets/code/php-list-mandates-user.mdx';
+import NodeListMandatesUser from '/snippets/code/node-list-mandates-user.mdx';
+import RubyListMandatesUser from '/snippets/code/ruby-list-mandates-user.mdx';
+import PythonListUserMandates from '/snippets/code/python-list-user-mandates.mdx';
 
 ### Path parameters  
 
@@ -51,114 +55,8 @@ import UserId from '/snippets/p-path/UserId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890 '; 
-    
-    $response = $api->Users->GetMandates($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '151452401',
-}
-
-const listUserMandates = async (userId) => {
-  return await mangopay.Mandates.getMandatesForUser(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUserMandates(user.Id)  
-```  
-
-  
-```json REST  
-
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listMandatesUser(userId)
-    begin
-        response = MangoPay::Mandate.fetch_for_user(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Mandates: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id:'146476890'
-}
-
-listMandatesUser(myUser[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser
-
-natural_user = NaturalUser.get('210513027')
-
-mandates = natural_user.mandates.all()
-
-for mandate in mandates:
-    pprint(vars(mandate))  
-```  
-
-  
+    <PhpListMandatesUser />
+    <NodeListMandatesUser />
+    <RubyListMandatesUser />
+    <PythonListUserMandates />
 </RequestExample>

@@ -14,7 +14,12 @@ import Tag3 from '/snippets/p-body/Tag3.mdx';
 import Status1 from '/snippets/p-body/Status1.mdx';
 import Url from '/snippets/p-body/Url.mdx';
 import HookId from '/snippets/p-path/HookId.mdx';
-  
+
+import RestUpdateHook from '/snippets/code/rest-update-hook.mdx';
+import PhpUpdateHook from '/snippets/code/php-update-hook.mdx';
+import NodeUpdateHook from '/snippets/code/node-update-hook.mdx';
+import RubyHookUpdate from '/snippets/code/ruby-hook-update.mdx';
+import UpdateHookPython from '/snippets/code/update-hook-python.mdx';
 
 ### Path parameters  
 
@@ -64,138 +69,9 @@ import HookId from '/snippets/p-path/HookId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Url": "https://mangopay.com/docs/please-ignore",
-    "Status": "DISABLED",
-    "Tag": "Custom meta"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $hookId = '198685419';
-    $hook = $api->Hooks->Get($hookId);
-
-    $hook->Url = 'https://mangopay.com/docs/please-ignore';
-    $hook->Status = 'ENABLED';
-    $hook->Tag = 'Updated using Mangopay PHP SDK';
-    
-    $response = $api->Hooks->Update($hook);
-
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myHook = {
-  Id: '144086866',
-  Url: 'https://mangopay.com/docs/please-ignore2',
-  Tag: 'Created using Mangopay NodeJS SDK',
-  Status: 'ENABLED',
-}
-
-const updateHook = async (hook) => {
-  return await mangopay.Hooks.update(hook)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateHook(myHook)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def updateHook(hookId, params)
-    begin
-        response = MangoPay::Hook.update(hookId, params)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to update Hook: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myHook = {
-    Id: '194445815'
-}
-
-myParams = {
-    Url: 'https://mangopay.com/docs/please-ignore',
-    Tag: 'Updated using Mangopay Ruby SDK'
-}
-
-updateHook(myHook[:Id], myParams)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Notification
-
-hook = Notification(
-    id = 'hook_m_01HR4KJ27QBRPNZG351R3SBA0B',
-    status = 'DISABLED'
-)
-
-update_hook = hook.save()
-
-pprint(update_hook)  
-```  
-
-  
+    <RestUpdateHook />
+    <PhpUpdateHook />
+    <NodeUpdateHook />
+    <RubyHookUpdate />
+    <UpdateHookPython />
 </RequestExample>

@@ -32,7 +32,9 @@ import Fees1 from '/snippets/p-body/Fees1.mdx';
 import DebitedFunds2 from '/snippets/p-body/DebitedFunds2.mdx';
 import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
-  
+
+import RestCreateSatispayPayin from '/snippets/code/rest-create-satispay-payin.mdx';
+import PythonCreateSatispayPayin from '/snippets/code/python-create-satispay-payin.mdx';
 
 <Note>  
 **Note – Timeout after 30 minutes** 
@@ -145,58 +147,6 @@ The payment session lasts for 30 minutes, at which point the pay-in fails automa
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "AuthorId": "213407540",
-    "CreditedWalletId": "214818911",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 1000
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 0
-    },
-    "ReturnURL": "https://www.mangopay.com/docs/please-ignore",
-    "Tag": "Created using the Mangopay API Postman collection",
-    "StatementDescriptor": "MGP",
-    "Country": "FR"
-}  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, SatispayPayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('210513027')
-
-satispay_payin = SatispayPayIn(
-    author_id = natural_user.id,
-    credited_wallet_id = '210514820',
-    debited_funds = Money(amount=1000, currency='EUR'),
-    fees = Money(amount=0, currency='EUR'),
-    return_url = 'https://www.mangopay.com/docs/please-ignore',
-    country = 'FR',
-    statement_descriptor = 'MGP',
-    tag = 'Created using the Mangopay Python SDK',
-)
-
-create_satispay_payin = satispay_payin.save()
-
-pprint(create_satispay_payin)  
-```  
-
-  
+    <RestCreateSatispayPayin />
+    <PythonCreateSatispayPayin />
 </RequestExample>

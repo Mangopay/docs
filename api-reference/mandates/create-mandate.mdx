@@ -23,7 +23,12 @@ import Tag3 from '/snippets/p-body/Tag3.mdx';
 import ReturnURL3 from '/snippets/p-body/ReturnURL3.mdx';
 import Culture5 from '/snippets/p-body/Culture5.mdx';
 import BankAccountId1 from '/snippets/p-body/BankAccountId1.mdx';
-  
+
+import RestCreateMandate from '/snippets/code/rest-create-mandate.mdx';
+import PhpCreateMandate from '/snippets/code/php-create-mandate.mdx';
+import NodeCreateMandate from '/snippets/code/node-create-mandate.mdx';
+import RubyCreateMandate from '/snippets/code/ruby-create-mandate.mdx';
+import PythonCreateMandate from '/snippets/code/python-create-mandate.mdx';
 
 <Note>  
 **Note – Mandates expire 1 hour after `CreationDate`** 
@@ -119,140 +124,9 @@ If not confirmed within 1 hour, the Mandate expires and returns a 001807 error.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "BankAccountId":"151453487",
-    "Culture":"FR",
-    "ReturnURL":"http://www.my-site.com/returnURL/?MandateId=151566839",
-    "Tag":"custom meta"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $bankAccountId = '198982529'; 
-
-    $mandate = new \MangoPay\Mandate();
-    $mandate->BankAccountId = $bankAccountId;
-    $mandate->Culture = 'EN'; 
-    $mandate->ReturnURL = 'https://mangopay.com/docs/please-ignore';
-    $mandate->Tag = 'Created using Mangopay PHP SDK';
-    
-    $response = $api->Mandates->Create($mandate);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myMandate = {
-  BankAccountId: '151467634',
-  Culture: 'EN',
-  ReturnUrl: 'https://mangopay.com/docs/please-ignore',
-}
-
-const createMandate = async (mandate) => {
-  return await mangopay.Mandates.create(mandate)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createMandate(myMandate)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createMandate(mandateObject)
-    begin
-        response = MangoPay::Mandate.create(mandateObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create mandate: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myMandate = {
-    BankAccountId:'151453487',
-    Culture:'EN',
-    ReturnURL:'https://mangopay.com/docs/please-ignore',
-    Tag:'Created using Mangopay Ruby SDK'
-}
-
-createMandate(myMandate)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Mandate
-
-bank_account_id = '214050174'
-
-mandate = Mandate(
-    bank_account_id = bank_account_id,
-    culture = 'EN',
-    return_url = 'https://mangopay.com/docs/please-ignore',
-    tag = 'Created using the Mangopay Python SDK'
-)
-
-create_mandate = mandate.save()
-
-pprint(create_mandate)  
-```  
-
-  
+    <RestCreateMandate />
+    <PhpCreateMandate />
+    <NodeCreateMandate />
+    <RubyCreateMandate />
+    <PythonCreateMandate />
 </RequestExample>

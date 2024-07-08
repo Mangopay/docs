@@ -11,7 +11,11 @@ import AfterDate1 from '/snippets/p-query/AfterDate1.mdx';
 import BeforeDate1 from '/snippets/p-query/BeforeDate1.mdx';
 import ResultCode from '/snippets/p-query/ResultCode.mdx';
 import Status from '/snippets/p-query/Status.mdx';
-  
+
+import PhpListTransactionsPreauthorization from '/snippets/code/php-list-transactions-preauthorization.mdx';
+import NodeListTransactionsPreauthorization from '/snippets/code/node-list-transactions-preauthorization.mdx';
+import RubyListTransactionsPreauthorization from '/snippets/code/ruby-list-transactions-preauthorization.mdx';
+import PythonListPreauthorizationTransactions from '/snippets/code/python-list-preauthorization-transactions.mdx';
 
 This call returns all preauthorized pay-ins made against a given preauthorization, whether they were successful or not.  
 
@@ -105,116 +109,8 @@ This call returns all preauthorized pay-ins made against a given preauthorizatio
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $preauthorizationId = '192823192';
-
-    $response = $api->CardPreAuthorizations->GetTransactions($preauthorizationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myPreauthorization = {
-  Id: '192823192',
-}
-
-const listTransactionsPreauthorization = async (preauthorizationId) => {
-  return await mangopay.CardPreAuthorizations.getTransactions(preauthorizationId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listTransactionsPreauthorization(myPreauthorization.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listTransactionsPreauthorization(preauthorizationId)
-    begin
-        response = MangoPay::PreAuthorization.transactions(preauthorizationId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Transactions: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPreauthorization = {
-    Id: '192823192'
-}
-
-listTransactionsPreauthorization(myPreauthorization[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import PreAuthorization
-
-preauth = PreAuthorization.get('preauth_m_01HPHN0G8236VVKDSF9SX87HE6')
-
-transactions = PreAuthorization.get_transactions(self = preauth)
-
-print('=== Transactions for Preauthorization {} ==='.format(preauth.id))
-
-for transaction in transactions:
-    print()
-    pprint(transaction._data)  
-```  
-
-  
+    <PhpListTransactionsPreauthorization />
+    <NodeListTransactionsPreauthorization />
+    <RubyListTransactionsPreauthorization />
+    <PythonListPreauthorizationTransactions />
 </RequestExample>

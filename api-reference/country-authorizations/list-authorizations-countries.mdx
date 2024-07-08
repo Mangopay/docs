@@ -4,7 +4,10 @@ api: 'GET /v2.01/countries/authorizations'
 ---
 
 import Array_AuthorizationsResponse from '/snippets/p-response/Array_AuthorizationsResponse.mdx';
-  
+
+import NodeListCountryAuthorizations from '/snippets/code/node-list-country-authorizations.mdx';
+import RubyListCountryAuthorizations from '/snippets/code/ruby-list-country-authorizations.mdx';
+import ListCountryAuthorizationsPython from '/snippets/code/list-country-authorizations-python.mdx';
 
 This call returns the restrictions of all countries.  
 
@@ -46,76 +49,7 @@ This call returns the restrictions of all countries.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-const listCountryAuthorizations = async () => {
-  return await mangopay.Regulatory.getAllCountriesAuthorizations()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listCountryAuthorizations()  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listCountryAuthorization()
-    begin
-        response = MangoPay::Regulatory.get_all_countries_authorizations()
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch country authorizations: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-listCountryAuthorization()  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import CountryAuthorization
-
-country_authorizations = CountryAuthorization.get_all_countries_authorizations()
-
-for country_authorization in country_authorizations:
-    pprint(country_authorization._data)
-    pprint(vars(country_authorization.authorization))
-    print()  
-```  
-
-  
+    <NodeListCountryAuthorizations />
+    <RubyListCountryAuthorizations />
+    <ListCountryAuthorizationsPython />
 </RequestExample>

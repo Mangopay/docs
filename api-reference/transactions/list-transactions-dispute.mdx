@@ -11,7 +11,10 @@ import AfterDate1 from '/snippets/p-query/AfterDate1.mdx';
 import BeforeDate1 from '/snippets/p-query/BeforeDate1.mdx';
 import ResultCode from '/snippets/p-query/ResultCode.mdx';
 import Status from '/snippets/p-query/Status.mdx';
-  
+
+import PhpListTransactionsDispute from '/snippets/code/php-list-transactions-dispute.mdx';
+import NodeListDisputeTransactions from '/snippets/code/node-list-dispute-transactions.mdx';
+import RubyListTransactionsDispute from '/snippets/code/ruby-list-transactions-dispute.mdx';
 
 This call returns the transactions following the creation of a given dispute, in other words, the repudiation transfer, and the settlement (if any).  
 
@@ -105,91 +108,7 @@ This call returns the transactions following the creation of a given dispute, in
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $disputeId = '159763014';
-
-    $response = $api->Disputes->GetTransactions($disputeId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '159763014',
-}
-
-const listTransactionsForDisputes = async (disputeId) => {
-  return await mangopay.Disputes.getTransactions(disputeId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listTransactionsForDisputes(myDispute.Id)
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listTransactionsDispute(disputeId)
-    begin
-        response = MangoPay::Dispute.transactions(disputeId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Transactions: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDispute = {
-    Id: '194413022'
-}
-
-listTransactionsDispute(myDispute[:Id])  
-```  
-
-  
+    <PhpListTransactionsDispute />
+    <NodeListDisputeTransactions />
+    <RubyListTransactionsDispute />
 </RequestExample>

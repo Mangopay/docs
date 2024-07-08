@@ -37,7 +37,11 @@ import Tag5Response from '/snippets/p-response/Tag5Response.mdx';
 import Id3Response from '/snippets/p-response/Id3Response.mdx';
 import PaymentStatus from '/snippets/p-body/PaymentStatus.mdx';
 import PreauthorizationId from '/snippets/p-path/PreauthorizationId.mdx';
-  
+
+import RestCancelOrValidatePreauthorization from '/snippets/code/rest-cancel-or-validate-preauthorization.mdx';
+import NodeCreatePreauthorization1 from '/snippets/code/node-create-preauthorization1.mdx';
+import RubyCancelValidatePreauthorization from '/snippets/code/ruby-cancel-validate-preauthorization.mdx';
+import PythonCancelValidatePreauthorization from '/snippets/code/python-cancel-validate-preauthorization.mdx';
 
 This call is used to manually close the preauthorization hold period before the `ExpirationDate`, thereby releasing the preauthorized funds.   
 
@@ -401,157 +405,8 @@ A preauthorization with the `CANCELED` or `VALIDATED` status can’t be reused.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-   "PaymentStatus": "CANCELED"
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-// To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
-
-let myPreauthorization = {
-  Id: '192870038',
-  PaymentStatus: 'CANCELED',
-}
-
-const cancelPreauthorization = async (preauthorization) => {
-  return await mangopay.CardPreAuthorizations.update(preauthorization)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-cancelPreauthorization(myPreauthorization)
-
-// To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
-
-let myPreauthorization = {
-  Id: '192870038',
-  PaymentStatus: 'VALIDATED',
-}
-
-const validatePreauthorization = async (preauthorization) => {
-  return await mangopay.CardPreAuthorizations.update(preauthorization)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-validatePreauthorization(myPreauthorization)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-
-# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
-
-def validatePreauthorization(preauthorizationId, preauthorizationObject)
-    begin
-        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to update preauthorization: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPreauthorization = {
-    Id: '195059241',
-    PaymentStatus: 'VALIDATED'
-  }
-
-validatePreauthorization(myPreauthorization[:Id], myPreauthorization)
-
-# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
-
-def cancelPreauthorization(preauthorizationId, preauthorizationObject)
-    begin
-        response = MangoPay::PreAuthorization.update(preauthorizationId, preauthorizationObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to update preauthorization: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPreauthorization = {
-    Id: '198156939',
-    PaymentStatus: 'CANCELED'
-  }
-
-cancelPreauthorization(myPreauthorization[:Id], myPreauthorization)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-
-from mangopay.resources import PreAuthorization
-
-# To validate a preauthorization when at least one preauthorized pay-in has been made to capture funds.
-
-card_preauthorization = PreAuthorization(
-    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
-    payment_status = 'VALIDATED'
-)
-
-validate_preauthorization = card_preauthorization.save()
-
-pprint(validate_preauthorization)
-
-
-# To cancel a preauthorization when no preauthorized pay-ins have been made to capture funds
-
-card_preauthorization = PreAuthorization(
-    id = 'preauth_m_01HPHJDFSZWD7BN2MRF0YTHM40',
-    payment_status = 'CANCEL'
-)
-
-cancel_preauthorization = card_preauthorization.save()
-
-pprint(cancel_preauthorization)  
-```  
-
-  
+    <RestCancelOrValidatePreauthorization />
+    <NodeCreatePreauthorization1 />
+    <RubyCancelValidatePreauthorization />
+    <PythonCancelValidatePreauthorization />
 </RequestExample>

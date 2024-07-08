@@ -5,7 +5,10 @@ api: 'GET /v2.01/{ClientId}/wallets/{WalletId}/disputes'
 
 import Array_DisputesResponse from '/snippets/p-response/Array_DisputesResponse.mdx';
 import WalletId from '/snippets/p-path/WalletId.mdx';
-  
+
+import NodeListWalletDisputes from '/snippets/code/node-list-wallet-disputes.mdx';
+import RubyListDisputesWallet from '/snippets/code/ruby-list-disputes-wallet.mdx';
+import ListWalletDisputesPython from '/snippets/code/list-wallet-disputes-python.mdx';
 
 ### Path parameters  
 
@@ -57,85 +60,7 @@ import WalletId from '/snippets/p-path/WalletId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myWallet = {
-  Id: '148968396',
-}
-
-const listWalletDisputes = async (walletId) => {
-  return await mangopay.Disputes.getDisputesForWallet(walletId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listWalletDisputes(myWallet.Id)
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listWalletDisputes(walletId)
-    begin
-        response = MangoPay::Dispute.fetch_for_wallet(walletId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Dispute: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myWallet = {
-    Id: '194579906'
-}
-
-listWalletDisputes(myWallet[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Wallet
-
-user_wallet = Wallet.get('wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV')
-
-disputes = user_wallet.disputes.all()
-
-for dispute in disputes:
-    print()
-    pprint(dispute._vars)  
-```  
-
-  
+    <NodeListWalletDisputes />
+    <RubyListDisputesWallet />
+    <ListWalletDisputesPython />
 </RequestExample>

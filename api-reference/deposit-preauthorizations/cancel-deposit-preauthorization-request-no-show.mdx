@@ -33,6 +33,8 @@ import Id2Response from '/snippets/p-response/Id2Response.mdx';
 import PaymentStatus1 from '/snippets/p-body/PaymentStatus1.mdx';
 import DepositId from '/snippets/p-path/DepositId.mdx';
   
+import RestCancelOrValidatePreauthorization from '/snippets/code/rest-cancel-or-validate-preauthorization.mdx';
+import PythonCancelDepositPreauthorization from '/snippets/code/python-cancel-deposit-preauthorization.mdx';
 
 This endpoints allows you to take one of two actions against a deposit preauthorization, in both cases provided that no preauthorized pay-ins have been made to capture funds:  
 - Cancel it manually by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can’t be used for any further action.  
@@ -200,36 +202,6 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-   "PaymentStatus": "CANCELED"
-}  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Deposit
-
-deposit_preauthorization = Deposit(
-    id = '5ac7a986-cf01-47f0-a882-8b0928ae5458',
-    payment_status = 'CANCELED'
-)
-
-cancel_deposit_preauthorization = deposit_preauthorization.save()
-
-pprint(cancel_deposit_preauthorization)  
-```  
-
-  
+    <RestCancelOrValidatePreauthorization />
+    <PythonCancelDepositPreauthorization />  
 </RequestExample>

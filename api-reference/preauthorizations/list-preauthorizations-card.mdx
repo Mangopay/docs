@@ -6,6 +6,9 @@ api: 'GET /v2.01/{ClientId}/cards/{CardId}/preauthorizations'
 import Array_PreauthorizationsResponse from '/snippets/p-response/Array_PreauthorizationsResponse.mdx';
 import CardId from '/snippets/p-path/CardId.mdx';
   
+import NodeListPreauthorizationsCard from '/snippets/code/node-list-preauthorizations-card.mdx';
+import RubyListPreauthorizationsCard from '/snippets/code/ruby-list-preauthorizations-card.mdx';
+import PythonListCardPreauthorizations from '/snippets/code/python-list-card-preauthorizations.mdx';
 
 ### Path parameters  
 
@@ -13,9 +16,11 @@ import CardId from '/snippets/p-path/CardId.mdx';
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
-
-<Array_PreauthorizationsResponse /></Accordion></AccordionGroup>  
+<AccordionGroup>
+    <Accordion title="200">  
+        <Array_PreauthorizationsResponse />
+    </Accordion>
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -76,83 +81,7 @@ import CardId from '/snippets/p-path/CardId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myCard = {
-  Id: '169687329',
-}
-
-const listPreauthorizationsforCard = async (cardId) => {
-  return await mangopay.Cards.getPreAuthorizations(cardId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listPreauthorizationsforCard(myCard.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listPreauthorizationsCard(cardId)
-    begin
-        response = MangoPay::Card.get_pre_authorizations(cardId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch preauthorizations: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myCard = {
-    Id: '192822826'
-  }
-
-listPreauthorizationsCard(myCard[:Id])  
-```  
-
-  
-```python Python  
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Card
-
-user_card = Card.get('213944219')
-
-preauthorizations = user_card.preauthorization_set.all()
-
-for preauthorization in preauthorizations:
-    pprint(vars(preauthorization))  
-```  
-
-  
+    <NodeListPreauthorizationsCard />
+    <RubyListPreauthorizationsCard />
+    <PythonListCardPreauthorizations />
 </RequestExample>

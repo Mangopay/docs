@@ -38,6 +38,11 @@ import AuthorId from '/snippets/p-body/AuthorId.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
 import DirectDebitType from '/snippets/p-body/DirectDebitType.mdx';
 
+import RestCreateWebDirectDebit from '/snippets/code/rest-create-web-direct-debit.mdx';
+import NodeWebDirectDebitPayin from '/snippets/code/node-web-direct-debit-payin.mdx';
+import RubyCreateWebDirectDebitPayin from '/snippets/code/ruby-create-web-direct-debit-payin.mdx';
+import PythonCreateWebDirectDebitPayin from '/snippets/code/python-create-web-direct-debit-payin.mdx';
+
 <Warning>
 **Warning – Giropay no longer available after June 30, 2024**
 
@@ -172,149 +177,8 @@ Our team is ready to assist you with your integration of alternatives like <a hr
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "DirectDebitType": "SOFORT",
-    "Tag": "custom meta",
-    "AuthorId": "146476890",
-    "CreditedUserId": "146476890",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 1200
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 12
-    },
-    "CreditedWalletId": "148968396",
-    "ReturnURL": "http://www.my-site.com/returnURL/?transactionId=158596153",
-    "TemplateURLOptions": ""PAYLINE"=>"https://...",
-    "Culture": "EN"
-}
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myPayIn = {
-  PaymentType: 'DIRECT_DEBIT',
-  ExecutionType: 'WEB',
-  DirectDebitType: 'SOFORT',
-  AuthorId: '146476890',
-  Tag: 'Created with Mangopay Node.js SDK',
-  CreditedUserId: '146476890',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  CreditedWalletId: '148968396',
-  ReturnURL: 'https://mangopay.com/docs/please-ignore',
-  TemplateURL: 'https://mangopay.com/docs/please-ignore',
-  Culture: 'EN',
-}
-
-const createWebDirectDebitPayIn = async (payin) => {
-  return await mangopay.PayIns.create(payin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createWebDirectDebitPayIn(myPayIn)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createWebDirectDebitPayIn(payInObject)
-    begin
-        response = MangoPay::PayIn::DirectDebit::Web.create(payInObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create pay-in: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myPayIn = {
-    DirectDebitType: 'SOFORT',
-    AuthorId: '146476890',
-    Tag: 'Created with Mangopay Node.js SDK',
-    CreditedUserId: '146476890',
-    DebitedFunds: {
-      Currency: 'EUR',
-      Amount: 1000,
-    },
-    Fees: {
-      Currency: 'EUR',
-      Amount: 100,
-    },
-    CreditedWalletId: '148968396',
-    ReturnURL: 'https://mangopay.com/docs/please-ignore',
-    TemplateURL: 'https://mangopay.com/docs/please-ignore',
-    Culture: 'EN',
-  }
-
-createWebDirectDebitPayIn(myPayIn)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, DirectDebitWebPayIn
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('213753890')
-
-direct_debit_web_payin = DirectDebitWebPayIn(
-    direct_debit_type = 'GIROPAY',
-    author_id = natural_user.id,
-    debited_funds = Money(amount='1000', currency='EUR'),
-    fees = Money(amount='0', currency='EUR'),
-    credited_wallet_id = '213754077',
-    return_url = 'https://mangopay.com/docs/please-ignore',
-    culture = 'EN',
-    tag = 'Created using the Mangopay Python SDK',
-)
-
-create_direct_debit_web_payin = direct_debit_web_payin.save()
-
-pprint(create_direct_debit_web_payin)  
-```  
-
-  
+  <RestCreateWebDirectDebit />
+  <NodeWebDirectDebitPayin />
+  <RubyCreateWebDirectDebitPayin />
+  <PythonCreateWebDirectDebitPayin />
 </RequestExample>

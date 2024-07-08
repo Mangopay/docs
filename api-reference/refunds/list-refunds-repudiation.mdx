@@ -7,7 +7,9 @@ import Array_RefundsResponse from '/snippets/p-response/Array_RefundsResponse.md
 import RepudiationId from '/snippets/p-path/RepudiationId.mdx';
 import ResultCode from '/snippets/p-query/ResultCode.mdx';
 import Status from '/snippets/p-query/Status.mdx';
-  
+
+import NodeListRefundsRepudiation from '/snippets/code/node-list-refunds-repudiation.mdx';
+import PythonListRepudiationRefunds from '/snippets/code/python-list-repudiation-refunds.mdx';
 
 Repudiations are refunded when a dispute is won.   
 
@@ -73,63 +75,6 @@ Repudiations are refunded when a dispute is won.
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRepudiation = {
-  Id: '192775715',
-}
-
-const listRefunds = async (repudiationId) => {
-  return await mangopay.Repudiations.getRefunds(repudiationId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listRefunds(myRepudiation.Id)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Refund, Repudiation, NaturalUser
-
-natural_user = NaturalUser.get('213753890')
-
-natural_user_wallet_id = '215029593'
-
-my_repudition = Repudiation.get('215101203')
-
-payin_refund = Refund(
-    id = my_repudition.id,
-    author = natural_user
-)
-
-payin_refunds = Repudiation.get_refunds(self = payin_refund)
-
-for payin_refund in payin_refunds:
-    pprint(vars(payin_refund))  
-```  
-
-  
+    <NodeListRefundsRepudiation />
+    <PythonListRepudiationRefunds />
 </RequestExample>

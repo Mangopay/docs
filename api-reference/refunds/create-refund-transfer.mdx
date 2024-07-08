@@ -28,7 +28,12 @@ import DebitedFunds7 from '/snippets/p-body/DebitedFunds7.mdx';
 import AuthorId3 from '/snippets/p-body/AuthorId3.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
 import TransferId from '/snippets/p-path/TransferId.mdx';
-  
+
+import RestCreateRefundTransfer from '/snippets/code/rest-create-refund-transfer.mdx';
+import PhpCreateRefundTransfer from '/snippets/code/php-create-refund-transfer.mdx';
+import NodeCreateRefundTransfer from '/snippets/code/node-create-refund-transfer.mdx';
+import RubyCreateRefundTransfer from '/snippets/code/ruby-create-refund-transfer.mdx';
+import PythonCreateRefundTransfer from '/snippets/code/python-create-refund-transfer.mdx'; 
 
 You can do a partial refund by providing a debited funds `Amount` value lower than the initial transaction amount. The debited funds amount must be 1 or more, if it is included.  
 
@@ -149,147 +154,9 @@ You can do a partial refund by providing a debited funds `Amount` value lower th
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Tag":"custom meta",
-    "AuthorId":"146476890"
-}
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $transferId = '199132726';
-
-    $refund = new \MangoPay\Refund();
-    $refund->AuthorId = '146476890';
-    $refund->DebitedFunds = new \MangoPay\Money();
-    $refund->DebitedFunds->Amount = 500;
-    $refund->DebitedFunds->Currency = 'EUR';
-    $refund->Fees = new \MangoPay\Money();
-    $refund->Fees->Amount = 0;
-    $refund->Fees->Currency = 'EUR';
-    $refund->Tag = 'Created using Mangopay PHP SDK';
-    
-    $response = $api->Transfers->CreateRefund($transferId, $refund);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myTransfer = {
-  Id: '180974208',
-}
-
-let myRefund = {
-  AuthorId: '170853400',
-  Tag: 'Created using Mangopay Node.js SDK',
-}
-
-const createRefund = async (transferId, refund) => {
-  return await mangopay.Transfers.createRefund(transferId, refund)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRefund(myTransfer.Id, myRefund)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createTransferRefund(transferId, refundObject)
-    begin
-        response = MangoPay::Transfer.refund(transferId, refundObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create Refund: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myTransfer = {
-    Id: '194579950'
-  }
-
-myRefund = {
-    AuthorId: '194579896',
-    Tag: 'Created with Mangopay Ruby SDK'
-  }
-
-createTransferRefund(myTransfer[:Id], myRefund)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, TransferRefund, Transfer
-
-natural_user = NaturalUser.get('211918806')
-
-user_transfer = Transfer.get('214568995')
-
-transfer_refund = TransferRefund(
-    author = natural_user,
-    transfer = user_transfer
-)
-
-create_transfer_refund = transfer_refund.save()
-
-pprint(create_transfer_refund)  
-```  
-
-  
+    <RestCreateRefundTransfer />
+    <PhpCreateRefundTransfer />
+    <NodeCreateRefundTransfer />
+    <RubyCreateRefundTransfer />
+    <PythonCreateRefundTransfer />
 </RequestExample>

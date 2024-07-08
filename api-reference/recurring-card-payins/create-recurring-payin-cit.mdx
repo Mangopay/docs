@@ -49,7 +49,10 @@ import SecureModeReturnURL from '/snippets/p-body/SecureModeReturnURL.mdx';
 import Fees11 from '/snippets/p-body/Fees11.mdx';
 import DebitedFunds12 from '/snippets/p-body/DebitedFunds12.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
-  
+
+import RestCreateRecurringPayinCit from '/snippets/code/rest-create-recurring-payin-cit.mdx';
+import NodeCreateRecurringPayinCit from '/snippets/code/node-create-recurring-payin-cit.mdx';
+import PythonCreateRecurringPayinCit from '/snippets/code/python-create-recurring-payin-cit.mdx'; 
 
 ### Body parameters  
 
@@ -245,130 +248,7 @@ import Tag from '/snippets/p-body/Tag.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Tag":"custom meta",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":900
-    },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":10
-    },
-    "SecureModeReturnURL":"http://www.my-site.com/returnURL?transactionId=156285688",
-    "Culture":"EN",
-    "StatementDescriptor":"POSTMAN",
-    "BrowserInfo":{
-        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
-        "JavaEnabled":true,
-        "Language":"FR-FR",
-        "ColorDepth":4,
-        "ScreenHeight":1800,
-        "ScreenWidth":400,
-        "TimeZoneOffset":60,
-        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-        "JavascriptEnabled":true
-    },
-    "IpAddress":"2001:0620:0000:0000:0211:24FF:FE80:C12C",
-    "RecurringPayinRegistrationId":"156285527",
-    "PreferredCardNetwork": "MASTERCARD"
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringPayinCIT = {
-  Tag: 'Created with Mangopay Nodejs SDK',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 10,
-  },
-  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
-  StatementDescriptor: 'Mangopay',
-  BrowserInfo: {
-    AcceptHeader:
-      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
-    JavaEnabled: true,
-    Language: 'FR-FR',
-    ColorDepth: 4,
-    ScreenHeight: 1800,
-    ScreenWidth: 400,
-    TimeZoneOffset: 60,
-    UserAgent:
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-    JavascriptEnabled: true,
-  },
-  IpAddress: '2d1b:f91a:075a:7fc8:0cb7:b471:cd55:017e',
-  RecurringPayiNRegistrationId: '192912686',
-}
-
-const createRecurringPayIn = async (recurringPayin) => {
-  return await mangopay.PayIns.createRecurringPayInRegistrationCIT(recurringPayin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRecurringPayIn(myRecurringPayinCIT)  
-```  
-
-  
-```python Python  
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, RecurringPayInCIT
-from mangopay.utils import Money, BrowserInfo
-
-natural_user = NaturalUser.get('210513027')
-
-recurring_payin_cit = RecurringPayInCIT(
-    debited_funds = Money(amount=1000, currency='EUR'),
-    fees = Money(amount=0, currency='EUR'),
-    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
-    browser_info = BrowserInfo(
-        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-        screen_width = 375,
-        screen_height = 667,
-        color_depth = 32,
-        language = 'EN',
-        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
-        timezone_offset = '-120',
-        java_enabled = True,
-        javascript_enabled = True
-    ),
-    ip_address = '159.180.248.187',
-    recurring_payin_registration_id = '213879771',
-    tag = 'Created using Mangopay Python SDK'
-)
-
-create_recurring_payin_cit = recurring_payin_cit.save()
-
-pprint(create_recurring_payin_cit)
-```  
-
-  
+    <RestCreateRecurringPayinCit />
+    <NodeCreateRecurringPayinCit />
+    <PythonCreateRecurringPayinCit />
 </RequestExample>

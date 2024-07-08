@@ -34,7 +34,8 @@ import ExpirationDate2Response from '/snippets/p-response/ExpirationDate2Respons
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import Id2Response from '/snippets/p-response/Id2Response.mdx';
 import DepositId from '/snippets/p-path/DepositId.mdx';
-  
+
+import PythonViewDepositPreauthorization from '/snippets/code/python-view-deposit-preauthorization.mdx';
 
 ### Path parameters  
 
@@ -587,34 +588,5 @@ import DepositId from '/snippets/p-path/DepositId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Deposit
-
-deposit_preauthorization = Deposit(
-    id = '11057b51-7bfc-43e9-bdec-268ba41148cc'
-)
-
-try:
-    view_deposit_preauthorization = Deposit.get(deposit_preauthorization.id) 
-    pprint(vars(view_deposit_preauthorization))
-    pprint(vars(view_deposit_preauthorization.billing))
-    pprint(vars(view_deposit_preauthorization.browser_info))
-    pprint(vars(view_deposit_preauthorization.payins_linked))
-    pprint(vars(view_deposit_preauthorization.shipping))
-except Deposit.DoesNotExist:
-    print('The Deposit PreAuthorization {} does not exist'.format(deposit_preauthorization.id))  
-```  
-
-  
+    <PythonViewDepositPreauthorization />
 </RequestExample>

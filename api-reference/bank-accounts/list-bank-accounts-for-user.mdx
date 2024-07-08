@@ -9,7 +9,11 @@ import Active from '/snippets/p-query/Active.mdx';
 import Sort from '/snippets/p-query/Sort.mdx';
 import per_page from '/snippets/p-query/per_page.mdx';
 import page from '/snippets/p-query/page.mdx';
-  
+
+import PhpListBankAccountUser from '/snippets/code/php-list-bank-account-user.mdx';
+import NodeListBankAccountsUser from '/snippets/code/node-list-bank-accounts-user.mdx';
+import RubyListBankAccountsUser from '/snippets/code/ruby-list-bank-accounts-user.mdx';
+import PythonListUserBankAccounts from '/snippets/code/python-list-user-bank-accounts.mdx';
 
 <Note>  
 **Note** 
@@ -88,114 +92,8 @@ The returned parameters may vary depending on the encountered bank account types
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $userId = '146476890';
-
-    $response = $api->Users->GetBankAccounts($userId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r$e);
-}
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let user = {
-  Id: '165863393',
-}
-
-const listUserBankAccounts = async (userId) => {
-  return await mangopay.Users.getBankAccounts(userId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listUserBankAccounts(user.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listBankAccounts(userId)
-    begin
-        response = MangoPay::BankAccount.fetch(userId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch bank account: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-    Id: '165863393'
-}
-
-listBankAccounts(myUser[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser
-
-natural_user = NaturalUser.get('213753890')
-
-bank_accounts = natural_user.bankaccounts.all()
-
-for bank_account in bank_accounts:
-    pprint(vars(bank_account))  
-```  
-
-  
+    <PhpListBankAccountUser />
+    <NodeListBankAccountsUser />
+    <RubyListBankAccountsUser />
+    <PythonListUserBankAccounts />
 </RequestExample>

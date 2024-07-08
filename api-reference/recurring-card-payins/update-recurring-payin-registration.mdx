@@ -31,7 +31,11 @@ import Billing2 from '/snippets/p-body/Billing2.mdx';
 import Shipping2 from '/snippets/p-body/Shipping2.mdx';
 import Status3 from '/snippets/p-body/Status3.mdx';
 import CardId from '/snippets/p-body/CardId.mdx';
-  
+
+import RestUpdateRecurringPayinRegistration from '/snippets/code/rest-update-recurring-payin-registration.mdx';
+import NodeUpdateRecurringPayinRegistration from '/snippets/code/node-update-recurring-payin-registration.mdx';
+import RubyUpdateRecurringRegistration from '/snippets/code/ruby-update-recurring-registration.mdx';
+import PythonUpdateRecurringPayinRegistration from '/snippets/code/python-update-recurring-payin-registration.mdx';
 
 This call can be used to change the following parameters:  
 - `Status` – To manually close the recurring pay-in registration with the `ENDED` status. When doing so, no recurring pay-in can be created based on the registration anymore.  
@@ -168,172 +172,8 @@ This call can be used to change the following parameters:
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Status":"ENDED",
-    "CardId":"155155221",
-    "Billing":{
-        "FirstName":"John",
-        "LastName":"Doe",
-        "Address":{
-            "AddressLine1":"The Oasis",
-            "AddressLine2":"Rue des Plantes",
-            "City":"Paris",
-            "Region":"Ile de France",
-            "PostalCode":"75001",
-            "Country":"FR"
-        }
-    },
-    "Shipping":{
-        "FirstName":"John",
-        "LastName":"Doe",
-        "Address":{
-            "AddressLine1":"The Oasis",
-            "AddressLine2":"Rue des Plantes",
-            "City":"Paris",
-            "Region":"Ile de France",
-            "PostalCode":"75001",
-            "Country":"FR"
-        }
-    },
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringRegistration = {
-  Id: '192912686',
-  CardId: '169687329',
-  Status: '',
-  Billing: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: 'Rue des grandes plantes',
-      AddressLine2: 'The Oasis',
-      City: 'Paris',
-      Region: 'IDF',
-      PostalCode: '75000',
-      Country: 'FR',
-    },
-  },
-  Shipping: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: 'Rue des grandes plantes',
-      AddressLine2: 'The Oasis',
-      City: 'Paris',
-      Region: 'IDF',
-      PostalCode: '75000',
-      Country: 'FR',
-    },
-  },
-}
-
-const updateRecurringRegistration = async (recurringRegistrationId,recurringRegistration) => {
-  return await mangopay.PayIns.updateRecurringPayin(recurringRegistrationId, recurringRegistration)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateRecurringRegistration(myRecurringRegistration.Id, myRecurringRegistration)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def updateRecurringRegistration(recurringRegistrationId, recurringRegistrationObject)
-    begin
-        response = MangoPay::PayIn::RecurringPayments::Recurring.update(recurringRegistrationId, recurringRegistrationObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create recurring registration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRecurringRegistration = {
-  Id: '195097427',
-  CardId: '169687329',
-  Status: '',
-  Billing: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: 'Rue des très grandes plantes',
-      AddressLine2: 'The Oasis',
-      City: 'Paris',
-      Region: 'IDF',
-      PostalCode: '75000',
-      Country: 'FR'
-    },
-  },
-  Shipping: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: 'Rue des très grandes plantes',
-      AddressLine2: 'The Oasis',
-      City: 'Paris',
-      Region: 'IDF',
-      PostalCode: '75000',
-      Country: 'FR'
-    }
-  }
-}
-
-updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)  
-```  
-
-  
-```python Python  
-
-
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import RecurringPayInRegistration
-
-recurring_payin_registration = RecurringPayInRegistration(
-    id = '213857583',
-    status = 'ENDED'
-)
-
-update_recurring_payin_registration = recurring_payin_registration.save()
-
-pprint(update_recurring_payin_registration)
-```  
-
-  
+  <RestUpdateRecurringPayinRegistration />
+  <NodeUpdateRecurringPayinRegistration />
+  <RubyUpdateRecurringRegistration />
+  <PythonUpdateRecurringPayinRegistration />
 </RequestExample>

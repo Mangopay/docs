@@ -15,7 +15,11 @@ import DisputeIdResponse from '/snippets/p-response/DisputeIdResponse.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import Type4 from '/snippets/p-body/Type4.mdx';
 import DisputeId from '/snippets/p-path/DisputeId.mdx';
-  
+
+import RestCreateDisputeDocument from '/snippets/code/rest-create-dispute-document.mdx';
+import PhpCreateDisputeDocument from '/snippets/code/php-create-dispute-document.mdx';
+import NodeCreateDisputeDocument from '/snippets/code/node-create-dispute-document.mdx';
+import RubyCreateDisputeDocument from '/snippets/code/ruby-create-dispute-document.mdx';
 
 ### Path parameters  
 
@@ -69,114 +73,8 @@ import DisputeId from '/snippets/p-path/DisputeId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Type": "DELIVERY_PROOF",
-    "Tag": "Custom meta"
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-ry {
-    $disputeId = '199385842';
-
-    $document = new \MangoPay\DisputeDocument();
-    $document->Type = \MangoPay\DisputeDocumentType::DeliveryProof;
-    $document->Tag = 'Created using Mangopay PHP SDK';
-
-    
-    $response = $api->Disputes->CreateDisputeDocument($disputeId, $document);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '172969213',
-}
-
-let myDisputeDocument = {
-  Type: 'DELIVERY_PROOF',
-  Tag: 'Created using Mangopay Node.js SDK',
-}
-
-const createDisputeDocument = async (disputeId, disputeDocument) => {
-  return await mangopay.Disputes.createDisputeDocument(disputeId, disputeDocument)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createDisputeDocument(myDispute.Id, myDisputeDocument)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createDisputeDocument(disputeId, disputeDocumentObject)
-    begin
-        response = MangoPay::Dispute.create_document(disputeId, disputeDocumentObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create Document: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myDispute = {
-    Id:'194413022'
-}
-
-myDocument = {
-    Type:'DELIVERY_PROOF',
-    Tag:'Created using Mangopay Ruby SDK'
-}
-
-createDisputeDocument(myDispute[:Id], myDocument)  
-```  
-
-  
+  <RestCreateDisputeDocument />
+  <PhpCreateDisputeDocument />
+  <NodeCreateDisputeDocument />
+  <RubyCreateDisputeDocument />
 </RequestExample>

@@ -6,7 +6,11 @@ api: 'GET /v2.01/{ClientId}/reports'
 import Array_ReportsResponse from '/snippets/p-response/Array_ReportsResponse.mdx';
 import AfterDate3 from '/snippets/p-query/AfterDate3.mdx';
 import BeforeDate3 from '/snippets/p-query/BeforeDate3.mdx';
-  
+
+import PhpListReports from '/snippets/code/php-list-reports.mdx';
+import NodeListReports from '/snippets/code/node-list-reports.mdx';
+import RubyListReports from '/snippets/code/ruby-list-reports.mdx';
+import ListReportsPython from '/snippets/code/list-reports-python.mdx';
 
 ### Query parameters  
 
@@ -121,105 +125,8 @@ import BeforeDate3 from '/snippets/p-query/BeforeDate3.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    
-    $response = $api->Reports->GetAll();
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-const listReports = async () => {
-  return await mangopay.Reports.getAll()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listReports()  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listAllReports()
-    begin
-        begin
-            response = MangoPay::Report.fetch()
-            puts response
-            return response
-        rescue MangoPay::ResponseError => error
-            puts "Failed to fetch Reports: #{error.message}"
-            puts "Error details: #{error.details}"
-            return false
-        end
-    end
-end
-
-listAllReports()  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Report
-
-reports = Report.all()
-
-for report in reports:
-    pprint(report._data)
-    print()  
-```  
-
-  
+    <PhpListReports />
+    <NodeListReports />
+    <RubyListReports />
+    <ListReportsPython />
 </RequestExample>

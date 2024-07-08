@@ -11,7 +11,11 @@ import AfterDate1 from '/snippets/p-query/AfterDate1.mdx';
 import BeforeDate1 from '/snippets/p-query/BeforeDate1.mdx';
 import ResultCode from '/snippets/p-query/ResultCode.mdx';
 import Status from '/snippets/p-query/Status.mdx';
-  
+
+import PhpListTransactionsBankAccount from '/snippets/code/php-list-transactions-bank-account.mdx';
+import NodeListTransactionsBankAccount from '/snippets/code/node-list-transactions-bank-account.mdx';
+import RubyListTransactionsBankAccount from '/snippets/code/ruby-list-transactions-bank-account.mdx';
+import PythonListBankAccountTransactions from '/snippets/code/python-list-bank-account-transactions.mdx';
 
 This call returns all the transactions of a given bank account, whether the bank account is the source (pay-in) or the target (payout) of the transaction.  
 
@@ -105,121 +109,8 @@ This call returns all the transactions of a given bank account, whether the bank
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $bankAccountId = '198982485';
-
-    $response = $api->BankAccounts->GetTransactions($bankAccountId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-let bankAccount = {
-  Id: '154876798',
-}
-
-const getBankAccountTransactions = async (bankAccountId) => {
-  return await mangopay.BankAccounts.getTransactions(bankAccountId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-getBankAccountTransactions(bankAccount.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listTransactionsBankAccount(bankAccountId)
-    begin
-        response = MangoPay::BankAccount.transactions(bankAccountId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Transactions: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myBankAccount = {
-    Id: '154876798'
-}
-
-listTransactionsBankAccount(myBankAccount[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, BankAccount
-
-natural_user = NaturalUser.get('213753890')
-
-bank_account = BankAccount(
-    user_id = natural_user.id,
-    id = '214651521'
-)
-
-transactions = BankAccount.get_transactions(self = bank_account)
-
-print('=== Transactions for Bank Account {} ==='.format(bank_account.id))
-
-for transaction in transactions:
-    print()
-    pprint(transaction._data)  
-```  
-
-  
+    <PhpListTransactionsBankAccount />
+    <NodeListTransactionsBankAccount />
+    <RubyListTransactionsBankAccount />
+    <PythonListBankAccountTransactions />
 </RequestExample>

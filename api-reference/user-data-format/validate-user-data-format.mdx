@@ -5,7 +5,9 @@ api: 'POST /v2.01/{ClientId}/users/data-formats/validation'
 
 import CompanyNumber1Response from '/snippets/p-response/CompanyNumber1Response.mdx';
 import CompanyNumber1 from '/snippets/p-body/CompanyNumber1.mdx';
-  
+
+import RestValidateUserDataFormat from '/snippets/code/rest-validate-user-data-format.mdx';
+import PythonValidateUserDataFormat from '/snippets/code/python-validate-user-data-format.mdx';
 
 This call allows you to check the validity of the format of a piece of user data, and to retrieve the validation rules applied to it.  
 
@@ -22,7 +24,6 @@ This endpoint only checks that the format of the data corresponds to that which 
 ### Responses  
 
 <AccordionGroup>
-
     <Accordion title="200 - Valid format for the country">  
         <CompanyNumber1Response />
     </Accordion>
@@ -67,42 +68,6 @@ This endpoint only checks that the format of the data corresponds to that which 
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "CompanyNumber": {
-        "CompanyNumber": "AB123456",
-        "CountryCode": "IT"
-    }
-}  
-```  
-
-  
-```python Python  
-
-import re
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import LegalUser
-
-legal_user = LegalUser(
-    id = '210602889'
-)
-
-company_number = str(legal_user.company_number)
-
-validation_regex = re.compile(r"^[0-9]{11}$|^[a-z]{2}[0-9]{7}$|^[a-z]{2}[0-9]{6}$")
-validate_it = validation_regex.match(company_number)
-
-print(bool(validate_it))  
-```  
-
-  
+    <RestValidateUserDataFormat />
+    <PythonValidateUserDataFormat />
 </RequestExample>

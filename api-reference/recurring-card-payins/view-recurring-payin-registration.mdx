@@ -29,6 +29,9 @@ import Status8Response from '/snippets/p-response/Status8Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import RecurringPayinRegistrationId from '/snippets/p-query/RecurringPayinRegistrationId.mdx';
   
+import NodeViewRecurringPayinRegistration from '/snippets/code/node-view-recurring-payin-registration.mdx';
+import RubyViewRecurringRegistration from '/snippets/code/ruby-view-recurring-registration.mdx';
+import PythonViewRecurringPayinRegistration from '/snippets/code/python-view-recurring-payin-registration.mdx';
 
 ### Query parameters  
 
@@ -154,85 +157,7 @@ import RecurringPayinRegistrationId from '/snippets/p-query/RecurringPayinRegist
 </ResponseExample>  
 
 <RequestExample>  
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringRegistration = {
-  Id: '192912686',
-}
-
-const viewRecurringRegistration = async (recurringRegistrationId) => {
-  return await mangopay.PayIns.getRecurringPayin(recurringRegistrationId)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-viewRecurringRegistration(myRecurringRegistration.Id)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def viewRecurringRegistration(recurringRegistrationId)
-    begin
-        response = MangoPay::PayIn::RecurringPayments::Recurring.fetch(recurringRegistrationId)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch recurring registration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRecurringRegistration = {
-  Id: '192912686',
-}
-
-viewRecurringRegistration(myRecurringRegistration[:Id])  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import RecurringPayInRegistration
-
-recurring_payin_registration_id = '213857583'
-
-try:
-    view_recurring_payin_registration = RecurringPayInRegistration.get(recurring_payin_registration_id)
-    pprint(vars(view_recurring_payin_registration))
-except RecurringPayInRegistration.DoesNotExist:
-    print('The Recurring PayIn Registration {} does not exist.'.format(recurring_payin_registration_id))
-```  
-
-  
+    <NodeViewRecurringPayinRegistration />
+    <RubyViewRecurringRegistration />
+    <PythonViewRecurringPayinRegistration />
 </RequestExample>

@@ -44,6 +44,9 @@ import Fees11 from '/snippets/p-body/Fees11.mdx';
 import DebitedFunds12 from '/snippets/p-body/DebitedFunds12.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
   
+import RestCreateRecurringPayinMit from '/snippets/code/rest-create-recurring-payin-mit.mdx';
+import NodeCreateRecurringPayinMit from '/snippets/code/node-create-recurring-payin-mit.mdx';
+import PythonCreateARecurringPayinMit from '/snippets/code/python-create-a-recurring-payin-mit.mdx';
 
 ### Body parameters  
 
@@ -217,102 +220,7 @@ import Tag from '/snippets/p-body/Tag.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "Tag":"Custom meta",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":900
-    },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":10
-    },
-    "StatementDescriptor":"Mar2022",
-    "RecurringPayinRegistrationId":"156285527"
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringPayinMIT = {
-  Tag: 'Created with Mangopay Nodejs SDK',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 10,
-  },
-  StatementDescriptor: 'Mangopay',
-  RecurringPayiNRegistrationId: '192912686',
-}
-
-const createRecurringPayIn = async (recurringPayin) => {
-  return await mangopay.PayIns.createRecurringPayInRegistrationMIT(recurringPayin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRecurringPayIn(myRecurringPayinMIT)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Money, RecurringPayInMIT
-from mangopay.utils import BrowserInfo
-
-natural_user = NaturalUser.get('210513027')
-
-recurring_payin_mit = RecurringPayInMIT(
-    debited_funds = Money(amount=1000, currency='EUR'),
-    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore', 
-    browser_info = BrowserInfo( # Missing from doc, but needed here
-        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 _1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-        screen_width = 375,
-        screen_height = 667,
-        color_depth = 32,
-        language = 'EN',
-        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
-        timezone_offset = '-120',
-        java_enabled = True,
-        javascript_enabled = True
-    ),
-    fees = Money(amount=0, currency='EUR'),
-    ip_address = '159.180.248.187',
-    recurring_payin_registration_id = '213879771',
-    statement_descriptor = 'Jan2024',
-    tag = 'Created using Mangopay Python SDK'
-)
-
-create_recurring_payin_mit = recurring_payin_mit.save()
-
-pprint(create_recurring_payin_mit)
-```  
-
-  
+    <RestCreateRecurringPayinMit />
+    <NodeCreateRecurringPayinMit />
+    <PythonCreateARecurringPayinMit />
 </RequestExample>

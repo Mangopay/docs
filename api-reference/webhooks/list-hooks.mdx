@@ -4,15 +4,21 @@ api: 'GET /v2.01/{CliendId}/hooks'
 ---
 
 import Array_HooksResponse from '/snippets/p-response/Array_HooksResponse.mdx';
-  
+
+import PhpListHooks from '/snippets/code/php-list-hooks.mdx';
+import NodeListHooks from '/snippets/code/node-list-hooks.mdx';
+import RubyListHooks from '/snippets/code/ruby-list-hooks.mdx';
+import ListAlHooksPython from '/snippets/code/list-al-hooks-python.mdx';
 
 This call returns all the Hooks that have been created for the platform. It includes both enabled and disabled hooks.  
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
-
-<Array_HooksResponse /></Accordion></AccordionGroup>  
+<AccordionGroup>
+    <Accordion title="200">
+        <Array_HooksResponse />
+    </Accordion>
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -44,103 +50,8 @@ This call returns all the Hooks that have been created for the platform. It incl
 </ResponseExample>  
 
 <RequestExample>  
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $response = $api->Hooks->GetAll();
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-  clientId: 'your-client-id',
-  clientApiKey: 'your-api-key',
-})
-
-const listHooks = async () => {
-  return await mangopay.Hooks.getAll()
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-listHooks()  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def listHooks()
-    begin
-        response = MangoPay::Hook.fetch()
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Hooks: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-
-listHooks()  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import Notification
-
-hooks = Notification.all()
-
-for hook in hooks:
-    pprint(hook._data)
-    print()  
-```  
-
-  
+    <PhpListHooks />
+    <NodeListHooks />
+    <RubyListHooks />
+    <ListAlHooksPython />
 </RequestExample>

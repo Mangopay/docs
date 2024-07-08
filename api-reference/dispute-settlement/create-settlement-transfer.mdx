@@ -25,7 +25,12 @@ import Fees4 from '/snippets/p-body/Fees4.mdx';
 import DebitedFunds5 from '/snippets/p-body/DebitedFunds5.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
 import RepudiationId from '/snippets/p-path/RepudiationId.mdx';
-  
+
+import RestCreateSettlementTransfer from '/snippets/code/rest-create-settlement-transfer.mdx';
+import PhpCreateSettlementTransfer from '/snippets/code/php-create-settlement-transfer.mdx';
+import NodeCreateSettlementTransfer from '/snippets/code/node-create-settlement-transfer.mdx';
+import RubyCreateSettlementTransfer from '/snippets/code/ruby-create-settlement-transfer.mdx';
+import CreateSettlementTransferPython from '/snippets/code/create-settlement-transfer-python.mdx';
 
 ### Path parameters  
 
@@ -219,165 +224,9 @@ import RepudiationId from '/snippets/p-path/RepudiationId.mdx';
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "AuthorId":"146476890",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":12
-    },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":12
-    }
-}  
-```  
-
-  
-```php PHP  
-<?php 
-
-require_once 'vendor/autoload.php';
-
-use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
-
-$api = new MangoPayApi();
-
-$api->Config->ClientId = 'your-client-id';
-$api->Config->ClientPassword = 'your-api-key';
-$api->Config->TemporaryFolder = 'tmp/';
-
-try {
-    $repudiationId = '199385843';
-    $repudiation = $api->Disputes->GetRepudiation($repudiationId);
-
-    $settlementTransfer = new \MangoPay\SettlementTransfer();
-
-    $settlementTransfer->AuthorId = $repudiation->AuthorId;
-    $settlementTransfer->DebitedFunds = new \MangoPay\Money();
-    $settlementTransfer->DebitedFunds->Amount = 500;
-    $settlementTransfer->DebitedFunds->Currency = "EUR";
-    $settlementTransfer->Fees = new \MangoPay\Money();
-    $settlementTransfer->Fees->Amount = 0;
-    $settlementTransfer->Fees->Currency = "EUR";
-
-
-    $response = $api->Disputes->CreateSettlementTransfer($settlementTransfer, $repudiationId);
-
-    print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
-```  
-
-  
-```javascript NodeJS  
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myDispute = {
-  Id: '192775714',
-  RepudiationId: '192775715',
-}
-
-let mySettlementTransfer = {
-  AuthorId: '180749339',
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: '1000',
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 0,
-  },
-}
-
-const createSettlementTransfer = async (settlementTransfer, repudiationId) => {
-  return await mangopay.Disputes.createSettlementTransfer(
-    settlementTransfer,
-    repudiationId
-  )
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createSettlementTransfer(mySettlementTransfer, myDispute.RepudiationId)  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-myRepudiation = {
-    Id: '194618172'
-}
-
-mySettlementTransfer = {
-    Type: 'TRANSFER',
-    Nature: 'SETTLEMENT',
-    AuthorId: '194579896',
-    DebitedFunds: {
-        Currency: 'EUR',
-        Amount: 10000
-    },
-    Fees: {
-        Currency: 'EUR',
-        Amount: 9000
-    }
-
-}
-
-createSettlementTransfer(myRepudiation[:Id], mySettlementTransfer)  
-```  
-
-  
-```python Python  
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, Repudiation, SettlementTransfer
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
-
-repudiation = Repudiation.get('repud_m_01HQT8ZRDVYBVT7T8240AWZD3D')
-
-settlement_transfer = SettlementTransfer(
-    author = natural_user,
-    credited_user_id = natural_user.id,
-    debited_funds = Money(amount=4000, currency='GBP'),
-    fees =  Money(amount=0, currency='GBP'),
-    repudiation = repudiation
-)  
-```  
-
-  
+    <RestCreateSettlementTransfer />
+    <PhpCreateSettlementTransfer />
+    <NodeCreateSettlementTransfer />
+    <RubyCreateSettlementTransfer />
+    <CreateSettlementTransferPython />
 </RequestExample>

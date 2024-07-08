@@ -12,7 +12,9 @@ import Fees2 from '/snippets/p-body/Fees2.mdx';
 import DebitedFunds3 from '/snippets/p-body/DebitedFunds3.mdx';
 import AuthorId1 from '/snippets/p-body/AuthorId1.mdx';
 import PayoutModeRequested1 from '/snippets/p-body/PayoutModeRequested1.mdx';
-  
+
+import RestCheckInstantPayoutEligibility from '/snippets/code/rest-check-instant-payout-eligibility.mdx';
+import RubyCheckReachibility from '/snippets/code/ruby-check-reachibility.mdx';
 
 This call is used to check whether or not the destination bank is eligible for instant payout.  
 
@@ -93,77 +95,6 @@ This call is used to check whether or not the destination bank is eligible for i
 </ResponseExample>  
 
 <RequestExample>  
-  
-```json REST  
-{
-    "PayoutModeRequested":"INSTANT_PAYMENT",
-    "AuthorId":"142036728",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1200
-    },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":12
-    },
-    "DebitedWalletId":"145389978",
-    "BankAccountId":"54682154",
-    "BankWireRef":"invoice 7282"
-}  
-```  
-
-  
-```ruby Ruby  
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def checkReachability(payoutObject)
-    begin
-        response = MangoPay::PayOut::InstantPayoutEligibility::Reachability.create(payoutObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to check reachability: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myUser = {
-  Id: '146476890',
-  WalletId: '148968396'
-}
-
-myBankAccount = {
-  Id: '154876798'
-}
-
-myPayout = {
-  DebitedWalletId: myUser[:WalletId],
-  PaymentType: 'BANK_WIRE',
-  BankAccountId: myBankAccount[:Id],
-  BankWireRef: 'Mangopay Ref',
-  PayoutModeRequested: 'INSTANT_PAYMENT',
-  AuthorId: myUser[:Id],
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 1200,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 0,
-  },
-  Tag: 'Created using Mangopay Ruby SDK'
-}
-
-checkReachability(myPayout)  
-```  
-
-  
+    <RestCheckInstantPayoutEligibility />
+    <RubyCheckReachibility />
 </RequestExample>
