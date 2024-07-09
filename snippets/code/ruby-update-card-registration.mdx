@@ -1,0 +1,30 @@
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateCardRegistration(card_registration_id, params)
+    begin
+        response = MangoPay::CardRegistration.update(card_registration_id, params)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed : #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+params = {
+    "RegistrationData": "data=acIcnwwLleiAvlZUea5VxW4I8X8iCT0M1Z4j5kgkKf4KQzh0G0UQLpozaVZwyqUOQJM3kYVZIDlCIp6vDysQ6F0qIb1486gpwf_EGW9fTllJlstGZZo5YuZ8RWz_814ONx0xgKTVnyDj15oG8jR88g",
+    "CardHolderName": "ALEX SMITH"
+}
+
+updateCardRegistration("cardreg_m_01J2C8JM4YHV1Z57RKRBK97B0Y", params)
+```
