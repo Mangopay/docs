@@ -1,0 +1,38 @@
+```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def submitUboDeclaration(user_id, ubo_declaration_id, params)
+    begin
+        response = MangoPay::UboDeclaration.update(user_id, ubo_declaration_id, params)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create UBO: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+my_user = {
+    Id: 'user_m_01J2BGH2PGWC4NNWGADT75ATB6'
+}
+
+my_ubo_declaration = {
+    Id: 'ubo_m_01J29G0RXSSJXG34ZSPHRE955C'
+}
+
+params = {
+    'Status' => 'VALIDATION_ASKED'
+}
+
+submitUboDeclaration(my_user[:Id], my_ubo_declaration[:Id], params) 
+
+```
