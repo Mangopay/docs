@@ -1,0 +1,53 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsDirect;
+import com.mangopay.entities.subentities.PayInPaymentDetailsDirectDebit;
+
+public class CreateDirectDirectDebitPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+    	  mangopay.getConfig().setClientId("your-client-id");
+   	  mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTF5S9MG0XXBZ8A0550MED3Z";
+        var mandateId = "mdt_m_01HW30HV697QX2SQN7E500FQBJ";
+
+        PayIn payIn = new PayIn();
+
+        Money debitedFunds = new Money();
+        debitedFunds.setAmount(1000);
+        debitedFunds.setCurrency(CurrencyIso.EUR);
+
+        Money fees = new Money();
+        fees.setAmount(0);
+        fees.setCurrency(CurrencyIso.EUR);
+
+        PayInPaymentDetailsDirectDebit paymentDetails = new PayInPaymentDetailsDirectDebit();
+        paymentDetails.setMandateId(mandateId);
+        paymentDetails.setStatementDescriptor("Apr2024");
+
+        PayInExecutionDetailsDirect executionDetails = new PayInExecutionDetailsDirect();
+
+        payIn.setAuthorId(userId);
+        payIn.setCreditedWalletId(walletId);
+        payIn.setDebitedFunds(debitedFunds);
+        payIn.setFees(fees);
+        payIn.setPaymentDetails(paymentDetails);
+        payIn.setExecutionDetails(executionDetails);
+
+        PayIn createPayIn = mangopay.getPayInApi().create(payIn);    
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayIn);
+
+        System.out.println(prettyJson);
+    }
+}
+```

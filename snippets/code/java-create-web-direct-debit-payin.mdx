@@ -1,0 +1,59 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CultureCode;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.DirectDebitType;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsDirectDebit;
+import com.mangopay.entities.subentities.PayInTemplateURLOptions;
+
+public class CreateWebDirectDebitPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+    	  mangopay.getConfig().setClientId("your-client-id");
+   	  mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTF5S9MG0XXBZ8A0550MED3Z";
+
+        PayIn payIn = new PayIn();
+
+        Money debitedFunds = new Money();
+        debitedFunds.setAmount(1000);
+        debitedFunds.setCurrency(CurrencyIso.EUR);
+
+        Money fees = new Money();
+        fees.setAmount(0);
+        fees.setCurrency(CurrencyIso.EUR);
+
+        PayInPaymentDetailsDirectDebit paymentDetails = new PayInPaymentDetailsDirectDebit();
+        paymentDetails.setDirectDebitType(DirectDebitType.GIROPAY);
+        paymentDetails.setStatementDescriptor("Apr2024");
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        executionDetails.setCulture(CultureCode.FR);
+        executionDetails.setTemplateURLOptions(new PayInTemplateURLOptions());
+        executionDetails.getTemplateURLOptions().PAYLINE = "https://www.maysite.com/payline_template/";
+
+        payIn.setAuthorId(userId);
+        payIn.setCreditedWalletId(walletId);
+        payIn.setDebitedFunds(debitedFunds);
+        payIn.setFees(fees);
+        payIn.setPaymentDetails(paymentDetails);
+        payIn.setExecutionDetails(executionDetails);
+
+        PayIn createPayIn = mangopay.getPayInApi().create(payIn);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayIn);
+
+        System.out.println(prettyJson);
+    }
+}
+```
