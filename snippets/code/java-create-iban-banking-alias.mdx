@@ -1,0 +1,30 @@
+```java Java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.entities.BankingAlias;
+import com.mangopay.entities.UserNatural;
+
+public class CreateIbanBankingAlias {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("farah_sandbox2");
+        mangopay.getConfig().setClientPassword("VgsrmKK7Nmvi1c8o49fnjJQVd8zsy1zkANUowDUiR1F1NdFjnD");
+
+        UserNatural user = mangopay.getUserApi().getNatural("user_m_01HT2NFK7Z2BRQNGNHMY30VVTT");
+        var walletId = "wlt_m_01J1YRFBF1EDX4TK2A5G0MNRSN";    
+
+        BankingAlias bankingAlias = new BankingAlias();
+        bankingAlias.setOwnerName(String.format("%s %s", user.getFirstName(), user.getLastName()));
+        bankingAlias.setCountry(CountryIso.FR);
+
+        BankingAlias createBankingAlias = mangopay.getBankingAliases().create(walletId, bankingAlias);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createBankingAlias);
+
+        System.out.println(prettyJson);
+    }
+}
+```
