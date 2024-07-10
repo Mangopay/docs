@@ -1,0 +1,30 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.CultureCode;
+import com.mangopay.entities.Mandate;
+
+public class CreateMandate {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        Mandate mandate = new Mandate();
+        mandate.setBankAccountId("bankacc_m_01HW2YJFFGYMY4HHHQSZ9YBCQJ");
+        mandate.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        mandate.setCulture(CultureCode.EN);
+        mandate.setTag("Created using the Mangopay Java SDK");
+
+
+        Mandate createMandate = mangopay.getMandateApi().create(mandate);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createMandate);
+
+        System.out.println(prettyJson);
+    }
+}
+```

@@ -1,0 +1,29 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Mandate;
+import java.util.List;
+
+public class ListBankAccountMandates {
+    public static void main(String[] args) throws Exception {
+
+     MangoPayApi mangopay = new MangoPayApi();
+     mangopay.getConfig().setClientId("your-client-id");
+     mangopay.getConfig().setClientPassword("your-api-key");
+
+     var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+     var bankAccountId = "bankacc_m_01HW2YM8ZYJTVHJZENNXK33HYB";
+        
+     List<Mandate> mandates = mangopay.getMandateApi().getForBankAccount(userId, bankAccountId, null, null, null);
+
+     for (Mandate mandate : mandates) {
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(mandate);
+
+            System.out.println(prettyJson);
+        }
+    }
+}
+```
