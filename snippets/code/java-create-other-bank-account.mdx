@@ -1,0 +1,49 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.enumerations.BankAccountType;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.entities.BankAccount;
+import com.mangopay.entities.subentities.BankAccountDetailsOTHER;
+
+public class CreateOtherBankAccount {
+    
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01J29D5XMKKNPX72AR5HRV804X";
+
+        BankAccountDetailsOTHER bankAccountDetails = new BankAccountDetailsOTHER();
+        bankAccountDetails.setAccountNumber("11696419");
+        bankAccountDetails.setBic("BNPAFRPP");
+        bankAccountDetails.setCountry(CountryIso.FR);
+
+        Address address = new Address();
+        address.setAddressLine1("Rue des plantes");
+        address.setAddressLine2("The Oasis");
+        address.setCity("FR");
+        address.setRegion("Ile de France");
+        address.setPostalCode("75001");
+        address.setCountry(CountryIso.FR);
+        
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setOwnerName("John Doe");
+        bankAccount.setDetails(bankAccountDetails);
+        bankAccount.setOwnerAddress(address);
+        bankAccount.setType(BankAccountType.OTHER);
+        bankAccount.setTag("Created using the Mangopay Java SDK");
+
+        BankAccount createBankAccount = mangopay.getUserApi().createBankAccount(userId, bankAccount);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createBankAccount);
+
+        System.out.println(prettyJson);
+    }
+}
+```
