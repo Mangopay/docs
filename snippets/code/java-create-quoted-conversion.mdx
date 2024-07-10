@@ -1,0 +1,38 @@
+```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Conversion;
+import com.mangopay.entities.CreateQuotedConversion;
+
+public class CreatingQuotedConversion {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+
+        var debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
+
+        var creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+        var quoteId = "cvrquote_01J1YPZQXF6A5AAG7YCZAM9D9N";
+
+        CreateQuotedConversion quotedConversion = new CreateQuotedConversion();
+        
+        quotedConversion.setQuoteId(quoteId);
+        quotedConversion.setAuthorId(debitedUserId);
+        quotedConversion.setDebitedWalletId(debitedWalletId);
+        quotedConversion.setCreditedWalletId(creditedWalletId);
+        quotedConversion.setTag("Created using the Mangopay Java SDK");
+
+        Conversion createQuotedConversion = mangopay.getConversionsApi().createQuotedConversion(quotedConversion, null);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createQuotedConversion);
+
+        System.out.println(prettyJson);
+    }
+}
+```

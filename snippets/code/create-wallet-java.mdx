@@ -1,12 +1,11 @@
   
 ```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Money;
 import com.mangopay.core.enumerations.CurrencyIso;
 import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 public class CreateWallet {
         public static void main(String[] args) throws Exception {
@@ -25,27 +24,10 @@ public class CreateWallet {
 
         Wallet createWallet = mangopay.getWalletApi().create(wallet);
         
-        System.out.println(String.format("id: %s", createWallet.getId()));
-        printObjectFields(createWallet);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(updateUbo);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(createWallet);
     }
-}  
+}
 ```

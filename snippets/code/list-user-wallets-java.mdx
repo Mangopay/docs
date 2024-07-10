@@ -1,11 +1,10 @@
   
 ```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Money;
 import com.mangopay.entities.Wallet;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 public class ListUserWallets {
     public static void main(String[] args) throws Exception {
@@ -18,29 +17,11 @@ public class ListUserWallets {
         List<Wallet> wallets = mangopay.getUserApi().getWallets(userId);
 
         for (Wallet wallet : wallets) {
-            wallet = mangopay.getWalletApi().get(wallet.getId());
-		System.out.println((String.format("\nid: %s", wallet.getId()));
-            printObjectFields(wallet);
-        }
-    }
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(wallet);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            System.out.println(prettyJson);
         }
     }
-}  
+} 
 ```

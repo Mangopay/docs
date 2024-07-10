@@ -1,13 +1,12 @@
   
 ```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Money;
 import com.mangopay.core.enumerations.CurrencyIso;
 import com.mangopay.entities.ConversionQuote;
-import com.mangopay.entities.ConversionRate;
 import com.mangopay.entities.CreateConversionQuote;
-
-import java.lang.reflect.Field;
 
 public class CreateQuote {
         public static void main(String[] args) throws Exception {
@@ -18,40 +17,23 @@ public class CreateQuote {
         CreateConversionQuote quote = new CreateConversionQuote();
 
         Money debitedFunds = new Money();
-        debitedFunds.setAmount(1000);
         debitedFunds.setCurrency(CurrencyIso.GBP);
 
         Money creditedFunds = new Money();
         creditedFunds.setCurrency(CurrencyIso.USD);
+        creditedFunds.setAmount(1000);
 
         quote.setDebitedFunds(debitedFunds);
         quote.setCreditedFunds(creditedFunds);
-        quote.setDuration(90);
+        quote.setDuration(300);
         quote.setTag("Created using the Mangopay Java SDK");
 
         ConversionQuote createQuote = mangopay.getConversionsApi().createConversionQuote(quote, null);
     
-        System.out.println("id: " + createQuote.getId());
-        printObjectFields(createQuote);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createQuote);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money || value instanceof ConversionRate) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(prettyJson);
     }
-}  
+}
 ```

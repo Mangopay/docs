@@ -5,10 +5,7 @@ import com.mangopay.core.Money;
 import com.mangopay.core.Pagination;
 import com.mangopay.core.enumerations.CurrencyIso;
 import com.mangopay.core.enumerations.FundsType;
-import com.mangopay.entities.Transaction;
-
-import java.lang.reflect.Field;
-import java.util.List;
+import com.mangopay.entities.Wallet;
 
 public class ListClientWalletTransactions {
     public static void main(String[] args) throws Exception {
@@ -19,28 +16,11 @@ public class ListClientWalletTransactions {
         List<Transaction> clientTransactions = mangopay.getClientApi().getWalletTransactions(FundsType.CREDIT, CurrencyIso.EUR, new Pagination(1, 100), null, null);
 
         for (Transaction clientTransaction : clientTransactions) {
-            System.out.println(String.format("\nid: %s", clientTransaction.getId()));
-            printObjectFields(clientTransaction);
-        }
-    }
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(updateUbo);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money 
-                    || value instanceof FundsType 
-                    || value instanceof CurrencyIso)  {
-                    System.out.println(field.getName() + ": " + value);
-			  printObjectFields(value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            System.out.println(clientTransaction);
         }
     }
-}  
+}
 ```

@@ -1,0 +1,50 @@
+```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.Conversion;
+import com.mangopay.entities.CreateInstantConversion;
+
+public class CreatingInstantConversion {
+
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
+        var creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+        CreateInstantConversion instantConversion = new CreateInstantConversion();
+        instantConversion.setAuthorId(debitedUserId);
+        instantConversion.setCreditedWalletId(creditedWalletId);
+        instantConversion.setDebitedWalletId(debitedWalletId);
+
+        Money debitedFunds = new Money();
+        debitedFunds.setCurrency(CurrencyIso.GBP);
+        debitedFunds.setAmount(100);
+
+        Money creditedFunds = new Money();
+        creditedFunds.setCurrency(CurrencyIso.EUR);
+
+        Money fees = new Money();
+        fees.setCurrency(CurrencyIso.GBP);
+        fees.setAmount(10);
+
+        instantConversion.setCreditedFunds(creditedFunds);
+        instantConversion.setDebitedFunds(debitedFunds);
+        instantConversion.setFees(fees);
+        instantConversion.setTag("Created using the Mangopay Java SDK");
+
+        Conversion createInstantConversion = mangopay.getConversionsApi().createInstantConversion(instantConversion, null);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createInstantConversion);
+
+        System.out.println(prettyJson);
+    }
+}
+```
