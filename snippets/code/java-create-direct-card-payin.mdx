@@ -1,0 +1,89 @@
+```java Java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.Billing;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.core.enumerations.SecureMode;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.BrowserInfo;
+import com.mangopay.entities.subentities.PayInExecutionDetailsDirect;
+import com.mangopay.entities.subentities.PayInPaymentDetailsCard;
+
+public class CreateDirectCardPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        String userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        String walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+        String cardId = "card_m_01HY0MA4E2WQ0NRYQJP8X8SXMB";
+
+
+        PayIn payIn = new PayIn();
+
+        Money debitedFunds = new Money();
+        debitedFunds.setAmount(500);
+        debitedFunds.setCurrency(CurrencyIso.EUR);
+        
+        Money fees = new Money();
+        fees.setAmount(0);
+        fees.setCurrency(CurrencyIso.EUR);
+
+        BrowserInfo browserInfo = new BrowserInfo();
+        browserInfo.setAcceptHeader("application/json,text/javascript,*/*;q=0.01<");
+        browserInfo.setJavaEnabled(true);
+        browserInfo.setLanguage("fr");
+        browserInfo.setColorDepth(32);
+        browserInfo.setScreenHeight(667);
+        browserInfo.setScreenWidth(375);
+        browserInfo.setTimeZoneOffset("-120");
+        browserInfo.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148");
+        browserInfo.setJavascriptEnabled(true);
+
+        Address address = new Address();
+        Billing billing = new Billing();
+        address.setAddressLine1("2795 Edgewood Road");
+        address.setCity("Little Rock");
+        address.setRegion("Arkansas");
+        address.setPostalCode("72212");
+        address.setCountry(CountryIso.FR);
+
+        billing.setFirstName("Alex");
+        billing.setLastName("Smith");
+        billing.setAddress(address);
+
+        PayInExecutionDetailsDirect executionDetails = new PayInExecutionDetailsDirect();
+        executionDetails.setBilling(billing);     
+        executionDetails.setCardId(cardId);   
+        executionDetails.setSecureModeReturnUrl("https://mangopay.com/docs/please-ignore");
+        executionDetails.setSecureMode(SecureMode.DEFAULT);
+
+        PayInPaymentDetailsCard paymentDetails = new PayInPaymentDetailsCard();
+        paymentDetails.setIpAddress("658e:1b88:7f7a:a60b:32af:0b7f:56e1:2e9a");
+        paymentDetails.setBrowserInfo(browserInfo);
+
+        payIn.setPaymentType(PayInPaymentType.CARD);
+        payIn.setExecutionType(PayInExecutionType.DIRECT);
+        payIn.setAuthorId(userId);
+        payIn.setDebitedFunds(debitedFunds);
+        payIn.setFees(fees);
+        payIn.setCreditedWalletId(walletId);
+        payIn.setExecutionDetails(executionDetails);
+        payIn.setPaymentDetails(paymentDetails);
+
+        PayIn createPayIn = mangopay.getPayInApi().create(payIn);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayIn);
+
+        System.out.println(prettyJson);
+    }
+}
+```

@@ -1,0 +1,26 @@
+```java Java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Card;
+import java.util.List;
+
+public class ListFingerprintCards {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var fingerprint = "48d63bbcfc2c47fcbc19df35e47b2f8d";
+
+        List<Card> cardsByFingerprint = mangopay.getCardApi().getByFingerprint(fingerprint);
+
+        for (Card card : cardsByFingerprint) {
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(card);
+
+            System.out.println(prettyJson);
+        }
+    }
+}
+```
