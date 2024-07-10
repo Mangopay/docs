@@ -1,11 +1,10 @@
   
 ```java Java  
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.entities.UboDeclaration;
 import com.mangopay.entities.UserLegal;
-
-import java.lang.reflect.Field;
 
 public class SubmitUBODeclaraction {
      public static void main(String[] args) throws Exception {
@@ -18,22 +17,10 @@ public class SubmitUBODeclaraction {
     
         UboDeclaration submitUboDeclaration = mangopay.getUboDeclarationApi().submitForValidation(myUser.getId(), uboDeclaration.getId());
 
-        System.out.println(String.format("id: %s", submitUboDeclaration.getId()));
-        printObjectFields(submitUboDeclaration);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(submitUboDeclaration);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(prettyJson);
     }
-}  
+}
 ```

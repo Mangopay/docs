@@ -1,10 +1,9 @@
   
 ```java Java  
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.entities.UserBlockStatus;
-
-import java.lang.reflect.Field;
 
 public class ViewUserRegulatory {
     public static void main(String[] args) throws Exception {
@@ -14,26 +13,11 @@ public class ViewUserRegulatory {
         
         var userId = "user_m_01HRS7PQEGE4YGCM1AZK1ENTGE";
         UserBlockStatus viewRegulatoryStatus = mangopay.getUserApi().getRegulatory(userId);
-        printObjectFields(viewRegulatoryStatus);
-    }
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof ScopeBlocked) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value);
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(viewRegulatoryStatus);
+
+        System.out.println(prettyJson);
     }
-}  
+}
 ```

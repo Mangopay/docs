@@ -1,11 +1,10 @@
   
 ```java Java  
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.enumerations.KycStatus;
 import com.mangopay.entities.KycDocument;
-
-import java.lang.reflect.Field;
 
 public class SubmitKYCDoc {
      public static void main(String[] args) throws Exception {
@@ -20,27 +19,10 @@ public class SubmitKYCDoc {
 
         KycDocument submitKycDoc = mangopay.getUserApi().updateKycDocument(userId, kycDoc);
 
-        System.out.println(String.format("id: %s", submitKycDoc.getId()));
-        printObjectFields(submitKycDoc);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(submitKycDoc);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Address) {
-                    System.out.println(field.getName() + ": ");
-                    printObjectFields(value); 
-                } else {
-                    System.out.println(field.getName() + ": " + value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(prettyJson);
     }
-}  
+}
 ```

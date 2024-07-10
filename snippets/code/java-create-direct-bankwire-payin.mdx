@@ -1,0 +1,40 @@
+  
+```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsDirect;
+import com.mangopay.entities.subentities.PayInPaymentDetailsBankWire;
+
+public class CreateDirectBankWirePayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var walletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+        PayIn bankwirePayin = new PayIn();
+
+        PayInPaymentDetailsBankWire payinDetails = new PayInPaymentDetailsBankWire();
+        payinDetails.setDeclaredDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        payinDetails.setDeclaredFees(new Money(CurrencyIso.EUR, 1000));
+        
+        bankwirePayin.setAuthorId(userId);
+        bankwirePayin.setCreditedWalletId(walletId);
+        bankwirePayin.setPaymentDetails(payinDetails);
+        bankwirePayin.setExecutionDetails(new PayInExecutionDetailsDirect());
+
+        PayIn createPayIn = mangopay.getPayInApi().create(bankwirePayin);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayIn);
+
+        System.out.println(prettyJson);
+    }
+}
+```

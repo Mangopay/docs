@@ -1,0 +1,26 @@
+  
+```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.PaymentMethodMetadata;
+
+public class LookUpMetadata {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        PaymentMethodMetadata metadata = new PaymentMethodMetadata();
+        metadata.setType("BIN");
+        metadata.setBin("540006");
+
+        PaymentMethodMetadata getMetadata = mangopay.getPayInApi().getPaymentMethodMetadata(metadata);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(getMetadata);
+
+        System.out.println(prettyJson);
+    }
+}
+```

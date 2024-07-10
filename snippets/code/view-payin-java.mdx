@@ -1,12 +1,9 @@
   
 ```java Java  
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
-import com.mangopay.core.Address;
-import com.mangopay.entities.User;
-import com.mangopay.entities.UserNatural;
-import com.mangopay.core.enumerations.UserCategory;
-import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.entities.PayIn;
 
 import java.lang.reflect.Field;
 
@@ -16,30 +13,12 @@ public class HandleRequest {
         mangopay.getConfig().setClientId("your-client-id");
         mangopay.getConfig().setClientPassword("your-api-key");
         
-PayIn payin = mangopay.getPayInApi().get("wt_4988a6e9-cc9b-47a7-a754-1f7e3eed8365");
+        PayIn payin = mangopay.getPayInApi().get("wt_4988a6e9-cc9b-47a7-a754-1f7e3eed8365");
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(payin);
 
-        printPayInId(payin);
-        printObjectFields(payin);
-        printObjectFields(payin.getExecutionDetails());
-        printObjectFields(payin.getPaymentDetails());
-    }
-
-    private static void printPayInId(PayIn payIn) {
-        System.out.println("PayIn ID: " + payIn.getId());
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(viewKycDoc);
     }
 }  
 ```

@@ -1,6 +1,7 @@
   
 ```java Java  
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Money;
 import com.mangopay.core.enumerations.CurrencyIso;
@@ -17,27 +18,10 @@ public class ViewClientWallet {
 
         Wallet clientWallet = mangopay.getClientApi().getWallet(FundsType.FEES, CurrencyIso.EUR);
 
-        System.out.println(String.format("id: %s", clientWallet.getId()));
-        printObjectFields(clientWallet);
-    }
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(updateUbo);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                if (value instanceof Money 
-|| value instanceof FundsType 
-|| value instanceof CurrencyIso)  {
-                    System.out.println(field.getName() + ": " + value);
-			  printObjectFields(value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        System.out.println(clientWallet);
     }
-}  
+}
 ```
