@@ -1,0 +1,24 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.CardRegistration;
+
+public class ViewCardRegistration {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+    	  mangopay.getConfig().setClientId("your-client-id");
+   	  mangopay.getConfig().setClientPassword("your-api-key");
+
+        String cardRegId = "cardreg_m_01HXY9VZN4J1TERYG1BNPDHENN";
+
+        CardRegistration viewCardRegistration = mangopay.getCardRegistrationApi().get(cardRegId);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(viewCardRegistration);
+
+        System.out.println(prettyJson);
+    }
+}
+```
