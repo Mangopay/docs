@@ -1,0 +1,44 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.CardValidation;
+import com.mangopay.entities.subentities.BrowserInfo;
+
+public class CreateCardValidation {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        String userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        String cardId = "card_m_01HY0MA4E2WQ0NRYQJP8X8SXMB";
+        
+        BrowserInfo browserInfo = new BrowserInfo();
+        browserInfo.setAcceptHeader("application/json,text/javascript,*/*;q=0.01<");
+        browserInfo.setJavaEnabled(true);
+        browserInfo.setLanguage("fr");
+        browserInfo.setColorDepth(32);
+        browserInfo.setScreenHeight(667);
+        browserInfo.setScreenWidth(375);
+        browserInfo.setTimeZoneOffset("-120");
+        browserInfo.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148");
+        browserInfo.setJavascriptEnabled(true);
+
+        CardValidation cardVal = new CardValidation();
+        cardVal.setAuthorId(userId);
+        cardVal.setSecureModeReturnUrl("https://mangopay.com/docs/please-ignore");
+        cardVal.setIpAddress("159.180.248.187");
+        cardVal.setBrowserInfo(browserInfo);
+        cardVal.setTag("Created using the Mangopay Java SDK");
+
+        CardValidation createCardValidation = mangopay.getCardApi().validate(cardId, cardVal);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createCardValidation);
+
+        System.out.println(prettyJson);
+    }
+}
+```

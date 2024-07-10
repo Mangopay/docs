@@ -1,0 +1,38 @@
+  
+```python Python  
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, CardValidation
+from mangopay.utils import BrowserInfo
+
+natural_user = NaturalUser.get('213600749')
+
+user_card_validation = CardValidation(
+    author = natural_user,
+    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
+    ip_address = '159.180.248.187',
+    tag = 'Created with Mangopay Python SDK',
+    browser_info = BrowserInfo(
+        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+        screen_width = 375,
+        screen_height = 667,
+        color_depth = 32,
+        language = 'EN',
+        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
+        timezone_offset = '-120',
+        java_enabled = True,
+        javascript_enabled = True
+    ),
+    card_id = '213601128'
+)
+
+create_card_validation = user_card_validation.validate(card_id = user_card_validation.card_id)
+
+pprint(create_card_validation)  
+```
