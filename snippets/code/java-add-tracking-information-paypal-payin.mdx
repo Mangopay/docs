@@ -1,0 +1,29 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayPalWebTracking;
+
+public class AddTrackingInformation {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var payInId = "wt_5aaccd9f-6129-4689-90b0-1ef0496c5233";
+
+        PayPalWebTracking trackingInfo = new PayPalWebTracking();
+        trackingInfo.setCarrier("DHL");
+        trackingInfo.setTrackingNumber("562341568");
+        trackingInfo.setNotifyBuyer(true);
+
+        PayIn createPaypalPayin = mangopay.getPayInApi().addPayPalTrackingInformation(payInId, trackingInfo);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPaypalPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```
