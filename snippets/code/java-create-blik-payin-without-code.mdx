@@ -1,0 +1,48 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsBlik;
+
+public class CreateBLIKPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01J291BGPEPVHWA1BEQPV0SWP6";
+
+        PayIn blikPayin = new PayIn();
+        blikPayin.setAuthorId(userId);
+        blikPayin.setCreditedWalletId(walletId);
+        blikPayin.setDebitedFunds(new Money(CurrencyIso.PLN, 1000));
+        blikPayin.setFees(new Money(CurrencyIso.PLN, 0));
+        blikPayin.setTag("Created using the Mangopay Java SDK");
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        blikPayin.setExecutionDetails(executionDetails);
+
+        PayInPaymentDetailsBlik paymentDetails = new PayInPaymentDetailsBlik();
+        paymentDetails.setStatementDescriptor("Jul2024");
+        blikPayin.setPaymentDetails(paymentDetails);
+
+        blikPayin.setPaymentType(PayInPaymentType.BLIK);
+        blikPayin.setExecutionType(PayInExecutionType.WEB);
+
+        PayIn createBlikPayin = mangopay.getPayInApi().create(blikPayin);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createBlikPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```
