@@ -1,0 +1,39 @@
+ ```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def CreateRecurringPayInMIT(recurringPayinMITObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::MIT.create(recurringPayinMITObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed : #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+my_mit_object = {
+    "Tag":"custom meta",
+    # "DebitedFunds":{
+    #     "Currency":"EUR",
+    #     "Amount":900
+    # },
+    # "Fees":{
+    #     "Currency":"EUR",
+    #     "Amount":10
+    # },
+    "StatementDescriptor":"POSTMAN",
+    "RecurringPayinRegistrationId":"recpayinreg_m_01J2EG8FD7TD6R3HGPZ8ZM917Y",
+}
+
+CreateRecurringPayInMIT(my_mit_object)
+```

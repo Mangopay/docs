@@ -7,6 +7,35 @@ sidebarTitle: 'How to'
 import Sca from '/snippets/glossary/sca.mdx';
 import Issuer from '/snippets/glossary/issuer.mdx';
 
+import RestCreateRecurringPayinRegistration from '/snippets/code/rest-create-recurring-payin-registration.mdx';
+import PhpCreateRecurringPayinRegistration from '/snippets/code/php-create-recurring-payin-registration.mdx';
+import NodeCreateRecurringPayinRegistration from '/snippets/code/node-create-recurring-payin-registration.mdx';
+import RubyCreateRecurringRegistration from '/snippets/code/ruby-create-recurring-registration.mdx';
+import PythonCreateRecurringPayinRegistration from '/snippets/code/python-create-recurring-payin-registration.mdx';
+
+import RestCreateRecurringPayinCit from '/snippets/code/rest-create-recurring-payin-cit.mdx';
+import PhpCreateRecurringPayinCit from '/snippets/code/php-create-recurring-payin-cit.mdx';
+import NodeCreateRecurringPayinCit from '/snippets/code/node-create-recurring-payin-cit.mdx';
+import RubyCreateRecurringPayinCit from '/snippets/code/ruby-create-recurring-payin-cit.mdx';
+import PythonCreateRecurringPayinCit from '/snippets/code/python-create-recurring-payin-cit.mdx'; 
+
+import RestCreateRecurringPayinMit from '/snippets/code/rest-create-recurring-payin-mit.mdx';
+import PhpCreateRecurringPayinMit from '/snippets/code/php-create-recurring-payin-mit.mdx';
+import NodeCreateRecurringPayinMit from '/snippets/code/node-create-recurring-payin-mit.mdx';
+import RubyCreateRecurringPayinMit from '/snippets/code/ruby-create-recurring-payin-mit.mdx';
+import PythonCreateARecurringPayinMit from '/snippets/code/python-create-a-recurring-payin-mit.mdx';
+
+import PhpViewRecurringPayinRegistration from '/snippets/code/php-view-recurring-payin-registration.mdx';
+import NodeViewRecurringPayinRegistration from '/snippets/code/node-view-recurring-payin-registration.mdx';
+import RubyViewRecurringRegistration from '/snippets/code/ruby-view-recurring-registration.mdx';
+import PythonViewRecurringPayinRegistration from '/snippets/code/python-view-recurring-payin-registration.mdx';
+
+import RestUpdateRecurringPayinRegistration from '/snippets/code/rest-update-recurring-payin-registration.mdx';
+import PhpUpdateRecurringPayinRegistration from '/snippets/code/php-update-recurring-payin-registration.mdx';
+import NodeUpdateRecurringPayinRegistration from '/snippets/code/node-update-recurring-payin-registration.mdx';
+import RubyUpdateRecurringRegistration from '/snippets/code/ruby-update-recurring-registration.mdx';
+import PythonUpdateRecurringPayinRegistration from '/snippets/code/python-update-recurring-payin-registration.mdx';
+
 This how-to guide will show you how to successfully process recurring payments with a registered card.
 
 <Info>
@@ -36,171 +65,11 @@ For this guide, we'll define a fixed monthly amount but not provide an end date.
 > [**POST** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations](/api-reference/recurring-card-payins/create-recurring-payin-registration)
 
 <CodeGroup>  
-
-```json REST
-{
-    "AuthorId": "197964043",
-    "CardId": "197964042",
-    "CreditedWalletId": "197964034",
-    "FirstTransactionDebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 10000
-    },
-    "FirstTransactionFees": {
-        "Currency": "EUR",
-        "Amount": 100
-    },
-    "Billing": {
-        "FirstName": "Alex",
-        "LastName": "Smith",
-        "Address": {
-            "AddressLine1": "6 rue de la Cité",
-            "AddressLine2": "Appartement 3",
-            "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
-            "Country": "FR"
-        }
-    },
-    "Frequency": "Monthly",
-    "FixedNextAmount": true
-}
-```  
-
-```javascript NodeJS 
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringRegistration = {
-  PaymentType: 'CARD',
-  ExecutionType: 'DIRECT',
-  AuthorId: '197964043',
-  CardId: '197964042',
-  CreditedWalletId: '197964034',
-  FirstTransactionDebitedFunds: {
-    Currency: 'EUR',
-    Amount: 10000,
-  },
-  FirstTransactionFees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  Billing: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: '6 rue de la Cité',
-      AddressLine2: 'Appartement 3',
-      City: 'Paris',
-      Region: 'Ile-de-France',
-      PostalCode: '75004',
-      Country: 'FR',
-    },
-  },
-  Frequency: 'Monthly',
-  FixedNextAmount: true,
-}
-
-const createRecurringRegistration = async (recurringRegistration) => {
-  return await mangopay.PayIns.createRecurringPayment(recurringRegistration)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRecurringRegistration(myRecurringRegistration)
-```  
-
-```ruby Ruby
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def createRecurringRegistration(recurringRegistrationObject)
-    begin
-        response = MangoPay::PayIn::RecurringPayments::Recurring.create(recurringRegistrationObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create recurring registration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRecurringRegistration = {
-  AuthorId: '197964043',
-  CardId: '197964042',
-  CreditedWalletId: '197964034',
-  FirstTransactionDebitedFunds: {
-    Currency: 'EUR',
-    Amount: 10000,
-  },
-  FirstTransactionFees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  Billing: {
-    FirstName: 'Alex',
-    LastName: 'Smith',
-    Address: {
-      AddressLine1: '6 rue de la Cité',
-      AddressLine2: 'Appartement 3',
-      City: 'Paris',
-      Region: 'Ile-de-France',
-      PostalCode: '75004',
-      Country: 'FR',
-    },
-  },
-  Frequency: 'Monthly',
-  FixedNextAmount: true,
-}
-
-createRecurringRegistration(myRecurringRegistration)
-```  
-
-```python Python 
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, RecurringPayInRegistration
-from mangopay.utils import Money
-
-natural_user = NaturalUser.get('210513027')
-
-recurring_payin_registration = RecurringPayInRegistration(
-    author_id = natural_user.id,
-    card_id = '213857548',
-    credited_wallet_id = '210514820',
-    first_transaction_debited_funds = Money(amount=1000, currency='EUR'),
-    first_transaction_fees = Money(amount=10, currency='EUR'),
-    tag = 'Created using Mangopay Python SDK'
-)
-
-create_recurring_payin_registration = recurring_payin_registration.save()
-
-pprint(create_recurring_payin_registration)  
-```
+  <RestCreateRecurringPayinRegistration />
+  <PhpCreateRecurringPayinRegistration />
+  <NodeCreateRecurringPayinRegistration />
+  <RubyCreateRecurringRegistration />
+  <PythonCreateRecurringPayinRegistration />
 </CodeGroup>  
 
 In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
@@ -282,107 +151,13 @@ In our example, the first transaction amounts have been defined at the registrat
 > [**POST** /v2.01/&lcub;ClientId&rcub;/payins/recurring/card/direct](/api-reference/recurring-card-payins/create-recurring-payin-cit)
 
 <CodeGroup>  
-
-```json REST
-{
-    "RecurringPayinRegistrationId": "197964541",
-    "IpAddress": "e743:fceb:4443:82b6:b289:bd0d:0f60:ec64",
-    "BrowserInfo": {
-        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
-        "JavaEnabled": true,
-        "Language": "FR-FR",
-        "ColorDepth": 4,
-        "ScreenHeight": 1800,
-        "ScreenWidth": 400,
-        "TimeZoneOffset": 60,
-        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-        "JavascriptEnabled": true
-    },
-    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore"
-}
-```  
-
-```javascript NodeJS 
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringPayinCIT = {
-  SecureModeReturnURL: 'https://mangopay.com/docs/please-ignore',
-  BrowserInfo: {
-    AcceptHeader:
-      'text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8',
-    JavaEnabled: true,
-    Language: 'FR-FR',
-    ColorDepth: 4,
-    ScreenHeight: 1800,
-    ScreenWidth: 400,
-    TimeZoneOffset: 60,
-    UserAgent:
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-    JavascriptEnabled: true,
-  },
-  IpAddress: 'e743:fceb:4443:82b6:b289:bd0d:0f60:ec64',
-  RecurringPayiNRegistrationId: '197964541',
-}
-
-const createRecurringPayIn = async (recurringPayin) => {
-  return await mangopay.PayIns.createRecurringPayInRegistrationCIT(recurringPayin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRecurringPayIn(myRecurringPayinCIT)
-```  
-
-```python Python
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import NaturalUser, RecurringPayInCIT
-from mangopay.utils import Money, BrowserInfo
-
-natural_user = NaturalUser.get('210513027')
-
-recurring_payin_cit = RecurringPayInCIT(
-    debited_funds = Money(amount=1000, currency='EUR'),
-    fees = Money(amount=0, currency='EUR'),
-    secure_mode_return_url = 'https://mangopay.com/docs/please-ignore',
-    browser_info = BrowserInfo(
-        user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-        screen_width = 375,
-        screen_height = 667,
-        color_depth = 32,
-        language = 'EN',
-        accept_header = 'application/json,text/javascript,*/*;q=0.01<',
-        timezone_offset = '-120',
-        java_enabled = True,
-        javascript_enabled = True
-    ),
-    ip_address = '159.180.248.187',
-    recurring_payin_registration_id = '213879771',
-    tag = 'Created using Mangopay Python SDK'
-)
-
-create_recurring_payin_cit = recurring_payin_cit.save()
-
-pprint(create_recurring_payin_cit)
-```
+  <RestCreateRecurringPayinCit />
+  <PhpCreateRecurringPayinCit />
+  <NodeCreateRecurringPayinCit />
+  <RubyCreateRecurringPayinCit />
+  <PythonCreateRecurringPayinCit />
 </CodeGroup>  
+
 ```json API response
 {
     "Id": "197964698",
@@ -474,55 +249,16 @@ For more information on how to handle 3DS redirection, see Steps 6 and 7 of the 
 
 Once the first pay-in has been successfully authorized, the platform can initiate payments without the end user being present to authenticate (but note that, at any time, the issuer may request SCA - see Step 5).  
 
-Create the recurring pay-in at the set interval with the dedicated endpoint. Note that in our example, we didn’t define the next transaction amounts at the registration level. As a consequence, we need to pass the `DebitedFunds` and `Fees` parameters at the pay-in level.  
-<CodeGroup>  
-```json REST
-{
-    "RecurringPayinRegistrationId": "197964679",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 10000
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 100
-    }   
-}
-```  
+Create the recurring pay-in at the set interval with the dedicated endpoint. Note that in our example, we didn’t define the next transaction amounts at the registration level. As a consequence, we need to pass the `DebitedFunds` and `Fees` parameters at the pay-in level.
 
-```javascript NodeJS 
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payins/recurring/card/direct](/api-reference/recurring-card-payins/create-recurring-payin-mit)
 
-let myRecurringPayinMIT = {
-  DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 10000,
-  },
-  Fees: {
-    Currency: 'EUR',
-    Amount: 100,
-  },
-  RecurringPayiNRegistrationId: '197964679',
-}
-
-const createRecurringPayIn = async (recurringPayin) => {
-  return await mangopay.PayIns.createRecurringPayInRegistrationMIT(recurringPayin)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-createRecurringPayIn(myRecurringPayinMIT)
-```  
+<CodeGroup>
+  <RestCreateRecurringPayinMit />
+  <PhpCreateRecurringPayinMit />
+  <NodeCreateRecurringPayinMit />
+  <RubyCreateRecurringPayinMit />
+  <PythonCreateARecurringPayinMit />
 </CodeGroup>  
 
 ## 4. Update the registration (if required)  
@@ -549,7 +285,17 @@ The `CurrentState` of the Recurring PayIn Registration provides key information 
 - Cumulated amounts of debited funds and fees  
 - Last pay-in made against the registration  
 
-Use View a Recurring PayIn Registration endpoint to get this information.  
+Use View a Recurring PayIn Registration endpoint to get this information.
+
+> [**GET** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-card-payins/view-recurring-payin-registration)
+
+<CodeGroup>
+    <PhpViewRecurringPayinRegistration />
+    <NodeViewRecurringPayinRegistration />
+    <RubyViewRecurringRegistration />
+    <PythonViewRecurringPayinRegistration />
+</CodeGroup>
+
 ```json API response - Example of recurrence in progress
 {
     "Id": "197964541",
@@ -625,92 +371,11 @@ To end the recurring payments manually, use the Update a Recurring Registration 
 > [**PUT** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-card-payins/update-recurring-payin-registration)
 
 <CodeGroup>  
-
-```json REST
-{
-    "Status": "ENDED"   
-}
-```  
-
-```javascript NodeJS 
-const mangopayInstance = require('mangopay2-nodejs-sdk')
-const mangopay = new mangopayInstance({
-    clientId: 'your-client-id',
-    clientApiKey: 'your-api-key',
-})
-
-let myRecurringRegistration = {
-  Id: '197964541',
-  Status: 'ENDED',
-}
-
-const updateRecurringRegistration = async (recurringRegistrationId,recurringRegistration) => {
-  return await mangopay.PayIns.updateRecurringPayin(recurringRegistrationId, recurringRegistration)
-    .then((response) => {
-      console.info(response)
-      return response
-    })
-    .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
-
-updateRecurringRegistration(myRecurringRegistration.Id, myRecurringRegistration)
-```  
-
-```ruby Ruby
-require 'mangopay'
-
-MangoPay.configure do |client|
-    client.preproduction = true
-    client.client_id = 'your-client-id'
-    client.client_apiKey = 'your-api-key'
-    client.log_file = File.join(Dir.pwd, 'mangopay.log')
-end
-
-def updateRecurringRegistration(recurringRegistrationId, recurringRegistrationObject)
-    begin
-        response = MangoPay::PayIn::RecurringPayments::Recurring.update(recurringRegistrationId, recurringRegistrationObject)
-        puts response
-        return response
-    rescue MangoPay::ResponseError => error
-        puts "Failed to create recurring registration: #{error.message}"
-        puts "Error details: #{error.details}"
-        return false
-    end
-end
-
-myRecurringRegistration = {
-  Id: '197964541',
-  Status: 'ENDED',
-}
-
-updateRecurringRegistration(myRecurringRegistration[:Id], myRecurringRegistration)
-```  
-
-```python Python 
-from pprint import pprint
-
-import mangopay
-
-mangopay.client_id='your-client-id'
-mangopay.apikey='your-api-key'
-
-from mangopay.api import APIRequest
-handler = APIRequest(sandbox=True)
-
-from mangopay.resources import RecurringPayInRegistration
-
-recurring_payin_registration = RecurringPayInRegistration(
-    id = '213857583',
-    status = 'ENDED'
-)
-
-update_recurring_payin_registration = recurring_payin_registration.save()
-
-pprint(update_recurring_payin_registration)
-```
+  <RestUpdateRecurringPayinRegistration />
+  <PhpUpdateRecurringPayinRegistration />
+  <NodeUpdateRecurringPayinRegistration />
+  <RubyUpdateRecurringRegistration />
+  <PythonUpdateRecurringPayinRegistration />
 </CodeGroup>  
 
 When you do this, no more recurring pay-ins can be created based on the registration.  

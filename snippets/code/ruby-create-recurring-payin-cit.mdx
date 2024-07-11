@@ -1,0 +1,54 @@
+ ```ruby Ruby  
+
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def CreateRecurringPayInCIT(recurringPayinCITObject)
+    begin
+        response = MangoPay::PayIn::RecurringPayments::CIT.create(recurringPayinCITObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed : #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+my_cit_object = {
+    "Tag":"custom meta",
+    # "DebitedFunds":{
+    #     "Currency":"EUR",
+    #     "Amount":900
+    # },
+    # "Fees":{
+    #     "Currency":"EUR",
+    #     "Amount":10
+    # },
+    "SecureModeReturnURL":"https://docs.mangopay.com/please-ignore",
+    "StatementDescriptor":"POSTMAN",
+    "BrowserInfo":{
+        "AcceptHeader":"text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled":true,
+        "Language":"FR-FR",
+        "ColorDepth":4,
+        "ScreenHeight":1800,
+        "ScreenWidth":400,
+        "TimeZoneOffset":60,
+        "UserAgent":"Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled":true
+    },
+    "IpAddress":"2001:0620:0000:0000:0211:24FF:FE80:C12C",
+    "RecurringPayinRegistrationId":"recpayinreg_m_01J2EG8FD7TD6R3HGPZ8ZM917Y",
+    "PreferredCardNetwork": "MASTERCARD"
+}
+
+CreateRecurringPayInCIT(my_cit_object)
+
+```
