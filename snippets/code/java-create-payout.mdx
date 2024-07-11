@@ -1,0 +1,42 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayoutMode;
+import com.mangopay.entities.PayOut;
+import com.mangopay.entities.subentities.PayOutPaymentDetailsBankWire;
+
+public class CreatePayout {
+    
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var walletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+        var bankAccountId = "bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE";
+
+        PayOut payout = new PayOut();
+        payout.setAuthorId(userId);
+        payout.setDebitedWalletId(walletId);
+        payout.setDebitedFunds(new Money(CurrencyIso.EUR, 500));
+        payout.setFees(new Money(CurrencyIso.EUR, 0));
+
+        PayOutPaymentDetailsBankWire paymentDetails = new PayOutPaymentDetailsBankWire();
+        paymentDetails.setBankAccountId(bankAccountId);
+        paymentDetails.setPayoutModeRequested(PayoutMode.STANDARD);
+        payout.setMeanOfPaymentDetails(paymentDetails);
+
+        PayOut createPayout = mangopay.getPayOutApi().create(payout);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayout);
+
+        System.out.println(prettyJson);
+    }
+}
+```
