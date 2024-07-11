@@ -1,0 +1,49 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsDirect;
+import com.mangopay.entities.subentities.PayInPaymentDetailsPreAuthorized;
+
+public class CreatePreauthPayIn {
+        public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        var preauthId = "preauth_m_01J218VW84JAKDZS516PPTQWFW";
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HWAR863HPA3FAVEXA9J6JSYD";
+
+        PayIn payIn = new PayIn();
+        payIn.setCreditedWalletId(walletId);
+        payIn.setAuthorId(userId);
+        payIn.setTag("Created using the Mangopay Java SDK");
+
+        payIn.setDebitedFunds(new Money());
+        payIn.getDebitedFunds().setAmount(100);
+        payIn.getDebitedFunds().setCurrency(CurrencyIso.EUR);
+
+        payIn.setFees(new Money());
+        payIn.getFees().setAmount(0);
+        payIn.getFees().setCurrency(CurrencyIso.EUR);
+
+        payIn.setPaymentDetails(new PayInPaymentDetailsPreAuthorized());
+        ((PayInPaymentDetailsPreAuthorized) payIn.getPaymentDetails()).setPreauthorizationId(preauthId);
+
+        payIn.setExecutionDetails(new PayInExecutionDetailsDirect());
+        ((PayInExecutionDetailsDirect) payIn.getExecutionDetails()).setSecureModeReturnUrl("https://mangopay.com/docs/please-ignore");
+
+        PayIn createPayIn = mangopay.getPayInApi().create(payIn);
+    
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayIn);
+
+        System.out.println(prettyJson);
+    }
+}
+```
