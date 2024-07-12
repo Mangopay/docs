@@ -14,7 +14,7 @@ title: Bank wire
         <tr>
             <th class="header">Currencies</th>
             <td class="table-content">
-                AED, AUD, CAD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, USD
+                See the <a href="/guides/currencies">currencies</a> page for details
             </td>
             </tr>
         <tr>
@@ -51,18 +51,28 @@ This call enables the platform to obtain the bank account details and wire refer
 In the response from the API, Mangopay returns the `BankAccount` parameter object containing the IBAN and BIC to which the user must send the funds.
 
 The `WireReference` parameter contains the reference that must also be passed by the user to their bank.
+
 </Step>
 <Step title="The platform displays the bank details to the user"
 >
 The platform must display the details as they appear in the response of the pay-in call.
 
+<Check>
+**Best practice – Display details clearly and dynamically**
+
+Your user must understand that they need to initiate the bank wire on their side. Therefore: 
+- Ensure the bank details and wire reference are clearly displayed and **easy to copy and use**
+
+Mangopay may also periodically change the underlying bank account details without prior notice in an effort to offer the best quality of service. Therefore:
+- Ensure you implement the `BankAccount` object parameter dynamically so the `IBAN`, `BIC`, and other values appear **as returned in the pay-in response**
+</Check>
+
 <Warning>
 **Caution – Mismatched data may lead to delays**
 
 If any of the reference, bank details, amount, or currency are not those specified in the pay-in, delays or failures can occur.
-
-Ensure you display these details clearly for the user to copy and use.
 </Warning>
+
 </Step>
 <Step title="The user makes the payment via online banking"
 >
