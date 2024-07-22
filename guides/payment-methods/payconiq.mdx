@@ -1,0 +1,160 @@
+---
+title: 'Payconiq'  
+'og:description': 'Learn more about offering Payconiq with Mangopay'  
+---
+
+## About
+
+Payconiq is a popular app-based payment method owned by the Bancontact Payconiq Group. 
+
+This guide concerns the <a href="/api-reference/payconiq/payconiq-payin-object">Payconiq pay-in</a> flow. See the <a href="/guides/payment-methods/bancontact">Bancontact</a> guide for more details about other Bancontact payment flows.
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                Belgium, Luxembourg
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                EUR
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/guides/refunds)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Disputes](/guides/disputes)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring payments</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## How it works
+The <a href="/api-reference/payconiq/payconiq-payin-object">Payconiq pay-in</a> flow provides the following checkout experience:
+
+<Steps>
+<Step title="User chooses payment method">
+On your app or website, the user selects Payconiq as the payment method
+</Step>
+<Step title="Redirection">
+On a website, you redirect the user to one of two pages to complete the payment:
+- Via the `RedirectURL`, to a hosted page showing the QR code and Payconiq by Bancontact branding and instructions.
+- To your payment page displaying the QR code available at the `QRCodeURL` value. You can lightly customize the color and format of this QR code (see below).
+
+In an app-to-app flow, you redirect the user to their Payconiq by Bancontact app via the `DeepLinkURL`, where they confirm and authenticate the payment.
+</Step>
+<Step title="Return">
+After payment, the user is returned to the `ReturnURL` that you specify in the payment request
+
+</Step>
+<Step title="Outcome">
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+</Step>
+</Steps>
+
+## Hooks
+
+You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
+
+- PAYIN_NORMAL_SUCCEEDED  
+- PAYIN_NORMAL_FAILED  
+
+## QR code customization
+You can customize the QR code’s format, size, and color by adding query parameters to the `QRCodeURL` before redirecting the user.
+
+For example: 
+> r2/girogate.de/payconiq/qrcode?f=PNG?s=XL?cl=Black
+
+The available options are:
+
+<table>
+<thead>
+<tr>
+<th class="header">Parameter</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`f`
+</td>
+<td class="table-content">
+The image format.
+
+**Allowed values:** `SVG`, `PNG`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`s`
+</td>
+<td class="table-content">
+If the format is `PNG`, the image size in pixels of the QR code to generate:
+
+- `S` = 180 x 180
+- `M` = 250 x 250
+- `L` = 400 x 400
+- `XL` = 800 x 800
+
+**Allowed values:** `S`, `M`, `L`, `XL`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`cl`
+</td>
+<td class="table-content">
+The color of the QR code.
+
+**Default value:** `magenta`
+
+**Allowed values:** `magenta`, `black`
+</td>
+</tr>
+</tbody>
+</table>
+
+## Legacy integrations
+Payconiq was previously available from Mangopay at the following endpoint URL: 
+> /payins/payconiq/web
+
+The legacy flow remains available for platforms with no changes required on their side. The new flow is identical to the old one with the exception of the `QRCodeURL`, which was not previously available. 
+
+## Related resources
+
+<CardGroup col={2}>
+  <Card
+    title="Endpoint"
+    href="/api-reference/payconiq/payconiq-payin-object"
+  >
+    The Payconiq PayIn object
+  </Card>
+  <Card
+    title="Testing"
+    href="/testing/payment-methods"
+  >
+    Learn about testing Payconiq
+  </Card>
+</CardGroup>

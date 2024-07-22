@@ -1,16 +1,15 @@
 ---
-title: 'View a PayIn (Bancontact)'  
+title: 'View a PayIn (Payconiq)'  
 api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
 ---
-import RecurringResponse from '/snippets/p-response/RecurringResponse.mdx';
+import QRCodeURLResponse from '/snippets/p-response/QRCodeURLResponse.mdx';
 import DeepLinkURLResponse from '/snippets/p-response/DeepLinkURLResponse.mdx';
-import PaymentType11Response from '/snippets/p-response/PaymentType11Response.mdx';
-import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
-import RedirectURLResponse from '/snippets/p-response/RedirectURLResponse.mdx';
-import Culture7Response from '/snippets/p-response/Culture7Response.mdx';
+import Country_PayconiqResponse from '/snippets/p-response/Country_PayconiqResponse.mdx';
 import StatementDescriptorResponse from '/snippets/p-response/StatementDescriptorResponse.mdx';
+import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
+import RedirectUrl_PayconiqResponse from '/snippets/p-response/RedirectURL_PayconiqResponse.mdx';
 import ExecutionTypeResponse from '/snippets/p-response/ExecutionTypeResponse.mdx';
-import PaymentType6Response from '/snippets/p-response/PaymentType6Response.mdx';
+import PaymentType12Response from '/snippets/p-response/PaymentType12Response.mdx';
 import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.mdx';
 import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
 import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
@@ -26,6 +25,7 @@ import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
 import PayInId from '/snippets/p-path/PayInId.mdx';
   
 <Note>
@@ -42,8 +42,6 @@ For more information, see the <a href="/api-reference/overview/data-availability
 <PayInId />  
 
 ### Responses  
-
-<AccordionGroup>
 
 <Accordion title="200 - Succeeded">  
 
@@ -77,65 +75,63 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <CreditedUserIdResponse />  
 
-<PaymentType11Response />  
+<PaymentType12Response />  
 
 <ExecutionTypeResponse />  
 
 <ReturnURLResponse />  
 
-<RedirectURLResponse />  
+<RedirectUrl_PayconiqResponse />  
 
 <StatementDescriptorResponse />  
 
-<RecurringResponse />  
-
-<Culture7Response />  
+<Country_PayconiqResponse />
 
 <DeepLinkURLResponse />  
 
-</Accordion>
+<QRCodeURLResponse />
 
-</AccordionGroup>  
+</Accordion>
 
 <ResponseExample>  
 
 ```json 200 - Succeeded  
 {
-    "Id": "wt_45b42782-5fb1-4083-9c77-43b573af7deb",
+    "Id": "wt_706087f1-d1df-48a9-9d15-e8c603457d64",
     "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1718721483,
-    "AuthorId": "user_m_01HZSK5MX04KS9Q7SQSSRGQQ4Q",
+    "CreationDate": 1720095972,
+    "AuthorId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
     "DebitedFunds": {
         "Currency": "EUR",
-        "Amount": 1627
+        "Amount": 1000
     },
     "CreditedFunds": {
         "Currency": "EUR",
-        "Amount": 1464
+        "Amount": 1000
     },
     "Fees": {
         "Currency": "EUR",
-        "Amount": 163
+        "Amount": 0
     },
     "Status": "SUCCEEDED",
     "ResultCode": "000000",
     "ResultMessage": "Success",
-    "ExecutionDate": 1718721503,
+    "ExecutionDate": 1720096077,
     "Type": "PAYIN",
     "Nature": "REGULAR",
-    "CreditedWalletId": "wlt_m_01HW8AS48VH6MRXVT44RKK5RW1",
-    "CreditedUserId": "user_m_01HSDQD2RPPQ8NMM36EDGYBMEY",
-    "PaymentType": "BCMC",
+    "CreditedWalletId": "wlt_m_01J18J1SQGG6KXNM3F8GD674TP",
+    "CreditedUserId": "user_m_01J18HZSACR1EMYNY1TBS8KTJD",
+    "PaymentType": "PAYCONIQ",
     "ExecutionType": "WEB",
-    "ReturnURL": "https://www.mangopay.com/docs/please-ignore?transactionId=wt_45b42782-5fb1-4083-9c77-43b573af7deb",
-    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=2268171296&rs=7aOKg7NOrsDswV0grlEuH7pdA7cQjjte&cs=80902c0479c4400785a66cb5db61c1c1fd670fff450c28c34fbb206462ceade4",
+    "ReturnURL": "https://mangopay.com/docs/please-ignore?transactionId=wt_706087f1-d1df-48a9-9d15-e8c603457d64",
+    "RedirectURL": "https://r2.girogate.de/payconiq/T1146/I?tx=1207176177&rs=8OHbVocjQQa4OIcB4o31BgQBw7c45bXK&cs=76745cafd862d134ce7be068a029c71368ff5e22339379d72780845cee02a10f",
     "StatementDescriptor": "Example123",
-    "Recurring": false,
-    "Culture": "EN",
-    "DeepLinkURL": "BEP://1BC.GIROGATE.DE/BCMC/123456789$ICAE3BUIH5P9U53Y5HKA9CRT"
+    "Country": "BE",
+    "DeepLinkURL": "https://PAYCONIQ.COM/PAY/2/F8B4348C390A925F00D0682C?returnUrl=https%3A%2F%2Fr2.giro[…]436a10f4077908aa014795ba528a622315b2bada9f1ddc33e097c2fe5d9f5b",
+    "QRCodeURL": "https://portal.payconiq.com/qrcode?c=https%3A%2F%2Fpayconiq.com%2Fpay%2F2%2Ff8b4348c390a925f00d0682c"
 }
 ```
-</ResponseExample>  
+</ResponseExample> 
 
 <RequestExample>
 ```json cURL
