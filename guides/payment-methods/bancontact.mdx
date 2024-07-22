@@ -1,0 +1,118 @@
+---
+title: 'Bancontact'  
+'og:description': 'How users can pay using Bancontact-branded cards or Bancontact QR codes.'  
+---
+
+## About
+
+Bancontact is a widely used payment method in Belgium. The Bancontact and Payconiq brands both belong to the same group, and the mobile app available to end users is the same: Payconiq by Bancontact.
+
+This article concerns the <a href="/api-reference/bancontact/bancontact-payin-object">Bancontact pay-in</a> flow, which allows users to complete the payment by scanning a QR code, or by using a Bancontact-branded card (that is not saved).
+
+Mangopay offers two other flows from the Bancontact Payconiq Group: 
+- <a href="/api-reference/direct-card-payins/direct-card-payin-object">Direct card pay-in</a> – A payment with a Bancontact-branded card that is tokenized like any other card brand.
+- <a href="/api-reference/payconiq/payconiq-payin-object">Payconiq pay-in</a> – A payment using the Payconiq by Bancontact app to scan a QR code to complete payment (see <a href="/guides/payment-methods/payconiq">Payconiq</a> guide).
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                Belgium
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                EUR
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/guides/refunds)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Disputes](/guides/disputes)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring payments</th>
+            <td class="table-content">
+                Planned
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## How it works
+
+The <a href="/api-reference/bancontact/bancontact-payin-object">Bancontact pay-in</a> flow provides the following checkout experience:
+
+<Steps>
+  <Step title="User chooses payment method">
+On your app or website, the user selects Bancontact as the payment method
+  </Step>
+  <Step title="Redirection">
+On a website, you redirect the user to a hosted payment page via the `RedirectURL`. 
+
+On the webpage, the user can: 
+- Enter their Bancontact card number, or
+- Scan a QR code with a Belgian banking app (that supports QR code scan) or the Payconiq by Bancontact app. The QR-code flow is available for transactions up to €1,500. Above this amount, the user is only presented with the card option.
+<Note>
+  **Note – Co-branded cards not supported**
+
+  The Bancontact pay-in flow does not support co-branded cards. If attempted, the user will be prompted to retry with a card that is only branded Bancontact. 
+</Note>
+In an app-to-app flow, you redirect the user to their Payconiq by Bancontact app via the `DeepLinkURL`, where they confirm and authenticate the payment.
+  </Step>
+  <Step title="Return">
+After payment, the user is returned to the `ReturnURL` that you specify in the payment request    
+  </Step>
+  <Step title="Outcome">
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+  </Step>
+</Steps>
+
+## Hooks
+
+You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
+
+- PAYIN_NORMAL_SUCCEEDED  
+- PAYIN_NORMAL_FAILED  
+
+## Legacy integrations
+
+The Bancontact PayIn replaces Mangopay’s legacy Bancontact integration, which is the <a href="/api-reference/web-card-payins/web-card-payin-object">Web Card PayIn</a> with `CardType` value `BCMC`. The web card flow continues to be supported, and no change is required from platforms. 
+
+The <a href="/api-reference/direct-card-payins/direct-card-payin-object">Direct Card PayIn</a> flow for Bancontact cards remains available.
+
+The new Bancontact pay-in flow provides options to the user that are not available in the legacy flow:
+- Scanning the QR code 
+- Opening the Payconiq by Bancontact app via the `DeepLinkURL`
+
+## Related resources
+
+<CardGroup col={2}>
+  <Card
+    title="Endpoint"
+    href="/api-reference/bancontact/bancontact-payin-object"
+  >
+    The Bancontact PayIn object
+  </Card>
+  <Card
+    title="Testing"
+    href="/testing/payment-methods"
+  >
+    Learn about testing Bancontact
+  </Card>
+</CardGroup>
