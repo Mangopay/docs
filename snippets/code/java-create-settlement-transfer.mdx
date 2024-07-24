@@ -1,0 +1,32 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.SettlementTransfer;
+import com.mangopay.entities.Transfer;
+
+public class CreateSettlementTransfer {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var repudiationId = "repud_m_01J2KVEDBG9ABZZAWRXFHAJ97H";
+
+        SettlementTransfer settlementTransfer = new SettlementTransfer();
+        settlementTransfer.setAuthorId(userId);
+        settlementTransfer.setDebitedFunds(new Money(CurrencyIso.EUR, 200));
+        settlementTransfer.setFees(new Money(CurrencyIso.EUR, 0));
+        settlementTransfer.setTag("Created using the Mangopay Java SDK");
+
+        Transfer createSettlement = mangopay.getDisputeApi().createSettlementTransfer(settlementTransfer, repudiationId);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createSettlement);
+        System.out.println(prettyJson);
+    }
+}
+```
