@@ -1,0 +1,55 @@
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $update = new \MangoPay\PayInRecurringRegistrationUpdate();
+    $update->Id = "recpayinreg_m_01J2EA0TAVQPNY4JGGF1J7RD97";
+    
+    // To update user information
+    $adress = new \MangoPay\Address();
+    $adress->AddressLine1 = '4 rue de la Tour des Dames';
+    $adress->AddressLine2 = 'Mangopay office';
+    $adress->City = 'Paris';
+    $adress->Country = 'FR';
+    $adress->PostalCode = '75009';
+    $adress->Region = 'Ile-de-France';
+
+    $shipping = new \MangoPay\Shipping();
+    $shipping->FirstName = 'Arthur';
+    $shipping->LastName = 'Doe';
+    $shipping->Address = $adress;
+
+    $update->Shipping = $shipping;
+
+    $billing = new \MangoPay\Billing();
+    $billing->FirstName = 'Arthur';
+    $billing->LastName = 'Doe';
+    $billing->Address = $adress;
+
+    $update->Billing = $billing;
+
+    // To end the recurring payin
+    $update->Status = "ENDED";
+
+    $response = $api->PayIns->UpdateRecurringRegistration($update);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

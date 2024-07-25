@@ -19,11 +19,13 @@ Mangopay supports for its wallets the creation of a virtual bank account number.
 
 Once a wallet is associated with a virtual IBAN, users can do a bank wire directly from their bank account to the wallet, as they would do for any other wire transfer from one bank account to another.
 
-[Learn more about virtual IBAN](/guides/payment-methods/banking/virtual-iban)  
+<a href="/guides/payment-methods/banking/virtual-iban">Learn more about virtual IBAN</a> **&rarr;**
 
 ## 1. Create the wallet  
 
-Create the Wallet which is to be associated with a virtual IBAN. This wallet `Currency` must be `EUR`.  
+Create the Wallet which is to be associated with a virtual IBAN.
+
+The currency of the wallet must correspond to the country of the IBAN that you'll attach to it. See <a href="/guides/payment-methods/banking/virtual-iban#iban-countries-and-currencies">IBAN countries and currencies</a> for details.
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/wallets](/api-reference/wallets/create-wallet)
 
@@ -164,13 +166,11 @@ pprint(create_wallet)
 ```
 </CodeGroup>  
 
-## 2. Create the wallet Virtual IBAN  
+## 2. Create the virtual IBAN  
 
-Create the Banking Alias by using the previously created wallet `Id` as a path parameter.  
+Create the virtual IBAN by (called a Banking Alias in the API) by using the previously created wallet `Id` as a path parameter.  
 
-Please note that:  
-- The `OwnerName` must be the first name and last name of the owner of the wallet.  
-- Only `LU`, `FR` countries are allowed for now.  
+The `OwnerName` must be the first name and last name of the owner of the wallet.
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/wallets/&lcub;WalletId&rcub;/bankingaliases/iban](/api-reference/banking-aliases/create-iban-banking-alias)
 
@@ -343,7 +343,8 @@ If the virtual IBAN is no longer required, you’ll need to deactivate it.
 **Caution - Deactivating a Banking Alias is irreversible** 
   
 Once the Banking Alias object is deactivated, you cannot reactivate it. Any funds wired to this banking alias won’t be credited to the corresponding wallet.  
-If such cases arise, please get in touch with Mangopay teams <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a> (Transactions in production > Pay-in bank wire or ibanisation).  
+
+If such cases arise, please get in touch with Mangopay teams <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </Warning>  
 
 > [**PUT** /v2.01/&lcub;ClientId&rcub;/bankingaliases/&lcub;BankingAliasId&rcub;](/api-reference/banking-aliases/deactivate-banking-alias)

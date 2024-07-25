@@ -18,8 +18,8 @@ Mangopay supports the following card brands and currencies, defined by the `Card
         </tr>
         <tr>
             <th class="header header-normal-weight">**Mastercard**<br/>International</th>
-            <td rowSpan="3" class="rowSpan table-content">`CB_VISA_MASTERCARD`</td>
-            <td rowSpan="3" class="rowSpan table-content">AUD, CAD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK</td>
+            <td rowSpan="3" class="row-span table-content">`CB_VISA_MASTERCARD`</td>
+            <td rowSpan="3" class="row-span table-content">See the <a href="/guides/currencies">currencies</a> page for details</td>
         </tr>
         <tr>
             <th class="header header-normal-weight">**Visa**<br/>International</th>
@@ -30,7 +30,7 @@ Mangopay supports the following card brands and currencies, defined by the `Card
         <tr>
             <td class="header header-normal-weight">**AMEX**<br/>International</td>
             <td class="table-content">`AMEX`</td>
-            <td class="table-content">AUD, CAD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, PLN, SEK, USD</td>
+            <td class="table-content">See the <a href="/guides/currencies">currencies</a> page for details</td>
         </tr>
         <tr>
             <td class="header header-normal-weight">**Maestro**<br/>International</td>
@@ -54,10 +54,10 @@ Processing card payments with Mangopay involves passing sensitive card details t
         Call the <a href="/api-reference/card-registrations/create-card-registration" target="_blank">POST Create a Card Registration</a> endpoint to initiate the flow and obtain a secure URL to which you can send card details.
     </Step>
     <Step title="Tokenize the card">
-        Send the cardholder's sensitive data directly to the tokenization server, without passing yours or Mangopay's.
+        Send the cardholder's sensitive data directly to the tokenization server, without passing yours or Mangopay's, thanks to the <a href="/api-reference/card-registrations/tokenize-card" target="_blank">POST Tokenize the card</a> endpoint.
     </Step>
     <Step title="Update the card registration object">
-        Send the `RegistrationData` received from the tokenization server to Mangopay to generate a `CardId`. 
+        Send the `RegistrationData` received from the tokenization server via <a href="/api-reference/card-registrations/update-card-registration">PUT Update a Card Registration</a> to generate a `CardId`.
     </Step>
     <Step title="Use the card object for a payment flow">
         Use the `CardId` to call the Mangopay API to initiate a one-time, recurring, or preauthorized card payment flow.
@@ -71,7 +71,7 @@ This process involves two distinct API objects:
 - <a href="/api-reference/card-registrations/card-registration-object">Card Registration</a> - The object to safely tokenize the card and create the Card object.
 - <a href="/api-reference/cards/card-object">Card</a> - The tokenized version of the card, whose `CardId` will allow you to make payments.
 
-For more detailed guidance, see the <a href="/guides/payment-methods/card/direct">one-time payment guides</a>.
+For more detailed guidance, see the <a href="/guides/payment-methods/card/direct/how-to">how-to guide for one-time payments</a>.
 
 <Check>
     **Best practice – Use Checkout SDK**

@@ -1,0 +1,40 @@
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $mit = new \MangoPay\RecurringPayInMIT();
+
+    $mit->RecurringPayinRegistrationId = 'recpayinreg_m_01J2EG8FD7TD6R3HGPZ8ZM917Y';
+    $mit->StatementDescriptor = "MGP TEST";
+    $mit->Tag = "Generated using Mangopay documentation";
+
+    // Required if the registration’s NextTransactionDebitedFunds is empty.
+    $mit->DebitedFunds = new \MangoPay\Money();
+    $mit->DebitedFunds->Amount = 10;
+    $mit->DebitedFunds->Currency = 'EUR';
+    $mit->Fees = new \MangoPay\Money();
+    $mit->Fees->Amount = 1;
+    $mit->Fees->Currency = 'EUR';
+
+    $response = $api->PayIns->CreateRecurringPayInRegistrationMIT($mit);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

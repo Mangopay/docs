@@ -10,7 +10,7 @@ The Mangopay REST API uses the OAuth 2.0 authentication protocol to provide secu
 <Note>  
 **Note – SDKs handle authentication automatically** 
   
-For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. Find out more in SDK authentication section.  
+For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. See the <a href="#sdk-authentication">SDK authentication</a> section for more details.  
 </Note>  
 
 <Warning>  
@@ -29,7 +29,7 @@ The OAuth 2.0 method of authentication consists in generating a temporary authen
 
 Since you only send your API key to generate the token, this industry-standard method ensures a high level of security.  
 
-You need a `ClientId` and an API key (get a Sandbox API key for free).  
+You need a `ClientId` and an API key – you can create these in the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Hub</a> (or else <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get started).
 
 ### 1. Generate a Bearer token  
 
@@ -37,17 +37,17 @@ To generate your authentication token, call the endpoint below using Basic Acces
 
 #### A. Combine your `ClientId` and API key into a string separated by a colon  
 
-`ClientId`:`ApiKey`  
+> `ClientId`:`ApiKey`  
 
 #### B. Encode the string in Base64  
 
 Once encoded, the string looks something like this:  
 
-RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu  
+> RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu  
 
 #### C. Call the OAuth token endpoint  
 
-Use the encoded string, preceded by “Basic” and a space, as your Authorization header (this is Basic Access authentication). Unlike most other calls to the API, this endpoint accepts the `x-www-form-urlencoded` Content-Type.
+Use the encoded string, preceded by “Basic” and a space, as your Authorization header. Unlike most other calls to the API, this endpoint supports Basic Access authentication and accepts the `x-www-form-urlencoded` Content-Type.
 
 <table class="header-column">
     <tbody>
@@ -100,17 +100,11 @@ Use the encoded string, preceded by “Basic” and a space, as your Authorizati
 
             **Default values:** 3600 (in Production), 1200 (in Sandbox)
 
-            _Note: The value may differ from the default values, therefore you should not rely on hard-coded defaults but on the `expires_in` value returned._
+            **Note:** The value may differ from the default values, therefore you should not rely on hard-coded defaults but on the `expires_in` value returned.
             </td>
         </tr>
     </tbody>
 </table>
-
-<Note>  
-**Note – OAuth token endpoint supports Basic Access** 
-  
-The `/oauth/token` endpoint is the only route that supports Basic Access authentication.  
-</Note>  
 
 ### 2. Use your Bearer token until it expires  
 
@@ -121,7 +115,7 @@ Use the token, preceded by “Bearer” and a space, as the Authorization header
 <table class="header-column">
     <tr>
         <th class="header">**Authorization**</th>
-        <td class="table-content">094696b3724d4aa5a182eac360dcd537</td>
+        <td class="table-content">Bearer 094696b3724d4aa5a182eac360dcd537</td>
     </tr>
 </table>
 
@@ -163,13 +157,13 @@ The authentication is then handled automatically, relying on OAuth 2.0 to provid
 Please find below examples of how to set your credentials after the SDK initialization to authenticate:  
 <CodeGroup>  
 
-```php Authentication examples
+```php
 $api = new MangoPay\MangoPayApi();
 $api->Config->ClientId = 'your-client-id';
 $api->Config->ClientPassword = 'your-client-api-key;
 ```  
 
-```nodejs Authentication examples
+```nodejs
 const mangopay = require('mangopay2-nodejs-sdk');
 
 let mangopayApi = new mangopay({
@@ -179,7 +173,7 @@ let mangopayApi = new mangopay({
 });
 ```  
 
-```ruby Authentication examples
+```ruby
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -190,7 +184,7 @@ MangoPay.configure do |client|
 end
 ```  
 
-```java Authentication examples
+```java
     import com.mangopay.MangoPayApi;
 
     MangoPayApi api = new MangoPayApi();
@@ -199,7 +193,7 @@ end
     api.getConfig().setClientPassword("your-api-key");
 ```  
 
-```.net Authentication examples
+```.net
 MangoPayApi api = new MangoPayApi();
 
 api.Config.ClientId = "your-client-id";

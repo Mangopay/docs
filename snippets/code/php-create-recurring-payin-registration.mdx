@@ -1,0 +1,63 @@
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payIn = new \MangoPay\PayInRecurringRegistration();
+
+    $payIn->AuthorId = "user_m_01J2CBKKMQJ95BGHCW0A2F9DE1";
+    $payIn->CardId = "card_m_01J2CBM93A3R36V2T2HFC2RRW4";
+    $payIn->CreditedUserId = "user_m_01J2CBPBE80P5Z8BTY9GJWQTVM";
+    $payIn->CreditedWalletId = "wlt_m_01J2CBPWWRKK4G65X4MTBVNWPS";
+
+    $payIn->FirstTransactionDebitedFunds = new \MangoPay\Money();
+    $payIn->FirstTransactionDebitedFunds->Amount = 12;
+    $payIn->FirstTransactionDebitedFunds->Currency = 'EUR';
+    $payIn->FirstTransactionFees = new \MangoPay\Money();
+    $payIn->FirstTransactionFees->Amount = 1;
+    $payIn->FirstTransactionFees->Currency = 'EUR';
+
+    $adress = new \MangoPay\Address();
+    $adress->AddressLine1 = '4 rue de la Tour des Dames';
+    $adress->AddressLine2 = 'Mangopay office';
+    $adress->City = 'Paris';
+    $adress->Country = 'FR';
+    $adress->PostalCode = '75009';
+    $adress->Region = 'Ile-de-France';
+
+    $billing = new \MangoPay\Billing();
+    $billing->FirstName = 'John';
+    $billing->LastName = 'Doe';
+    $billing->Address = $adress;
+
+    $shipping = new \MangoPay\Shipping();
+    $shipping->FirstName = 'John';
+    $shipping->LastName = 'Doe';
+    $shipping->Address = $adress;
+
+    $payIn->Shipping = $shipping;
+    $payIn->Billing = $billing;
+
+    $payIn->FreeCycles = 0;
+
+    $response = $api->PayIns->CreateRecurringRegistration($payIn);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```

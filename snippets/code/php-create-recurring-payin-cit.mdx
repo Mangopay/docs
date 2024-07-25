@@ -1,0 +1,55 @@
+```php PHP  
+
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $cit = new \MangoPay\RecurringPayInCIT();
+
+    $cit->RecurringPayinRegistrationId = 'recpayinreg_m_01J2EA0TAVQPNY4JGGF1J7RD97';
+    $cit->SecureModeReturnURL = "https://docs.mangopay.com/please-ignore";
+    $cit->StatementDescriptor = "MGP TEST";
+    $cit->Tag = "Generated using Mangopay documentation";
+    $cit->IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";
+
+    $browserInfo = new \MangoPay\BrowserInfo();
+    $browserInfo->AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8";
+    $browserInfo->JavaEnabled = true;
+    $browserInfo->Language = "FR-FR";
+    $browserInfo->ColorDepth = 4;
+    $browserInfo->ScreenHeight = 1800;
+    $browserInfo->ScreenWidth = 400;
+    $browserInfo->TimeZoneOffset = 60;
+    $browserInfo->UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+    $browserInfo->JavascriptEnabled = true;
+
+    $cit->BrowserInfo = $browserInfo;
+
+    // Required if the registration’s NextTransactionDebitedFunds is empty.
+    $cit->DebitedFunds = new \MangoPay\Money();
+    $cit->DebitedFunds->Amount = 10;
+    $cit->DebitedFunds->Currency = 'EUR';
+    $cit->Fees = new \MangoPay\Money();
+    $cit->Fees->Amount = 1;
+    $cit->Fees->Currency = 'EUR';
+
+    $response = $api->PayIns->CreateRecurringPayInRegistrationCIT($cit);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
