@@ -1,0 +1,27 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.EventType;
+import com.mangopay.entities.Hook;
+
+public class CreateHook {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        Hook hook = new Hook();
+        hook.setEventType(EventType.USER_KYC_LIGHT);
+        hook.setUrl("https://mangopay.com/docs/please-ignore");
+        hook.setTag("Create using the Mangopay Java SDK");
+
+        Hook createHook = mangopay.getHookApi().create(hook);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createHook);
+
+        System.out.println(prettyJson);   
+    }
+}
+```

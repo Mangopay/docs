@@ -1,0 +1,35 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayoutMode;
+import com.mangopay.entities.PayOutEligibility;
+import com.mangopay.entities.PayOutEligibilityResult;
+
+public class CheckEligibility {
+    
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+        var bankAccountId = "bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE";
+        
+        PayOutEligibility eligibility = new PayOutEligibility();
+        eligibility.setAuthorId(userId);
+        eligibility.setDebitedFunds(new Money(CurrencyIso.EUR, 500));
+        eligibility.setPayoutModeRequested(PayoutMode.INSTANT_PAYMENT);
+        eligibility.setBankAccountId(bankAccountId);
+
+        PayOutEligibilityResult result = mangopay.getPayOutApi().checkInstantPayoutEligibility(null, eligibility);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(result);
+
+        System.out.println(prettyJson);
+    }
+}
+```

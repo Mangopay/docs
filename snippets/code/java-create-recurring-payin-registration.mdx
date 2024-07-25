@@ -1,0 +1,41 @@
+  
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.RecurringPayment;
+
+public class CreateRecurringPayinRegistration {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var cardId = "card_m_01HZ6YAQF4MR0VRQ06YG06SD99";
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+        
+        RecurringPayment recurringPayinRegistration = new RecurringPayment();
+        recurringPayinRegistration.setAuthorId(userId);
+        recurringPayinRegistration.setCardId(cardId);
+        recurringPayinRegistration.setCreditedWalletId(walletId);
+
+        recurringPayinRegistration.setFirstTransactionDebitedFunds(new Money());
+        recurringPayinRegistration.getFirstTransactionDebitedFunds().setAmount(1000);
+        recurringPayinRegistration.getFirstTransactionDebitedFunds().setCurrency(CurrencyIso.EUR);
+
+        recurringPayinRegistration.setFirstTransactionFees(new Money());
+        recurringPayinRegistration.getFirstTransactionFees().setAmount(0);
+        recurringPayinRegistration.getFirstTransactionFees().setCurrency(CurrencyIso.EUR);
+
+        RecurringPayment createRecurringPayinRegistration = mangopay.getPayInApi().createRecurringPayment(null, recurringPayinRegistration);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createRecurringPayinRegistration);
+
+        System.out.println(prettyJson);
+    }
+}
+```

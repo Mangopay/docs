@@ -1,0 +1,21 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Deposit;
+
+public class CancelDepositPreauth {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        Deposit cancelDeposit = mangopay.getDepositApi().cancel("deposit_m_01J21RMN7TET5VNNJJQTMYEX8Z");
+    
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(cancelDeposit);
+
+        System.out.println(prettyJson);
+    }
+}
+```

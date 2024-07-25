@@ -1,0 +1,46 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.RecurringPayIn;
+import com.mangopay.entities.RecurringPayInCIT;
+import com.mangopay.entities.subentities.BrowserInfo;
+
+public class CreateCITRecurringPayin {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var recurringPayinRegistrationId = "recpayinreg_m_01J28W33B63S26WP9GA9YWJ5N2";
+        
+        RecurringPayInCIT citPayin = new RecurringPayInCIT();
+
+        citPayin.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        citPayin.setFees(new Money(CurrencyIso.EUR, 0));
+        citPayin.setSecureModeReturnURL("https://mangopay.com/docs/please-ignore");
+        citPayin.setIpAddress("192.158.1.38");
+        citPayin.setRecurringPayInRegistrationId(recurringPayinRegistrationId);
+
+        citPayin.setBrowserInfo(new BrowserInfo());
+        citPayin.getBrowserInfo().setAcceptHeader("text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8");
+        citPayin.getBrowserInfo().setJavaEnabled(true);
+        citPayin.getBrowserInfo().setLanguage("EN");
+        citPayin.getBrowserInfo().setColorDepth(4);
+        citPayin.getBrowserInfo().setScreenHeight(1800);
+        citPayin.getBrowserInfo().setScreenWidth(400);
+        citPayin.getBrowserInfo().setTimeZoneOffset("60");
+        citPayin.getBrowserInfo().setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148");
+        citPayin.getBrowserInfo().setJavascriptEnabled(true);
+
+        RecurringPayIn createCitPayin = mangopay.getPayInApi().createRecurringPayInCIT(null, citPayin);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createCitPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

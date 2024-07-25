@@ -1,0 +1,47 @@
+```java Java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsMultibanco;
+
+public class CreateMultibancoPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+
+        PayIn multibancoPayin = new PayIn();
+        multibancoPayin.setPaymentType(PayInPaymentType.MULTIBANCO);
+        multibancoPayin.setExecutionType(PayInExecutionType.WEB);
+        multibancoPayin.setAuthorId(userId);
+        multibancoPayin.setCreditedWalletId(walletId);
+        multibancoPayin.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        multibancoPayin.setFees(new Money(CurrencyIso.EUR, 0));
+        multibancoPayin.setTag("Created using the Mangopay Java SDK");
+
+        PayInPaymentDetailsMultibanco paymentDetails = new PayInPaymentDetailsMultibanco();
+        paymentDetails.setStatementDescriptor("Jul2024");
+        multibancoPayin.setPaymentDetails(paymentDetails);
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        multibancoPayin.setExecutionDetails(executionDetails);
+
+        PayIn createMultibancoPayin = mangopay.getPayInApi().create(multibancoPayin);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createMultibancoPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

@@ -1,0 +1,37 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.CardPreAuthorizedDepositPayIn;
+import com.mangopay.entities.subentities.CreateCardPreAuthorizedDepositPayIn;
+
+public class CreateDepositPreauthPayIn {
+        public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTF5S9MG0XXBZ8A0550MED3Z";
+        var depositId = "deposit_m_01J21R19BR04YQ9XTPH7860BFV";
+
+        CreateCardPreAuthorizedDepositPayIn payin = new CreateCardPreAuthorizedDepositPayIn();
+
+        payin.setAuthorId(userId);
+        payin.setCreditedWalletId(walletId);
+        payin.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        payin.setFees(new Money(CurrencyIso.EUR, 1000));   
+        payin.setDepositId(depositId);
+        payin.setTag("Created using the Mangopay Java SDK");
+
+        CardPreAuthorizedDepositPayIn createPayin = mangopay.getPayInApi().createCardPreAuthorizedDepositPayIn(payin, null);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

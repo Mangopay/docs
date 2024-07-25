@@ -1,0 +1,48 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsSatispay;
+
+public class CreateSatispayPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+
+        PayIn satispayPayin = new PayIn();
+        satispayPayin.setPaymentType(PayInPaymentType.SATISPAY);
+        satispayPayin.setExecutionType(PayInExecutionType.WEB);
+        satispayPayin.setAuthorId(userId);
+        satispayPayin.setCreditedWalletId(walletId);
+        satispayPayin.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        satispayPayin.setFees(new Money(CurrencyIso.EUR, 0));
+        satispayPayin.setTag("Created using the Mangopay Java SDK");
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        satispayPayin.setExecutionDetails(executionDetails);
+
+        PayInPaymentDetailsSatispay paymentDetails = new PayInPaymentDetailsSatispay();
+        paymentDetails.setCountry("FR");
+        paymentDetails.setStatementDescriptor("Jul2024");
+        satispayPayin.setPaymentDetails(paymentDetails);
+
+        PayIn createSatispayPayin = mangopay.getPayInApi().create(satispayPayin);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createSatispayPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

@@ -1,0 +1,23 @@
+```java Java 
+import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Pagination;
+import com.mangopay.entities.Hook;
+
+public class ListHooks {
+        public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        List<Hook> hooks = mangopay.getHookApi().getAll(new Pagination(1, 100), null);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(hooks);
+
+        System.out.println(prettyJson);   
+    }
+}
+```

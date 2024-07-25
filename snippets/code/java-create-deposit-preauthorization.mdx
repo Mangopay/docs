@@ -1,0 +1,49 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CultureCode;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.Deposit;
+import com.mangopay.entities.subentities.BrowserInfo;
+import com.mangopay.entities.subentities.CreateDeposit;
+
+public class CreateDepositPreauth {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+        
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var cardId = "card_m_01HY0MA4E2WQ0NRYQJP8X8SXMB";
+
+        CreateDeposit deposit = new CreateDeposit();
+
+        deposit.setAuthorId(userId);
+        deposit.setCardId(cardId);
+        deposit.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        deposit.setSecureModeReturnUrl("https://mangopay.com/docs/please-ignore");
+        deposit.setCulture(CultureCode.EN);
+        deposit.setIpAddress("192.158.1.38");
+
+        deposit.setBrowserInfo(new BrowserInfo());
+        deposit.getBrowserInfo().setAcceptHeader("text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8");
+        deposit.getBrowserInfo().setJavaEnabled(true);
+        deposit.getBrowserInfo().setLanguage("EN");
+        deposit.getBrowserInfo().setColorDepth(4);
+        deposit.getBrowserInfo().setScreenHeight(1800);
+        deposit.getBrowserInfo().setScreenWidth(400);
+        deposit.getBrowserInfo().setTimeZoneOffset("60");
+        deposit.getBrowserInfo().setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148");
+        deposit.getBrowserInfo().setJavascriptEnabled(true);
+
+        Deposit createDeposit = mangopay.getDepositApi().create(deposit, null);
+    
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createDeposit);
+
+        System.out.println(prettyJson);
+    }
+}
+```

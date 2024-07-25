@@ -1,122 +1,91 @@
   
 ```java Java  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mangopay.MangoPayApi;
 import com.mangopay.core.Address;
-import com.mangopay.core.Shipping;
 import com.mangopay.core.Billing;
 import com.mangopay.core.LineItem;
 import com.mangopay.core.Money;
 import com.mangopay.entities.PayIn;
 import com.mangopay.entities.User;
-import com.mangopay.entities.subentities.PayInPaymentDetailsKlarna;
 import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsKlarna;
 import com.mangopay.core.enumerations.PayInExecutionType;
 import com.mangopay.core.enumerations.PayInPaymentType;
 import com.mangopay.core.enumerations.CountryIso;
 import com.mangopay.core.enumerations.CultureCode;
 import com.mangopay.core.enumerations.CurrencyIso;
-
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-public class HandleRequest {
+public class CreateKlarnaPayIn {
     public static void main(String[] args) throws Exception {
         MangoPayApi mangopay = new MangoPayApi();
         mangopay.getConfig().setClientId("your-client-id");
         mangopay.getConfig().setClientPassword("your-api-key");
 
-        Address address = new Address();
-        Billing billing = new Billing();
-        Shipping shipping = new Shipping();
         PayIn payin = new PayIn();
-        PayInExecutionDetailsWeb payinExecutionDetails = new PayInExecutionDetailsWeb();
-        PayInPaymentDetailsKlarna payInPaymentDetailsKlarna = new PayInPaymentDetailsKlarna();
-        Money debitedFunds = new Money();
-        Money fees = new Money();
-        LineItem lineItem1 = new LineItem(null, null, null, null, null);
-        LineItem lineItem2 = new LineItem(null, null, null, null, null);
-        List<LineItem> lineItems = Arrays.asList(lineItem1, lineItem2);
 
-        User myUser = mangopay.getUserApi().get("210513027");
+        User myUser = mangopay.getUserApi().get("user_m_01HT2NFK7Z2BRQNGNHMY30VVTT");
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
 
+        var additionalData = "{\"customer_account_info\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"app_id\": \"81363501-3540-494a-8627-33bc6112035d\",\"loyalty_level\": \"high\",\"customer_email\": \"customer@email.com\",\"customer_phone\": \"0611223344\",\"customer_ranking\": 2,\"customer_reviews\": 5,\"last_login_time\": \"2023-10-21T19:11:34Z\",\"account_security\": {\"last_verification_method\": \"2FA TOTP\",\"last_verification_time\": \"2023-10-21T19:11:34Z\",\"device_id\": \"772af5a5-2d55-4a5e-bb79-85969f683810\",\"fraud_behavior\": false,\"devices_linked\": 2,\"phone_verified\": true,\"email_verified\": true,\"failed_transactions_attempts\": 0},\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": \"2022-12-22T18:45:44Z\"}],\"marketplace_seller_info\": [{\"sub_merchant_id\": \"615a0e87-4941-45dc-978d-e6efcbd90ba0\",\"sub_merchant_name\": \"Marketbrick Ltd.\",\"sub_merchant_postal_code\": \"75010\",\"product_category\": \"Computers\",\"product_name\": \"Asus Zenbook 14\",\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2020-06-10T12:02:21Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2020-06-10T12:02:21Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"digital_download\": false,\"seller_rating\": 4.5,\"number_of_trades\": 34,\"volume_of_trades\": 4500}],\"payment_history_full\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 10,\"payment_option\": \"card\",\"total_amount_paid_purchases\": 1000.10,\"date_of_first_paid_purchase\": \"2020-06-10T12:12:34Z\",\"date_of_last_paid_purchase\": \"2023-10-26T18:52:38Z\"},{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 14,\"payment_option\": \"non klarna credit\",\"total_amount_paid_purchases\": 2322.10,\"date_of_first_paid_purchase\": \"2021-10-11T20:31:15Z\",\"date_of_last_paid_purchase\": \"2023-09-22T14:59:22Z\"}],\"marketplace_winner_info\": [{\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2022-12-22T18:45:44Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2023-08-14T08:23:34Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"number_of_trades\": 24,\"volume_of_trades\": 3322}],\"other_delivery_address\": [{\"shipping_method\": \"pick-up point\",\"shipping_type\": \"express\",\"first_name\": \"Test\",\"last_name\": \"Person\",\"street_address\": \"Rue La Fayette\",\"street_number\": \"33\",\"postal_code\": \"75009\",\"city\": \"Paris\",\"country\": \"FR\"}]}";
+        
+        Address address = new Address();
         address.setAddressLine1("2795 Edgewood Road");
         address.setCity("Little Rock");
         address.setRegion("Arkansas");
         address.setPostalCode("72212");
         address.setCountry(CountryIso.FR);
 
-        billing.setFirstName("Alex");
-        billing.setLastName("Smith");
-        billing.setAddress(address);
-
-        shipping.setFirstName("Alex");
-        shipping.setLastName("Smith");
-        shipping.setAddress(address);
-
+        LineItem lineItem1 = new LineItem(null, null, null, null, null);
         lineItem1.setName("Running shoes");
         lineItem1.setQuantity(1);
         lineItem1.setUnitAmount(200);
         lineItem1.setTaxAmount(0);
         lineItem1.setDescription("Seller 1 ID");
-
+        LineItem lineItem2 = new LineItem(null, null, null, null, null);
         lineItem2.setName("Running shoes");
         lineItem2.setQuantity(1);
         lineItem2.setUnitAmount(200);
         lineItem2.setTaxAmount(0);
         lineItem2.setDescription("Seller 2 ID");
 
-        debitedFunds.setAmount(400);
-        debitedFunds.setCurrency(CurrencyIso.EUR);
+        List<LineItem> lineItems = Arrays.asList(lineItem1, lineItem2);
 
-        fees.setAmount(0);
-        fees.setCurrency(CurrencyIso.EUR);
-
+        PayInExecutionDetailsWeb payinExecutionDetails = new PayInExecutionDetailsWeb();
         payinExecutionDetails.setReturnUrl("http://www.mangopay.com/docs/please-ignore");
 
-        payInPaymentDetailsKlarna.setAdditionalData("your-additional-data");
-        payInPaymentDetailsKlarna.setBilling(billing);
-        payInPaymentDetailsKlarna.setCountry(CountryIso.FR);
-        payInPaymentDetailsKlarna.setCulture(CultureCode.FR);
-        payInPaymentDetailsKlarna.setReference("1234");
-        payInPaymentDetailsKlarna.setPhone("[+33][689854321]");
-        payInPaymentDetailsKlarna.setEmail(myUser.getEmail());
-        payInPaymentDetailsKlarna.setLineItems(lineItems);
+        PayInPaymentDetailsKlarna paymentDetails = new PayInPaymentDetailsKlarna();
+        paymentDetails.setAdditionalData(additionalData);
+        paymentDetails.setBilling(new Billing());
+        paymentDetails.getBilling().setFirstName("Alex");
+        paymentDetails.getBilling().setLastName("Smith");
+        paymentDetails.getBilling().setAddress(address);
+        paymentDetails.setCountry(CountryIso.FR);
+        paymentDetails.setCulture(CultureCode.FR);
+        paymentDetails.setReference("1234");
+        paymentDetails.setPhone("[+33][689854321]");
+        paymentDetails.setEmail(myUser.getEmail());
+        paymentDetails.setLineItems(lineItems);
 
         payin.setPaymentType(PayInPaymentType.KLARNA);
         payin.setExecutionType(PayInExecutionType.WEB);
+        payin.setCreditedWalletId(walletId);
+        payin.setExecutionDetails(payinExecutionDetails);
+        payin.setPaymentDetails(paymentDetails);
         payin.setTag("Created with Mangopay Java SDK");
         payin.setAuthorId(myUser.getId());
-        payin.setDebitedFunds(debitedFunds);
-        payin.setFees(fees);
-        payin.setCreditedWalletId("210514820");
-        payin.setExecutionDetails(payinExecutionDetails);
-        payin.setPaymentDetails(payInPaymentDetailsKlarna);
+        payin.setDebitedFunds(new Money(CurrencyIso.EUR, 400));
+        payin.setFees(new Money(CurrencyIso.EUR, 100));
+         
+        PayIn createKlarnaPayin = mangopay.getPayInApi().create(payin);
         
-        PayIn createdPayIn = mangopay.getPayInApi().create(payin);
-        printPayInDetails(createdPayIn);
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createKlarnaPayin);
 
-    }
-
-    private static void printPayInDetails(PayIn payIn) {
-        System.out.println("PayIn ID: " + payIn.getId());
-        printObjectFields(payIn);
-        printObjectFields(payIn.getExecutionDetails());
-        printObjectFields(payIn.getPaymentDetails());
-    }
-
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }   
-}  
+        System.out.println(prettyJson);
+    } 
+}
 ```

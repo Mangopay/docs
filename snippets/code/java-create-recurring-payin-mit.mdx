@@ -1,0 +1,32 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.RecurringPayIn;
+import com.mangopay.entities.RecurringPayInMIT;
+
+public class CreateMITRecurringPayin {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var recurringPayinRegistrationId = "recpayinreg_m_01J28W33B63S26WP9GA9YWJ5N2";
+        
+        RecurringPayInMIT mitPayin = new RecurringPayInMIT();
+
+        mitPayin.setDebitedFunds(new Money(CurrencyIso.EUR, 1000));
+        mitPayin.setFees(new Money(CurrencyIso.EUR, 0));
+        mitPayin.setRecurringPayInRegistrationId(recurringPayinRegistrationId);
+
+        RecurringPayIn createMitPayin = mangopay.getPayInApi().createRecurringPayInMIT(null, mitPayin);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createMitPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

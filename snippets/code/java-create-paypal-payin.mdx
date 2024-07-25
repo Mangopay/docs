@@ -1,0 +1,85 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Address;
+import com.mangopay.core.LineItem;
+import com.mangopay.core.Money;
+import com.mangopay.core.Shipping;
+import com.mangopay.core.enumerations.CountryIso;
+import com.mangopay.core.enumerations.CultureCode;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.ShippingPreference;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsPayPal;
+import java.util.List;
+import java.util.ArrayList;
+
+public class CreatePaypalPayin {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+
+        Address address = new Address();
+        address.setAddressLine1("2795 Edgewood Road");
+        address.setCity("Little Rock");
+        address.setRegion("Arkansas");
+        address.setPostalCode("72212");
+        address.setCountry(CountryIso.FR);
+
+        PayIn payIn = new PayIn();
+        payIn.setAuthorId(userId);
+
+        payIn.setDebitedFunds(new Money());
+        payIn.getDebitedFunds().setAmount(1000);
+        payIn.getDebitedFunds().setCurrency(CurrencyIso.EUR);
+
+        payIn.setFees(new Money());
+        payIn.getFees().setAmount(5);
+        payIn.getFees().setCurrency(CurrencyIso.EUR);
+
+        payIn.setCreditedWalletId(walletId);
+
+        PayInPaymentDetailsPayPal paymentDetails = new PayInPaymentDetailsPayPal();
+        paymentDetails.setShipping(new Shipping());
+        paymentDetails.getShipping().setFirstName("Alessandra");
+        paymentDetails.getShipping().setLastName("Wilderman");
+        paymentDetails.getShipping().setAddress(address);
+
+        List<LineItem> lineItems = new ArrayList<>();
+        lineItems.add(new LineItem(
+                "Item 1",
+                1,
+                1000,
+                0,
+                "Item description"
+        )
+                .setCategory("PHYSICAL_GOODS"));
+        paymentDetails.setLineItems(lineItems);
+        paymentDetails.setShippingPreference(ShippingPreference.GET_FROM_FILE);
+        paymentDetails.setReference("Reference");
+        paymentDetails.setStatementDescriptor("Jul2024");
+
+        payIn.setPaymentDetails(paymentDetails);
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("http://mangopay.com");
+        executionDetails.setCulture(CultureCode.FR);
+        payIn.setExecutionDetails(executionDetails);
+
+        payIn.setTag("Create using the Mangopay Java SDK");
+
+        PayIn createPaypalPayin = mangopay.getPayInApi().createPayPal(payIn);
+        
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPaypalPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

@@ -1,0 +1,48 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.core.enumerations.PayInExecutionType;
+import com.mangopay.core.enumerations.PayInPaymentType;
+import com.mangopay.entities.PayIn;
+import com.mangopay.entities.subentities.PayInExecutionDetailsWeb;
+import com.mangopay.entities.subentities.PayInPaymentDetailsGiropay;
+
+public class CreateGiropayPayIn {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var userId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var walletId = "wlt_m_01HTHTXEF4BJCTKMXNWMSZ6KP5";
+
+        PayIn giropayPayin = new PayIn();
+        giropayPayin.setAuthorId(userId);
+        giropayPayin.setCreditedWalletId(walletId);
+        giropayPayin.setDebitedFunds(new Money(CurrencyIso.EUR, 5000));
+        giropayPayin.setFees(new Money(CurrencyIso.EUR, 0));
+        giropayPayin.setTag("Created using the Mangopay Java SDK");
+
+        PayInExecutionDetailsWeb executionDetails = new PayInExecutionDetailsWeb();
+        executionDetails.setReturnUrl("https://www.mangopay.com/docs/please-ignore");
+        giropayPayin.setExecutionDetails(executionDetails);
+
+        PayInPaymentDetailsGiropay paymentDetails = new PayInPaymentDetailsGiropay();
+        paymentDetails.setStatementDescriptor("Jul2024");
+        giropayPayin.setPaymentDetails(paymentDetails);
+
+        giropayPayin.setPaymentType(PayInPaymentType.BLIK);
+        giropayPayin.setExecutionType(PayInExecutionType.WEB);
+
+        PayIn createGiropayPayin = mangopay.getPayInApi().create(giropayPayin);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createGiropayPayin);
+
+        System.out.println(prettyJson);
+    }
+}
+```

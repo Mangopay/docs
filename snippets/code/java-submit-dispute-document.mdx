@@ -1,0 +1,27 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.enumerations.DisputeDocumentStatus;
+import com.mangopay.entities.DisputeDocument;
+
+public class SubmitDisputeDoc {
+      public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var disputeId = "dispute_m_01J354MZ17XZA4DMAQS1766VXM";
+        var disputeDocId = "dispdoc_m_01J35502PVF13JEV84D6PET414";
+        var disputeDoc = mangopay.getDisputeApi().getDocument(disputeDocId);
+        disputeDoc.setStatus(DisputeDocumentStatus.VALIDATION_ASKED);
+        
+        DisputeDocument submitDispute = mangopay.getDisputeApi().submitDisputeDocument(disputeDoc, disputeId);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(submitDispute);
+
+        System.out.println(prettyJson);
+    }
+}
+```

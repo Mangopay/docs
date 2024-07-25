@@ -1,0 +1,32 @@
+```java Java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.Refund;
+
+public class CreatePayinRefund {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var authorId = "user_m_01HT2NFK7Z2BRQNGNHMY30VVTT";
+        var payInId = "payin_m_01J28XNRJXNQKEQ3GK3WBVQK8B";
+
+        Refund refund = new Refund();
+        refund.setAuthorId(authorId);
+        refund.setDebitedFunds(new Money(CurrencyIso.EUR, 200));
+        refund.setFees(new Money(CurrencyIso.EUR, 0));
+        refund.setTag("Created using the Mangopay Java SDK");
+
+        Refund createPayinRefund = mangopay.getPayInApi().createRefund(payInId, refund);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(createPayinRefund);
+
+        System.out.println(prettyJson);
+    }
+}
+```

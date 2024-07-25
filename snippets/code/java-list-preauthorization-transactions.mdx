@@ -1,0 +1,27 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Transaction;
+
+import java.util.List;
+
+public class ListPreauthorizatioTransactions {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var preauthId = "preauth_m_01J1Z3AD7VQKRXS67B5CR733T7";
+
+        List<Transaction> transactions = mangopay.getCardPreAuthorizationApi().getTransactions(preauthId, null);
+
+        for (Transaction transaction : transactions) {
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(transaction);
+
+            System.out.println(prettyJson);
+        }
+    }
+}
+```

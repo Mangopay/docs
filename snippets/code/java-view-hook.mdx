@@ -1,0 +1,25 @@
+```java Java 
+package com.samples.Helpers.Webhooks;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.entities.Hook;
+
+public class ViewHook {
+    public static void main(String[] args) throws Exception {
+        MangoPayApi mangopay = new MangoPayApi();
+        mangopay.getConfig().setClientId("your-client-id");
+        mangopay.getConfig().setClientPassword("your-api-key");
+
+        var hookId = "hook_m_01J3JQ13F0M5NY83M1GZKVNS95";
+
+        Hook viewHook = mangopay.getHookApi().get(hookId);
+
+        Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = prettyPrint.toJson(viewHook);
+
+        System.out.println(prettyJson);   
+    }
+}
+```

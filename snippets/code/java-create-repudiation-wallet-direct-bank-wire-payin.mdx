@@ -1,0 +1,26 @@
+```java Java 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mangopay.MangoPayApi;
+import com.mangopay.core.Money;
+import com.mangopay.core.enumerations.CurrencyIso;
+import com.mangopay.entities.ClientBankWireDirect;
+import com.mangopay.entities.PayIn;
+
+public class CreateDirectBankWirePayInToRepudiationWallet {
+  public static void main(String[] args) throws Exception {
+      MangoPayApi mangopay = new MangoPayApi();
+      mangopay.getConfig().setClientId("your-client-id");
+      mangopay.getConfig().setClientPassword("your-api-key");
+
+      ClientBankWireDirect bankwireDirectPayIn = new ClientBankWireDirect("CREDIT_EUR", new Money(CurrencyIso.EUR, 100));
+
+      PayIn createPayIn = mangopay.getClientApi().createBankWireDirect(bankwireDirectPayIn);
+
+      Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+      String prettyJson = prettyPrint.toJson(createPayIn);
+
+      System.out.println(prettyJson);
+  }
+}
+```
