@@ -12,9 +12,11 @@ class Program
         api.Config.ClientId = "your-client-id";
         api.Config.ClientPassword = "your-api-key";
 
-        var users = await api.Users.GetAllAsync(new Pagination(1, 100));
+        var userId = "user_m_01J2V0P9B1WCX46GEBDWCTXNQ0";
 
-        string prettyPrint = JsonConvert.SerializeObject(users, Formatting.Indented);
+        var userUboDeclarations = await api.UboDeclarations.GetUboDeclarationByUserIdAsync(userId, new Pagination(1, 100));
+
+        string prettyPrint = JsonConvert.SerializeObject(userUboDeclarations, Formatting.Indented);
         Console.WriteLine(prettyPrint);
     }
 }

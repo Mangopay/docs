@@ -1,5 +1,6 @@
-```csharp .NET
+```csharp .NET 
 using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
 using MangoPay.SDK.Entities.PUT;
 using Newtonsoft.Json;
 
@@ -13,14 +14,16 @@ class Program
         api.Config.ClientPassword = "your-api-key";
 
         var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var kycDocId = "kyc_01J2V2W9CJKMS9V0SGFWHPQY87";
 
-        var myUser = new UserNaturalPutDTO {
-            TermsAndConditionsAccepted = true
+        var kycDoc = new KycDocumentPutDTO 
+        {
+            Status = KycStatus.VALIDATION_ASKED
         };
 
-        var updateNaturalUser = await api.Users.UpdateNaturalAsync(myUser, userId);
+        var submitKycDoc = await api.Users.UpdateKycDocumentAsync(userId, kycDoc, kycDocId);
 
-        string prettyPrint = JsonConvert.SerializeObject(updateNaturalUser, Formatting.Indented);
+        string prettyPrint = JsonConvert.SerializeObject(submitKycDoc, Formatting.Indented);
         Console.WriteLine(prettyPrint);
     }
 }

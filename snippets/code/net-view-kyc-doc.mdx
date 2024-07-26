@@ -9,13 +9,14 @@ class Program
         MangoPayApi api = new MangoPayApi();
 
         api.Config.ClientId = "your-client-id";
-        api.Config.ClientPassword = "your-api-key";
-
+        api.Config.ClientPassword = "your-api-key";	
+    
         var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var kycDocId = "kyc_01J2V2W9CJKMS9V0SGFWHPQY87";
 
-        var viewUser = await api.Users.GetAsync(userId);
+        var viewKycDoc = await api.Users.GetKycDocumentAsync(userId, kycDocId);
 
-        string prettyPrint = JsonConvert.SerializeObject(viewUser, Formatting.Indented);
+        string prettyPrint = JsonConvert.SerializeObject(viewKycDoc, Formatting.Indented);
         Console.WriteLine(prettyPrint);
     }
 }

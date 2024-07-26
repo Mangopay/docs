@@ -1,6 +1,5 @@
 ```csharp .NET 
 using MangoPay.SDK;
-using MangoPay.SDK.Entities;
 using Newtonsoft.Json;
 
 class Program
@@ -11,10 +10,12 @@ class Program
 
         api.Config.ClientId = "your-client-id";
         api.Config.ClientPassword = "your-api-key";
+        
+        var userId = "user_m_01J2V0P9B1WCX46GEBDWCTXNQ0";
 
-        var users = await api.Users.GetAllAsync(new Pagination(1, 100));
+        var createUboDeclaration = await api.UboDeclarations.CreateUboDeclarationAsync(userId);
 
-        string prettyPrint = JsonConvert.SerializeObject(users, Formatting.Indented);
+        string prettyPrint = JsonConvert.SerializeObject(createUboDeclaration, Formatting.Indented);
         Console.WriteLine(prettyPrint);
     }
 }

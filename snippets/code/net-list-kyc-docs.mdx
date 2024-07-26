@@ -12,9 +12,12 @@ class Program
         api.Config.ClientId = "your-client-id";
         api.Config.ClientPassword = "your-api-key";
 
-        var users = await api.Users.GetAllAsync(new Pagination(1, 100));
+        var sort = new Sort();
+        sort.AddField("CreationDate", SortDirection.desc);
 
-        string prettyPrint = JsonConvert.SerializeObject(users, Formatting.Indented);
+        var kycDocs = await api.Kyc.GetKycDocumentsAsync(new Pagination(1, 100), null, sort);
+
+        string prettyPrint = JsonConvert.SerializeObject(kycDocs, Formatting.Indented);
         Console.WriteLine(prettyPrint);
     }
 }
