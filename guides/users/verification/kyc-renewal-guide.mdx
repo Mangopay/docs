@@ -1,0 +1,166 @@
+---
+title: 'KYC renewal - Guide'
+---
+
+import RestCreateKycDoc from '/snippets/code/rest-create-kyc-doc.mdx';
+import PhpCreateKycDoc from '/snippets/code/php-create-kyc-doc.mdx';
+import NodeCreateKycDoc from '/snippets/code/node-create-kyc-doc.mdx';
+import RubyCreateKycDocument from '/snippets/code/ruby-create-kyc-document.mdx';
+import JavaCreateKycDocument from '/snippets/code/java-create-kyc-document.mdx';
+import PythonCreateKycDocument from '/snippets/code/python-create-kyc-document.mdx';
+
+import RestCreateKycPage from '/snippets/code/rest-create-kyc-page.mdx';
+import PhpCreateKycPage from '/snippets/code/php-create-kyc-page.mdx';
+import NodeCreateKycPage from '/snippets/code/node-create-kyc-page.mdx';
+import RubyCreateKycPage from '/snippets/code/ruby-create-kyc-page.mdx';
+import PythonCreateKycPage from '/snippets/code/python-create-kyc-page.mdx';
+
+import RestSubmitKycDocument from '/snippets/code/rest-submit-kyc-document.mdx';
+import PhpSubmitKycDocument from '/snippets/code/php-submit-kyc-document.mdx';
+import NodeSubmitKycDoc from '/snippets/code/node-submit-kyc-doc.mdx';
+import RubySubmitKycDocument from '/snippets/code/ruby-submit-kyc-document.mdx';
+import JavaSubmitKycDocument from '/snippets/code/submit-kyc-document-java.mdx';
+import PythonSubmitKycDocument from '/snippets/code/python-submit-kyc-document.mdx';
+      
+
+import PhpListKycDocumentsUser from '/snippets/code/php-list-kyc-documents-user.mdx';
+import NodeListKycUser from '/snippets/code/node-list-kyc-user.mdx';
+import RubyListKycDocumentsUser from '/snippets/code/ruby-list-kyc-documents-user.mdx';
+import ListUserKycDocumentsJava from '/snippets/code/list-user-kyc-documents-java.mdx';
+import PythonListKycDocumentsForUser from '/snippets/code/python-list-kyc-documents-for-user.mdx';
+
+## Introduction
+The payout stage of the payments workflow is highly regulated. Mangopay has stringent legal obligations not only to verify the identity of users initially, but also to conduct ongoing monitoring of its users and re-verify their identities after a certain period of time to ensure they remain legitimate. This is in line with our <a  href="https://mangopay.com/terms-and-conditions" target="_blank">Terms & Conditions</a> and is necessary to comply with European Union anti-money laundering (AML) obligations.
+
+These obligations placed on payment companies like Mangopay are designed to prevent the misuse of the financial system for illicit activities, such as money laundering and terrorist financing (CFT). The ongoing monitoring and periodic re-verification requirements are crucial to detect and report any suspicious activity or changes in user circumstances that might arise after the initial identity verification. Non-compliance can result in penalties from regulators that may impact your ability to provide services.
+
+<a href="/guides/users/verification/kyc-renewal-faq" target="_blank" class="btn Primary normal">Read more in our FAQs &rarr;</a>  
+
+## Which type of users are affected
+This renewal applies to natural users who will be required to submit an identity document to revalidate their KYC status and avoid being downgraded.
+
+For more information, see the <a href="/guides/users/verification/requirements">accepted identity documents</a> guidelines.
+
+<Note>  
+**Note - Users are already verified** 
+  
+These users are already `KYC_REGULAR`, so their status won't change. You will need to check that a new document has been validated and there will be no notification of a successful KYC renewal.
+</Note> 
+
+## How to submit an identity document
+
+You can submit end users’ verification documents with the dedicated KYC Documents endpoints.
+
+Submission requires a minimum of 3 API calls:
+
+### 1. Create the KYC Document
+
+Create the document with the `UserId` and indicate which type is being submitted.
+
+> <a href="/api-reference/kyc-documents/create-kyc-document">POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents</a>
+
+<CodeGroup>
+    <RestCreateKycDoc />
+    <PhpCreateKycDoc />
+    <NodeCreateKycDoc />
+    <RubyCreateKycDocument />
+    <JavaCreateKycDocument />
+    <PythonCreateKycDocument />
+</CodeGroup>
+
+### 2. Create the page for the user’s file
+
+Upload each file as a <a href="api-reference/kyc-documents/create-kyc-document-page.mdx">KYC Document Page</a> (this call must be repeated for each file). With the `Id` of the KYC Document as the `KycDocumentId` path parameter, create the KYC Document Page containing the file uploaded by the user. The file must be encoded in Base64 (which is handled natively in our SDKs) and respect the format and size constraints described in the Document validation process article.
+
+> <a href="/api-reference/kyc-documents/create-kyc-document-page">POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents/&lcub;KycDocumentId&rcub;/pages</a> 
+
+<CodeGroup>
+    <RestCreateKycPage />
+    <PhpCreateKycPage />
+    <NodeCreateKycPage />
+    <RubyCreateKycPage />
+    <PythonCreateKycPage />
+</CodeGroup>
+
+Repeat this step as many times as necessary. Each file of the real-life document requires a separate API call to upload the file in a dedicated KYC Document Page.
+
+For example: National identity cards typically have 2 files: the front side and back side of the card.
+
+### 3. Submit the KYC Document
+Once all pages are uploaded, submit the document for review by Mangopay’s teams by changing the `Status` from `CREATED` to `VALIDATION_ASKED`.
+
+> <a href="/api-reference/kyc-documents/submit-kyc-document">PUT /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents/&lcub;KycDocumentId&rcub;</a>
+
+<CodeGroup>
+    <RestSubmitKycDocument />
+    <PhpSubmitKycDocument />
+    <NodeSubmitKycDoc />
+    <RubySubmitKycDocument />
+    <JavaSubmitKycDocument />
+    <PythonSubmitKycDocument />
+</CodeGroup>
+
+## View results of KYC check
+
+We recommend that you configure <a href="/api-reference/webhooks/hook-object">webhooks</a> to receive alerts when KYC document statuses change:
+
+Listen for the KYC_SUCCEEDED event to know when a document is successfully validated.
+Listen for the KYC_FAILED event to be notified of document rejections.
+Webhooks can be unreliable so if you need to query document statuses on-demand, use the following endpoint:
+
+> <a href="/api-reference/kyc-documents/list-kyc-documents-user">GET /v2.01//&lcub;ClientId&rcub;/users//&lcub;UserId&rcub;/kyc/documents</a>
+
+<CodeGroup>
+    <PhpListKycDocumentsUser />
+    <NodeListKycUser />
+    <RubyListKycDocumentsUser />
+    <ListUserKycDocumentsJava />
+    <PythonListKycDocumentsForUser />
+</CodeGroup>
+
+This will return the current status of the user's KYC documents:
+
+```json 200
+[
+    {
+        "Type": "IDENTITY_PROOF",
+        "UserId": "151479566",
+        "Flags": [],
+        "Id": "158785224",
+        "Tag": "Created using MANGOPAY API Collection Postman",
+        "CreationDate": 1671864905,
+        "ProcessedDate": null,
+        "Status": "VALIDATION_ASKED",
+        "RefusedReasonType": null,
+        "RefusedReasonMessage": null
+    }
+]
+```
+
+## What happens when a User is downgraded?
+
+If a user does not submit and have their documents validated before the deadline they will lose their verified status (i.e., `KYCLevel` changes from `REGULAR` to `LIGHT`) and as a result of the downgraded mechanism and will be unable to request a payout. They will need to submit the documents again according to the verification status.
+
+The following hooks enable you to be notified in case of a user being downgraded.
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Event type</th>
+            <th class="header">`ResourceId`</th>
+            <th class="header">What it means</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">KYC_OUTDATED</td>
+            <td class="table-content">`KYCDocumentId`</td>
+            <td class="table-content">This alert tells you when a KYC document is no longer valid because a document has expired or is no longer valid.</td>
+        </tr>
+        <tr>
+            <td class="table-content">USER_KYC_LIGHT</td>
+            <td class="table-content">`KYCDocumentId`</td>
+            <td class="table-content">The KYC Document has been refused by the Mangopay Compliance team.</td>
+        </tr>
+    </tbody>
+</table>
