@@ -40,15 +40,15 @@ import RubyCreateBankWirePayin from '/snippets/code/ruby-create-bank-wire-payin.
 import JavaCreateBankWirePayin from '/snippets/code/java-create-bank-wire-payin.mdx';
 import PythonCreateBankWirePayin from '/snippets/code/python-create-bank-wire-payin.mdx';
 
-The object expires 1 month after creation if no funds are received.  
+This call declares the payment to be made by the end user and returns the `BankAccount` details and `WireReference` they must use.
 
-<Warning>  
-**Warning – Display bank account details clearly to the end user** 
-  
-The direct bank wire relies on independent action from the end user. They must use the `WireReference` and wire the funds to the bank account identified by the `IBAN` and `BIC`.  
+<Caution>
+**Caution** – Retrieve the returned bank details dynamically
 
-If the end user wires the funds with the incorrect reference, to a different account, or for a different amount than the one declared, then the reconciliation will be delayed or unsuccessful.  
-</Warning>  
+Ensure you implement the `BankAccount` object parameter dynamically so the `IBAN`, `BIC`, and other response values appear as returned in for each pay-in.
+
+Mangopay may change the underlying bank account without prior notice and mismatched data my lead to delays. See the <a href="/guides/payment-methods/banking/bank-wire">bank wire pay-in</a> guide for more details.
+</Caution>
 
 ### Body parameters  
 

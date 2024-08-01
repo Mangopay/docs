@@ -10,13 +10,16 @@ import data from '/snippets/p-body/data.mdx';
 import accessKeyRef from '/snippets/p-body/accessKeyRef.mdx';
   
 
-This call sends the necessary information to a PCI-DSS-compliant tokenization server without reaching Mangopay’s servers.  
+This call sends the necessary information to a PCI-DSS-compliant tokenization server without reaching Mangopay’s servers.
+
+The URL to use for this endpoint is returned in the `CardRegistrationURL` parameter on the <a href="/api-reference/card-registrations/create-card-registration">POST Create a Card Registration</a> call. 
+
+The request must be made using the “application/x-www-form-urlencoded" content type.
 
 <Note>  
-**Note – Use CardRegistrationURL** 
+**Caution – Do not hardcode the URL** 
   
-The URL to use is returned by the Create a Card Registration call in the `CardRegistrationURL` parameter.
-The request must be made using the “application/x-www-form-urlencoded" content type.  
+The `CardRegistrationURL` is specific to each payment. You must rely on the returned URL in full (host, path, and queries) and not hardcode any part of it.
 </Note>  
 
 <Warning>  
@@ -62,7 +65,7 @@ data=acIcnwwLleiAvlZUea5VxYT1eCIn3MER8jyZXr-p8Bzb4Rm8GIA0MQtPs2NL7zPzPO_I7EjQm-m
 ```json cURL
 curl --request POST \
   --url https://api.sandbox.mangopay.com/{CardRegistrationURL} \
-  --header 'Content-Type: application/json' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
   --data '{
   "accessKeyRef": "<string>",
   "data": "<string>",
