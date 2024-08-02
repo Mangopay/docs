@@ -13,8 +13,9 @@ import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx'
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Duration from '/snippets/p-body/Duration.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
-import CreditedFunds from '/snippets/p-body/CreditedFunds.mdx';
-import DebitedFunds from '/snippets/p-body/DebitedFunds.mdx';
+import CreditedFunds1 from '/snippets/p-body/CreditedFunds1.mdx';
+import DebitedFunds15 from '/snippets/p-body/DebitedFunds15.mdx';
+import Fees13 from '/snippets/p-body/Fees13.mdx';
   
 import RestCreateQuote from '/snippets/code/rest-create-quote.mdx';
 import CreateQuoteJava from '/snippets/code/create-quote-java.mdx';
@@ -23,11 +24,11 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
 
 ### Body parameters  
 
-<DebitedFunds />  
+<DebitedFunds15 />  
 
-<CreditedFunds />
+<CreditedFunds1 />
 
-<Fees8 />
+<Fees13 />
 
 <Tag />  
 
@@ -61,7 +62,7 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
 <AccordionGroup>
 
 
-<Accordion title="403 Duration not allowed">
+<Accordion title="403 - Duration not allowed">
 ```json
 {
     "Message": "Duration 300 is not in the allowed list: 90",
@@ -73,7 +74,7 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
  ```  
 </Accordion>
 
-<Accordion title="403 Currency not activated">
+<Accordion title="403 - Currency not activated">
 ```json 
 {
     "Message": "The currency JPY is not enabled for Forex. Contact your support to activate this feature.",
@@ -85,7 +86,7 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
  ```  
 </Accordion>
 
-<Accordion title="403 Quoted conversion feature not activated">
+<Accordion title="403 - Quoted conversion feature not activated">
 ```json
 {
     "Message": "Quoted conversion is not enabled. Contact your support to activate this feature.",
@@ -98,6 +99,37 @@ This call guarantees a conversion rate to let you Create a Quoted Conversion.
 </Accordion>
 
 </AccordionGroup>  
+
+
+<AccordionGroup>
+    <Accordion title="400 - Amount not sent in either DebitedFunds or CreditedFunds">
+    ```json 
+    {
+        "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type": "param_error",
+        "Id": "c1407e47-9146-486d-81b0-54cf9142f2c3",
+        "Date": 1720793416.0,
+        "errors": {
+            "Quote.Amount": "Debited amount or credited amount is required"
+        }
+    }
+    ```
+    </Accordion>
+
+    <Accordion title="400 - Amount sent in both DebitedFunds CreditedFunds">
+    ```json 
+    {
+        "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type": "param_error",
+        "Id": "bd657a7e-7250-4d35-a49b-eddd24126e7b",
+        "Date": 1720793433.0,
+        "errors": {
+            "Quote.Amount": "Only one of these fields is required: debited amount or credited amount"
+        }
+    }
+    ```
+    </Accordion>
+</AccordionGroup>
 
 <ResponseExample>  
 

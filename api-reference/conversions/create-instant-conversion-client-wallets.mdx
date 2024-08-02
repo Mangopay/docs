@@ -1,0 +1,105 @@
+---
+title: 'Create an Instant Conversion between Client Wallets (Spot FX)'  
+api: 'POST /v2.01/{ClientId}/clients/conversions/instant-conversion'  
+---
+
+import DebitedWalletType from '/snippets/p-body/DebitedWalletType.mdx';
+import DebitedFunds from '/snippets/p-body/DebitedFunds.mdx';
+import CreditedWalletType from '/snippets/p-body/CreditedWalletType.mdx';
+import CreditedFunds from '/snippets/p-body/CreditedFunds.mdx';
+import Tag from '/snippets/p-body/Tag.mdx';
+
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import ConversionRateResponseResponse from '/snippets/p-response/ConversionRateResponseResponse.mdx';
+import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import Fees11Response from '/snippets/p-response/Fees11Response.mdx';
+import CreditedFundsResponse from '/snippets/p-response/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/p-response/DebitedFundsResponse.mdx';
+import CreditedWalletId3Response from '/snippets/p-response/CreditedWalletId3Response.mdx';
+import DebitedWalletId2Response from '/snippets/p-response/DebitedWalletId2Response.mdx';
+import AuthorId4Response from '/snippets/p-response/AuthorId4Response.mdx';
+import Status2Response from '/snippets/p-response/Status2Response.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
+import Type9Response from '/snippets/p-response/Type9Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+  
+import RestCreateInstantConversionClientWallet from '/snippets/code/rest-create-instant-conversion-client-wallet.mdx';
+
+This call triggers an immediate conversion at the market rate, of the debited funds to the credited wallet at the market rate. A quote is not required for an instant conversion.
+
+### Body parameters  
+
+<DebitedWalletType />
+<DebitedFunds />
+<CreditedWalletType />
+<CreditedFunds />
+<Tag />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200 - Succeeded">  
+
+<IdResponse />  
+<Type9Response />  
+<NatureResponse />  
+<CreationDateResponse />  
+<Status2Response />  
+<AuthorId4Response />  
+<DebitedWalletId2Response />  
+<CreditedWalletId3Response />  
+<DebitedFundsResponse />  
+<CreditedFundsResponse />  
+<ResultCodeResponse />  
+<ResultMessageResponse />  
+<ExecutionDateResponse />  
+<ConversionRateResponseResponse />  
+<Tag2Response />
+
+</Accordion>
+
+</AccordionGroup>  
+
+
+<ResponseExample>  
+
+```json 200 - Succeeded  
+{
+    "Id": "cvr_01J47619CVSEVWZE480Z245AMB",
+    "Type": "CONVERSION",
+    "Nature": "REGULAR",
+    "CreationDate": 1722523100,
+    "Status": "SUCCEEDED",
+    "AuthorId": "farah_sandbox2",
+    "DebitedWalletId": "FEES_EUR",
+    "CreditedWalletId": "FEES_USD",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5000
+    },
+    "CreditedFunds": {
+        "Currency": "USD",
+        "Amount": 5399
+    },
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1722523101,
+    "ConversionRateResponse": {
+        "ClientRate": 1.071231,
+        "MarketRate": 1.07987
+    },
+   "Tag": "Created using Mangopay API Collection Postman"
+}
+ ```  
+
+</ResponseExample>  
+
+<RequestExample>  
+  
+    <RestCreateInstantConversionClientWallet />
+  
+</RequestExample>
