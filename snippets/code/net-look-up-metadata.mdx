@@ -1,0 +1,27 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var metadata = new PaymentMethodMetadataPostDTO
+        {
+            Type = "BIN",
+            Bin = "47929300"
+        };
+
+        var getMetadata = await api.PayIns.GetPaymentMethodMetadataAsync(metadata);
+
+        string prettyPrint = JsonConvert.SerializeObject(getMetadata, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

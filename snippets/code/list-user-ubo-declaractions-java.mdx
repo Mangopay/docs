@@ -21,24 +21,10 @@ public class ListUserUboDeclarations {
 
         var i = 1;
         for (UboDeclaration uboDeclaraction : uboDeclaractions) {
-            uboDeclaraction = mangopay.getUboDeclarationApi().get(uboDeclaraction.getId());
-            System.out.println("");
-            System.out.println(String.format("id: %s", uboDeclaraction.getId()));
-            printObjectFields(uboDeclaraction);
-        }
-    }
+            Gson prettyPrint = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = prettyPrint.toJson(uboDeclaraction);
 
-    private static void printObjectFields(Object obj) {
-        Class<?> objClass = obj.getClass();
-        Field[] fields = objClass.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                Object value = field.get(obj);
-                System.out.println(field.getName() + ": " + value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            System.out.println(prettyJson);
         }
     }
 }  
