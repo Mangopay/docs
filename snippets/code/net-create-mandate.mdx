@@ -1,0 +1,26 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var bankAccountId = "bankacc_m_01J3D0VAFPEAFA42S9A641M91Z";
+        var returnUrl = "https://www.mangopay.com/docs/please-ignore/";
+
+        var mandate = new MandatePostDTO(bankAccountId, CultureCode.EN, returnUrl);
+
+        var createMandate = await api.Mandates.CreateAsync(mandate);
+
+        string prettyPrint = JsonConvert.SerializeObject(createMandate, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

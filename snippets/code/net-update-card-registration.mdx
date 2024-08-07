@@ -1,0 +1,30 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var cardRegistrationId = "cardreg_m_01J2Y3ZTFTZSKB5XWAKCNMPWFC";
+        var registrationData = "data=qc_ShKapgXF-A2t_OC72Ktbe2pgMGnalwOa7YhCbIDdpW0cgKABxbhU6R6yVTVJKZpvPpkvQy0HS6G3zrpUyXboAD2d1WLU2-FKrT2dHpcH9c8YxZgpdCs4Z6c6u-qDT0ftIYwFxOdfmDQ5GtM_cIg";
+
+        var cardRegistration = new CardRegistrationPutDTO
+        {
+            RegistrationData = registrationData,
+            Tag = "Updated using the Mangopay .NET SDK"
+        };
+
+        var updateCardRegistration = await api.CardRegistrations.UpdateAsync(cardRegistration, cardRegistrationId);
+
+        string prettyPrint = JsonConvert.SerializeObject(updateCardRegistration, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

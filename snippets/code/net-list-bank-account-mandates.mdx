@@ -1,0 +1,24 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var bankAccountId = "bankacc_m_01J3D0VAFPEAFA42S9A641M91Z";
+
+        var viewBankAccountMandates = await api.Mandates.GetForBankAccountAsync(userId, bankAccountId, new Pagination(1, 100), null);
+
+        string prettyPrint = JsonConvert.SerializeObject(viewBankAccountMandates, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

@@ -1,0 +1,23 @@
+```csharp .NET 
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";	
+    
+        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var kycDocId = "kyc_01J2V2W9CJKMS9V0SGFWHPQY87";
+
+        var viewKycDoc = await api.Users.GetKycDocumentAsync(userId, kycDocId);
+
+        string prettyPrint = JsonConvert.SerializeObject(viewKycDoc, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

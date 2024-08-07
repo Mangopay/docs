@@ -1,0 +1,27 @@
+```csharp .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+
+        var myUser = new UserNaturalPutDTO {
+            TermsAndConditionsAccepted = true
+        };
+
+        var updateNaturalUser = await api.Users.UpdateNaturalAsync(myUser, userId);
+
+        string prettyPrint = JsonConvert.SerializeObject(updateNaturalUser, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

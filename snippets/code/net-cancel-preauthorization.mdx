@@ -1,0 +1,31 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var preauthorizationId = "preauth_m_01J30N3GJ8WK0C7DSGR6BKHARE";
+        var preauthorization = await api.CardPreAuthorizations.GetAsync(preauthorizationId);
+
+        var preauthorizationPut = new CardPreAuthorizationPutDTO
+        {
+            PaymentStatus = PaymentStatus.CANCELED,
+            Tag = "Updated using the Mangopay .NET SDK"
+        };
+
+        var cancelPreauthorization = await api.CardPreAuthorizations.UpdateAsync(preauthorizationPut, preauthorizationId);
+
+        string prettyPrint = JsonConvert.SerializeObject(cancelPreauthorization, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```
