@@ -31,9 +31,8 @@ import PythonDeactivateCard from '/snippets/code/python-deactivate-card.mdx';
 import NetDeactivateCard from '/snippets/code/net-deactivate-card.mdx';
 
 This call serves one of two purposes:
-
-- Setting the card as inactive, and thereby preventing it from being used again. This action is irreversible but doesn’t prevent the card being registered again with <a href="/api-reference/card-registrations/create-card-registration">POST Create a Card Registration</a>.
-- Adding the `CardHolderName` to an existing Card object. The `CardHolderName` cannot be modified once added to a Card object. It can also be done during registration with <a href="/api-reference/card-registrations/update-card-registration">PUT Update a Card Registration</a>.
+- Setting the card as inactive, and thereby disabling it from being used again. This action is irreversible but doesn’t prevent the card being registered again with [POST Create a Card Registration](/api-reference/card-registrations/create-card-registration).
+- Adding the `CardHolderName` to an existing Card object. The `CardHolderName` cannot be modified once added to a Card object. It can also be done during registration with [PUT Update a Card Registration](/api-reference/card-registrations/update-card-registration).
 
 <Warning>  
 **Warning – Implement card deactivation** 
@@ -87,6 +86,7 @@ Because card information cannot be kept without the end user's approval, you sho
 
 </Accordion>
 
+<AccordionGroup>
 <Accordion title="400 - Card is already deactivated">
 ```json
 {
@@ -99,26 +99,57 @@ Because card information cannot be kept without the end user's approval, you sho
  ```  
 </Accordion>  
 
+<Accordion title="400 - CardHolderName cannot be modified once added">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "b89e7138-7812-486e-be79-ee817e4441ac#1718650010",
+    "Date": 1718650011,
+    "errors": {
+        "cardHolderName": "card holder name already exists"
+    }
+}
+```
+</Accordion>
+
+<Accordion title="400 - CardHolderName must be between 2 and 255 characters long">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "e92e4d2a-81fc-4ca6-9a2b-4b3a0cba57e9",
+    "Date": 1723036573.0,
+    "errors": {
+        "CardHolderName": "The field CardHolderName must be between 2 and 255 characters long."
+    }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+
 <ResponseExample>  
 
 ```json 200  
 {
-    "ExpirationDate": "0224",
-    "Alias": "497010XXXXXX4329",
+    "ExpirationDate": "1229",
+    "Alias": "497010XXXXXX8183",
     "CardType": "CB_VISA_MASTERCARD",
     "CardProvider": "VISA",
     "Country": "FRA",
     "Product": "I",
     "BankCode": "unknown",
-    "Active": false,
+    "Active": true,
     "Currency": "EUR",
     "Validity": "VALID",
-    "UserId": "142036728",
-    "Id": "148795138",
+    "UserId": "user_m_01HZSK5MX04KS9Q7SQSSRGQQ4Q",
+    "Id": "card_m_01J0KPBMM32MMSET50CZZ3RMVJ",
     "Tag": null,
-    "CreationDate": 1660121693,
-    "Fingerprint": "1ab7328005e4445dbfd38ac6cb49c3af"
-}  
+    "CreationDate": 1718647902,
+    "Fingerprint": "48d63bbcfc2c47fcbc19df35e47b2f8d",
+    "CardHolderName": "ALEX SMITH"
+}
  ```  
 
 
