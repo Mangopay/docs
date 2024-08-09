@@ -1,0 +1,125 @@
+---
+title: 'Create a Quoted Conversion between Client Wallets'  
+api: 'POST /v2.01/{ClientId}/clients/conversions/quoted-conversion' 
+---
+
+import QuoteId from '/snippets/p-body/QuoteId.mdx';
+import DebitedWalletType from '/snippets/p-body/DebitedWalletType.mdx';
+import CreditedWalletType from '/snippets/p-body/CreditedWalletType.mdx';
+import Tag from '/snippets/p-body/Tag.mdx';
+
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import ConversionRateResponseResponse from '/snippets/p-response/ConversionRateResponseResponse.mdx';
+import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import CreditedFundsResponse from '/snippets/p-response/CreditedFundsResponse.mdx';
+import DebitedFundsResponse from '/snippets/p-response/DebitedFundsResponse.mdx';
+import CreditedWalletId3Response from '/snippets/p-response/CreditedWalletId3Response.mdx';
+import DebitedWalletId2Response from '/snippets/p-response/DebitedWalletId2Response.mdx';
+import AuthorId4Response from '/snippets/p-response/AuthorId4Response.mdx';
+import Status2Response from '/snippets/p-response/Status2Response.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
+import Type9Response from '/snippets/p-response/Type9Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import QuoteIdResponse from '/snippets/p-response/QuoteIdResponse.mdx';
+
+import RestCreateQuotedConversionClientWallets from '/snippets/code/rest-create-quoted-conversion-client-wallets.mdx'
+
+This call triggers a conversion at the rate defined in its quote. The debited funds (buy currency), credited funds (sell currency) and currencies are defined in the quote. The <a href="/api-reference/client-wallets/client-wallet-object">Client Wallets</a> to debit and credit are defined in the conversion.
+
+Each quoted conversion requires a dedicated <a href="/api-reference/quotes/quote-object">Quote</a> object, linked in the `QuoteId`.
+
+<Note>
+**Note - Quote cannot contain fees**
+
+For a quoted conversion between client wallets, the quote cannot have fees specified.
+</Note>
+
+### Body parameters  
+
+<QuoteId />  
+<DebitedWalletType />
+<CreditedWalletType />
+<Tag />
+
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200 - Succeeded">  
+
+<IdResponse /> 
+<QuoteIdResponse /> 
+<Type9Response />  
+<NatureResponse />  
+<CreationDateResponse />  
+<Status2Response />  
+<AuthorId4Response />  
+<DebitedWalletId2Response />  
+<CreditedWalletId3Response />  
+<DebitedFundsResponse />  
+<CreditedFundsResponse />  
+<ResultCodeResponse />  
+<ResultMessageResponse />  
+<ExecutionDateResponse />  
+<ConversionRateResponseResponse />  
+<Tag2Response />
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+<Accordion title="400 - No fees allowed on client quoted conversion">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "b4372752-a7dd-4751-b894-d2c960df3e5c",
+    "Date": 1721729683.0,
+    "errors": {
+        "QuoteId": "No fees allowed on client quoted conversion"
+    }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>  
+    ```json 200
+    {
+        "Id": "cvr_01J475ZYZ6WBZK3JK3HSZFXHVN",
+        "QuoteId": "cvrquote_01J475ZRENK67V9A62JCQ6PYVW",
+        "Type": "CONVERSION",
+        "Nature": "REGULAR",
+        "CreationDate": 1722523057,
+        "Status": "SUCCEEDED",
+        "AuthorId": "your-client-id",
+        "DebitedWalletId": "FEES_EUR",
+        "CreditedWalletId": "CREDIT_GBP",
+        "DebitedFunds": {
+            "Currency": "EUR",
+            "Amount": 10
+        },
+        "CreditedFunds": {
+            "Currency": "GBP",
+            "Amount": 8
+        },
+        "ResultCode": "000000",
+        "ResultMessage": "Success",
+        "ExecutionDate": 1722523057,
+        "ConversionRateResponse": {
+            "ClientRate": 0.8352637,
+            "MarketRate": 0.84336
+        },
+        "Tag": "Created using Mangopay API Collection Postman"
+    }
+    ```
+</ResponseExample>
+
+<RequestExample>
+    <RestCreateQuotedConversionClientWallets />
+</RequestExample>

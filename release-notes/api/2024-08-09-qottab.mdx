@@ -1,0 +1,37 @@
+---
+title: 'API - Aug 9, 2024 - Qottab'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+# 'og:description': 'Statement descriptor available on BACS Direct Debit'
+---
+
+<div class="pill pill-green rn-pill">Added</div> 
+### Quoted and Instant Conversions now available for Client Wallets
+
+Platforms can now convert funds between their Fees Wallets and Repudiation Wallets. Two new endpoints have been added: 
+- [POST Create a Quoted Conversion between Client Wallets](/api-reference/conversions/create-quoted-conversion-client-wallets)
+- [POST Create an Instant Conversion for Client Wallets](/api-reference/conversions/create-instant-conversion-client-wallets)
+
+Client wallet conversions behave in the same way as for between user wallets, except for two constraints: 
+- The quote used cannot specify fees 
+- You can’t create a conversion between a user wallet and a client wallet.
+
+Client Wallet conversions can take place between any of the Fees Wallets or Repudiation Wallets, meaning all combinations of `FundsType` are possible: 
+- `FEES` to `FEES`
+- `FEES` to `CREDIT`
+- `CREDIT` to `CREDIT`
+- `CREDIT` to `FEES`
+
+For more information, see the updated [FX](/guides/fx) guide.
+
+<div class="pill pill-blue">Changed</div>
+### CreditedFunds Amount can be sent on quotes
+
+Platforms can now specify the credited amount on a quote to define how much currency to buy.
+The `Amount` must be provided in  either the CreditedFunds or DebitedFunds parameters. An error is returned if you don’t provide an amount, if you send both.
+
+The following endpoint has been updated: 
+- [POST Create a Quote](/api-reference/quotes/create-quote)
+
+For more information, see the updated [FX](/guides/fx) guide.
+
