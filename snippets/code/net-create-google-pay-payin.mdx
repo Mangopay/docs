@@ -1,0 +1,82 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var walletId = "wlt_m_01J30991BXBB7VF28PBS82EWD3";
+        var returnUrl = "https://www.mangopay.com/docs/please-ignore/";
+        var secureModeReturnUrl = "https://www.mangopay.com/docs/please-ignore/";
+        var paymentData = "{\"signature\":\"MEUCIQDc49/Bw1lTk8ok2fUe4UT2q955C01N2av40WJ28pMt0QIgBxiXHZbccHuqEQHyNJJw8SM337fxd8A3kJFqhsf4pHo\\u003d\",\"intermediateSigningKey\":{\"signedKey\":\"{\\\"keyValue\\\":\\\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE8bX5bzBELcoJ1pPhEHtTIhpZQsRgVIMtRf9R5yRyC9c9WH8bvgxIx40qH4aQ+btVM/rwKuDE8cs+dERH2gjUjw\\\\u003d\\\\u003d\\\",\\\"keyExpiration\\\":\\\"1688804022772\\\"}\",\"signatures\":[\"MEUCIF2OifAlN5PG+isU+xxX8/OU5MTk81hBulSmp9bu8caDAiEAkdRqb8uo4CUx4kMiA317A1b+5BxRUc/8+QMyc9Ikjfg\\u003d\"]},\"protocolVersion\":\"ECv2\",\"signedMessage\":\"{\\\"encryptedMessage\\\":\\\"tsTuUpytOkm8ENo1PpyzsHk6jxGDus/sSNQwqZeoPNw/NMQX2LJxJ6OTS4Yt+iNM7v4iuFC0eUWiy58xCQHKANeO/y66GJWMaDjPW2FBqBksb1WHXxP5KmgglACSqXtOMmjuYxVT6MeO4EfdsT4vGHRP0adP+Lkfj1tfjM1K0HyRWbLcwU9YXU0j83wV3PW28oxdFY5F4DC+Bhk7J5bZhIf5jymRXy3sR0kDoE/Qi4fUIdvgoHzi6MvppxCaEgwCygvfxu+vddP/7dshnL9+OFaDpoAp6is8I4UYbscNHkLosfBPwyUtndLMkDfNKUJ3yus92KSfbcK0iif3kXSMmV6ZrN873S7f27bsCsHhAlywOFpACorBNO8FzX/ediCsSi+n5kWOxe9oewGOeME2RNTsoy8an23be8yTek3YKajIhJRFW/9OtVnNmKOqwgw0F8nPFTjuSVPZbkinYS46Tr+KjOcr5aznEElkmk6OWgX1xSVkHZPpoW8XZdhB6Vs/5eWP6URncDZYN2EWtpWuz1+CAVKEjD95gcQGvzhmlPB0duiV76psDik8ojf2B6QfPJxV\\\",\\\"ephemeralPublicKey\\\":\\\"BJ0QIVwltj1vH2NAmYgUYBRrNymcOtTTP3QJnSc+enFGigIhNS87PZyA0PZ4iT/tifOqBj6barpJMwSQeO3nbJ0\\\\u003d\\\",\\\"tag\\\":\\\"R0iTOk4bogyVkf0STTvdiFq4kebJS7GN5/zxoBuCNNs\\\\u003d\\\"}\"}";
+        var ipAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C";          
+
+        var browserInfo = new BrowserInfo {
+            AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+            JavaEnabled = true,
+            Language = "FR-FR",
+            ColorDepth = 4,
+            ScreenHeight = 1800,
+            ScreenWidth = 400,
+            JavascriptEnabled = true,
+            TimeZoneOffset = "+60",
+            UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
+        };
+
+        var billing = new Billing {
+            FirstName = "Joe",
+            LastName = "Blogs",
+            Address = new Address
+            {
+                AddressLine1 = "1 MangoPay Street",
+                AddressLine2 = "The Loop",
+                City = "Paris",
+                Region = "Ile de France",
+                PostalCode = "75001",
+                Country = CountryIso.FR
+            }
+        };
+
+        var shipping = new Shipping {
+            FirstName = "Joe",
+            LastName = "Blogs",
+            Address = new Address
+            {
+                AddressLine1 = "1 MangoPay Street",
+                AddressLine2 = "The Loop",
+                City = "Paris",
+                Region = "Ile de France",
+                PostalCode = "75001",
+                Country = CountryIso.FR
+            }
+        };
+
+        var payIn = new PayInGooglePayDirectPostDTO(userId,
+            new Money { Amount = 2000, Currency = CurrencyIso.EUR },
+            new Money { Amount = 0, Currency = CurrencyIso.EUR },
+            walletId, returnUrl,
+            secureModeReturnUrl,
+            ipAddress, browserInfo,
+            paymentData, SecureMode.DEFAULT,
+            billing, shipping,
+            "MGP") {
+                Tag = "Created using the Mangopay .NET SDK"
+            };
+
+        var createGooglePayPayIn = await api.PayIns.CreateGooglePayDirectV2Async(payIn);
+
+        string prettyPrint = JsonConvert.SerializeObject(createGooglePayPayIn, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

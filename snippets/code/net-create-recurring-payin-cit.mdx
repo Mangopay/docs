@@ -1,0 +1,46 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var registrationId = "recpayinreg_m_01J30K243KTJSRXHWJ03MMEE7A";
+
+        var citPayIn = new RecurringPayInCITPostDTO {
+            RecurringPayinRegistrationId = registrationId,
+            BrowserInfo = new BrowserInfo {
+                AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+                JavaEnabled = true,
+                Language = "FR-FR",
+                ColorDepth = 4,
+                ScreenHeight = 1800,
+                ScreenWidth = 400,
+                JavascriptEnabled = true,
+                TimeZoneOffset = "+60",
+                UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
+            },
+            IpAddress = "2001:0620:0000:0000:0211:24FF:FE80:C12C",
+            SecureModeReturnURL = "http://www.mangopay.com/please-ignore",
+            StatementDescriptor = "MGP",
+            Tag = "Created using the Mangopay .NET SDK",
+            DebitedFunds = new Money { Amount = 500, Currency = CurrencyIso.EUR },
+            Fees = new Money { Amount = 0, Currency = CurrencyIso.EUR }
+        };
+
+        var createRecurringCitPayIn = await api.PayIns.CreateRecurringPayInRegistrationCIT(citPayIn);
+
+        string prettyPrint = JsonConvert.SerializeObject(createRecurringCitPayIn, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

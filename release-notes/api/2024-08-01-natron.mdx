@@ -1,0 +1,24 @@
+---
+title: 'API - Aug 1, 2024 - Natron'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+'og:description': 'CardHolderName can be added to existing Card objects - CardHolderName accepts special characters'  
+---
+  
+<div class="pill pill-green rn-pill">Added</div> 
+  
+### CardHolderName can be added to existing Card objects
+
+Platforms can now add the `CardHolderName` to existing Card objects. The parameter is optional on the [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card) endpoint, which has also been renamed accordingly.
+
+<div class="pill pill-blue">Changed</div>  
+
+### CardHolderName accepts special characters
+
+The `CardHolderName` field now accepts special characters. The minimum length is 2 characters, and the maximum recommended length is 45 characters, because this is what is passed to card networks. The maximum technical length is 255.
+Platforms should send the cardholder’s name as it appears on the payment card. The value should usually only contain unmarked alphabetic characters (A-Z, a-z), hyphens (-), apostrophes (‘), and spaces. Letters with diacritics (e.g. É, Ü, ẞ), honorifics (e.g. MRS.) and other special characters are not recommended, but they are accepted.
+The parameter can be sent on: 
+- [PUT Update a Card Registration](/api-reference/card-registrations/update-card-registration)
+- [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card)
+
+The parameter can only be sent once: it can’t be updated once sent (but you can register the user’s card again under a different name).
