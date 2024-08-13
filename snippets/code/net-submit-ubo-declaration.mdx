@@ -1,0 +1,28 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var userId = "user_m_01J2V0P9B1WCX46GEBDWCTXNQ0";
+        var uboDeclarationId = "ubo_m_01J2XHK2DKA52EA6B6AWTF4Y1K";
+
+        var uboDeclaration = new UboDeclarationPutDTO(null, UboDeclarationType.VALIDATION_ASKED);
+
+        var submitUboDeclaration  = await api.UboDeclarations.UpdateUboDeclarationAsync(uboDeclaration, userId, uboDeclarationId);
+
+        string prettyPrint = JsonConvert.SerializeObject(submitUboDeclaration, Formatting.Indented);
+        Console.WriteLine(prettyPrint);      
+
+    }
+}
+```

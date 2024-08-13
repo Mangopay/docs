@@ -1,0 +1,23 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var viewPayIn = await api.PayIns.GetGiropayAsync("wt_0ed86eff-9a62-4d71-ada6-2afe387e50cb");
+
+        string prettyPrint = JsonConvert.SerializeObject(viewPayIn, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

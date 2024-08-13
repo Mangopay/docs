@@ -1,0 +1,78 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var myUser =  await api.Users.GetNaturalAsync("210513027");
+
+        List<LineItem> LineItems = new List<LineItem>();
+
+        var myPayIn = new PayInKlarnaWebPostDTO(
+            authorId: myUser.Id,
+            debitedFunds: new Money {
+                Amount = 1500,
+                Currency = CurrencyIso.EUR
+            },
+            fees: new Money {
+            Amount = 300,
+            Currency = CurrencyIso.EUR
+            },
+            creditedWalletId: "210514820",
+            returnUrl: "http://www.mangopay.com/docs/please-ignore",
+            lineItems: new List<LineItem>{
+                new LineItem
+                    {
+                        Name = "Running shoes",
+                        Quantity = 1,
+                        UnitAmount = 400,
+                        TaxAmount = 100,
+                        Description = "ID of Seller 1"
+                    },
+                    new LineItem
+                    {
+                        Name = "Walking shoes",
+                        Quantity = 2,
+                        UnitAmount = 400,
+                        TaxAmount = 100,
+                        Description = "ID of Seller 2"
+                    }
+            },
+            country: "FR",
+            phone: "[+33][689854321]",
+            email: myUser.Email,
+            additionalData: "{\"customer_account_info\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"app_id\": \"81363501-3540-494a-8627-33bc6112035d\",\"loyalty_level\": \"high\",\"customer_email\": \"customer@email.com\",\"customer_phone\": \"0611223344\",\"customer_ranking\": 2,\"customer_reviews\": 5,\"last_login_time\": \"2023-10-21T19:11:34Z\",\"account_security\": {\"last_verification_method\": \"2FA TOTP\",\"last_verification_time\": \"2023-10-21T19:11:34Z\",\"device_id\": \"772af5a5-2d55-4a5e-bb79-85969f683810\",\"fraud_behavior\": false,\"devices_linked\": 2,\"phone_verified\": true,\"email_verified\": true,\"failed_transactions_attempts\": 0},\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": \"2022-12-22T18:45:44Z\"}],\"marketplace_seller_info\": [{\"sub_merchant_id\": \"615a0e87-4941-45dc-978d-e6efcbd90ba0\",\"sub_merchant_name\": \"Marketbrick Ltd.\",\"sub_merchant_postal_code\": \"75010\",\"product_category\": \"Computers\",\"product_name\": \"Asus Zenbook 14\",\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2020-06-10T12:02:21Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2020-06-10T12:02:21Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"digital_download\": false,\"seller_rating\": 4.5,\"number_of_trades\": 34,\"volume_of_trades\": 4500}],\"payment_history_full\": [{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 10,\"payment_option\": \"card\",\"total_amount_paid_purchases\": 1000.10,\"date_of_first_paid_purchase\": \"2020-06-10T12:12:34Z\",\"date_of_last_paid_purchase\": \"2023-10-26T18:52:38Z\"},{\"unique_account_identifier\": \"382f5a69-c51c-45af-9707-6991eb08f7bf\",\"number_paid_purchases\": 14,\"payment_option\": \"non klarna credit\",\"total_amount_paid_purchases\": 2322.10,\"date_of_first_paid_purchase\": \"2021-10-11T20:31:15Z\",\"date_of_last_paid_purchase\": \"2023-09-22T14:59:22Z\"}],\"marketplace_winner_info\": [{\"account_registration_date\": \"2020-06-10T12:02:21Z\",\"account_last_modified\": {\"password\": \"2022-12-22T18:45:44Z\",\"email\": \"2020-06-10T12:02:21Z\",\"listing\": \"2023-08-14T08:23:34Z\",\"login\": \"2020-06-10T12:02:21Z\",\"address\": \"2020-06-10T12:02:21Z\"},\"number_of_trades\": 24,\"volume_of_trades\": 3322}],\"other_delivery_address\": [{\"shipping_method\": \"pick-up point\",\"shipping_type\": \"express\",\"first_name\": \"Test\",\"last_name\": \"Person\",\"street_address\": \"Rue La Fayette\",\"street_number\": \"33\",\"postal_code\": \"75009\",\"city\": \"Paris\",\"country\": \"FR\"}]}",
+            billing: new Billing{
+                FirstName = myUser.FirstName,
+                LastName = myUser.LastName,
+                Address = new Address {
+                    AddressLine1 = myUser.Address.AddressLine1,
+                    AddressLine2 = myUser.Address.AddressLine2,
+                    City = myUser.Address.City,
+                    Region = myUser.Address.Region,
+                    PostalCode = myUser.Address.PostalCode,
+                    Country = myUser.Address.Country
+                },
+            },
+            reference: "2345",
+            culture: "FR",
+            tag: "Created using the Mangopay .NET SDK"
+        );
+    
+        var createKlarnaPayIn = await api.PayIns.CreateKlarnaWebAsync(myPayIn);
+
+        string prettyPrint = JsonConvert.SerializeObject(createKlarnaPayIn, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```

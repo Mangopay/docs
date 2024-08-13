@@ -1,0 +1,33 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var walletId = "wlt_m_01J30991BXBB7VF28PBS82EWD3";
+            var depositId = "deposit_m_01J332W8CHP62NYWXTQFHSQ6SR";
+
+            var depositPayIn = new CardPreAuthorizedDepositPayInPostDTO (
+                walletId,
+                new Money { Amount = 1200, Currency = CurrencyIso.EUR },
+                new Money { Amount = 0, Currency = CurrencyIso.EUR },
+                depositId
+            ) {
+                Tag = "Created using the Mangopay .NET SDK"
+            };
+            
+            var createDepositPayIn = await api.PayIns.CreateCardPreAuthorizedDepositPayIn(depositPayIn);
+
+            string prettyPrint = JsonConvert.SerializeObject(createDepositPayIn, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+    }
+}
+```

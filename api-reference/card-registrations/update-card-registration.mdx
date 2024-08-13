@@ -28,10 +28,13 @@ import NodeUpdateCardRegistration from '/snippets/code/node-update-card-registra
 import RubyUpdateCardRegistration from '/snippets/code/ruby-update-card-registration.mdx';
 import JavaUpdateCardRegistration from '/snippets/code/java-update-card-registration.mdx';
 import PythonUpdateCardRegistration from '/snippets/code/python-update-card-registration.mdx';
+import NetUpdateCardRegistration from '/snippets/code/net-update-card-registration.mdx';
 
-This call is strictly used to add the string acquired from the tokenization to the Card Registration object in the parameter `RegistrationData`, thereby validating the registration. You cannot update any other parameters.  
+This call is used to add the string acquired from the tokenization to the Card Registration object in the parameter `RegistrationData`, thereby validating the registration.
 
-As a result, the Card object will be created (and the corresponding `CardId` returned).  
+As a result, the Card object is created and the corresponding `CardId` returned.
+
+Platforms should also send the cardholder’s name as it appears on the payment card. The `CardHolderName` parameter is sent on this call but not returned in the response; it is added to the Card object. 
 
 ### Path parameters  
 
@@ -79,9 +82,9 @@ As a result, the Card object will be created (and the corresponding `CardId` ret
         <Currency2Response />  
         <Status1Response />
     </Accordion>
-    <Accordion
-      title="400 - CardHolderName can't be longer than than 255 characters"
-    >
+</AccordionGroup>
+  
+<Accordion title="400 - CardHolderName can't be longer than than 255 characters">
 ````json
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -94,13 +97,11 @@ As a result, the Card object will be created (and the corresponding `CardId` ret
 }
 ````
 
-    </Accordion>
-</AccordionGroup>  
+</Accordion>
 
 <ResponseExample>  
 
 ```json 200 - Status "VALIDATED"  
-
 {
     "Id": "149333938",
     "Tag": null,
@@ -148,4 +149,5 @@ As a result, the Card object will be created (and the corresponding `CardId` ret
     <RubyUpdateCardRegistration />
     <JavaUpdateCardRegistration />
     <PythonUpdateCardRegistration />
+    <NetUpdateCardRegistration />
 </RequestExample>

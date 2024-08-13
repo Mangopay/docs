@@ -1,0 +1,23 @@
+```csharp .NET 
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var cardId = "card_m_01J3049JBA2XPA7GC7GEFJRQG4";
+        var cardValidationId = "a5309b17-0455-45cb-9f94-061784604bd3";
+
+        var viewCardValidation = await api.Cards.GetCardValidationAsync(cardId, cardValidationId);
+
+        string prettyPrint = JsonConvert.SerializeObject(viewCardValidation, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```
