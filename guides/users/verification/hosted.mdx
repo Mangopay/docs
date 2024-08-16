@@ -31,6 +31,29 @@ The hosted identity verification feature is in beta and only available for Legal
 The user must also be an Owner to request a new verification session. To verify a user, you need to create a session. Each session contains multiple checks depending on the legal entity type.
 </Note>
 
+## Endpoints and Webhook Overview
+
+<table>
+    <tbody>
+        <tr>
+            <td class="table-content">[POST /users/&lcub;UserId&rcub;/identity-verifications](/guides/users/verification/hosted#post-create-a-hosted-identity-verification-session)</td>
+            <td class="table-content">Start an identity verification session and get a link for the hosted experience.</td>
+        </tr>
+        <tr>
+            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;](/guides/users/verification/hosted#get-view-an-identity-verification-session)</td>
+            <td class="table-content">Retrieve the overall status of an identity verification process. This endpoint provides a concise response suitable for periodic checks on a user's KYC status.</td>
+        </tr>
+        <tr>
+            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;/checks](/guides/users/verification/hosted#get-view-identity-verification-checks)</td>
+            <td class="table-content">Fetch verified information about the user, results from individual checks performed, failure reasons and the overall status. </td>
+        </tr>
+        <tr>
+            <td class="table-content">[Verification and KYC Status Events](/guides/users/verification/hosted#webhooks)</td>
+            <td class="table-content">Get real-time updates on the status of identity verification sessions and KYC status of users.</td>
+        </tr>
+    </tbody>
+</table>
+
 ## Endpoints
 
 ### POST Create a hosted Identity Verification Session
@@ -117,7 +140,7 @@ The user must have the `UserCategory` value `OWNER` to enable a verification req
 }
 ```
 
-### GET View an Identity Verification session
+### GET View an Identity Verification Session
 
 This endpoint lets you retrieve the details of an Identity Verification session using its `Id` as the `IdentityVerificationId` path parameter.
 
@@ -158,7 +181,7 @@ This endpoint lets you retrieve the details of an Identity Verification session 
 }
 ```
 
-### GET View Identity Verification checks
+### GET View Identity Verification Checks
 
 This endpoint lets you retrieve verified information about the user, results from individual checks performed, failure reasons and the overall status of the session. 
 
