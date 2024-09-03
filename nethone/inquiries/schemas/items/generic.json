@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generic",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "generic",
+      "description": "Determines the type of Item - for generic items must be a <code>generic</code> string"
+    },
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "A merchant specific identifier for an item or a service"
+    },
+    "name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The name of the product or service that is being purchased"
+    },
+    "image_uri": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URI of a product/service photo, accessible from the Internet"
+    },
+    "brand": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Brand name"
+    },
+    "category": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product/service category of 1st level",
+      "examples": ["fashion"]
+    },
+    "subcategory": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product/service category of 2nd level",
+      "examples": ["for women"]
+    },
+    "subsubcategory": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product/service category of 3rd level",
+      "examples": ["bags"]
+    },
+    "subsubsubcategory": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product/service category of 4th level",
+      "examples": ["clutch bags"]
+    },
+    "color": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product color"
+    },
+    "size": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product size",
+      "examples": ["M", "34"]
+    },
+    "description": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Product/service description"
+    },
+    "quantity": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Quantity of product/service"
+    },
+    "listing_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Date of the first listing of the item as in RFC339 section 5.6",
+      "examples": ["2020-11-19"]
+    },
+    "tax_rate": {
+      "type": ["string", "null"],
+      "pattern": "^\\d+(\\.\\d+)?$",
+      "examples": ["0.99", "10"],
+      "description": "The tax rate applied to the item in percent as decimal string"
+    },
+    "store_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Store reference"
+    },
+    "submerchant_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Submerchant reference"
+    },
+    "price": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        {
+          "description": "Item's price"
+        }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Item (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["type"]
+}

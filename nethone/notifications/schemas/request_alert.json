@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9223372036854775807,
+      "description": "ID of the notification in Nethone system."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of notification",
+      "enum": ["PING", "CASE_CLOSED", "TRANSACTION_ALERT"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the notification",
+      "examples": ["2020-11-19T04:54:29Z", "2021-03-23T17:01:00Z"]
+    },
+    "body": {
+      "allOf": [
+        { "$ref": "request_alert_body.json" },
+        {
+          "description": "Notification data"
+        }
+      ]
+    }
+  },
+  "required": ["id", "type", "created_at", "body"]
+}

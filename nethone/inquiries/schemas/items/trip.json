@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trip",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "trip",
+      "description": "Determines the type of Item - for trip items must be a <code>trip</code> string. Do not use <code>trip</code> for flights."
+    },
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Identifier of a product, if available"
+    },
+    "itinerary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "to": {
+            "$ref": "../address.json"
+          },
+          "from": {
+            "$ref": "../address.json"
+          },
+          "id": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 2048,
+            "description": "Identifier of the trip segment, if available"
+          },
+          "duration": {
+            "type": ["string", "null"],
+            "description": "Duration of the trip segment in format 'hours:minutes' or 'hours:minutes:seconds'.",
+            "examples": ["01:20", "14:55", "99:59", "123:01:22"],
+            "pattern": "^[0-9]{2,}:[0-5][0-9](:[0-5][0-9])?$"
+          },
+          "distance": {
+            "type": ["number", "null"],
+            "description": "Distance of the trip segment in kilometers",
+            "minimum": 0,
+            "examples": [50.25, 120]
+          },
+          "arrival_datetime": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Arrival date and time as in RFC339 section 5.6",
+            "examples": ["2020-11-19T04:54:29+02:00"]
+          },
+          "departure_datetime": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Departure date and time as in RFC339 section 5.6",
+            "examples": ["2020-11-19T04:54:29+02:00"]
+          }
+        }
+      }
+    },
+    "refund_policy": {
+      "type": ["string", "null"],
+      "description": "Refund policy if the trip is cancelled by the customer",
+      "enum": ["fully refundable", "partially refundable", "non refundable", null]
+    },
+    "passengers": {
+      "type": "array",
+      "description": "A list of passengers on the trip",
+      "items": {
+        "$ref": "item_person.json"
+      }
+    },
+    "price": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        {
+          "description": "Item's price"
+        }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Item (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["type"]
+}

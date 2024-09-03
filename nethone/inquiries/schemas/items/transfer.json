@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Transfer",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "transfer",
+      "description": "Determines the type of Item - for transfer items must be a <code>transfer</code> string."
+    },
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Identifier of a product, if available"
+    },
+    "wallet": {
+      "$ref": "../common/wallet.json"
+    },
+    "recipient": {
+      "type": "object",
+      "description": "Recipient person",
+      "oneOf": [
+        {
+          "title": "Natural person",
+          "allOf": [
+            { "$ref": "../common/person.json#/$defs/natural_person_person_type" },
+            { "$ref": "#/$defs/common_recipient_props" },
+            { "$ref": "../common/person.json" }
+          ]
+        },
+        {
+          "title": "Legal person",
+          "allOf": [
+            { "$ref": "../common/legal_person.json#/$defs/legal_person_person_type" },
+            { "$ref": "#/$defs/common_recipient_props" },
+            { "$ref": "../common/legal_person.json" }
+          ]
+        }
+      ]
+    },
+    "kind": {
+      "type": ["string", "null"],
+      "maxLength": 2048,
+      "examples": ["bank transfer", "cash pickup", "instant transfer"],
+      "description": "Kind of a transfer. Examples: `bank transfer`, `cash pickup`, `instant transfer`"
+    },
+    "bank_account": {
+      "$ref": "../common/bank_account.json"
+    },
+    "balance": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Balance after this transaction" }
+      ]
+    },
+    "bankwire_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "bankwire_mode": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Item (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["type"],
+  "$defs": {
+    "common_recipient_props": {
+      "properties": {
+        "id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 2048,
+          "description": "Unique identifier of the person, if available"
+        },
+        "wallet_address": {
+          "$ref": "../common/wallet_address.json"
+        }
+      }
+    }
+  }
+}

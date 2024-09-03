@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "description": "IP address info. Availability of this data depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+  "properties": {
+    "input_ip": {
+      "allOf": [
+        {
+          "description": "Info related to the IP address sent by merchant in inquiry request `device.ipaddr`"
+        },
+        {
+          "$ref": "#/$defs/ip_info_part"
+        }
+      ]
+    },
+    "profiler_ip": {
+      "allOf": [
+        {
+          "description": "Info related to the IP address from which a connection with the Profiler was established"
+        },
+        {
+          "$ref": "#/$defs/ip_info_part"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "ip_info_part": {
+      "type": ["object", "null"],
+      "properties": {
+        "ip": {
+          "description": "ipv4 or ipv6 address",
+          "anyOf": [
+            {
+              "title": "IPv4",
+              "type": "string",
+              "format": "ipv4"
+            },
+            {
+              "title": "IPv6",
+              "type": "string",
+              "format": "ipv6"
+            }
+          ]
+        },
+        "city_name": {
+          "type": ["string", "null"],
+          "description": "City name"
+        },
+        "country_code": {
+          "type": ["string", "null"],
+          "description": "ISO 3166-1 alpha-2 country code"
+        },
+        "country_name": {
+          "type": ["string", "null"],
+          "description": "Country name"
+        },
+        "latitude": {
+          "type": ["number", "null"],
+          "description": "Decimal latitude"
+        },
+        "longitude": {
+          "type": ["number", "null"],
+          "description": "Decimal longitude"
+        },
+        "time_zone": {
+          "type": ["string", "null"],
+          "description": "Name of timezone in the IANA Time Zone Database"
+        },
+        "postal_code": {
+          "type": ["string", "null"],
+          "description": "ZIP or postal code"
+        },
+        "autonomous_system_number": {
+          "type": ["integer", "null"],
+          "description": "Autonomous System number"
+        },
+        "autonomous_system_organization": {
+          "type": ["string", "null"],
+          "description": "Autonomous System organization name"
+        },
+        "isp": {
+          "type": ["string", "null"],
+          "description": "Internet Service Provider name"
+        },
+        "organization": {
+          "type": ["string", "null"],
+          "description": "Organization name"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

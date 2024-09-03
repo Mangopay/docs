@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Paypal Payment",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "paypal",
+      "description": "Determines the type of Payment Method - for paypal payments must be a <code>paypal</code> string"
+    },
+    "payer_email": {
+      "type": ["string", "null"],
+      "minLength": 3,
+      "maxLength": 256,
+      "description": "The payer email assigned to his paypal account as received from paypal",
+      "format": "idn-email"
+    },
+    "payer_id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Payer ID returned by Paypal, read more in: <a href=\"https://developer.paypal.com/docs/api/payments/v2/#definition-payer_id\">payer_id</a>"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Payment Method (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["method"]
+}

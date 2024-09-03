@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "userType": {
+      "type": "string",
+      "description": "The type of user to be checked:<br/><br/>* PERSON - a person<br/>* COMPANY - company.",
+      "enum": ["PERSON", "COMPANY"]
+    },
+    "known": {
+      "$ref": "known_user_info.json"
+    },
+    "uncertain": {
+      "$ref": "#/$defs/UncertainUserInfo"
+    }
+  },
+  "description": "Hints can be used to pass user data that you know is true (hints.known) or which are not certain (hints.uncertain). In some cases, Authologic may use them, e.g. when there is uncertainty as to the value of a field in a scanned document.",
+  "$defs": {
+    "UncertainUserInfo": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "$ref": "company_user_info.json"
+        },
+        "person": {
+          "$ref": "person_user_info.json"
+        }
+      },
+      "description": "A list of user information that is not certain."
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "legal_person_type": {
+      "type": ["string", "null"],
+      "maxLength": 2048,
+      "examples": ["business", "partnership", "organization", "soletrader"]
+    },
+    "name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "email": {
+      "type": ["string", "null"],
+      "format": "idn-email",
+      "minLength": 3,
+      "maxLength": 256
+    },
+    "type": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Person's type. E.g. `adult` or `child`",
+      "examples": ["adult", "child"]
+    },
+    "dormant": {
+      "type": ["boolean", "null"],
+      "description": "Indicates whether the person has not been active for an extended period"
+    },
+    "company_number": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "kyc_validated": {
+      "type": ["boolean", "null"],
+      "description": "Indicates whether or not the user is KYC validated"
+    },
+    "kyc_last_update_datetime": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Date and time of the last update for the Know Your Customer (KYC) information in ISO8601 format",
+      "examples": ["2000-10-31T01:30:00.000-05:00"]
+    },
+    "country_of_residence": {
+      "$ref": "country.json"
+    },
+    "kyc_country_of_residence": {
+      "$ref": "country.json"
+    },
+    "pep_flag": {
+      "type": ["boolean", "null"],
+      "description": "Flag indicating whether the person is a Politically Exposed Person (PEP)"
+    },
+    "sanction_flag": {
+      "type": ["boolean", "null"],
+      "description": "Flag indicating whether the person is under sanction"
+    },
+    "is_blocked": {
+      "type": ["boolean", "null"],
+      "description": "Indicates whether the person is blocked."
+    },
+    "registration_datetime": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Date and time of the person's registration in ISO8601 format",
+      "examples": ["2000-10-31T01:30:00.000-05:00"]
+    },
+    "last_update_datetime": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Date and time of the last update for the person's information in ISO8601 format",
+      "examples": ["2000-10-31T01:30:00.000-05:00"]
+    },
+    "registration_address": {
+      "$ref": "../address.json"
+    },
+    "representative": {
+      "allOf": [
+        { "$ref": "./person.json" },
+        { "description": "Company's Legal representative person" }
+      ]
+    }
+  },
+  "$defs": {
+    "legal_person_person_type": {
+      "required": ["person_type"],
+      "properties": {
+        "person_type": {
+          "type": "string",
+          "const": "legal",
+          "description": "Type of the person object. For a legal person must be equal `legal`"
+        }
+      }
+    }
+  }
+}

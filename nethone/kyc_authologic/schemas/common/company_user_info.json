@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/CompanyName"
+    },
+    "ids": {
+      "$ref": "#/$defs/CompanyIds"
+    },
+    "address": {
+      "$ref": "address_info.json"
+    },
+    "contact": {
+      "$ref": "contact_info.json"
+    }
+  },
+  "description": "Company-related information if the current user is a legal entity.",
+  "$defs": {
+    "CompanyName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "maxLength": 200,
+          "minLength": 0,
+          "type": "string",
+          "description": "Company name.",
+          "example": "ACME Inc."
+        }
+      },
+      "description": "Information related to the identification of the company if the current user is a legal entity."
+    },
+    "CompanyIds": {
+      "type": "object",
+      "properties": {
+        "taxId": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Tax identification number (in Poland: NIP) of the company.",
+          "example": "1234567890"
+        }
+      },
+      "description": "Company-related identifiers if the current user is a legal entity."
+    }
+  }
+}

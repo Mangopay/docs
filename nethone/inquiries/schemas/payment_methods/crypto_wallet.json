@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Crypto Wallet Payment",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "crypto_wallet",
+      "description": "Determines the type of Payment Method - for crypto wallet payments must be a <code>crypto_wallet</code> string"
+    },
+    "wallet_address": {
+      "$ref": "../common/wallet_address.json"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Payment Method (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["method"]
+}

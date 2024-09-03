@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": ["object", "null"],
+  "properties": {
+    "amount": {
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "string",
+          "description": "An amount of money as decimal string.",
+          "pattern": "^\\d+(\\.\\d+)?$",
+          "examples": ["0.99", "10"]
+        },
+        {
+          "type": "integer",
+          "title": "integer",
+          "description": "An amount of money as integer. Must be given in smallest possible unit according to ISO 4217. E.g. 1.99 USD = 199 (cents), 30 BRL = 3000 (centavos), 5 HUF = 500 (filler), 555 JPY = 555 (Yen), 44 BHD = 44000 (fils). This option is not available for cryptocurrency amount, in such a case please use the decimal string.",
+          "examples": [99, 1000],
+          "minimum": 0
+        }
+      ]
+    },
+    "currency": {
+      "type": "string",
+      "description": "<a href=\"https://en.wikipedia.org/wiki/ISO_4217\">ISO 4217</a> currency code or cryptocurrency symbol.",
+      "examples": ["PLN", "USD", "BTC", "MIOTA", "1INCH"],
+      "pattern": "^[a-zA-Z0-9]{3,}$"
+    }
+  },
+  "required": ["amount", "currency"]
+}

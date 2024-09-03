@@ -1,0 +1,407 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AML information types.",
+  "anyOf": [
+    { "$ref": "#/$defs/AMLPepInfo" },
+    { "$ref": "#/$defs/AMLSanctionsInfo" },
+    { "$ref": "#/$defs/AMLMediaInfo" }
+  ],
+  "$defs": {
+    "AMLMediaInfo": {
+      "type": "object",
+      "title": "AML adverse media info",
+      "properties": {
+        "originalUrl": {
+          "type": "string",
+          "description": "Link to adverse article.",
+          "example": "https://secure.c6-intelligence.com/c6images/ari0202017/A7JElyvSi.pdf"
+        },
+        "date": {
+          "type": "string",
+          "description": "Adverse Media publication date.",
+          "format": "date",
+          "example": "2014-03-27"
+        },
+        "url": {
+          "type": "string",
+          "description": "Link to PDF with original adverse media publication.",
+          "example": "http://kremlin.ru/structure/security-council/members"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Media categorization.",
+          "example": ["PEP"],
+          "items": {
+            "type": "string",
+            "description": "Media categorization.",
+            "example": "[\"PEP\"]"
+          }
+        }
+      },
+      "description": "Adverse Media information type."
+    },
+    "AMLPepAddressInfo": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country name for person.",
+          "example": "Poland"
+        }
+      },
+      "description": "Address information of the person under verification."
+    },
+    "AMLPepInfo": {
+      "type": "object",
+      "title": "AML PEP info",
+      "properties": {
+        "type": { "$ref": "#/$defs/AmlInfoType" },
+        "score": {
+          "type": "number",
+          "description": "Compliance level of provided personal data with results (0-1 if provided or null).",
+          "format": "double",
+          "example": 0.98
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason why person is on the list.",
+          "example": "EUROPEAN UNION: PARLIAMENT (EX)"
+        },
+        "user": { "$ref": "#/$defs/AMLPepUserInfo" }
+      },
+      "description": "Politically Exposed Person information type."
+    },
+    "AMLPepPersonInfo": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "type": "string",
+          "description": "The gender of the user (MALE/FEMALE/OTHER).",
+          "example": "MALE",
+          "enum": ["MALE", "FEMALE", "OTHER"]
+        },
+        "nationality": {
+          "type": "string",
+          "description": "User's nationality.",
+          "example": "Poland"
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Date of birth.",
+          "example": "1972"
+        },
+        "deceased": {
+          "type": "boolean",
+          "description": "Information if person is dead.",
+          "example": false
+        },
+        "deceasedDate": {
+          "type": "string",
+          "description": "Date of death.",
+          "example": "2012"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to person's picture.",
+          "example": "http://....."
+        },
+        "roles": {
+          "type": "array",
+          "description": "Information about the exposed position held by the person.",
+          "items": { "$ref": "#/$defs/AMLPepPersonRole" }
+        }
+      },
+      "description": "Additional information about the person under verification."
+    },
+    "AMLPepPersonName": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "User name.",
+          "example": "Jan"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User surname.",
+          "example": "Kowalski"
+        },
+        "middleName": {
+          "type": "string",
+          "description": "Second name.",
+          "example": "Stanisław"
+        },
+        "spellings": {
+          "type": "array",
+          "description": "Correct spelling of name and surname (including national language).",
+          "example": [],
+          "items": {
+            "type": "string",
+            "description": "Correct spelling of name and surname (including national language).",
+            "example": "[]"
+          }
+        },
+        "alsoKnownAs": {
+          "type": "array",
+          "description": "Alias names of person under verification.",
+          "items": { "$ref": "#/$defs/AmlPepAlsoKnowAs" }
+        }
+      },
+      "description": "Personal data of a person under verification."
+    },
+    "AMLPepPersonRole": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Position held.",
+          "example": "Former Acting President"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country in which the position was held.",
+          "example": "Poland"
+        },
+        "fromDate": {
+          "type": "string",
+          "description": "Start date of tenure.",
+          "example": "2000-05"
+        },
+        "tillDate": {
+          "type": "string",
+          "description": "End date of tenure.",
+          "example": "2005"
+        }
+      },
+      "description": "Information about the exposed position held by the person."
+    },
+    "AMLPepPersonUserInfo": {
+      "type": "object",
+      "properties": {
+        "name": { "$ref": "#/$defs/AMLPepPersonName" },
+        "info": { "$ref": "#/$defs/AMLPepPersonInfo" },
+        "address": { "$ref": "#/$defs/AMLPepAddressInfo" }
+      },
+      "description": "User-related data found on AML PEP verification list."
+    },
+    "AMLPepUserInfo": {
+      "type": "object",
+      "properties": {
+        "person": { "$ref": "#/$defs/AMLPepPersonUserInfo" }
+      },
+      "description": "Data found on AML lists for provided person."
+    },
+    "AMLSanctionsAddressInfo": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country name for person.",
+          "example": "Poland"
+        }
+      },
+      "description": "Address information of the person under verification."
+    },
+    "AMLSanctionsInfo": {
+      "type": "object",
+      "title": "AML sanctions lists info",
+      "properties": {
+        "type": { "$ref": "#/$defs/AmlInfoType" },
+        "score": {
+          "type": "number",
+          "description": "Percent compliance of provided personal data with results (0-1 if provided or null).",
+          "format": "double",
+          "example": 0.98
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason why person is on the list.",
+          "example": "EO14024 PROGRAM"
+        },
+        "sources": {
+          "type": "array",
+          "description": "Names of AML list types on which the person was found.",
+          "example": ["OFAC", "EU"],
+          "items": {
+            "type": "string",
+            "description": "Names of AML list types on which the person was found.",
+            "example": "[\"OFAC\",\"EU\"]"
+          }
+        },
+        "user": { "$ref": "#/$defs/AMLSanctionsUserInfo" }
+      },
+      "description": "Sanctions information type."
+    },
+    "AMLSanctionsPersonInfo": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "type": "string",
+          "description": "The gender of the user (MALE/FEMALE/OTHER).",
+          "example": "MALE",
+          "enum": ["MALE", "FEMALE", "OTHER"]
+        },
+        "nationality": {
+          "type": "string",
+          "description": "User's nationality.",
+          "example": "Poland"
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Date of birth.",
+          "example": "1972"
+        },
+        "deceased": {
+          "type": "boolean",
+          "description": "Information if person is dead.",
+          "example": false
+        },
+        "deceaseDate": {
+          "type": "string",
+          "description": "Date of death.",
+          "example": "2012"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL to person's picture.",
+          "example": "http://....."
+        },
+        "roles": {
+          "type": "array",
+          "description": "Information about the position held by the person.",
+          "items": { "$ref": "#/$defs/AMLSanctionsPersonRole" }
+        }
+      },
+      "description": "Additional information about the person under verification."
+    },
+    "AMLSanctionsPersonName": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "User name.",
+          "example": "Jan"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User surname.",
+          "example": "Kowalski"
+        },
+        "middleName": {
+          "type": "string",
+          "description": "Second name.",
+          "example": "Stanisław"
+        },
+        "spellings": {
+          "type": "array",
+          "description": "Correct spelling of name and surname, including in national language.",
+          "example": [],
+          "items": {
+            "type": "string",
+            "description": "Correct spelling of name and surname, including in national language.",
+            "example": "[]"
+          }
+        },
+        "alsoKnownAs": {
+          "type": "array",
+          "description": "Alias names of person under verification.",
+          "items": { "$ref": "#/$defs/AmlSanctionsAlsoKnowAs" }
+        }
+      },
+      "description": "Personal data of a person under verification."
+    },
+    "AMLSanctionsPersonRole": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Position held.",
+          "example": "Former Acting President"
+        },
+        "country": {
+          "type": "string",
+          "description": "The country in which the position was held.",
+          "example": "Poland"
+        },
+        "fromDate": {
+          "type": "string",
+          "description": "Start date of tenure.",
+          "example": "2000-05"
+        },
+        "tillDate": {
+          "type": "string",
+          "description": "End date of tenure.",
+          "example": "2005"
+        }
+      },
+      "description": "Information about the position held by the person."
+    },
+    "AMLSanctionsPersonUserInfo": {
+      "type": "object",
+      "properties": {
+        "name": { "$ref": "#/$defs/AMLSanctionsPersonName" },
+        "info": { "$ref": "#/$defs/AMLSanctionsPersonInfo" },
+        "address": { "$ref": "#/$defs/AMLSanctionsAddressInfo" }
+      },
+      "description": "User-related data found on AML SANCTIONS verification list."
+    },
+    "AMLSanctionsUserInfo": {
+      "type": "object",
+      "properties": {
+        "person": {
+          "$ref": "#/$defs/AMLSanctionsPersonUserInfo"
+        }
+      },
+      "description": "Data found on AML lists for provided person."
+    },
+    "AmlInfoType": {
+      "type": "string",
+      "description": "Information whether entry describes person or person's relative:<br/><br/>* PERSON - person<br/>* RCA - person's relative.",
+      "example": "PERSON",
+      "enum": ["PERSON", "RCA"]
+    },
+    "AmlPepAlsoKnowAs": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Alias user name.",
+          "example": "Jan"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User surname.",
+          "example": "Kowalski"
+        },
+        "title": {
+          "type": "string",
+          "description": "User alias.",
+          "example": "Known As"
+        }
+      },
+      "description": "Alias names of person under verification."
+    },
+    "AmlSanctionsAlsoKnowAs": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "User name.",
+          "example": "Jan"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User surname.",
+          "example": "Kowalski"
+        },
+        "title": {
+          "type": "string",
+          "description": "User alias.",
+          "example": "Known As"
+        }
+      },
+      "description": "Alias names of person under verification."
+    }
+  }
+}

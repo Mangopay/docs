@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["query", "returnUrl", "userKey"],
+  "properties": {
+    "userKey": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string",
+      "description": "Specifies the user you want to check. Authologic remembers this field, returns its value, but Authologic doesn't use the value of this field. Place there the user ID which is used in your system, it will make it easier for you to associate the conversation with the user.",
+      "example": "7dfb9ded-c38f-49ae-95e2-307283a0b1f6"
+    },
+    "returnUrl": {
+      "type": "string",
+      "description": "The address on your system where the user will be redirected after verifying their identity. If {conversationId} part was given, it will be replaced with the conversation ID.",
+      "example": "https://authologic.com/tests/return/?conversation={conversationId}"
+    },
+    "callback": {
+      "type": "string",
+      "description": "If a callback address was specified when creating a conversation, it will be called when data is collected. If the address contains the string `{conversationId}`, it will be replaced with the current conversation ID. The content of the call is exactly the same as the response with the details of the conversation. You can read more about callback in <a href='/docs/integration_guide/kyc/callback_mechanism/'>callback mechanism</a> section.",
+      "example": "https://system.acme.test/private/identity/callback"
+    },
+    "layoutUrl": {
+      "type": "string",
+      "description": "If the process requires multiple redirection of the user to external websites (e.g. logging in to a bank), Authologic must know how to pass control to the place where subsequent pages will be rendered. For this purpose, when creating a conversation, the `layoutUrl` parameter should be specified. The user will be redirected there if there is a need to view further pages. If the address contains the string `{conversationId}`, it will be replaced with the current conversation ID.",
+      "example": "https://authologic.com/tests/layout/?conversation={conversationId}"
+    },
+    "strategy": {
+      "type": "string",
+      "description": "Information on how Authologic should perform the verification. This field is optional. If not specified, the system will use the default value. In our case, we used the `public:sandbox` strategy, which does not perform real verification, but allows you to select the result, which is convenient for implementation and integration tests. You can read more about strategies in <a href='/docs/integration_guide/kyc/strategies/'>strategies</a> section.",
+      "example": "public:default",
+      "default": "public:default"
+    },
+    "query": {
+      "$ref": "common/product_query.json"
+    },
+    "hints": {
+      "$ref": "common/product_hints.json"
+    }
+  }
+}

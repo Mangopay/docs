@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Customer data",
+  "oneOf": [
+    {
+      "title": "Natural person",
+      "allOf": [
+        { "$ref": "common/person.json#/$defs/natural_person_person_type" },
+        { "$ref": "#/$defs/common_customer_props_start" },
+        { "$ref": "common/person.json" },
+        { "$ref": "#/$defs/common_customer_props_end" }
+      ]
+    },
+    {
+      "title": "Legal person",
+      "allOf": [
+        { "$ref": "common/legal_person.json#/$defs/legal_person_person_type" },
+        { "$ref": "#/$defs/common_customer_props_start" },
+        { "$ref": "common/legal_person.json" },
+        { "$ref": "#/$defs/common_customer_props_end" }
+      ]
+    }
+  ],
+  "$defs": {
+    "common_customer_props_start": {
+      "properties": {
+        "user_reference": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>"
+        },
+        "wallet_address": {
+          "$ref": "common/wallet_address.json"
+        },
+        "known_customer": {
+          "type": ["boolean", "null"],
+          "description": "Indicates whether the customer has an activity history in the client's system."
+        },
+        "merchant_known_customer": {
+          "type": ["boolean", "null"],
+          "description": "See `known_customer`. The field is useful when the Nethone client provides a service to many merchants. For example, a customer may be known to the client and at the same time new to the specific merchant."
+        }
+      }
+    },
+    "common_customer_props_end": {
+      "properties": {
+        "billing_address": {
+          "$ref": "address.json"
+        },
+        "delivery_address": {
+          "$ref": "address.json"
+        }
+      }
+    }
+  }
+}

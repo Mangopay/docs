@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "array",
+  "description": "List with flags to set for given subscription",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["name", "value"],
+    "properties": {
+      "timestamp": {
+        "type": "string",
+        "description": "timestamp indicating when event triggering this flag occurred; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC"
+      },
+      "name": {
+        "type": "string",
+        "description": "Name of a flag",
+        "enum": ["CANCELLED", "SUSPENDED", "PIXEL_FIRED"]
+      },
+      "value": {
+        "type": "boolean",
+        "description": "Value of a flag - meaning depends on a given flag name, see table of possible values"
+      },
+      "extra_data": {
+        "type": "object",
+        "description": "Additional data related to this flag"
+      }
+    }
+  }
+}

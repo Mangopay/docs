@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "alert_result": {
+      "type": "string",
+      "description": "Result of merchant's alert resolution.",
+      "enum": [
+        "full_refund",
+        "partial_refund",
+        "no_refund",
+        "already_refunded",
+        "transaction_notfound",
+        "transaction_unauthorized"
+      ]
+    },
+    "refund_value": {
+      "allOf": [
+        { "$ref": "../../common/money.json" },
+        { "description": "Refund transaction value" }
+      ]
+    },
+    "refund_timestamp": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp of the refund transaction RFC 3339 section 5.6",
+      "examples": ["2020-11-19T04:54:29+02:00", "2021-03-23T17:01:00Z"]
+    }
+  },
+  "required": ["alert_result"]
+}

@@ -1,0 +1,45 @@
+{
+  "type": "array",
+  "description": "List with flags to set for given transaction",
+  "items": {
+    "type": "object",
+    "required": ["name", "value"],
+    "properties": {
+      "timestamp": {
+        "type": "string",
+        "description": "timestamp indicating when event triggering this flag occurred; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC",
+        "examples": ["2020-06-16 07:38:23.132000+00:00", "2019-11-26 10:22:22.933000+00:00"]
+      },
+      "name": {
+        "type": "string",
+        "description": { "$ref": "flag_names.html" },
+        "enum": [
+          "accepted",
+          "alert",
+          "authorized",
+          "authorization_aborted",
+          "captured",
+          "chargebacked",
+          "fraud_reported",
+          "friendly_fraud",
+          "refunded",
+          "RFI",
+          "3ds_attempted"
+        ]
+      },
+      "value": {
+        "type": "boolean",
+        "description": "Value of a flag - meaning depends on a given flag name, see table of possible values"
+      },
+      "extra_data": {
+        "type": "object",
+        "description": "Additional data related to this flag"
+      },
+      "comment": {
+        "type": "string",
+        "description": "Additional comment/reason text data",
+        "maxLength": 128
+      }
+    }
+  }
+}

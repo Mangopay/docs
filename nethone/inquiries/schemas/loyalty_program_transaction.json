@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "type": {
+      "type": "string",
+      "enum": ["redeem", "accrual", "points_transfer", "balance_check"]
+    },
+    "medium_code": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "physical_medium": {
+      "type": ["boolean", "null"]
+    },
+    "points_balance": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 2147483647,
+      "description": "number of points before the action"
+    },
+    "points_mutation": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 2147483647,
+      "description": "number of points to accrue or redeem"
+    },
+    "ticket_id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "medium_creation_date": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "examples": ["2020-11-19T04:54:29+02:00"],
+      "description": "date and time as in RFC339 section 5.6"
+    },
+    "profile_update_date": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "examples": ["2020-11-19T04:54:29+02:00"],
+      "description": "date and time as in RFC339 section 5.6"
+    },
+    "account_creation_date": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "examples": ["2020-11-19T04:54:29+02:00"],
+      "description": "date and time as in RFC339 section 5.6"
+    },
+    "receiver_user_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>receiver_user_reference</a>"
+    },
+    "punch_cards": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "balance": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "mutation": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "required_balance": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "available_to_redeem": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 2147483647
+          }
+        }
+      }
+    }
+  },
+  "required": ["type"]
+}

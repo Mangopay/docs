@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MBway Payment",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "mbway",
+      "description": "Determines the type of Payment Method - for MBway payments must be a <code>mbway</code> string"
+    },
+    "phone_number": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Phone number"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Payment Method (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["method"]
+}

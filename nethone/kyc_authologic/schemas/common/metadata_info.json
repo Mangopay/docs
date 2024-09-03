@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "media": {
+      "type": "array",
+      "description": "List of available media files.",
+      "items": { "$ref": "#/$defs/Media" }
+    }
+  },
+  "description": "Information about the list of available metadata collected during the identification process.",
+  "$defs": {
+    "Media": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Media id.",
+          "example": "c9c73416-6f77-11eb-b60f-0240214a8d4b"
+        },
+        "type": { "$ref": "#/$defs/MediaType" },
+        "subtype": { "$ref": "#/$defs/MediaSubtype" },
+        "variant": { "$ref": "#/$defs/MediaVariant" },
+        "contentType": {
+          "type": "string",
+          "description": "Media content type.",
+          "example": "image/png"
+        }
+      },
+      "description": "Information about media file."
+    },
+    "MediaType": {
+      "type": "string",
+      "description": "Media type:<ul class='circle'></li><li>DOCUMENT - identified person's document</li><li>FACE - identified person's face</li><li>REPORT - verification process report.</ul>",
+      "example": "DOCUMENT",
+      "enum": ["DOCUMENT", "FACE", "REPORT"]
+    },
+    "MediaSubtype": {
+      "type": "string",
+      "description": "Media subtypes, for example type of the document. Subtype is empty, if the type is FACE.:<ul class='circle'> <li>ID_CARD - identified person's id card</li><li>DRIVER_LICENSE - identified person's driver license</li><li>PASSPORT - identified person's passport</li><li>RESIDENCE_PERMIT - identified person's residence permit</li><li>UTILITY_BILL - identified person's proof of address.</li></ul>",
+      "example": "ID_CARD",
+      "enum": ["ID_CARD", "DRIVER_LICENSE", "PASSPORT", "RESIDENCE_PERMIT", "UTILITY_BILL"]
+    },
+    "MediaVariant": {
+      "type": "string",
+      "description": "Media variant, for example side of the document. Variant is empty, if the type is FACE.:<ul class='circle'></li><li>FRONT - front side of the document</li><li>BACK - back side of the document.</li></ul>",
+      "example": "BACK",
+      "enum": ["FRONT", "BACK"]
+    }
+  }
+}

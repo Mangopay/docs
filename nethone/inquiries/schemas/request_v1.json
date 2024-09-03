@@ -1,0 +1,336 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "properties": {
+    "type": {
+      "type": ["string", "null"],
+      "description": "Type of the inquiry; needed only if it's exact behavior is established during integration process",
+      "enum": [
+        "register",
+        "transaction",
+        "submit",
+        "confirm",
+        "login",
+        "payment:pre-auth",
+        "payment:post-auth",
+        "payin",
+        "payout",
+        "transfer"
+      ]
+    },
+    "attempt_reference": {
+      "type": "string",
+      "description": "reference to the Profiling session, see <a href='/docs/integration_guide/faq#attempt_ref'>attempt_reference</a>",
+      "maxLength": 128
+    },
+    "reference": {
+      "type": "string",
+      "description": "Unique reference identifying this inquiry, as used in internal client's systems",
+      "maxLength": 128
+    },
+    "force_accept": {
+      "type": "boolean",
+      "description": "If set to true, the advice will be always 'accept', regardless of computed risk score"
+    },
+    "profiling_reference": {
+      "type": "string",
+      "description": "It is a session identifier. If the field is <code>null</code>, information in the Panel Inquiry view will be limited. See <a href='/docs/integration_guide/faq#prof_ref'>profiling_reference</a>",
+      "maxLength": 64
+    },
+    "customer": {
+      "$ref": "customer.json"
+    },
+    "delivery": {
+      "$ref": "delivery.json"
+    },
+    "device": {
+      "$ref": "device.json"
+    },
+    "origin": {
+      "type": "string",
+      "description": "Identifier of the interaction surface with the user, e.g. URL of the web form or identifier of the application screen that triggers the inquiry. Origin should be unique per use case and stay the same for each inquiry triggered by this use case.",
+      "maxLength": 256
+    },
+    "payment_methods": {
+      "type": ["array", "null"],
+      "description": "Array of payment method objects.",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "payment_methods/card.json"
+          },
+          {
+            "$ref": "payment_methods/crypto_wallet.json"
+          },
+          {
+            "$ref": "payment_methods/paypal.json"
+          },
+          {
+            "$ref": "payment_methods/direct_debit.json"
+          },
+          {
+            "$ref": "payment_methods/giftcard.json"
+          },
+          {
+            "$ref": "payment_methods/bnpl.json"
+          },
+          {
+            "$ref": "payment_methods/loyalty_program.json"
+          },
+          {
+            "$ref": "payment_methods/fleet_card.json"
+          },
+          {
+            "$ref": "payment_methods/wallet_payment.json"
+          },
+          {
+            "$ref": "payment_methods/bank_transfer.json"
+          },
+          {
+            "$ref": "payment_methods/mbway.json"
+          },
+          {
+            "$ref": "payment_methods/other.json"
+          }
+        ]
+      }
+    },
+    "merchant_reference": {
+      "type": "string",
+      "description": "Reference identifying an account (MID - merchant id) in the gateway system, should be provided when handling multiple merchant accounts",
+      "maxLength": 128
+    },
+    "merchant_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Merchant corporate or parent company name"
+    },
+    "merchant_country": {
+      "$ref": "common/country.json"
+    },
+    "merchant_url": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 1000,
+      "format": "uri",
+      "description": "Merchant corporate business URL"
+    },
+    "merchant_phone_number": {
+      "type": ["string", "null"],
+      "minLength": 3,
+      "maxLength": 16,
+      "pattern": "^\\+[1-9]\\d{1,14}$",
+      "description": "Merchant phone number. Must be in E.164 format (\"+\" , up to 3-digits country code, up to 12-digits telephone number)"
+    },
+    "merchant_industry": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Merchant Industry"
+    },
+    "merchant_industry_category": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The industry category of the merchant"
+    },
+    "merchant_mcc": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The MCC (Merchant category code) of the merchant"
+    },
+    "merchant_timestamp": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "examples": ["2022-11-19T04:54:29+02:00", "2023-03-23T17:01:00Z"],
+      "description": "The timestamp can be provided if the end user's request was made prior to the inquiry to Nethone."
+    },
+    "merchant_license": {
+      "type": ["string", "null"],
+      "enum": ["electronic_money_issuer", "payment_services", null],
+      "description": "Information if the platform is EMI or PI (Electronic Money Institution or Payment Institution)"
+    },
+    "merchant_risk": {
+      "type": ["string", "null"],
+      "enum": ["low", "medium", "high", null],
+      "description": "Information whether the platform involves a certain level of risk"
+    },
+    "transaction_currency": {
+      "type": "string",
+      "maxLength": 2048,
+      "description": "<a href=\"https://en.wikipedia.org/wiki/ISO_4217\">ISO 4217</a> currency code; must be provided when <code>transaction_amount</code> is provided"
+    },
+    "transaction_amount": {
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "string",
+          "description": "Transaction amount as decimal string. Only decimal string is allowed for cryptocurrency.",
+          "pattern": "^\\d+(\\.\\d+)?$",
+          "examples": ["0.99", "10"]
+        },
+        {
+          "type": "integer",
+          "title": "integer",
+          "description": "Transaction amount as integer in the smallest possible unit according to ISO 4217. E.g. 1.99 USD = 199 (cents), 30 BRL = 3000 (centavos), 5 HUF = 500 (filler), 555 JPY = 555 (Yen), 44 BHD = 44000 (fils).",
+          "examples": [99, 1000],
+          "minimum": 0
+        }
+      ]
+    },
+    "items": {
+      "type": ["array", "null"],
+      "description": "Array of item objects.",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "items/flight.json"
+          },
+          {
+            "$ref": "items/trip.json"
+          },
+          {
+            "$ref": "items/accommodation.json"
+          },
+          {
+            "$ref": "items/transfer.json"
+          },
+          {
+            "$ref": "items/crypto_asset.json"
+          },
+          {
+            "$ref": "items/generic.json"
+          }
+        ]
+      }
+    },
+    "tags": {
+      "type": ["array", "null"],
+      "description": "Array of tag strings.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "maxItems": 10
+    },
+    "source": {
+      "$ref": "source.json"
+    },
+    "promotions": {
+      "type": ["array", "null"],
+      "description": "Array of promotion objects.",
+      "items": {
+        "$ref": "promotion.json"
+      }
+    },
+    "loyalty_program_transaction": {
+      "$ref": "loyalty_program_transaction.json"
+    },
+    "service_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "timestamp indicating a point in time when an inquiry related service should be considered as started; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC"
+    },
+    "extra_data": {
+      "type": "object",
+      "description": "Additional data associated with this Inquiry (limited to 4kB by default), typically information about the product (e.g. boarding pass information, cart content or loan application details)."
+    },
+    "user_reference": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `customer` instead. Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>",
+      "maxLength": 64
+    },
+    "user_first_name": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `customer` instead. User first name",
+      "maxLength": 256
+    },
+    "user_last_name": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `customer` instead. User last name",
+      "maxLength": 256
+    },
+    "user_phone": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `customer` instead. User's phone number as string or its token",
+      "maxLength": 128
+    },
+    "user_email": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `customer` instead. User's email",
+      "maxLength": 256
+    },
+    "user_ipaddr": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `device` instead. User's IP address, without port number"
+    },
+    "user_agent": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `device` instead. String identifying declared software used by the user, e.g. User-Agent header value from HTTP request"
+    },
+    "device_id": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `device` instead. ID of the device used by the user (applicable for systems implementing their own device identification scheme)",
+      "maxLength": 128
+    },
+    "card_token": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `payment_methods` instead. Card token, see <a href='/docs/integration_guide/faq#card_token'>card_token</a>",
+      "maxLength": 128
+    },
+    "card_bin_number": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `payment_methods` instead. Card BIN number as string of 6-9 digits",
+      "minLength": 6,
+      "maxLength": 9
+    },
+    "card_number_last4": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `payment_methods` instead. Last four digits of credit card number"
+    },
+    "card_expiry_year": {
+      "deprecated": true,
+      "type": "integer",
+      "description": "Use corresponding field in `payment_methods` instead. Card expiry year (as 4 digits number)"
+    },
+    "card_expiry_month": {
+      "deprecated": true,
+      "type": "integer",
+      "description": "Use corresponding field in `payment_methods` instead. Card expiry month",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "cardholder_name": {
+      "deprecated": true,
+      "type": "string",
+      "description": "Use corresponding field in `payment_methods` instead. Cardholder's first and last name",
+      "maxLength": 256
+    },
+    "affiliate_partner_reference": {
+      "deprecated": true,
+      "type": "string",
+      "maxLength": 128,
+      "description": "Use corresponding field in `source` instead. Reference of a related affiliate partner"
+    },
+    "affiliate_campaign_reference": {
+      "deprecated": true,
+      "type": "string",
+      "maxLength": 128,
+      "description": "Use corresponding field in `source` instead. Reference of a related affiliate campaign"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "required": ["reference", "timestamp"],
+  "properties": {
+    "reference": {
+      "type": "string",
+      "description": "Unique reference identifying transaction"
+    },
+    "merchant_reference": {
+      "type": "string",
+      "description": "Reference identifying an account (MID - merchant id) in the payment gateway system; must be unique across all gateways",
+      "maxLength": 128
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method",
+      "enum": ["card", "mobile", "sepa"]
+    },
+    "user_reference": {
+      "type": "string",
+      "description": "Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>",
+      "maxLength": 64
+    },
+    "profiling_reference": {
+      "type": "string",
+      "description": "It is a session identifier. See <a href='/docs/integration_guide/faq#prof_ref'>profiling_reference</a>",
+      "maxLength": 64
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "timestamp indicating when this transaction occurred; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC",
+      "examples": ["2020-06-16 07:38:23.132000+00:00", "2019-11-26 10:22:22.933000+00:00"]
+    },
+    "currency": {
+      "type": "string",
+      "description": "<a href=\"https://en.wikipedia.org/wiki/ISO_4217\">ISO 4217</a> currency code or cryptocurrency symbol; must be provided when <code>amount</code> is provided",
+      "examples": ["PLN", "USD", "BTC", "MIOTA", "1INCH"],
+      "pattern": "^[a-zA-Z0-9]{3,}$"
+    },
+    "amount": {
+      "anyOf": [
+        {
+          "type": "string",
+          "title": "string",
+          "description": "An amount of money as decimal string or as integer. Only decimal string is allowed for cryptocurrency.",
+          "pattern": "^\\d+(\\.\\d+)?$",
+          "examples": ["0.99", "10"]
+        },
+        {
+          "type": "integer",
+          "title": "integer",
+          "description": "An amount of money as integer. Must be given in smallest possible unit according to ISO 4217. E.g. 1.99 USD = 199 (cents), 30 BRL = 3000 (centavos), 5 HUF = 500 (filler), 555 JPY = 555 (Yen), 44 BHD = 44000 (fils).",
+          "examples": [99, 1000],
+          "minimum": 0
+        }
+      ]
+    },
+    "card_token": {
+      "type": "string",
+      "description": "Token of a card used for this transaction",
+      "maxLength": 128
+    },
+    "billing_descriptor": {
+      "type": ["string", "null"],
+      "description": "Merchant name component of the billing descriptor which appears on the customer's transaction statement (without the contact information)",
+      "maxLength": 25
+    },
+    "extra_data": {
+      "type": "object",
+      "description": "Data set associated with this transaction (limited to 4kB by default)"
+    },
+    "flags": {
+      "$ref": "flags_node.json"
+    }
+  }
+}

@@ -1,0 +1,372 @@
+{
+  "title": "iOS",
+  "type": "object",
+  "properties": {
+    "profiling_type": {
+      "enum": ["ios"],
+      "description": "Type of profiling",
+      "type": "string"
+    },
+    "attempt_reference": {
+      "type": "string",
+      "description": "Identifier of a payment attempt (should not be used in a data mining)"
+    },
+    "created_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$",
+      "examples": ["2020-11-25 07:51:19.490002"],
+      "description": "Date of receiving first request"
+    },
+    "ip": {
+      "type": "string",
+      "description": "The IP address from which a connection with the Profiler was established"
+    },
+    "proxied_for_ip": {
+      "type": ["string", "null"],
+      "description": "The IP address on behalf of which the proxy connected to the profiler"
+    },
+    "signals": {
+      "items": {
+        "type": "string"
+      },
+      "description": "<a href='/docs/integration_guide/inquiry#ios-signals'>Unusual fact or behaviors that may indicate fraud</a>",
+      "type": "array"
+    },
+    "device": {
+      "type": "object",
+      "description": "Group containing device information",
+      "properties": {
+        "battery": {
+          "type": "object",
+          "description": "Group containing device battery information",
+          "properties": {
+            "charging": {
+              "type": ["boolean", "null"],
+              "description": "true if the device is plugged into power and the battery is less than 100% charged."
+            },
+            "level": {
+              "type": ["number", "null"],
+              "description": "Battery level ranges from 0.0 (fully discharged) to 1.0 (100% charged). If battery monitoring is not enabled, battery state is UIDevice.BatteryState.unknown and the value of this property is –1.0."
+            },
+            "fully_charged": {
+              "type": ["boolean", "null"],
+              "description": "true if the device is plugged into power and the battery is 100% charged."
+            }
+          }
+        },
+        "carrier": {
+          "type": "object",
+          "description": "Group containing device carrier information",
+          "properties": {
+            "iso_country_code": {
+              "type": ["string", "null"],
+              "description": "The ISO country code for the user's cellular service provider. This property uses the ISO 3166-1 country code representation. The value for this property is nil if any of the following apply: The device is in airplane mode. There is no SIM card in the device. The device is outside of the cellular service range."
+            },
+            "mobile_country_code": {
+              "type": ["string", "null"],
+              "description": "The mobile country code (MCC) for the user's cellular service provider.  MCCs are defined by ITU-T Recommendation E.212, “List of Mobile Country or Geographical Area Codes”. If not available means that there is no SIM card in the device or the device is outside of the cellular service range."
+            },
+            "name": {
+              "type": ["string", "null"],
+              "description": "The name of the user's home cellular service provider. The carrier provides this string, formatting it for presentation to the user. The value does not change if the user is roaming; it always represents the provider with which the user has an account. If you configure a device for a carrier and then remove the SIM card, this property retains the name of the carrier. If you then install a new SIM card, its carrier name replaces the previous value of this property. The value for this property is nil if the user never configured a carrier for the device."
+            },
+            "mobile_network_code": {
+              "type": ["string", "null"],
+              "description": "The mobile network code for the user's cellular service provider. That represents the numeric mobile network code (MNC) for the user's cellular service provider. The value for this property is nil if any of the following apply: There is no SIM card in the device. The device is outside of the cellular service range."
+            },
+            "country": {
+              "type": ["string", "null"],
+              "description": "The ISO country code for the user's cellular service provider. This property uses the ISO 3166-1 country code representation. The value is nil when The device is in airplane mode, there is no SIM card in the device, The device is outside of the cellular service range."
+            },
+            "allows_voip": {
+              "type": ["boolean", "null"],
+              "description": "Indicates if the carrier allows making VoIP calls on its network. If you configure a device for a carrier and then remove the SIM card, this property retains the boolean value indicating the carrier's policy regarding VoIP. If you then install a new SIM card, its VoIP policy boolean replaces the previous value of this property."
+            }
+          }
+        },
+        "disk": {
+          "type": "object",
+          "description": "Group containing device disk information",
+          "properties": {
+            "free_space": {
+              "type": ["number", "null"],
+              "description": "Home directory file system free size in bytes determined by statfs()."
+            },
+            "total_space": {
+              "type": ["number", "null"],
+              "description": "Home directory file system size in bytes determined by statfs()."
+            }
+          }
+        },
+        "bluetooth": {
+          "type": ["object", "null"],
+          "description": "Group containing device bluetooth information",
+          "properties": {
+            "state": {
+              "type": ["string", "null"],
+              "description": "Possible values: \"unknown\", \"resetting\" - A state that indicates the connection with the system service was momentarily lost., \"unsupported\" - A state that indicates this device doesn't support the Bluetooth low energy central or client role., \"unauthorized\" - A state that indicates the application isn't authorized to use the Bluetooth low energy role., \"powered_off\", \"powered_on\""
+            }
+          }
+        },
+        "hardware": {
+          "type": "object",
+          "description": "Group containing device hardware information",
+          "properties": {
+            "device_model": {
+              "type": ["string", "null"],
+              "description": "The model of the device. e.g. \"iPhone\", \"iPod touch\""
+            },
+            "model": {
+              "type": ["string", "null"],
+              "description": "Model of device based on hardware"
+            },
+            "uptime": {
+              "type": ["string", "null"],
+              "description": "systemUptime. The amount of time the system has been awake since the last time it was restarted. In format \"days hours minutes\""
+            },
+            "device_name": {
+              "type": ["string", "null"],
+              "description": "The name identifying the device. The value of this property is an arbitrary alphanumeric string that is associated with the device as an identifier. For example, you can find the name of an iOS device in the General > About settings."
+            },
+            "orientation": {
+              "type": ["string", "null"],
+              "description": "The physical orientation of the device. The orientation property uses these constants to identify the device orientation. These constants identify the physical orientation of the device and are not tied to the orientation of your application's user interface. Possible values unknown, portrait, portrait_upside_down, landscape_left, landscape_right, face_up, face_down."
+            },
+            "device_system_name": {
+              "type": ["string", "null"],
+              "description": "The name of the operating system running on the device represented by the receiver. e.g. @\"iOS\""
+            },
+            "device_system_version": {
+              "type": ["string", "null"],
+              "description": "The current version of the operating system. An example of the system version is @”1.2”. e.g. @\"4.0\""
+            },
+            "multitasking_enabled": {
+              "type": ["boolean", "null"],
+              "description": "A boolean value indicating whether multitasking is supported on the current device."
+            },
+            "proximity_sensor_enabled": {
+              "type": ["boolean", "null"],
+              "description": "A boolean value indicating whether proximity monitoring is enabled (YES) or not (NO). Not all iOS devices have proximity sensors."
+            },
+            "device_identifier_for_vendor": {
+              "type": ["string", "null"],
+              "description": "a UUID that may be used to uniquely identify the device, same across apps from a single vendor. The value of this property is the same for apps that come from the same vendor running on the same device. A different value is returned for apps on the same device that come from different vendors, and for apps on different devices regardless of vendor. Normally, the vendor is determined by data provided by the App Store. If the app was not installed from the app store (such as enterprise apps and apps still in development), then a vendor identifier is calculated based on the app's bundle ID. The bundle ID is assumed to be in reverse-DNS format. If the value is nil, wait and get the value again later. This happens, for example, after the device has been restarted but before the user has unlocked the device. The value in this property remains the same while the app (or another app from the same vendor) is installed on the iOS device. The value changes when the user deletes all of that vendor's apps from the device and subsequently reinstalls one or more of them. The value can also change when installing test builds using Xcode or when installing an app on a device using ad-hoc distribution. Therefore, if your app stores the value of this property anywhere, you should gracefully handle situations where the identifier changes."
+            }
+          }
+        },
+        "process_info": {
+          "type": "object",
+          "description": "Group containing device process information",
+          "properties": {
+            "system_version_string": {
+              "type": ["string", "null"],
+              "description": "A string containing the version of the operating system on which the process is executing. The operating system version string is human-readable, localized, and is appropriate for display to the user. This string is not appropriate for parsing."
+            },
+            "processor_count": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "maximum": 4294967295,
+              "description": "The number of processing cores available on the computer. This property value is equal to the result of entering the command sysctl -n hw.ncpu on the current system."
+            },
+            "active_processor_count": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "maximum": 4294967295,
+              "description": "The number of active processing cores available on the computer. Whereas the processor count property reports the number of advertised processing cores, the activeProcessorCount property reflects the actual number of active processing cores on the system. Several different factors may cause a core to not be active, including boot arguments, thermal throttling, or a manufacturing defect. This property value is equal to the result of entering the command sysctl -n hw.logicalcpu on the current system."
+            },
+            "physical_memory": {
+              "type": ["string", "null"],
+              "pattern": "\\d+",
+              "description": "The amount of physical memory on the computer in bytes."
+            },
+            "low_power_enabled": {
+              "type": ["boolean", "null"],
+              "description": "A boolean indicating whether Low Power Mode is enabled on an iOS device. Users who wish to prolong their iPhone's battery life can enable Low Power Mode under Settings > Battery. In Low Power Mode, iOS conserves battery life by enacting certain energy-saving measures, such as reducing CPU and GPU performance, reducing screen brightness, and pausing discretionary and background activities."
+            }
+          }
+        }
+      }
+    },
+    "client": {
+      "type": "object",
+      "description": "Group containing client information",
+      "properties": {
+        "accessibility": {
+          "type": "object",
+          "description": "Group containing client accessibility information",
+          "properties": {
+            "is_bold_text": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when user has enabled the Bold Text setting, default is false."
+            },
+            "is_undo_shake": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when has enabled the Shake to Undo setting. Default is false, but in some condition the prompt is showing and you can turned it on easily."
+            },
+            "is_reduced_motion": {
+              "type": ["boolean", "null"],
+              "description": "This is false by default, however this option is often used when user wants extend battery life."
+            },
+            "is_reduced_transparency": {
+              "type": ["boolean", "null"],
+              "description": "This is false by default, however this option is often used when user wants extend battery life."
+            },
+            "is_assistive_touch": {
+              "type": ["boolean", "null"],
+              "description": "This is false by default, however this option is often used when used hsa damaged main button or when user has connected mouse or track pad to control the device."
+            },
+            "is_darker_system_colors": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Increase Contrast setting. Default is false"
+            },
+            "is_switch_control": {
+              "type": ["boolean", "null"],
+              "description": "This is false by default, however this option is often used when used hsa damaged main button or when user has connected mouse or track pad to control the device."
+            },
+            "is_voice_over": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled VoiceOver. Default is false."
+            },
+            "is_mono_audio": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Mono Audio setting. Default is false."
+            },
+            "is_inverted_color": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Classic Invert setting. Default is false."
+            },
+            "is_closed_caption": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Closed Captions + SDH setting. Default is false."
+            },
+            "is_grayscale": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Gray-scale option in the Color Filters setting. Default is false."
+            },
+            "is_video_autoplay": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the video auto-play setting. Default is false."
+            },
+            "is_guided_access": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled Guided Access. Default is false. Guided access means that the device is limited to single app."
+            },
+            "is_speak_selection": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Speak Selection setting. Default is false."
+            },
+            "is_speak_screen": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when  the user has enabled the Speak Screen setting. Default is false."
+            },
+            "is_diff_without_color": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the Differentiate Without Colour setting. Default is false."
+            },
+            "is_switch_label": {
+              "type": ["boolean", "null"],
+              "description": "This value is true when the user has enabled the On/Off Labels setting. Default is false."
+            }
+          }
+        },
+        "preference": {
+          "type": "object",
+          "description": "Group containing client preference information",
+          "properties": {
+            "preferred_content_size_category": {
+              "type": ["string", "null"],
+              "description": "The font sizing option preferred by the user. Unspecified, ExtraSmall, Small, Medium, Large, ExtraLarge, ExtraExtraLarge, ExtraExtraExtraLarge, AccessibilityMedium, AccessibilityLarge, AccessibilityExtraLarge, AccessibilityExtraExtraLarge, AccessibilityExtraExtraExtraLarge."
+            },
+            "can_send_mail": {
+              "type": ["boolean", "null"],
+              "description": "A boolean that indicates whether the current device is able to send email. Tru if the device is configured for sending email or False if it is not."
+            },
+            "can_send_text": {
+              "type": ["boolean", "null"],
+              "description": "A boolean value that indicates whether the current device is capable of sending text messages. A device may be unable to send messages if it does not support messaging or if it is not currently configured to send messages. This method applies only to the ability to send text messages via iMessage, SMS, and MMS. True if the device can send text messages or false if it cannot."
+            }
+          }
+        },
+        "localization": {
+          "type": "object",
+          "description": "Group containing client localization information",
+          "properties": {
+            "country": {
+              "type": ["string", "null"],
+              "description": "The identifier for the locale. Examples of locale identifiers include \"en_GB\", \"es_ES_PREEURO\", and \"zh-Hant_HK_POSIX@collation=pinyin;currency=CNY\"."
+            },
+            "currency": {
+              "type": ["string", "null"],
+              "description": "The string used by the receiver as a local currency symbol. A country typically has a local currency symbol and an international currency symbol. The local symbol is used within the country, while the international currency symbol is used in international contexts to specify that country's currency unambiguously. The local currency symbol is often represented by a Unicode code point."
+            },
+            "language": {
+              "type": ["string", "null"],
+              "description": "Users choose a primary language when configuring a device."
+            },
+            "time_zone": {
+              "type": ["string", "null"],
+              "description": "The time zone currently used by the system. If the current system time zone cannot be determined, the GMT time zone is used instead."
+            },
+            "region": {
+              "type": ["string", "null"],
+              "description": "The country code for the locale. Examples of country codes include \"GB\", \"FR\", and \"HK\"."
+            },
+            "calendar": {
+              "type": ["string", "null"],
+              "description": "The calendar identifier for the locale. Possible values: Gregorian, Buddhist, Chinese, Coptic, EthiopicAmeteMihret, EthiopicAmeteAlem, Hebrew, ISO8601, Indian, Islamic, IslamicCivil, Japanese, Persian, RepublicOfChina, IslamicTabular, IslamicUmmAlQura."
+            },
+            "currency_code": {
+              "type": ["string", "null"],
+              "description": "The currency code for the locale. Example currency codes include \"USD\", \"EUR\", and \"JPY\"."
+            },
+            "metric_system": {
+              "type": ["boolean", "null"],
+              "description": "A boolean value that indicates whether the locale uses the metric system."
+            }
+          }
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "description": "Group containing network information",
+      "properties": {
+        "link_type": {
+          "type": "string",
+          "description": "TCP/IP stack characteristics",
+          "example": "OpenVPN TCP bs128 SHA1 lza"
+        },
+        "user_declared_ip": {
+          "type": "object",
+          "deprecated": true,
+          "properties": {
+            "addr": {
+              "type": "string",
+              "description": "Use `ip` field in root fingerprint object response. IP address declared by the user"
+            }
+          }
+        },
+        "external_ip_address": {
+          "type": ["string", "null"],
+          "description": "IP gathered from https://api.ipify.org"
+        },
+        "connected_to_wifi": {
+          "type": ["boolean", "null"],
+          "description": "Indicates that device is connected to wi-fi network. Gathered from structures describing the network interfaces of the local system searched for interface en0 that is uses for wi-fi"
+        },
+        "wifi_ip_address": {
+          "type": ["string", "null"],
+          "description": "Wi-fi network address ip. Gathered from en0 interface."
+        },
+        "connected_to_cell_network": {
+          "type": ["boolean", "null"],
+          "description": "Indicates that device is connected to cellular network. Gathered from structures describing the network interfaces of the local system searched for interface pdp_ip0 that is uses for 3G and cellular data"
+        },
+        "cell_ip_address": {
+          "type": ["string", "null"],
+          "description": "Cellular network address ip. Gathered from pdp_ip0 interface."
+        }
+      }
+    }
+  }
+}

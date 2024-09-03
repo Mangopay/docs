@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Item list",
+  "additionalProperties": false,
+  "required": ["op_failures"],
+  "properties": {
+    "op_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["idx", "errors"],
+        "properties": {
+          "idx": {
+            "type": "number",
+            "title": "Index",
+            "description": "A number corresponding to the order in the batch update. 0-based."
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["code", "message"],
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "description": "Error number indicating type of error"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Error description indicating type of error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

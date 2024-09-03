@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "alert_type": {
+      "type": "string",
+      "description": "Type of alert",
+      "enum": ["dispute", "fraud"]
+    },
+    "is_3d_secure": {
+      "type": ["boolean", "null"],
+      "description": "Indication for usage of 3-D Secure protocol which also specifies who is liable for the refund of transaction from `fraud` alert. If liability is on the issuer's side (`true`), then the merchant is not responsible for refunding the transaction. If information about the usage of 3-D Secure protocol was not available, this value will be empty. It does not affect the liability of `dispute` alerts."
+    },
+    "arn": {
+      "type": ["string", "null"],
+      "description": "Acquirer Reference Number - transaction ID assigned by merchant's bank acquiring transaction.",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "bin_number": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{6,9}$",
+      "description": "Card BIN number"
+    },
+    "number_last4": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}$",
+      "description": "Last 4 digits of card number"
+    },
+    "billing_descriptor": {
+      "type": "string",
+      "description": "Billing descriptor of the transaction",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "transaction_value": {
+      "allOf": [
+        { "$ref": "../../common/money_int_and_decimal.json" },
+        { "description": "Value of transaction for which the alert is raised" }
+      ]
+    },
+    "refund_value": {
+      "allOf": [
+        { "$ref": "../../common/money_int_and_decimal.json" },
+        { "description": "Value of requested refund" }
+      ]
+    },
+    "transaction_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the transaction, sometimes only date is given (time is set to midnight)",
+      "examples": ["2020-11-19T04:54:29+02:00", "2021-03-23T17:01:00Z"]
+    },
+    "alert_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the transaction, sometimes only date is given (time is set to midnight)",
+      "examples": ["2020-11-19T04:54:29+02:00", "2021-03-23T17:01:00Z"]
+    },
+    "transaction_id": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 9223372036854775807,
+      "description": "ID of the transaction in Nethone system. Returned when the transaction was submitted via Transactions API. If Nethone is not able to match the alert to a single transaction, this value will be empty"
+    },
+    "transaction_reference": {
+      "type": ["string", "null"],
+      "description": "Reference of the transaction in the merchant's system. It is value sent via Transactions API in reference field. If Nethone is not able to match the alert to a single transaction, this value will be empty",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "merchant_reference": {
+      "type": ["string", "null"],
+      "description": "Reference of the merchant in the payment gateway system. It is value sent via Transactions API in merchant_reference field. It is value sent via Transactions API in reference field. If Nethone is not able to match the alert to a single transaction, this value will be empty",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "issuer": {
+      "type": "string",
+      "maxLength": 2048,
+      "description": "Name of the card issuer"
+    },
+    "authorization_code": {
+      "type": ["string", "null"],
+      "description": "Transaction authorization code",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "reason_code": {
+      "type": "string",
+      "description": "Code indicating reason of chargeback. It is a code specific for card scheme.",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "source": {
+      "type": "integer",
+      "enum": [1, 2],
+      "description": "Number representing alert partner - source of the alert: 1 - Ethoca, 2 - Verifi."
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Identifier of the alert received from the alert partner",
+      "minLength": 1,
+      "maxLength": 50
+    }
+  },
+  "required": [
+    "alert_type",
+    "is_3d_secure",
+    "arn",
+    "bin_number",
+    "number_last4",
+    "billing_descriptor",
+    "transaction_value",
+    "refund_value",
+    "transaction_timestamp",
+    "alert_timestamp",
+    "transaction_id",
+    "transaction_reference",
+    "merchant_reference",
+    "issuer",
+    "authorization_code",
+    "reason_code",
+    "source",
+    "source_id"
+  ]
+}

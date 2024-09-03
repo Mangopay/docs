@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Buy Now Pay Later",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "bnpl",
+      "description": "Determines the type of Payment Method - for Buy Now Pay Later payments must be a <code>bnpl</code> string"
+    },
+    "provider_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Provider Name"
+    },
+    "installments": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of installments"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Payment Method (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["method"]
+}

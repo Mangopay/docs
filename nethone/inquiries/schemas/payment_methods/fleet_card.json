@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fleet Card Payment",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "fleet_card",
+      "description": "Determines the type of Payment Method - for fleet_card payments must be a <code>fleet_card</code> string"
+    },
+    "name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Fleet Card name"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    }
+  },
+  "required": ["method"]
+}

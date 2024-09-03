@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "ipaddr": {
+      "anyOf": [
+        {
+          "title": "IPv4",
+          "type": "string",
+          "description": "IPv4 address",
+          "format": "ipv4"
+        },
+        {
+          "title": "IPv6",
+          "type": "string",
+          "description": "IPv6 address",
+          "format": "ipv6"
+        }
+      ]
+    },
+    "ipaddr_hash": {
+      "type": ["string", "null"],
+      "description": "Hash of the IP address, that can be provided instead of the raw value in <code>ipaddr</code>. Before hashing, strip it of port number.",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "user_agent": {
+      "type": ["string", "null"],
+      "description": "String identifying declared software used by the user, e.g. User-Agent header value from HTTP request",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "device_id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "ID of the device used by the user (applicable for systems implementing their own device identification scheme)"
+    },
+    "accept_header": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Exact content of the HTTP accept headers"
+    },
+    "language": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Language of the browser"
+    },
+    "java_enabled": {
+      "type": ["boolean", "null"],
+      "description": "Whether the browser has Java enabled"
+    },
+    "javascript_enabled": {
+      "type": ["boolean", "null"],
+      "description": "Whether the browser has Javascript enabled"
+    },
+    "time_zone_offset": {
+      "type": ["integer", "null"],
+      "description": "UTC time offset in minutes"
+    },
+    "screen": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "color_depth": {
+          "type": "integer",
+          "description": "Value representing the bit depth of the colour palette for displaying images, in bits per pixel"
+        },
+        "height": {
+          "type": "integer",
+          "description": "The height of the screen in pixels"
+        },
+        "width": {
+          "type": "integer",
+          "description": "The width of the screen in pixels"
+        }
+      }
+    },
+    "browser_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Browser's name"
+    },
+    "browser_version": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Browser's version"
+    },
+    "manufacturer": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The manufacturer of the device (e.g. \"samsumg\")"
+    },
+    "os_version": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The version of the operating system on the device (e.g. \"16.7.0\")"
+    },
+    "os_language": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Language of the operating system on the device (e.g. \"en-GB\")"
+    },
+    "type": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The device type"
+    },
+    "fraud_score_reason": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "The reasons for the score"
+    },
+    "fraud_score": {
+      "type": ["string", "null"],
+      "pattern": "^-?\\d+(?:\\.\\d+)?$",
+      "example": "0.99",
+      "description": "Fraud score as decimal string"
+    },
+    "fingerprint_fuzzy": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Fingerprint provided by a third-party profiling solution (a fuzzy match)"
+    },
+    "fingerprint_exact": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Fingerprint provided by a third-party profiling solution (exact match)"
+    },
+    "extra_data": {
+      "$ref": "common/extra_data.json"
+    }
+  }
+}

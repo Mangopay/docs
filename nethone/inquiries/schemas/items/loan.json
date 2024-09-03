@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Loan",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "type": {
+      "type": "string",
+      "const": "loan"
+    },
+    "value": {
+      "$ref": "../../../common/money.json"
+    },
+    "period": {
+      "type": ["integer", "null"],
+      "description": "Length of the loan in days"
+    },
+    "seniority": {
+      "type": ["integer", "null"],
+      "description": "Seniority in years"
+    },
+    "monthly_due": {
+      "$ref": "../../../common/money.json"
+    },
+    "household_size": {
+      "type": ["integer", "null"],
+      "description": "Number of people in the household including the applicant"
+    },
+    "education": {
+      "type": ["string", "null"],
+      "enum": [
+        "no formal education",
+        "primary school",
+        "high school",
+        "vocational",
+        "bachelor",
+        "engineer",
+        "master",
+        "phd",
+        "higher than phd",
+        "other"
+      ]
+    },
+    "marital_status": {
+      "type": ["string", "null"],
+      "enum": ["married", "unmarried", "widowed", "divorced", "concubinage", "other"]
+    },
+    "income_source": {
+      "type": ["string", "null"],
+      "enum": [
+        "no income",
+        "permanent employment",
+        "finite employment",
+        "temporary employment",
+        "entrepreneur",
+        "retired",
+        "disability pension",
+        "maternity leave",
+        "savings",
+        "farmer",
+        "work abroad",
+        "part-time",
+        "other"
+      ]
+    },
+    "allowances": {
+      "$ref": "../../../common/money.json",
+      "description": "Amount of money received in various allowances, if applicable"
+    },
+    "employer": {
+      "type": ["string", "null"],
+      "description": "Name of the employer",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "current_employment_time": {
+      "type": ["integer", "null"],
+      "description": "Current employment time in months"
+    },
+    "monthly_income": {
+      "$ref": "../../../common/money.json"
+    },
+    "loan_purpose": {
+      "type": ["string", "null"],
+      "enum": ["house renovation", "vacation", "shopping", "car", "other"]
+    },
+    "residence_type": {
+      "type": ["string", "null"],
+      "enum": ["flat", "house", "other"]
+    },
+    "residence_title": {
+      "type": ["string", "null"],
+      "enum": [
+        "ownership",
+        "co-ownership",
+        "lease",
+        "with parents",
+        "no permanent residence",
+        "dormitory",
+        "other"
+      ]
+    },
+    "current_residence_time": {
+      "type": ["integer", "null"],
+      "description": "Time of residence in current location in months"
+    },
+    "nationality": {
+      "$ref": "../common/country.json"
+    },
+    "country_of_birth": {
+      "$ref": "../common/country.json"
+    },
+    "marketing_consent": {
+      "type": ["boolean", "null"],
+      "description": "The customer agreed to be contacted for marketing purposes"
+    },
+    "car_ownership": {
+      "type": "boolean",
+      "description": "The customer owns a car"
+    },
+    "extra_data": {
+      "$ref": "../common/extra_data.json"
+    }
+  }
+}

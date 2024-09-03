@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Card Payment",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "const": "card",
+      "description": "Determines the type of Payment Method - for card payments must be a  <code>card</code> string"
+    },
+    "payment_gateway": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Name of the payment gateway",
+      "examples": ["stripe"]
+    },
+    "card_token": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Tokenized credit card number, see <a href='/docs/integration_guide/faq#card_token'>card_token</a>"
+    },
+    "card_bin_number": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{6,9}$",
+      "description": "Card BIN number"
+    },
+    "card_number_last4": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}$",
+      "description": "Last four digits of credit card number"
+    },
+    "card_expiry_year": {
+      "type": ["integer", "null"],
+      "minimum": 1900,
+      "maximum": 2100,
+      "description": "Card expiry year (as 4 digit number)"
+    },
+    "card_expiry_month": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 12,
+      "description": "Card expiry month (1-12)"
+    },
+    "cardholder_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Cardholder's first and last name"
+    },
+    "cvv_result_code": {
+      "type": ["string", "null"],
+      "description": "CVV verification response codes",
+      "enum": ["M", "N", "P", "S", "U", "Empty", null],
+      "$comment": "http://www.emsecommerce.net/avs_cvv2_response_codes.htm"
+    },
+    "avs_result_code": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 1,
+      "description": "Read more in: <a href=\"https://en.wikipedia.org/wiki/Address_Verification_System\">Address Verification System</a>"
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    },
+    "requested_3ds_mode": {
+      "type": ["string", "null"],
+      "enum": ["frictionless", "force", "auto", null],
+      "description": "The required 3D Secure behaviour"
+    },
+    "card_bin_country": {
+      "$ref": "../common/country.json"
+    },
+    "card_brand": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "card_issuer_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "card_type": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "card_level": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "card_pan_length": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "card_category": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Payment Method (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["method"]
+}

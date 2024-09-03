@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["identity"],
+  "properties": {
+    "identity": {
+      "$ref": "#/$defs/IdentityProduct"
+    },
+    "verify": {
+      "$ref": "#/$defs/VerifyProduct"
+    },
+    "bankTransactions": {
+      "$ref": "#/$defs/BankTransactionsProduct"
+    },
+    "aml": {
+      "$ref": "#/$defs/AMLProduct"
+    }
+  },
+  "description": "It is the query definition that contains the set of information we want to receive. The content of this field strongly depends on the chosen strategy which specifies what information can be passed to Authologic. You can read more about strategies and their restrictions in the <a href='/docs/integration_guide/kyc/strategies/'>strategies</a> section and see possible product that can be used in query in the <a href='/docs/integration_guide/kyc/products/'>products</a> section.",
+  "$defs": {
+    "IdentityProduct": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "$ref": "#/$defs/IdentityProductFields"
+        },
+        "requireOneOf": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "Definition of the user information that have to be obtained. You can only define information to which you are entitled under the contract. The value is the list of field sets that should be specified. The system will assume that the conversation was successful if any of these sets can be determined.",
+          "example": ["PERSON_NAME_FIRSTNAME", "PERSON_NAME_LASTNAME"],
+          "items": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/UserInfoName"
+            }
+          }
+        },
+        "optional": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "list": {
+                "uniqueItems": true,
+                "type": "array",
+                "description": "Definition of the user information that is not required to be obtained. You can only define information to which you are entitled under the contract.",
+                "example": ["PERSON_NAME_FIRSTNAME", "PERSON_NAME_LASTNAME"],
+                "items": {
+                  "$ref": "#/$defs/UserInfoName"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Required information about the user."
+    },
+    "VerifyProduct": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "known_user_info.json"
+        }
+      },
+      "description": "Information about which user information should be compared and verified."
+    },
+    "BankTransactionsProduct": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Transaction type to be retrieved:<br/><br/>* CREDIT - credit<br/>* DEBIT - debit<br/>* ALL - all types.",
+          "enum": ["CREDIT", "DEBIT", "ALL"]
+        },
+        "flags": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["INCLUDE_SCHEDULED", "INCLUDE_TAGS"]
+          }
+        }
+      },
+      "description": "Required information about the user's banking transactions."
+    },
+    "AMLProduct": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "type": "array",
+          "description": "List of AML checks to perform.",
+          "items": {
+            "type": "string",
+            "description": "List of AML checks to perform.",
+            "enum": ["PEP", "SANCTIONS", "ADVERSE_MEDIA"]
+          }
+        }
+      },
+      "description": "Required information about the AML checks."
+    },
+    "IdentityProductFields": {
+      "required": ["mandatory"],
+      "type": "object",
+      "properties": {
+        "mandatory": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/UserInfoName"
+          }
+        },
+        "optional": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/UserInfoName"
+          }
+        }
+      },
+      "description": "[DEPRECATED] Definition of the user information to be obtained. You can only define information to which you are entitled under the contract. Two lists are available for definition:<br/><br/>* mandatory - a list of user information that must be specified<br/>* optional - a list of user information that should be returned, but not required.<br/><br/>This option is DEPRECATED and will be removed in the future releases. Please use: <b>requireOneOf</b> and <b>optional</b> fields instead."
+    },
+    "UserInfoName": {
+      "type": "string",
+      "description": "* PERSON_NAME_FIRSTNAME - user's first name<br/>* PERSON_NAME_LASTNAME - user's last name<br/>* PERSON_NAME_MIDDLE_INITIAL - middle name initial<br/>* PERSON_NAME_MIDDLENAME - middle name<br/>* PERSON_NAME_FULLNAME - user's full name<br/>* PERSON_IDS_NATIONAL_ID - user ID (in Poland: PESEL)<br/>* PERSON_IDS_IDCARD_ID - ID card number<br/>* PERSON_IDS_IDCARD_ISSUE_DATE - date of issuing the ID card<br/>* PERSON_IDS_IDCARD_EXPIRY_DATE - ID card expiry date<br/>* PERSON_IDS_IDCARD_ISSUE_COUNTRY - the ID card issue country<br/>* PERSON_IDS_PASSPORT_ID - passport number<br/>* PERSON_IDS_PASSPORT_ISSUE_DATE - passport issue date<br/>* PERSON_IDS_PASSPORT_EXPIRY_DATE - passport expiry date<br/>* PERSON_IDS_PASSPORT_ISSUE_COUNTRY - passport issue country<br/>* PERSON_IDS_DRIVER_LICENCE_ID - driving license number<br/>* PERSON_IDS_DRIVER_LICENCE_ISSUE_DATE - driving license issue date<br/>* PERSON_IDS_DRIVER_LICENCE_EXPIRY_DATE - driving license expiry date<br/>* PERSON_IDS_DRIVER_LICENCE_ISSUE_COUNTRY - driving license issue country<br/>* PERSON_IDS_RESIDENCE_PERMIT_ID - residence permit card number<br/>* PERSON_IDS_RESIDENCE_PERMIT_ISSUE_DATE - date of issuing the residence permit<br/>* PERSON_IDS_RESIDENCE_PERMIT_EXPIRY_DATE - residence permit expiry date<br/>* PERSON_IDS_RESIDENCE_PERMIT_ISSUE_COUNTRY - the residence permit issue country<br/>* PERSON_IDS_OTHER_DOCUMENT_ID - other document identifier (only applies to specific verification methods)<br/>* PERSON_IDS_OTHER_DOCUMENT_DESCRIPTION - description of document type (only applies to specific verification methods)<br/>* PERSON_IDS_OTHER_DOCUMENT_ISSUE_DATE - issue date for document (only applies to specific verification methods)<br/>* PERSON_IDS_OTHER_DOCUMENT_EXPIRY_DATE - expiry date (only applies to specific verification methods)<br/>* PERSON_IDS_OTHER_DOCUMENT_ISSUE_COUNTRY - the document issue country (only applies to specific verification methods)<br/>* PERSON_IDS_ACCOUNTS - information about the user's bank accounts<br/>* PERSON_INFO_GENDER - user's gender<br/>* PERSON_INFO_NATIONALITY - nationality<br/>* PERSON_INFO_BIRTHDATE - date of birth<br/>* PERSON_INFO_BIRTH_CITY - place of birth<br/>* PERSON_ADDRESS - user address<br/>* PERSON_CONTACT_EMAIL - user's email<br/>* PERSON_CONTACT_PHONE - user's phone<br/>* COMPANY_NAME_NAME - company name<br/>* COMPANY_IDS_TAX_ID - tax identifier (in Poland: NIP)<br/>* COMPANY_ADDRESS - company address<br/>* COMPANY_CONTACT_EMAIL - business email<br/>* COMPANY_CONTACT_PHONE - company telephone.",
+      "enum": [
+        "PERSON_NAME_FIRSTNAME",
+        "PERSON_NAME_LASTNAME",
+        "PERSON_NAME_MIDDLENAME",
+        "PERSON_NAME_MIDDLE_INITIAL",
+        "PERSON_NAME_FULLNAME",
+        "PERSON_IDS_NATIONAL_ID",
+        "PERSON_IDS_ACCOUNTS",
+        "PERSON_IDS_IDCARD_ID",
+        "PERSON_IDS_IDCARD_TYPE",
+        "PERSON_IDS_IDCARD_PHOTO",
+        "PERSON_IDS_IDCARD_ISSUE_DATE",
+        "PERSON_IDS_IDCARD_EXPIRY_DATE",
+        "PERSON_IDS_IDCARD_ISSUE_COUNTRY",
+        "PERSON_IDS_PASSPORT_ID",
+        "PERSON_IDS_PASSPORT_ISSUE_DATE",
+        "PERSON_IDS_PASSPORT_EXPIRY_DATE",
+        "PERSON_IDS_PASSPORT_PHOTO",
+        "PERSON_IDS_PASSPORT_ISSUE_COUNTRY",
+        "PERSON_IDS_RESIDENCE_PERMIT_ID",
+        "PERSON_IDS_RESIDENCE_PERMIT_ISSUE_DATE",
+        "PERSON_IDS_RESIDENCE_PERMIT_EXPIRY_DATE",
+        "PERSON_IDS_RESIDENCE_PERMIT_PHOTO",
+        "PERSON_IDS_RESIDENCE_PERMIT_ISSUE_COUNTRY",
+        "PERSON_IDS_DRIVER_LICENCE_ID",
+        "PERSON_IDS_DRIVER_LICENCE_ISSUE_DATE",
+        "PERSON_IDS_DRIVER_LICENCE_EXPIRY_DATE",
+        "PERSON_IDS_DRIVER_LICENCE_PHOTO",
+        "PERSON_IDS_DRIVER_LICENCE_ISSUE_COUNTRY",
+        "PERSON_IDS_OTHER_DOCUMENT_ID",
+        "PERSON_IDS_OTHER_DOCUMENT_DESCRIPTION",
+        "PERSON_IDS_OTHER_DOCUMENT_ISSUE_DATE",
+        "PERSON_IDS_OTHER_DOCUMENT_EXPIRY_DATE",
+        "PERSON_IDS_OTHER_DOCUMENT_ISSUE_COUNTRY",
+        "PERSON_INFO_GENDER",
+        "PERSON_INFO_NATIONALITY",
+        "PERSON_INFO_BIRTHDATE",
+        "PERSON_INFO_BIRTH_CITY",
+        "COMPANY_NAME_NAME",
+        "COMPANY_IDS_TAX_ID",
+        "PERSON_ADDRESS",
+        "COMPANY_ADDRESS",
+        "PERSON_CONTACT_EMAIL",
+        "PERSON_CONTACT_PHONE",
+        "COMPANY_CONTACT_EMAIL",
+        "COMPANY_CONTACT_PHONE",
+        "COMPANY_IDS_ADDITIONAL_ID",
+        "PERSON_IDS_CRYPTO_WALLET_ADDRESSES"
+      ]
+    }
+  }
+}

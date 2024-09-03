@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Accomodation",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "accommodation",
+      "description": "Determines the type of Item - for accommodation items must be a <code>accommodation</code> string"
+    },
+    "id": {
+      "type": ["string", "null"],
+      "description": "ID of a booking",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "from": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Start date in ISO8601 format",
+      "examples": ["2020-11-25"]
+    },
+    "to": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "End date in ISO8601 format",
+      "examples": ["2020-11-25"]
+    },
+    "name": {
+      "type": ["string", "null"],
+      "description": "Name of the venue",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "rooms": {
+      "type": "array",
+      "description": "A list of rooms in the booking",
+      "items": {
+        "type": "object",
+        "properties": {
+          "guests": {
+            "type": "array",
+            "items": {
+              "$ref": "item_person.json"
+            },
+            "description": "Information about the guests."
+          },
+          "type": {
+            "type": ["string", "null"],
+            "description": "Name of the room type",
+            "minLength": 1,
+            "maxLength": 2048,
+            "examples": ["studio", "suite", "standard"]
+          },
+          "adults": {
+            "type": ["integer", "null"],
+            "description": "Number of adults in the room",
+            "minimum": 1,
+            "maximum": 32767
+          },
+          "children": {
+            "type": ["integer", "null"],
+            "description": "Number of children in the room",
+            "minimum": 1,
+            "maximum": 32767
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Name of the booking provider, e.g. another travel agency or meta search"
+    },
+    "refund_policy": {
+      "type": ["string", "null"],
+      "description": "Refund policy if the ticket is cancelled by the user",
+      "enum": ["fully refundable", "partially refundable", "non refundable", null]
+    },
+    "hotel_address": {
+      "$ref": "../address.json"
+    },
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rating of the hotel",
+      "properties": {
+        "value": {
+          "type": ["number", "null"],
+          "description": "Rating of the hotel by external provider, e.g. TripAdvisor"
+        },
+        "reviews": {
+          "type": ["number", "null"],
+          "description": "Number of reviews that the scoring is based on"
+        }
+      }
+    },
+    "meal_plan": {
+      "type": ["string", "null"],
+      "description": "Type of alimentation",
+      "enum": ["full board", "half board", "all-inclusive", null]
+    },
+    "price": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        {
+          "description": "Item's price"
+        }
+      ]
+    },
+    "extra_data": {
+      "allOf": [
+        { "$ref": "../common/extra_data.json" },
+        {
+          "description": "Additional data associated with this Item (limited to 4kB by default)"
+        }
+      ]
+    }
+  },
+  "required": ["type"]
+}

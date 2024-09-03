@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bank transfer",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": ["bank_transfer", "banking_alias"],
+      "description": "Determines the type of Payment Method - for Bank Transfer payments must be a <code>bank_transfer</code> or <code>banking_alias</code> string"
+    },
+    "payment_settlement": {
+      "type": ["string", "null"],
+      "enum": ["installment", "invoice", "delayed", "instant", null]
+    },
+    "bank_account": {
+      "$ref": "../common/bank_account.json"
+    },
+    "owner": {
+      "id": {
+        "type": ["string", "null"],
+        "minLength": 1,
+        "maxLength": 2048,
+        "description": "Unique identifier of the person, if available"
+      },
+      "oneOf": [
+        {
+          "title": "Natural person",
+          "allOf": [
+            {
+              "$ref": "../common/person.json#/$defs/natural_person_person_type"
+            },
+            { "$ref": "#/$defs/common_owner_props" },
+            { "$ref": "../common/person.json" }
+          ]
+        },
+        {
+          "title": "Legal person",
+          "allOf": [
+            {
+              "$ref": "../common/legal_person.json#/$defs/legal_person_person_type"
+            },
+            { "$ref": "#/$defs/common_owner_props" },
+            { "$ref": "../common/legal_person.json" }
+          ]
+        }
+      ]
+    },
+    "bankwire_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "bankwire_mode": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "value": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        { "description": "Amount of money paid with this Payment Method" }
+      ]
+    }
+  },
+  "required": ["method"],
+  "$defs": {
+    "common_owner_props": {
+      "properties": {
+        "id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 2048,
+          "description": "Unique identifier of the person, if available"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "description": "desc",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "required": ["batch_upload_reference", "batch_inquiries"],
+  "properties": {
+    "batch_upload_reference": {
+      "type": "string",
+      "description": "Reference identifying batch upload.",
+      "maxLength": 128
+    },
+    "batch_inquiries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of created inquiry to reference later - 64 bit value."
+          },
+          "id_str": {
+            "type": "string",
+            "description": "Id of created inquiry as string"
+          },
+          "reference": {
+            "type": ["string", "null"],
+            "description": "Unique reference identifying this inquiry, as used in internal client's systems",
+            "maxLength": 128
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["reference", "id", "id_str"],
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "description": "Unique reference identifying transaction in your system"
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "Unique id of created transaction - 64-bit value."
+                },
+                "id_str": {
+                  "type": "string",
+                  "description": "Unique id of created transaction as string"
+                }
+              }
+            },
+            "description": "An array of objects containing identifiers of created transactions."
+          }
+        },
+        "required": ["id", "id_str", "reference", "transactions"]
+      },
+      "description": "An array of objects containing identifiers of created inquiries and transactions."
+    }
+  }
+}

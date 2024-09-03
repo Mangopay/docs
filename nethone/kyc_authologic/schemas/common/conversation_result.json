@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "identity": {
+      "$ref": "#/$defs/ConversationInfoIdentityProductResult"
+    },
+    "verify": {
+      "$ref": "#/$defs/ConversationInfoVerifyProductResult"
+    },
+    "bankTransactions": {
+      "$ref": "#/$defs/ConversationInfoBankTransactionsProductResult"
+    },
+    "aml": {
+      "$ref": "#/$defs/ConversationInfoAMLProductResult"
+    }
+  },
+  "description": "The result of checking individual elements.",
+  "$defs": {
+    "ConversationInfoIdentityProductResult": {
+      "title": "ConversationIdentityResult",
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ProductResultStatus"
+        },
+        "final": {
+          "type": "boolean",
+          "description": "Information whether the current data status may still change.",
+          "deprecated": true
+        },
+        "errors": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "EXPERIMENTAL: Additional information on possible causes of verification failure.",
+          "items": {
+            "type": "string",
+            "description": "EXPERIMENTAL: Additional information on possible causes of verification failure."
+          }
+        },
+        "user": {
+          "$ref": "#/$defs/DiscoveredUserInfo"
+        }
+      },
+      "description": "Identity check result."
+    },
+    "ConversationInfoVerifyProductResult": {
+      "title": "ConversationVerifyResult",
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ProductResultStatus"
+        },
+        "reliability": {
+          "maximum": 1.0,
+          "minimum": 0,
+          "type": "number",
+          "description": "Information about how closely the output matches the input data.",
+          "format": "double"
+        },
+        "details": {
+          "type": "array",
+          "description": "Detailed information about how closely given fields matches the input data.",
+          "items": {
+            "$ref": "#/$defs/VerifyProductResultDetailInfo"
+          }
+        }
+      },
+      "description": "Verify step result."
+    },
+    "ConversationInfoBankTransactionsProductResult": {
+      "title": "ConversationBankTransactionsResult",
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ProductResultStatus"
+        },
+        "final": {
+          "type": "boolean",
+          "description": "Information whether the current data status may still change.",
+          "deprecated": true
+        }
+      },
+      "description": "The result of retrieving transaction data."
+    },
+    "ConversationInfoAMLProductResult": {
+      "title": "ConversationAMLResult",
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ProductResultStatus"
+        },
+        "found": {
+          "uniqueItems": true,
+          "type": "array",
+          "description": "AML lists, where matching records were found.",
+          "items": {
+            "type": "string",
+            "description": "AML lists, where matching records were found.",
+            "enum": ["PEP", "SANCTIONS", "ADVERSE_MEDIA"]
+          }
+        }
+      },
+      "description": "EXPERIMENTAL: The result of AML checks."
+    },
+    "ProductResultStatus": {
+      "type": "string",
+      "description": "Product result status:<ul class='circle'><li>IN_PROGRESS - checking in progress</li><li>FINISHED - checking completed</li><li>FAILED - checking completed but no data could be determined</li><li>PARTIAL - checking partially completed but data is still being processed.</li></ul>",
+      "example": "FINISHED",
+      "enum": ["IN_PROGRESS", "FINISHED", "FAILED", "PARTIAL"]
+    },
+    "DiscoveredUserInfo": {
+      "type": "object",
+      "properties": {
+        "person": {
+          "$ref": "person_user_info.json"
+        },
+        "company": {
+          "$ref": "company_user_info.json"
+        }
+      },
+      "description": "Data discovered during identity checks."
+    },
+    "VerifyProductResultDetailInfo": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The field to which the data relate.",
+          "enum": [
+            "PERSON_NAME_FIRSTNAME",
+            "PERSON_NAME_LASTNAME",
+            "PERSON_NAME_MIDDLENAME",
+            "PERSON_NAME_MIDDLE_INITIAL",
+            "PERSON_NAME_FULLNAME",
+            "PERSON_IDS_NATIONAL_ID",
+            "PERSON_IDS_ACCOUNTS",
+            "PERSON_IDS_IDCARD_ID",
+            "PERSON_IDS_IDCARD_TYPE",
+            "PERSON_IDS_IDCARD_PHOTO",
+            "PERSON_IDS_IDCARD_ISSUE_DATE",
+            "PERSON_IDS_IDCARD_EXPIRY_DATE",
+            "PERSON_IDS_IDCARD_ISSUE_COUNTRY",
+            "PERSON_IDS_PASSPORT_ID",
+            "PERSON_IDS_PASSPORT_ISSUE_DATE",
+            "PERSON_IDS_PASSPORT_EXPIRY_DATE",
+            "PERSON_IDS_PASSPORT_PHOTO",
+            "PERSON_IDS_PASSPORT_ISSUE_COUNTRY",
+            "PERSON_IDS_RESIDENCE_PERMIT_ID",
+            "PERSON_IDS_RESIDENCE_PERMIT_ISSUE_DATE",
+            "PERSON_IDS_RESIDENCE_PERMIT_EXPIRY_DATE",
+            "PERSON_IDS_RESIDENCE_PERMIT_PHOTO",
+            "PERSON_IDS_RESIDENCE_PERMIT_ISSUE_COUNTRY",
+            "PERSON_IDS_DRIVER_LICENCE_ID",
+            "PERSON_IDS_DRIVER_LICENCE_ISSUE_DATE",
+            "PERSON_IDS_DRIVER_LICENCE_EXPIRY_DATE",
+            "PERSON_IDS_DRIVER_LICENCE_PHOTO",
+            "PERSON_IDS_DRIVER_LICENCE_ISSUE_COUNTRY",
+            "PERSON_IDS_OTHER_DOCUMENT_ID",
+            "PERSON_IDS_OTHER_DOCUMENT_DESCRIPTION",
+            "PERSON_IDS_OTHER_DOCUMENT_ISSUE_DATE",
+            "PERSON_IDS_OTHER_DOCUMENT_EXPIRY_DATE",
+            "PERSON_IDS_OTHER_DOCUMENT_ISSUE_COUNTRY",
+            "PERSON_INFO_GENDER",
+            "PERSON_INFO_NATIONALITY",
+            "PERSON_INFO_BIRTHDATE",
+            "PERSON_INFO_BIRTH_CITY",
+            "COMPANY_NAME_NAME",
+            "COMPANY_IDS_TAX_ID",
+            "PERSON_ADDRESS",
+            "COMPANY_ADDRESS",
+            "PERSON_CONTACT_EMAIL",
+            "PERSON_CONTACT_PHONE",
+            "COMPANY_CONTACT_EMAIL",
+            "COMPANY_CONTACT_PHONE",
+            "COMPANY_IDS_ADDITIONAL_ID",
+            "PERSON_IDS_CRYPTO_WALLET_ADDRESSES"
+          ]
+        },
+        "reliability": {
+          "maximum": 1.0,
+          "minimum": 0,
+          "type": "number",
+          "description": "Information about how closely the field matches the input data.",
+          "format": "double"
+        }
+      },
+      "description": "Detailed information about how closely given fields matches the input data."
+    }
+  }
+}

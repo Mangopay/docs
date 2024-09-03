@@ -1,0 +1,92 @@
+{
+  "description": "Machine learning models results. Availability of this data depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "examples": [
+          "anti-fraud",
+          "anti-chargeback",
+          "replication",
+          "similar_users",
+          "related_similarity",
+          "customer_segmentation",
+          "ato",
+          "improper_names_detector"
+        ],
+        "description": "Name of the model"
+      },
+      "prediction": {
+        "description": "Prediction values",
+        "anyOf": [
+          {
+            "title": "Binary classification",
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "description": "Binary classification results, a real number in the inclusive range from 0 to 1.",
+                "example": 0.5
+              },
+              "extra_data": {
+                "type": "object",
+                "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                "example": {}
+              }
+            },
+            "required": ["value", "extra_data"],
+            "additionalProperties": false
+          },
+          {
+            "title": "Multiclass classification",
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "object",
+                "patternProperties": {
+                  "^[a-zA-Z0-9-]+$": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0
+                  }
+                },
+                "description": "Multiclass classification results, a dictionary with class names as keys (string) and predictions (float) as values.",
+                "example": "{'class A': 0.5, 'class B': 0.3}"
+              },
+              "extra_data": {
+                "type": "object",
+                "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                "example": {}
+              }
+            },
+            "required": ["values", "extra_data"],
+            "additionalProperties": false
+          },
+          {
+            "title": "Score",
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "example": 0.5,
+                "description": "Scoring value provided by the model."
+              },
+              "extra_data": {
+                "type": "object",
+                "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                "example": {}
+              }
+            },
+            "required": ["value", "extra_data"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "required": ["name", "prediction"]
+  }
+}

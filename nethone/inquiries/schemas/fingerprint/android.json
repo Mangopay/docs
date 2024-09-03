@@ -1,0 +1,231 @@
+{
+  "type": "object",
+  "title": "Android",
+  "properties": {
+    "profiling_type": {
+      "enum": ["android"],
+      "description": "Type of profiling",
+      "type": "string"
+    },
+    "attempt_reference": {
+      "type": "string",
+      "description": "Identifier of a payment attempt (should not be used in a data mining)"
+    },
+    "created_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$",
+      "examples": ["2020-11-25 07:51:19.490002"],
+      "description": "Date of receiving first request"
+    },
+    "ip": {
+      "type": "string",
+      "description": "The IP address from which a connection with the Profiler was established"
+    },
+    "proxied_for_ip": {
+      "type": ["string", "null"],
+      "description": "The IP address on behalf of which the proxy connected to the profiler"
+    },
+    "signals": {
+      "items": {
+        "type": "string"
+      },
+      "description": "<a href='/docs/integration_guide/inquiry#android-signals'>Unusual fact or behaviors that may indicate fraud</a>",
+      "type": "array"
+    },
+    "network": {
+      "type": "object",
+      "description": "Group containing network information",
+      "properties": {
+        "link_type": {
+          "type": "string",
+          "description": "TCP/IP stack characteristics",
+          "example": "OpenVPN TCP bs128 SHA1 lza"
+        },
+        "user_declared_ip": {
+          "type": "object",
+          "deprecated": true,
+          "properties": {
+            "addr": {
+              "type": "string",
+              "description": "Use `ip` field in root fingerprint object response. IP address declared by the user"
+            }
+          }
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "description": "Group containing device information",
+      "properties": {
+        "battery": {
+          "type": "object",
+          "description": "Group containing device battery information",
+          "properties": {
+            "battery_health": {
+              "type": ["string", "null"],
+              "description": "Battery's health status - values: [\"unknown\", \"good\", \"overheat\", \"dead\", \"over_voltage\",\"unspecified_failure\", \"cold\"]"
+            },
+            "extra_health": {
+              "type": ["integer", "null"],
+              "description": "Battery's health status, same as <code>battery_health</code> field, but as an integer value. 1 - BATTERY_HEALTH_UNKNOWN, 2 - BATTERY_HEALTH_GOOD, 3 - BATTERY_HEALTH_OVERHEAT, 4 - BATTERY_HEALTH_DEAD, 5 - BATTERY_HEALTH_OVER_VOLTAGE, 6 - BATTERY_HEALTH_UNSPECIFIED_FAILURE, 7 - BATTERY_HEALTH_COLD"
+            },
+            "level": {
+              "type": ["number", "null"],
+              "description": "Battery's level - values: [0, 100]"
+            },
+            "extra_level": {
+              "type": ["integer", "null"],
+              "description": "Battery's level as an unscaled value - values: [0, extra_scale_level]"
+            },
+            "extra_scale_level": {
+              "type": ["integer", "null"],
+              "description": "Battery's maximum level"
+            },
+            "plugged": {
+              "type": ["string", "null"],
+              "description": "Battery's plugged mode - values: [\"battery\", \"ac\", \"usb\", \"wireless\"]"
+            },
+            "extra_plugged": {
+              "type": ["integer", "null"],
+              "description": "Battery's plugged mode, same as <code>plugged</code> field, but as an integer value. 0 - battery (default), 1 - BATTERY_PLUGGED_AC, 2 - BATTERY_PLUGGED_USB, 4 - BATTERY_PLUGGED_WIRELESS"
+            },
+            "charging_state": {
+              "type": ["string", "null"],
+              "description": "Battery's charging status - values: [\"unknown\", \"charging\", \"discharging\",  \"not_charging\", \"full\"]"
+            },
+            "extra_status": {
+              "type": ["integer", "null"],
+              "description": "Battery's charging status, same as <code>charging_state</code> field, bus as an integer value. 1 - BATTERY_STATUS_UNKNOWN, 2 - BATTERY_STATUS_CHARGING, 3 - BATTERY_STATUS_DISCHARGING, 4 - BATTERY_STATUS_NOT_CHARGING, 5 - BATTERY_STATUS_FULL"
+            },
+            "extra_present": {
+              "type": ["boolean", "null"],
+              "description": "Specifies whether battery is present or not"
+            },
+            "extra_technology": {
+              "type": ["string", "null"],
+              "description": "Describes the technology of the current battery"
+            },
+            "extra_temperature": {
+              "type": ["integer", "null"],
+              "description": "Integer containing the current battery temperature"
+            },
+            "extra_voltage": {
+              "type": ["integer", "null"],
+              "description": "Integer containing the current battery voltage level"
+            }
+          }
+        },
+        "carrier": {
+          "type": "object",
+          "description": "Group containing device carrier information",
+          "properties": {
+            "name": {
+              "type": ["string", "null"],
+              "description": "Name of mobile carrier"
+            },
+            "country": {
+              "type": ["string", "null"],
+              "description": "Describes the ISO-3166-1 alpha-2 country code equivalent for the SIM provider's country code"
+            },
+            "iso_country_code": {
+              "type": ["string", "null"],
+              "description": "ISO code of mobile carrier"
+            },
+            "mobile_country_code": {
+              "type": ["string", "null"],
+              "description": "Country code of mobile carrier"
+            },
+            "mobile_network_code": {
+              "type": ["string", "null"],
+              "description": "Mobile carrier code"
+            },
+            "allows_voip": {
+              "type": ["boolean", "null"],
+              "description": "True if the system supports SIP-based VOIP API"
+            },
+            "icc_card": {
+              "type": ["boolean", "null"],
+              "description": "Specifies whether ICC card is present"
+            },
+            "roaming": {
+              "type": ["boolean", "null"],
+              "description": "True if the device is considered roaming on the current network, for GSM purposes"
+            },
+            "sim_state": {
+              "type": ["integer", "null"],
+              "description": "State of the device `SIM` card in a logical slot. <br> 0 - SIM_STATE_UNKNOWN, 1 - SIM_STATE_ABSENT, 2 - SIM_STATE_PIN_REQUIRED, 3 - SIM_STATE_PUK_REQUIRED, 4- SIM_STATE_NETWORK_LOCKED, 5 - SIM_STATE_READY, 6 - SIM_STATE_NOT_READY, 7 - SIM_STATE_PERM_DISABLED, 8 - SIM_STATE_CARD_IO_ERROR, 9 - SIM_STATE_CARD_RESTRICTED, 10 - SIM_STATE_LOADED, 11 - SIM_STATE_PRESENT"
+            },
+            "radio_phone_type": {
+              "type": ["integer", "null"],
+              "description": "Specifies the device's phone radio type. This indicates the type of radio used to transmit voice calls. 0 - PHONE_TYPE_NONE, 1 - PHONE_TYPE_GSM, 2 - PHONE_TYPE_CDMA, 3 - PHONE_TYPE_SIP"
+            },
+            "network_type": {
+              "type": ["integer", "null"],
+              "description": "Indicates the radio technology (network type) currently in use on the device for data transmission. 0 - NETWORK_TYPE_UNKNOWN, 1 - NETWORK_TYPE_GPRS, 2 - NETWORK_TYPE_EDGE, 3 - NETWORK_TYPE_UMTS, 4 - NETWORK_TYPE_HSDPA, 5 - NETWORK_TYPE_HSUPA, 6 - NETWORK_TYPE_HSPA, 7 - NETWORK_TYPE_CDMA, 8 - NETWORK_TYPE_EVDO_0, 9 - NETWORK_TYPE_EVDO_A, 10 - NETWORK_TYPE_EVDO_B, 11 - NETWORK_TYPE_1xRTT, 12 - NETWORK_TYPE_IDEN, 13 - NETWORK_TYPE_LTE, 14 - NETWORK_TYPE_EHRPD, 15 - NETWORK_TYPE_HSPAP, 16 - NETWORK_TYPE_NR"
+            }
+          }
+        },
+        "disk": {
+          "type": "object",
+          "description": "Group containing device disk information",
+          "properties": {
+            "total_space": {
+              "type": ["string", "null"],
+              "description": "Total disk space in bytes (both used space and free space)"
+            },
+            "free_space_root": {
+              "type": ["string", "null"],
+              "description": "The total number of bytes that are free on the file system, including bytes from reserved blocks (that are not available to normal applications)"
+            }
+          }
+        },
+        "device": {
+          "type": "object",
+          "description": "Group containing general device information",
+          "properties": {
+            "android_id": {
+              "type": ["string", "null"],
+              "description": "Unique identifier of a device (from Android SDK)"
+            },
+            "model": {
+              "type": ["string", "null"],
+              "description": "Device's model name, value the same as a property: <code>ro.product.model</code>"
+            },
+            "manufacturer": {
+              "type": ["string", "null"],
+              "description": "Device's manufacturer name, value the same as a property: <code>ro.product.manufacturer</code>"
+            },
+            "brand": {
+              "type": ["string", "null"],
+              "description": "Device's brand name, value the same as a property: <code>ro.product.brand</code>"
+            },
+            "build_fingerprint": {
+              "type": ["string", "null"],
+              "description": "Unique Android build identifier, concatenated string of <code>brand</code>, <code>name</code>, <code>device</code>, <code>release version</code>, <code>id</code>, <code>version incremental</code>, <code>type</code> and <code>tags</code> fields."
+            },
+            "product": {
+              "type": ["string", "null"],
+              "description": "Device's product name, value the same as a property: <code>ro.product.name</code>"
+            },
+            "http_proxy": {
+              "type": ["string", "null"],
+              "description": "Proxy settings applied on a device. Host name and port for global http proxy. Uses <code>:</code> separator between host and port."
+            },
+            "wifi_on": {
+              "type": ["boolean", "null"],
+              "description": "Specifies whether <code>WiFi</code> is present or not"
+            },
+            "bt_on": {
+              "type": ["boolean", "null"],
+              "description": "Specifies whether <code>bluetooth</code> is present or not"
+            },
+            "uptime_ms": {
+              "type": ["string", "null"],
+              "description": "Device uptime in ms"
+            }
+          }
+        }
+      }
+    }
+  }
+}

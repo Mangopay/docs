@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": ["string", "null"],
+      "description": "Type of the inquiry; needed only if its exact behavior is established during integration process",
+      "enum": [
+        "register",
+        "transaction",
+        "submit",
+        "confirm",
+        "login",
+        "payment:pre-auth",
+        "payment:post-auth",
+        "payin",
+        "payout",
+        "transfer"
+      ]
+    },
+    "attempt_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "See <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>"
+    },
+    "reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Unique reference identifying this inquiry, as used in internal client's systems"
+    },
+    "force_accept": {
+      "type": ["boolean", "null"],
+      "description": "If set to true, the advice will be always 'accept', regardless of computed risk score"
+    },
+    "profiling_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Read more in: <a href='/docs/docs/integration_guide/faq.html#prof_ref>profiling_reference</a>"
+    },
+    "origin": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Identifier of the interaction surface with the user, e.g. URL of the web form or identifier of the application screen that triggers the inquiry. Origin should be unique per use case and stay the same for each inquiry triggered by this use case.",
+      "examples": ["landing-page1.airline.com", "airline.com.br"]
+    },
+    "device": {
+      "$ref": "device.json"
+    },
+    "customer": {
+      "allOf": [
+        {
+          "$ref": "common/person.json"
+        },
+        {
+          "properties": {
+            "delivery_address": {
+              "$ref": "address.json"
+            },
+            "user_reference": {
+              "type": ["string", "null"],
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>"
+            }
+          }
+        }
+      ]
+    },
+    "delivery": {
+      "$ref": "delivery.json"
+    },
+    "payment_methods": {
+      "type": ["array", "null"],
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "payment_methods/card.json"
+          },
+          {
+            "$ref": "payment_methods/crypto_wallet.json"
+          },
+          {
+            "$ref": "payment_methods/paypal.json"
+          },
+          {
+            "$ref": "payment_methods/direct_debit.json"
+          },
+          {
+            "$ref": "payment_methods/giftcard.json"
+          },
+          {
+            "$ref": "payment_methods/bnpl.json"
+          },
+          {
+            "$ref": "payment_methods/loyalty_program.json"
+          },
+          {
+            "$ref": "payment_methods/fleet_card.json"
+          },
+          {
+            "$ref": "payment_methods/wallet_payment.json"
+          },
+          {
+            "$ref": "payment_methods/bank_transfer.json"
+          },
+          {
+            "$ref": "payment_methods/mbway.json"
+          },
+          {
+            "$ref": "payment_methods/other.json"
+          }
+        ]
+      }
+    },
+    "merchant_reference": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Reference identifying an account (MID - merchant id) in the payment gateway system; must be unique across all gateways; should be provided when handling multiple merchant accounts."
+    },
+    "merchant_name": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Merchant corporate or parent company name"
+    },
+    "merchant_country": {
+      "$ref": "common/country.json"
+    },
+    "merchant_url": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 1000,
+      "format": "uri",
+      "description": "Merchant corporate business URL"
+    },
+    "merchant_phone_number": {
+      "type": ["string", "null"],
+      "minLength": 3,
+      "maxLength": 16,
+      "pattern": "^\\+[1-9]\\d{1,14}$",
+      "description": "Merchant phone number. Must be in E.164 format (\"+\" , up to 3-digits country code, up to 12-digits telephone number)"
+    },
+    "merchant_license": {
+      "type": ["string", "null"],
+      "enum": ["electronic_money_issuer", "payment_services", null],
+      "description": "Information if the platform is EMI or PI (Electronic Money Institution or Payment Institution)"
+    },
+    "merchant_risk": {
+      "type": ["string", "null"],
+      "enum": ["low", "medium", "high", null],
+      "description": "Information whether the platform involves a certain level of risk"
+    },
+    "items": {
+      "type": ["array", "null"],
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "items/flight.json"
+          },
+          {
+            "$ref": "items/trip.json"
+          },
+          {
+            "$ref": "items/accommodation.json"
+          },
+          {
+            "$ref": "items/transfer.json"
+          },
+          {
+            "$ref": "items/crypto_asset.json"
+          },
+          {
+            "$ref": "items/generic.json"
+          }
+        ]
+      }
+    },
+    "source": {
+      "$ref": "source.json"
+    },
+    "transaction_value": {
+      "$ref": "../../common/money.json"
+    },
+    "promotions": {
+      "type": ["array", "null"],
+      "items": {
+        "$ref": "promotion.json"
+      }
+    },
+    "tags": {
+      "type": ["array", "null"],
+      "description": "Array of tag strings.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "maxItems": 10
+    },
+    "extra_data": {
+      "$ref": "common/extra_data.json"
+    }
+  }
+}

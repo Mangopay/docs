@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the transaction.",
+      "example": "34df2bd6-b790-4560-9fc9-f86c86d87990"
+    },
+    "date": {
+      "type": "string",
+      "description": "Transaction date.",
+      "format": "date-time",
+      "example": "2020-09-24T08:27:14.515Z"
+    },
+    "bank": {
+      "type": "string",
+      "description": "Bank's SWIFT / BIC code.",
+      "example": "BREXPLPW"
+    },
+    "accountId": {
+      "type": "string",
+      "description": "Account number where transaction was registered.",
+      "example": "PL68249000050000400075212326"
+    },
+    "type": { "$ref": "#/$defs/TransactionType" },
+    "status": { "$ref": "#/$defs/TransactionStatus" },
+    "amount": {
+      "type": "integer",
+      "description": "Transaction value in basic units - e.g. in cents.",
+      "format": "int32",
+      "example": 10030
+    },
+    "currency": {
+      "type": "string",
+      "description": "Currency code in which the transaction took place.",
+      "example": "PLN"
+    },
+    "title": {
+      "type": "string",
+      "description": "Transaction title.",
+      "example": "Zasilenie konta"
+    },
+    "sender": {
+      "type": "string",
+      "description": "Information about the sender.",
+      "example": "Jan Kowalski"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Information about the recipient.",
+      "example": "Jan Kowalski"
+    },
+    "senderAccountId": {
+      "type": "string",
+      "description": "Account number of the sender.",
+      "example": "PL68249000050000400075212326"
+    },
+    "recipientAccountId": {
+      "type": "string",
+      "description": "Account number of the receiver.",
+      "example": "PL32114020040000320250132522"
+    },
+    "tags": {
+      "uniqueItems": true,
+      "type": "array",
+      "description": "Transaction categories.",
+      "example": ["monthly", "verification"],
+      "items": {
+        "type": "string",
+        "description": "Transaction categories.",
+        "example": "[\"monthly\",\"verification\"]"
+      }
+    }
+  },
+  "description": "Information about the transaction.",
+  "$defs": {
+    "TransactionType": {
+      "type": "string",
+      "description": "Transaction Type / Direction:<br/><br/>* CREDIT - account crediting<br/>* DEBIT - debiting the account.",
+      "example": "CREDIT",
+      "enum": ["CREDIT", "DEBIT"]
+    },
+    "TransactionStatus": {
+      "type": "string",
+      "description": "Transaction status:<br/><br/>* BOOKED - transaction booked<br/>* PENDING - transaction in progress<br/>* SCHEDULED - Transaction scheduled in the future.",
+      "example": "BOOKED",
+      "enum": ["BOOKED", "PENDING", "SCHEDULED"]
+    }
+  }
+}

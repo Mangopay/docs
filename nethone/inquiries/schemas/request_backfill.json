@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "properties": {
+    "batch_upload_reference": {
+      "type": "string",
+      "description": "Reference identifying batch upload. Value does not have to be unique and can be reused. If the value is not sent, it will be generated automatically and returned in response.",
+      "maxLength": 128
+    },
+    "batch_inquiries": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "properties": {
+              "inquiry_timestamp": {
+                "type": "string",
+                "description": "timestamp indicating when this inquiry occurred; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC",
+                "examples": ["2020-06-16 07:38:23.132000+00:00", "2019-11-26 10:22:22.933000+00:00"]
+              },
+              "transactions": {
+                "type": "array",
+                "items": {
+                  "$ref": "../../transactions/schemas/transaction_base.json"
+                },
+                "description": "Array of transaction objects related to inquiry. Read more in: <a href='create-a-transaction'>Transactions API</a>"
+              }
+            }
+          },
+          { "$ref": "request_v1.json" }
+        ]
+      },
+      "description": "Array of inquiry objects"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["batch_inquiries"]
+}

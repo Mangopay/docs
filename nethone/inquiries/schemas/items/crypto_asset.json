@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Crypto asset",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "crypto_asset",
+      "description": "Determines the type of Item - for crypto_asset items must be a <code>crypto_asset</code> string."
+    },
+    "id": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Identifier of a product, if available"
+    },
+    "blockchain": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Name of the blockchain"
+    },
+    "value": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+)?$",
+          "description": "Amount as a decimal string.",
+          "examples": ["0.99", "10"]
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{3,}$",
+          "description": "Cryptocurrency symbol"
+        }
+      },
+      "required": ["amount", "currency"]
+    },
+    "price": {
+      "allOf": [
+        { "$ref": "../../../common/money.json" },
+        {
+          "description": "Item's price"
+        }
+      ]
+    }
+  },
+  "required": ["type", "value"]
+}

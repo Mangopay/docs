@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "description": "desc",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "required": ["advice", "id", "id_str", "info"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Id of created inquiry to reference later - 64 bit value."
+    },
+    "id_str": {
+      "type": "string",
+      "description": "Id of created inquiry as string"
+    },
+    "advice": {
+      "type": "string",
+      "description": "Recommendation given for the inquiry",
+      "enum": ["trust", "accept", "refuse", "review"]
+    },
+    "info": {
+      "type": "object",
+      "description": "Additional info for this inquiry",
+      "properties": {
+        "models": {
+          "$ref": "models_node.json"
+        },
+        "fingerprint": {
+          "$ref": "fingerprint/fingerprint.json"
+        },
+        "rules": {
+          "$ref": "rule_results.json"
+        },
+        "ip_info": {
+          "$ref": "ip_info.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alert Update",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "notification_id": {
+      "description": "ID of the notification linked to the feedback.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      ]
+    },
+    "type": {
+      "type": "string",
+      "description": "Determines type of notification feedback. For <code>TRANSACTION ALERT</code> notification must be a <code>ALERT_UPDATE</code> string.",
+      "const": "ALERT_UPDATE"
+    },
+    "body": {
+      "$ref": "request_alert_update_body.json"
+    }
+  },
+  "required": ["notification_id", "type", "body"]
+}

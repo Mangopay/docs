@@ -1,0 +1,341 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/PersonName"
+    },
+    "ids": {
+      "$ref": "#/$defs/PersonIdsInfo"
+    },
+    "info": {
+      "$ref": "#/$defs/PersonInfoInfo"
+    },
+    "address": {
+      "$ref": "address_info.json"
+    },
+    "contact": {
+      "$ref": "contact_info.json"
+    }
+  },
+  "description": "User-related information if the current user is a natural person.",
+  "$defs": {
+    "PersonName": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": "string",
+          "description": "User name.",
+          "example": "Jan"
+        },
+        "lastName": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "User surname.",
+          "example": "Kowalski"
+        },
+        "middleName": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": "string",
+          "description": "Second name.",
+          "example": "Stanisław"
+        },
+        "middleInitial": {
+          "maxLength": 1,
+          "minLength": 0,
+          "type": "string",
+          "description": "Middle initial.",
+          "example": "S"
+        },
+        "fullName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string",
+          "description": "User full name.",
+          "example": "Jan Stanisław Kowalski"
+        }
+      },
+      "description": "Information related to the identification of the user, if the current user is a natural person."
+    },
+    "PersonIdsInfo": {
+      "type": "object",
+      "properties": {
+        "nationalId": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "User ID (in Poland: PESEL).",
+          "example": "73121243192"
+        },
+        "idCard": {
+          "$ref": "#/$defs/IdCardInfo"
+        },
+        "passport": {
+          "$ref": "#/$defs/PassportInfo"
+        },
+        "driverLicence": {
+          "$ref": "#/$defs/DriverLicenceInfo"
+        },
+        "residencePermit": {
+          "$ref": "#/$defs/ResidencePermitInfo"
+        },
+        "otherDocument": {
+          "$ref": "#/$defs/OtherDocumentInfo"
+        },
+        "accounts": {
+          "type": "array",
+          "description": "User account list.",
+          "items": {
+            "$ref": "#/$defs/PersonAccountInfo"
+          }
+        },
+        "cryptoWalletAddresses": {
+          "type": "array",
+          "description": "User crypto wallet address list.",
+          "items": {
+            "$ref": "#/$defs/PersonCryptoWalletAddressesInfo"
+          }
+        }
+      },
+      "description": "Identifiers associated with the user if the current user is a natural person."
+    },
+    "PersonInfoInfo": {
+      "type": "object",
+      "properties": {
+        "gender": {
+          "type": "string",
+          "description": "The gender of the user (MALE/FEMALE/OTHER).",
+          "enum": ["MALE", "FEMALE", "OTHER"]
+        },
+        "nationality": {
+          "type": "string",
+          "description": "User's nationality.",
+          "example": "PL"
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Date of birth.",
+          "format": "date"
+        },
+        "birthCity": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string",
+          "description": "Place of birth.",
+          "example": "Gdańsk"
+        }
+      },
+      "description": "Additional information about the user."
+    },
+    "IdCardInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Number.",
+          "example": "ABC 12343"
+        },
+        "type": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": "string",
+          "description": "Type od ID card, as it may be different depending on country.",
+          "example": "Aadhaar"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date of issue of the document.",
+          "format": "date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Document expiry date.",
+          "format": "date"
+        },
+        "issueCountry": {
+          "type": "string",
+          "description": "Country of issue of the document.",
+          "example": "GB"
+        }
+      },
+      "description": "User's ID card."
+    },
+    "PassportInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Number.",
+          "example": "AD 24243423"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date of issue of the document.",
+          "format": "date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Document expiry date.",
+          "format": "date"
+        },
+        "issueCountry": {
+          "type": "string",
+          "description": "Country of issue of the document.",
+          "example": "GB"
+        }
+      },
+      "description": "User's passport."
+    },
+    "DriverLicenceInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Number.",
+          "example": "AA 12343454"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date of issue of the document.",
+          "format": "date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Document expiry date.",
+          "format": "date"
+        },
+        "issueCountry": {
+          "type": "string",
+          "description": "Country of issue of the document.",
+          "example": "GB"
+        }
+      },
+      "description": "User's driver licence."
+    },
+    "ResidencePermitInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Number.",
+          "example": "AD 24243423"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date of issue of the document.",
+          "format": "date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Document expiry date.",
+          "format": "date"
+        },
+        "issueCountry": {
+          "type": "string",
+          "description": "Country of issue of the document.",
+          "example": "GB"
+        }
+      },
+      "description": "User's residence permit."
+    },
+    "OtherDocumentInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "type": "string",
+          "description": "Number.",
+          "example": "AA 12343454"
+        },
+        "description": {
+          "maxLength": 1024,
+          "minLength": 0,
+          "type": "string",
+          "description": "Description.",
+          "example": "Document ID"
+        },
+        "issueDate": {
+          "type": "string",
+          "description": "Date of issue of the document.",
+          "format": "date"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Document expiry date.",
+          "format": "date"
+        },
+        "issueCountry": {
+          "type": "string",
+          "description": "Country of issue of the document.",
+          "example": "GB"
+        }
+      },
+      "description": "Other document (only applies to specific verification methods)."
+    },
+    "PersonAccountInfo": {
+      "type": "object",
+      "properties": {
+        "swiftbic": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": "string",
+          "description": "Bank's SWIFT / BIC code.",
+          "example": "BREXPLPW"
+        },
+        "iban": {
+          "type": "string",
+          "description": "User account number.",
+          "example": "PL27114020040000300201355387"
+        },
+        "currency": {
+          "maxLength": 3,
+          "minLength": 0,
+          "type": "string",
+          "description": "Account currency.",
+          "example": "PLN"
+        }
+      },
+      "description": "User account information."
+    },
+    "PersonCryptoWalletAddressesInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "maxLength": 50,
+          "minLength": 0,
+          "type": "string",
+          "description": "Crypto wallet address.",
+          "example": "0x3199962acffF2cD9f4a180D53Ddfa36f39F1A432"
+        },
+        "chainId": {
+          "maxLength": 10,
+          "minLength": 0,
+          "type": "string",
+          "description": "Chain identifier.",
+          "example": "137"
+        },
+        "name": {
+          "maxLength": 20,
+          "minLength": 0,
+          "type": "string",
+          "description": "Chain name.",
+          "example": "matic"
+        }
+      },
+      "description": "User crypto wallet address information."
+    }
+  }
+}

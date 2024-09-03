@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ping-Pong",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "notification_id": {
+      "description": "ID of the notification linked to the feedback.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9223372036854775807
+        },
+        {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      ]
+    },
+    "type": {
+      "type": "string",
+      "description": "Determines type of notification feedback. For <code>PING</code> notification must be a <code>PONG</code> string.",
+      "const": "PONG"
+    }
+  },
+  "required": ["notification_id", "type"]
+}
