@@ -3,6 +3,11 @@ title: 'How to attach a virtual IBAN to a Wallet'
 sidebarTitle: How to
 'og:description': 'Step-by-step guide to linking a virtual IBAN to a Mangopay wallet to simplify payments and reconciliation.'
 ---
+
+import Tag3 from '/snippets/p-body/Tag3.mdx';
+import Country4 from '/snippets/p-body/Country4.mdx';
+import OwnerName1 from '/snippets/p-body/OwnerName1.mdx';
+
 ## Introduction  
 
 This how-to guide will show you how to successfully associate a virtual IBAN to a Wallet.  
@@ -168,9 +173,11 @@ pprint(create_wallet)
 
 ## 2. Create the virtual IBAN  
 
-Create the virtual IBAN by (called a Banking Alias in the API) by using the previously created wallet `Id` as a path parameter.  
+Create the virtual IBAN by (called a Banking Alias in the API) using the previously created wallet `Id` as a path parameter. You need to specify the `OwnerName`, the `Country`, and optionally a `Tag`. 
 
-The `OwnerName` must be the first name and last name of the owner of the wallet.
+The `OwnerName` must match the name of the user owning the wallet (`FirstName` and `LastName` for a <a href="/api-reference/users/natural-user-object">Natural User</a>, `Name` for a <a href="/api-reference/users/legal-user-object">Legal User</a>).
+
+If Mangopay has provided your platform with a Technical Collection Virtual IBAN for reconciliation purposes, the `OwnerName` must be "Mangopay S.A." or "Mangopay S.A. - Your Trading Name". Please ensure your have confirmed this integration with our teams <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/wallets/&lcub;WalletId&rcub;/bankingaliases/iban](/api-reference/banking-aliases/create-iban-banking-alias)
 
@@ -179,7 +186,8 @@ The `OwnerName` must be the first name and last name of the owner of the wallet.
 ```json REST
 {
     "OwnerName": "Alex Smith",
-    "Country": "FR"
+    "Country": "FR",
+    "Tag": "Custom meta"
 }
 ```  
 
@@ -326,7 +334,7 @@ The API then returns the Banking Alias object, which contains your virtual IBAN 
     "BIC": "MPAYFRP1PIN",
     "CreditedUserId": "146476890",
     "Country": "FR",
-    "Tag": "custom meta",
+    "Tag": "Custom meta",
     "CreationDate": 1670263006,
     "Active": true,
     "Type": "IBAN",
