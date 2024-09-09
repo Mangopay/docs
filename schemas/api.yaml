@@ -1,0 +1,79 @@
+openapi: 3.0.3
+servers:
+  - url: https://api.nethone.io
+info:
+  title: Nethone API
+  version: "1.0"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+paths:
+  /v1/events:
+    post:
+      security:
+        - basicAuth: []
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_reference:
+                  type: string
+                  description: "Unique user identifier, see <a href='/docs/integration_guide/faq#user_ref'>user_reference</a>. "
+                profiling_reference:
+                  type: string
+                  description: "Session identifier, see <a href='/docs/integration_guide/faq#prof_ref'>profiling_reference</a>."
+                  maxLength: 64
+                timestamp:
+                  type: string
+                  description: "timestamp indicating when this event occurred; supported format is <code>YYYY-MM-DD&nbsp;HH:MM:SS+HH:MM</code>; time zone info (<code>+HH:MM</code>) can be skipped in which case it is assumed that the value is in UTC"
+                data:
+                  type: object
+                  description: "Data set associated with event  (limited to 4kB by default)"
+                  maxLength: 1024
+                type:
+                  type: string
+                  maxLength: 64
+                  description: "Example"
+            examples:
+              register:
+                value:
+                  type: register
+                  profiling_reference: fcc43114514d11e5a8657c7a9166c5ec
+                  user_reference: "73066997765"
+                  timestamp: "2020-12-01 09:23:45+03:00"
+                  data:
+                    email: user@example.com
+                    real_name: John Doe
+                    ipaddr: 10.100.123.8
+              orderCreated:
+                value:
+                  type: order_created
+                  profiling_reference: aebe78de514e11e5a8657c7a9166c5ec
+                  data:
+                    form: questionare_1
+                    fields_filled: 12
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example: {}
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                errors:
+                  - code: 1
+                    message: Sample error message
