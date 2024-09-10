@@ -1,0 +1,32 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var repudiationId = "repud_m_01J354MZ35CNMZZMCENS3ERPQ3";
+        var repudiation = await api.Disputes.GetRepudiationAsync(repudiationId);
+
+        SettlementTransferPostDTO settlementTransfer = new SettlementTransferPostDTO(
+            repudiation.AuthorId, 
+            new Money { Currency = CurrencyIso.EUR, Amount = 1 }, 
+            new Money { Currency = CurrencyIso.EUR, Amount = 0 }
+        );
+
+        var createSettelementTransfer = await api.Disputes.CreateSettlementTransferAsync(settlementTransfer, repudiationId);
+
+        string prettyPrint = JsonConvert.SerializeObject(createSettelementTransfer, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+	}
+}
+```
