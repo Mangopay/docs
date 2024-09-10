@@ -1,0 +1,42 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using MangoPay.SDK.Core.Enumerations;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
+        var bankAccountId = "bankacc_m_01J534QNZZSRCXXAJ1VXP58DDH";
+        var walletId = "wlt_m_01J30991BXBB7VF28PBS82EWD3";
+        var debitedFunds = new Money { Amount = 2000, Currency = CurrencyIso.EUR };
+        var fees = new Money { Amount = 50, Currency = CurrencyIso.EUR };
+        var bankWireRef = "ExampleInvoice1234";
+
+        var payout = new PayOutBankWirePostDTO(
+            userId,
+            walletId,
+            debitedFunds,
+            fees,
+            bankAccountId,
+            bankWireRef,
+            PayoutModeRequested.STANDARD
+        ) {
+            Tag = "Created using the Mangopay .NET SDK"
+        };
+
+        var createPayout = await api.PayOuts.CreateBankWireAsync(payout);
+
+        string prettyPrint = JsonConvert.SerializeObject(createPayout, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+	}
+}
+```
