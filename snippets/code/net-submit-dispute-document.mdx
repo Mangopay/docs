@@ -1,0 +1,30 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var disputeId = "dispute_m_01J41GEVRQN3W1C4YRK7NC04QT";
+        var disputeDocId = "dispdoc_m_01J41GSW7D919YXBY2ZEK91ACD";
+
+        DisputeDocumentPutDTO disputeDoc = new DisputeDocumentPutDTO
+        {
+            Status = DisputeDocumentStatus.VALIDATION_ASKED
+        };	
+
+        var submitDisputeDoc = await api.Disputes.SubmitDisputeDocumentAsync(disputeDoc, disputeId, disputeDocId);
+
+        string prettyPrint = JsonConvert.SerializeObject(submitDisputeDoc, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```
