@@ -1,0 +1,34 @@
+---
+title: 'API - Sep 12, 2024 - Peipus'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+# 'og:description': ''
+---
+
+<div class="pill pill-green rn-pill">Added</div> 
+### Pay-in error 008008: Account linked to card does not exist
+
+The following `ResultCode` and `ResultMessage` can be returned on card pay-ins:
+
+- <a href="/errors/codes/008008">008008</a> - Pay-in failed: the issuing bank reports that the bank account linked to this card does not exist.
+
+This error helps identify cases where the issuing bank has reported that the account linked to the card has been closed or can no longer be used.
+
+<div class="pill pill-blue">Changed</div>
+### Migration parameter deprecated on recurring pay-in registration
+
+The `Migration` parameter of the <a href="">Recurring PayIn Registration</a> object is deprecated and should no longer be used.
+
+Migration of card pay-ins to a recurring card flow is no longer supported, and recurring pay-in registrations should not be created with `Migration` value of `true`.
+
+Existing objects with `Migration` set to `true` are likely to fail or no longer be usable. This may be indicated by the `Status` changing to `AUTHENTICATION_NEEDED` or by errors on the pay-in request, for example: non-existent card account (<a href="/snippets/errors/008008">008008</a>), soft decline (<a href="/snippets/errors/101305">101305</a>), expired card (<a href="/snippets/errors/101105">101105</a>), or stolen card (<a href="/snippets/errors/008003">008003</a>).
+
+When this happens on an object with `Migration` set to `true`, platforms must create a new recurring pay-in registration without the `Migration` parameter (default value is `false`) to re-initiate the recurrence. This will require re-authentication from the user in a CIT payment.
+
+<Check>
+**Best practice – Restart all legacy migrations**
+
+We strongly recommend that you proactively close any existing recurring pay-in registration objects with `Migration` set to `true` and create new ones to replace them. This will reduce the likelihood of failed payments and give the best experience to your users.
+</Check>
+
+See the <a href="/guides/payment-methods/card/recurring/how-to">recurring card pay-in</a> how-to guide for details on setting up a new recurring flow.
