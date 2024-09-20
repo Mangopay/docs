@@ -17,13 +17,13 @@ The URL to use for this endpoint is returned in the `CardRegistrationURL` parame
 The request must be made using the “application/x-www-form-urlencoded" content type.
 
 <Note>  
-**Caution – Do not hardcode the URL** 
+**Note – Do not hardcode the URL** 
   
 The `CardRegistrationURL` is specific to each payment. You must rely on the returned URL in full (host, path, and queries) and not hardcode any part of it.
 </Note>  
 
 <Warning>  
-**Warning – Card details must never pass via your server** 
+**Caution – Card details must never pass via your server** 
   
 For security reasons, it is strictly forbidden to send the card details to your own server. You must rely on the dedicated PCI-DSS-compliant tokenization server by using the endpoint provided.  
 </Warning>  
@@ -60,7 +60,18 @@ data=acIcnwwLleiAvlZUea5VxYT1eCIn3MER8jyZXr-p8Bzb4Rm8GIA0MQtPs2NL7zPzPO_I7EjQm-m
 
 </ResponseExample>
 
-<RequestExample> 
-````
-````
+{/* python used as language only for highlighting (closest fit, seems cURL isn't supported) */}
+<RequestExample>
+```python cURL
+curl --request POST \
+  --url https://api.sandbox.mangopay.com/{CardRegistrationURL} \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data '{
+  "accessKeyRef": "ehvrHoPE6FpjCCAgmNvg",
+  "data": "lhOJ6CFiDJPCXViyHjfcayh92nouB3AAaB5yqiLCBT6yjkLPCptmxsUdfffAc6EE4uj9AuSfmwbdfKN3BMechzUU3Gz8ectEx70TDeupudr",
+  "cardNumber": "4970105181818183",
+  "cardExpirationDate": "1229",
+  "cardCvx": "123"
+}'
+```  
 </RequestExample>

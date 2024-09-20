@@ -18,11 +18,11 @@ This error helps identify cases where the issuing bank has reported that the acc
 <div class="pill pill-blue">Changed</div>
 ### Migration parameter deprecated on recurring pay-in registration
 
-The `Migration` parameter of the <a href="">Recurring PayIn Registration</a> object is deprecated and should no longer be used.
+The `Migration` parameter of the <a href="/api-reference/recurring-payin-registrations/recurring-payin-registration-object">Recurring PayIn Registration</a> object is deprecated and should no longer be used.
 
 Migration of card pay-ins to a recurring card flow is no longer supported, and recurring pay-in registrations should not be created with `Migration` value of `true`.
 
-Existing objects with `Migration` set to `true` are likely to fail or no longer be usable. This may be indicated by the `Status` changing to `AUTHENTICATION_NEEDED` or by errors on the pay-in request, for example: non-existent card account (<a href="/snippets/errors/008008">008008</a>), soft decline (<a href="/snippets/errors/101305">101305</a>), expired card (<a href="/snippets/errors/101105">101105</a>), or stolen card (<a href="/snippets/errors/008003">008003</a>).
+Existing objects with `Migration` set to `true` are likely to fail or no longer be usable. This may be indicated by the `Status` changing to `AUTHENTICATION_NEEDED` or by errors on the pay-in request, for example: non-existent card account (<a href="/errors/codes/008008">008008</a>), soft decline (<a href="/errors/codes/101305">101305</a>), expired card (<a href="/errors/codes/101105">101105</a>), or stolen card (<a href="/errors/codes/008003">008003</a>).
 
 When this happens on an object with `Migration` set to `true`, platforms must create a new recurring pay-in registration without the `Migration` parameter (default value is `false`) to re-initiate the recurrence. This will require re-authentication from the user in a CIT payment.
 

@@ -7,6 +7,7 @@ import Issuer from '/snippets/glossary/issuer.mdx';
 import Payout from '/snippets/glossary/payout.mdx';
 import PayIn from '/snippets/glossary/pay-in.mdx';
 import Platform from '/snippets/glossary/platform.mdx';
+import Transfer from '/snippets/glossary/transfer.mdx';
   
 
 As part of Mangopay's aim to guarantee the integrity of transactions conducted using its services, and in accordance with relevant regulations, Mangopay teams may block users.  
@@ -15,35 +16,35 @@ Blocking involves the restriction of payment services to a specific user for rea
 
 ## Scope  
 
-The scope for blocked user may be one or both of the following:  
-- Inflows - When inflows are blocked, the user is no longer allowed to make <PayIn content="pay-ins" />.  
-- Outflows - When outflows are blocked, the user is no longer allowed to make <Payout content="payouts" />.  
+The scope of the blocking of a user may be one or both of the following:  
+- Inflows - When inflows are blocked, the user is no longer allowed to make <PayIn content="pay-ins" /> or send <Transfer content="transfers"/>.  
+- Outflows - When outflows are blocked, the user is no longer allowed to make <Payout content="payouts" /> or send transfers.  
 
 <Note>  
 **Note - Refund may be needed for blocked pay-ins** 
   
-Direct bank wire and bank wire to a banking alias pay-ins will also be refused even if already processed (i.e., funds already left the <Issuer content="issuing bank" />).  
+Pay-ins via <a href="/api-reference/bank-wire-payins/bank-wire-payin-object">bank wire</a> or to a <a href="/api-reference/banking-aliases/external-instruction-bank-wire-payin-object">vIBAN</a> are refused even if already processed (i.e., funds already left the <Issuer content="issuing bank" />).  
 
-As a consequence, funds will have to be reimbursed by the <Platform content="platform" />. To avoid such a situation, you can use the <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> endpoint prior to executing your pay-in.  
+As a consequence, funds must be reimbursed by the <Platform content="platform" />. To avoid such a situation, you can use the <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> endpoint prior to executing your pay-in.  
 </Note>  
 
 ## Notifications  
 
-You can know whether or not a user has been blocked by setting up <a href="/webhooks">webhook notifications</a>.  
+You can find out whether or not a user has been blocked by setting up <a href="/webhooks">webhook notifications</a>.  
 
-The endpoint <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> returns the `ScopeBlocked` parameter containing dedicated parameters for inflows and outflows, which are `true` if blocked.  
+The endpoint <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> returns the `ScopeBlocked` parameter containing dedicated parameters for inflows and outflows, which are `true` if blocked.  
 
 The following <a href="/webhooks/event-types">event types</a> are available to set up hooks:  
-- USER_INFLOWS_BLOCKED  
-- USER_INFLOWS_UNBLOCKED  
-- USER_OUTFLOWS_BLOCKED  
-- USER_OUTFLOWS_UNBLOCKED  
+- `USER_INFLOWS_BLOCKED`
+- `USER_INFLOWS_UNBLOCKED` 
+- `USER_OUTFLOWS_BLOCKED`
+- `USER_OUTFLOWS_UNBLOCKED`
 
 ## Steps to unblocking  
 
 Once you know a user is blocked, you can take action to unblock the user.  
 
-The <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> endpoint returns an `ActionCode`. The table below describes the possible action codes and the actions you can take.
+The <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> endpoint returns an `ActionCode`. The table below describes the possible action codes and the actions you can take.
 
 <table>
 <thead>
@@ -93,10 +94,10 @@ Once this has been completed, please contact our Support team <a href="https://h
 </td>
 </tr>
 <tr>
-<td class="table-content">008711</td>
-<td class="table-content">The user needs to upload a new proof of identity and a proof of address.</td>
+<td class="table-content">`008711`</td>
+<td class="table-content">The user needs to upload a new proof of identity. For a legal user, please upload a registration proof in addition to the proof of identity.</td>
 <td class="table-content">
-Please upload a proof of identity and a proof of address (e.g., utility bill) through the dashboard. 
+Please upload a proof of identity and a proof of registration (legal user only) through the dashboard. 
 
 Once done, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
