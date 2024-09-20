@@ -9,8 +9,8 @@ import BeneficialOwner from '/snippets/glossary/beneficial-owner.mdx';
 If Mangopay doesn’t validate a document, you may be able to obtain more information about the reason why with the <a href="/api-reference/kyc-documents/view-kyc-document">GET View a KYC Document</a> endpoint.
 
 Two returned parameters may prove useful:  
-- `Flags` - One or several codes which give more information about the identity proof document. See the <a href="#flags-list">flags list</a> below for more information.  
-- `RefusedReasonType` - Information about the refusal reason for all types of documents. See the list of <a href="#refused-reasons-types">refused reason types</a> below for more information.  
+- `Flags` - One or several codes which give more information about the **identity proof** document type. See the <a href="#flags-list">flags list</a> below for more information.
+- `RefusedReasonType` - Information about the refusal reason for **all types of documents**. See the list of <a href="#refused-reasons-types">refused reason types</a> below for more information.  
 
 Once the reason for refusal is identified, you can create a new KYC Document and resubmit it to Mangopay.  
 
@@ -32,7 +32,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
 <table>
     <thead>
         <tr>
-            <th class="header">Reason</th>
+            <th class="header">Flag</th>
             <th class="header">Description</th>
         </tr>
     </thead>
@@ -40,9 +40,9 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
         <tr>
             <td class="table-content">009000</td>
             <td class="table-content">
-                The document is suspected to be fraudulent, which means:
-                - The user will be blocked until reception of a valid identity proof (document with better visual quality or a different accepted identity proof)
-                - Mangopay’s team will check all related transactions
+                The document is suspected to be fraudulent. This flag results in the user being [blocked](/guides/users/blocked-users.mdx). 
+
+                To unblock their account, the user needs to submit a different kind of identity proof document. For example, if a national ID card was marked as fraudulent, they need to submit a passport.
             </td>
         </tr>
         <tr>
@@ -162,7 +162,8 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
             <td class="table-content">009100</td>
             <td class="table-content">
                 A match couldn’t be made with the relevant flag, but you can find out more about the issue by reviewing the `RefusedReasonType` and `RefusedReasonMessage` values.\
-                Please contact the Mangopay Support team for explanations about the issue.
+
+                Please contact the Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a> if you require further details.
             </td>
         </tr>
     </tbody>
@@ -222,7 +223,11 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
     <tr>
       <td class="table-content">`DOCUMENT_FALSIFIED`</td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">
+      On an identity proof, this reason type results in the user being [blocked](/guides/users/blocked-users.mdx). 
+
+      To unblock their account, the user needs to submit a different kind of identity proof document. For example, if a national ID card was marked as fraudulent, they need to submit a passport.
+      </td>
     </tr>
     <tr>
       <td class="table-content">`SPECIFIC_CASE`</td>
