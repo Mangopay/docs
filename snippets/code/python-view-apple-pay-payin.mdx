@@ -1,0 +1,21 @@
+```python Python 
+from pprint import pprint
+
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import PayIn
+
+payin_id = 'payin_m_01J87DAKCB24ZT8TW122A7M5QP'
+
+try:
+    view_applepay_payin = PayIn.get(payin_id)
+    pprint(vars(view_applepay_payin))
+except PayIn.DoesNotExist:
+    print('The ApplePay PayIn {} does not exist.'.format(payin_id))
+```
