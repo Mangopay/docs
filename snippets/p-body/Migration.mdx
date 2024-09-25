@@ -1,5 +1,7 @@
-  
-<ParamField body="Migration" type="boolean" >     
-Whether or not to attempt the first recurring pay-in as a merchant-initiated transaction (MIT), without 3DS (for cases when the end user has already been authenticated on your platform).  
-Caution: Issuer can refuse the request and require 3DS.  
+<ParamField body="Migration" type="boolean" deprecated>     
+Whether or not to attempt the first recurring pay-in as a merchant-initiated transaction (MIT).
+
+**Caution:** Migration is no longer supported and any object with `Migration` set to `true` must not be used for re-authentication of the user. You must create a new recurring pay-in registration without the `Migration` parameter (`false` by default) and restart the recurrence (see the <a href="/guides/payment-methods/card/recurring/how-to">how-to guide</a> for details).
+
+Existing objects with `Migration` set to `true` are likely to fail or no longer be usable. This may be indicated by the `Status` changing to `AUTHENTICATION_NEEDED` or by errors on the pay-in request, for example: non-existent card account (<a href="/errors/codes/008008">008008</a>), soft decline (<a href="/errors/codes/101305">101305</a>), expired card (<a href="/errors/codes/101105">101105</a>), or stolen card (<a href="/errors/codes/008003">008003</a>).
 </ParamField>

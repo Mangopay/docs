@@ -3,56 +3,86 @@ title: Conversions
 sidebarTitle: Conversions
 'og:description': 'Convert funds between currencies with Mangopay’s FX features, facilitating cross-border transactions for your users as well as your platform’s cashflow management.'  
 ---
-  
-  
+
+import Conversion from '/snippets/glossary/conversion.mdx'
 
 Mangopay provides foreign exchange (forex, FX) services within the Mangopay environment.  
 
-Mangopay relies on a dedicated transaction type, conversion, to enable platforms to convert funds between wallets of different currencies.  
+Mangopay relies on a dedicated transaction type, <Conversion content="conversion" />, to convert funds between wallets of different currencies.
 
-There are two types of conversion, corresponding to Mangopay’s two FX offerings: 
+Conversions allow you to provide FX services to your users by converting funds between their user <a href="/api-reference/wallets/wallet-object">Wallets</a>. 
 
-<table>
-<thead>
-<tr>
-<th class="header">Instant&nbsp;conversion –&nbsp;Spot&nbsp;FX</th>
-<th class="header">Quoted&nbsp;conversion –&nbsp;Guaranteed&nbsp;FX</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="table-content">
-Instantly convert funds at the current market rate. The rate used is returned in the conversion response, and an indicative rate is available at any time.
+The same conversion transaction can be used by your platform to convert funds between your Fees Wallets and Repudiation Wallets (known in the API as <a href="/api-reference/client-wallets/client-wallet-object">Client Wallets</a>).
 
-Spot FX is a one-step feature:
-* <a href="/api-reference/conversions/create-instant-conversion">Create an Instant Conversion</a>
-</td>
-<td class="table-content">
-Convert funds against a quote, which locks in the conversion rate for a pre-agreed duration. One quote defines the rate and currency pair for one conversion, which must be made before the duration expires.
+## Types of conversions 
 
-Guaranteed FX is a two-step process:
-1. <a href="/api-reference/quotes/create-quote">Create a Quote</a>
-2. <a href="/api-reference/conversions/create-quoted-conversion">Create a Quoted Conversion</a>
-</td>
-</tr>
-</tbody>
-</table>
+There are two types of conversion, corresponding to Mangopay’s two FX offerings.
 
-An indicative rate for a currency pair is available at any time using the [View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint.  
+### Instant conversion – Spot FX
 
-### Constraints  
+An instant conversion converts funds immediately at the current market rate. The rate used is returned in the conversion response.
 
-Conversions (of both types):  
-- Must take place between two wallets owned by the same user  
-- Can’t be refunded: another conversion with the reverse currency pair must be created  
+Spot FX is a one-step feature requiring one API call to execute the conversion.
 
-Quotes:  
-- Can only be made for a duration pre-agreed between Mangopay and the platform  
-- Can only be used once  
-- Can’t be used once they expire  
-- Don’t have to be used once created  
+Between user wallets: 
+- [POST Create an Instant Conversion between user Wallets](/api-reference/conversions/create-instant-conversion-user-wallets)
 
-Fees can only be set at creation of a quote and an instant conversion. The fees are taken before the conversion takes place, in the currency of the debited funds.
+Between client wallets:
+- [POST Create an Instant Conversion between Client Wallets](/api-reference/conversions/create-instant-conversion-client-wallets)
+
+### Quoted conversion – Guaranteed FX
+
+A quoted conversion converts funds against a quote, which locks in the conversion rate for a pre-agreed duration. One quote defines the rate and currency pair for one conversion, which must be made before the duration expires.
+
+Guaranteed FX requires two API calls: one for the quote, one for the conversion.
+
+<Steps>
+<Step title="Create the quote">
+	
+Use the [POST Create a Quote](/api-reference/quotes/create-quote) endpoint to create the quote, specifying the duration. You can get a quote for the sell currency by specifying the debited amount, or of the buy currency by specifying the credited amount.
+</Step>
+<Step title="Execute the conversion against the quote">
+Once the quote is valid, you can execute a conversion by specifying the `QuoteId` in the conversion request. 
+
+Between user wallets: 
+- [POST Create a Quoted Conversion between user Wallets](/api-reference/conversions/create-quoted-conversion-user-wallets)
+
+Between client wallets: 
+- [POST Create a Quoted Conversion between Client Wallets](/api-reference/conversions/create-quoted-conversion-client-wallets)
+</Step>
+</Steps>
+
+
+## Constraints  
+
+### Conversions
+
+For conversions of both types – instant and quoted – the following constraints apply.
+
+**Wallets must have the same owner**
+
+User wallet conversions must take place between two wallets owned by the same user.
+You can’t create a conversion between a user wallet and a client wallet.
+[Client wallet](/api-reference/client-wallets/client-wallet-object) conversions can take place between any of the Fees Wallets or Repudiation Wallets, meaning all combinations of `FundsType` are possible: 
+- `FEES` to `FEES`
+- `FEES` to `CREDIT`
+- `CREDIT` to `CREDIT`
+- `CREDIT` to `FEES`
+
+**Refunds are not available**
+
+Conversions can’t be refunded. To convert funds back, you must create another conversion with the reverse currency pair.
+
+### Quotes
+
+The following constraints apply to quotes. 
+
+Quotes:
+- Can only be made for a duration pre-agreed between Mangopay and the platform.
+- Can only be used once.
+- Can’t be used once they expire.
+- Don’t have to be used once created.
+- Can’t specify fees if they are to be used for client wallet conversions.
 
 ## Rates  
 
@@ -61,7 +91,9 @@ The conversion rate offered by Mangopay is expressed in two ways, both as decima
 - `ClientRate` - The client rate includes Mangopay’s markup: it is indicative of the rate invoiced during the billing cycle. `ClientRate` = `MarketRate` * (1 - markup).The `ClientRate` fluctuates in line with the `MarketRate`.  
 
 Mangopay's markup is agreed during contracting. You can can calculate it using the formula:  
-- Markup = 1 - (`ClientRate` / `MarketRate`)  
+- Markup = 1 - (`ClientRate` / `MarketRate`)
+
+You can see Mangopay’s indicative rate for a currency pair at any time using the [GET View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint.
 
 ## Currencies  
 
@@ -79,6 +111,19 @@ In Sandbox, the features and their specificities (currencies and quote durations
 For more information or to activate contact the Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.  
 </Note>  
 
+## Managing conversions  
+
+The [GET View a Conversion](/api-reference/conversions/view-conversion) endpoint returns both instant and quoted conversions between user and client wallets. 
+- For an instant conversion, the `QuoteId` is `null`.  
+- For a quoted conversion, the `QuoteId` contains the unique identifier of the quote against which the conversion was requested  
+
+The conversion transaction behaves like other transactions, meaning it appears in the following endpoints:  
+- [GET List Transactions for a User](/api-reference/transactions/list-transactions-user)  
+- [GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)  
+- [GET List Transactions for a Client Wallet](/api-reference/transactions/list-transactions-client-wallet)  
+- [POST Create a Transactions Report](/api-reference/reports/create-transactions-report)  
+
+
 ## Use cases  
 
 ### User store and convert  
@@ -86,18 +131,18 @@ For more information or to activate contact the Support team <a href="https://hu
 You can offer FX services to your users from within your platform thanks to Mangopay’s wallet-based FX services. This enables your users to request payouts in a different currency, as well as re-use their funds on your platform for transactions in other currencies.  
 
 The flow is as follows:  
-1. [Create a Wallet](/api-reference/wallets/create-wallet) in each currency for your user  
-2. Show the user an approximate conversion rate using the [View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint  
-3. If they wish to proceed with the currency exchange, [Create an Instant Conversion](/api-reference/conversions/create-instant-conversion) to convert the funds  
+1. Use the [POST Create a Wallet](/api-reference/wallets/create-wallet) endpoint to create wallets in each currency owned by your user
+2. Show the user an approximate conversion rate using the [GET View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint  
+3. If they wish to proceed with the currency exchange, use the [POST Create an Instant Conversion](/api-reference/conversions/create-instant-conversion) endpoint to convert the funds  
 
 The indicative rate presented and the actual rate converted may differ slightly, so you need to communicate this to the user.  
 
 A similar flow is possible using quoted conversions. The flow is as follow: 
 
-1. [Create a Wallet](/api-reference/wallets/create-wallet) in each currency for your user.
-2. Show the user an indicative conversion rate using the [View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint.
-3. [Create a Quote](/api-reference/quotes/create-quote) to freeze a conversion rate, for a given currency pair, for a duration of time. You need to communicate the duration to the user.
-4. If they wish to proceed with the currency conversion, [Create a Quoted Conversion](/api-reference/conversions/create-quoted-conversion) to convert the funds using an active quote. If the quote has expired, create the quote again (Step 3).
+1. Use the [POST Create a Wallet](/api-reference/wallets/create-wallet) endpoint to create wallets in each currency owned by your user
+2. Show the user an indicative conversion rate using the [GET View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint.
+3. Use the [POST Create a Quote](/api-reference/quotes/create-quote) endpoint to freeze a conversion rate, for a given currency pair, for a duration of time. You need to communicate the duration to the user.
+4. If they wish to proceed with the currency conversion, use the [POST Create a Quoted Conversion](/api-reference/conversions/create-quoted-conversion) endpoint to convert the funds using an active quote. If the quote has expired, create the quote again (Step 3).
 
 ### Multi-currency pricing  
 
@@ -106,29 +151,16 @@ You can list product prices in the user’s local currency before they pay.
 For example, a European marketplace can list EUR products in GBP for the UK market.  
 
 The flow is as follows:  
-1. Display approximate GBP prices on product pages using the [View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint, refreshing every few minutes  
-2. When the buyer proceeds to checkout, [Create a Quote](/api-reference/quotes/create-quote) (GBPEUR) to guarantee their GBP price for the quote duration  
+1. Display approximate GBP prices on product pages using the [GET View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate) endpoint, refreshing every few minutes  
+2. When the buyer proceeds to checkout, use the [POST Create a Quote](/api-reference/quotes/create-quote) (GBPEUR) to guarantee their GBP price for the quote duration  
 3. Create a GBP pay-in to the buyer’s GBP wallet  
-4. [Create a Quoted Conversion](/api-reference/conversions/create-quoted-conversion) to convert the funds to the buyer’s EUR wallet  
+4. Use the [POST Create a Quoted Conversion](/api-reference/conversions/create-quoted-conversion) to convert the funds to the buyer’s EUR wallet  
 
 Both the pay-in and conversion needs to happen before the quote expires, so you should trigger the conversion on the successful pay-in.  
 
 If the quote expires before the buyer completes their checkout, then you can refresh the quote and display a new guaranteed price.  
 
-## Managing conversions  
-
-The [View a Conversion](/api-reference/conversions/view-conversion) endpoint returns both instant and quoted conversions.  
-- For an instant conversion, the `QuoteId` is `null`.  
-- For a quoted conversion, the `QuoteId` contains the unique identifier of the quote against which the conversion was requested  
-
-The conversion transaction behaves like other transactions, meaning it appears in the following endpoints:  
-- [List Transactions for a User](/api-reference/transactions/list-transactions-user)  
-- [List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)  
-- [Create a Transactions Report](/api-reference/reports/create-transactions-report)  
-
 ## Related resources  
-
-
 
 <CardGroup cols={2}>
     <Card title="Endpoint" href="/api-reference/conversion-rates/view-conversion-rate">

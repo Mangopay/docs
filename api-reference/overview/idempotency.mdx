@@ -5,17 +5,19 @@ title: 'Idempotency'
 
 ## Introduction  
 
-The Mangopay API supports idempotency for all  POST calls, which means that a request can be retried several times without performing the same operation. This avoids unwanted duplicated calls that can have detrimental consequences, for example in case of a network error.  
+The Mangopay API supports idempotency for all POST calls, which means that a request can be retried several times without performing the same operation. This avoids unwanted duplicated calls that can have detrimental consequences, for example in case of a network error.  
 
-You can make calls idempotent by adding an `Idempotency-Key` to your request header. The idempotency key is a unique string generated on your side which must contain between 16 and 36 characters (only alphanumeric and dashes).  
+You can make calls idempotent by including the `Idempotency-Key` header in your request. The unique value that you generate for each idempotency key allows Mangopay to recognize subsequent retries of the same request. 
+
+The idempotency key must contain between 16 and 36 alphanumeric characters or dashes (-).
 
 <Check>  
 **Best practice – Use GUID** 
   
-We strongly recommend generating a globally unique identifier (GUID) as your idempotency key.  
+We strongly recommend generating a globally unique identifier (GUID) as your idempotency key.
 </Check>  
 
-Using an idempotency key is optional; the API will function normally without it.  
+Using an idempotency key is optional; the API will function normally without it.
 
 <Note>  
 **Note – Idempotency key required for some features** 
@@ -29,10 +31,11 @@ By using an idempotency key, you’ll be able to avoid duplicated calls and retr
 
 ### Blocking duplicated calls  
 
-If you use the same idempotency key within 24 hours, regardless of the other parameter values, Mangopay will block all but the first request. This means you are able to rerun the same request knowing that it is only going to be processed once.   
+If you use the same idempotency key within 24 hours Mangopay will block all but the first request. This means you are able to rerun the same request knowing that it is only going to be processed once.
 
-  
-```json Response example
+When an idempotent request is blocked, the 409 HTTP response code is returned.
+
+```json 409 response example
 {
   "Message": "A resource has already been created with this Idempotency Key",
   "Type": "idempotent_creation_conflict",
@@ -40,9 +43,10 @@ If you use the same idempotency key within 24 hours, regardless of the other par
   "Date": 1452723944,
   "errors": null
 }
-```  
+```
 
-When an idempotent request is blocked, the 409 HTTP response code is returned, and this regardless of the response code of the previous API call.  
+Idempotent requests are blocked regardless of the HTTP response code of the first API call. This means you can't re-use an idempotency key that was used on a failed call.
+
 
 ### Retrieving missed API responses  
 

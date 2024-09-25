@@ -11,25 +11,58 @@ import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx'
 import HostedUrlResponse from '/snippets/p-response/HostedUrlResponse.mdx';
 import Status13Response from '/snippets/p-response/Status13Response.mdx';
 import ReturnURL3Response from '/snippets/p-response/ReturnURL3Response.mdx';
+
+import ClientId from '/snippets/p-path/ClientId.mdx';
 import IdentityVerificationId from '/snippets/p-path/IdentityVerificationId.mdx';
+
+import SessionIdResponse from '/snippets/p-response/SessionIdResponse.mdx';
+import Status14Response from '/snippets/p-response/Status14Response.mdx';
+import CreationDate3Response from '/snippets/p-response/CreationDate3Response.mdx';
+import LastUpdate1Response from '/snippets/p-response/LastUpdate1Response.mdx';
+import ChecksResponse from '/snippets/p-response/ChecksResponse.mdx';
 
 Mangopay's hosted identity verification session allows platforms to redirect a user to a Mangopay-hosted digital experience in which the user provides details and documents to verify their identity.
 
 <Note>
-**Note – Hosted identity verification only available for Legal Soletraders**
+**Note – Beta hosted identity verification for Legal Soletraders and Businesses**
 
-The hosted identity verification feature is only available for Legal users whose `LegalPersonType` is `SOLETRADER`.
+The hosted identity verification feature is in beta and only available for Legal users whose `LegalPersonType` is `SOLETRADER` or `BUSINESS`. For more information about all user types, see the [Introduction and Types](/guides/users/types) guide.
 
-The user must also be an Owner to request identity verification.
+The user must also be an Owner to request a new verification session. To verify a user, you need to create a session. Each session contains multiple checks depending on the legal entity type.
 </Note>
+
+## Endpoints and Webhook Overview
+
+<table>
+    <tbody>
+        <tr>
+            <td class="table-content">[POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/identity-verifications](/guides/users/verification/hosted#post-create-a-hosted-identity-verification-session)</td>
+            <td class="table-content">Start an identity verification session and get a link for the hosted experience.</td>
+        </tr>
+        <tr>
+            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;](/guides/users/verification/hosted#get-view-an-identity-verification-session)</td>
+            <td class="table-content">Retrieve the overall status of an identity verification process. This endpoint provides a concise response suitable for periodic checks on a user's KYC status.</td>
+        </tr>
+        <tr>
+            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;/checks](/guides/users/verification/hosted#get-view-identity-verification-checks)</td>
+            <td class="table-content">Fetch verified information about the user, results from individual checks performed, failure reasons and the overall status. </td>
+        </tr>
+        <tr>
+            <td class="table-content">[Verification and KYC Status Events](/guides/users/verification/hosted#webhooks)</td>
+            <td class="table-content">Get real-time updates on the status of identity verification sessions and KYC status of users.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Endpoints
 
 ### POST Create a hosted Identity Verification Session
 
-This endpoint allows you to initiate an identity verification session for a user and obtain a redirection link for their Mangopay-hosted experience.
+This endpoint allows you to initiate an identity verification session for a user and provides a redirection link to Mangopay's hosted experience. Each session contains multiple checks depending on the legal entity type.
 
-``` json POST /users/{UserId}/identity-verifications
+> **POST /users/&lcub;UserId&rcub;/identity-verifications**
+
+``` json 
 {
   "ReturnUrl": "https://your-return-url.com",
   "Tag": "Custom data"
@@ -45,24 +78,32 @@ This endpoint allows you to initiate an identity verification session for a user
 
 ### Responses
 <AccordionGroup>
-    <Accordion title="200 - Session pending">
-        <IdResponse />
-        <Tag2Response />
-        <CreationDateResponse />
-        <HostedUrlResponse />
-        <Status13Response />
-        <ReturnURL3Response />
+<Accordion title="200 - Session created">
+  <IdResponse />
+  <Tag2Response />
+  <CreationDateResponse />
+  <HostedUrlResponse />
+  <Status13Response />
+  <ReturnURL3Response />
 
-    </Accordion>
-    <Accordion title="400 - User must have UserCategory value OWNER">
-    
-    </Accordion>
+</Accordion>
+<Accordion title="400 - User must have UserCategory value OWNER">
+```json 
+{
+  "Message": "This user must be categorised as an Owner with terms and conditions accepted to avail of these services.",
+  "Type": "invalid_action",
+  "Id": "0ecdeb35-c34b-489b-92ee-a1a5f9062ee5",
+  "Date": 1710955348.0,
+  "errors": null
+}
+```
+</Accordion>
 </AccordionGroup>
 </Accordion>
 
 **API response**
 
-``` json 200 - Session pending
+``` json 200 - Session created
 {
   "Id": "32197520",
   "Tag": "Custom data",
@@ -99,24 +140,37 @@ The user must have the `UserCategory` value `OWNER` to enable a verification req
 }
 ```
 
-### GET View an Identity Verification session
+### GET View an Identity Verification Session
 
-This endpoint lets you view the details of an Identity Verification session using its `Id` as the `IdentityVerificationId` path parameter.
+This endpoint lets you retrieve the details of an Identity Verification session using its `Id` as the `IdentityVerificationId` path parameter.
 
-``` json GET /v2.01/{ClientId}/identity-verifications/{IdentityVerificationId}
+> **GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;**
+
+``` json 
 // GET has no body parameters
 ```
 
-<Accordion>
+<Accordion title="See parameter details">
 ### Path parameters
+<ClientId />
 <IdentityVerificationId />
 
 ### Responses
+    <Accordion title="200">
+        <IdResponse />
+        <Tag2Response />
+        <CreationDateResponse />
+        <HostedUrlResponse />
+        <Status13Response />
+        <ReturnURL3Response />
+
+    </Accordion>
+
 </Accordion>
 
 **API response**
 
-``` json
+``` json 200
 {
   "Id": "32197520",
   "Tag": "Custom data",
@@ -127,9 +181,242 @@ This endpoint lets you view the details of an Identity Verification session usin
 }
 ```
 
+### GET View Identity Verification Checks
+
+This endpoint lets you retrieve verified information about the user, results from individual checks performed, failure reasons and the overall status of the session. 
+
+> **GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;/checks**
+
+``` json 
+// GET has no body parameters
+```
+
+<Accordion title="See parameter details">
+### Path parameters
+<ClientId />
+<IdentityVerificationId />
+
+### Responses
+    <Accordion title="200">
+      <SessionIdResponse />
+      <Status14Response />
+      <CreationDate3Response/>
+      <LastUpdate1Response />
+      <ChecksResponse />
+    </Accordion>
+    
+</Accordion>
+
+**API Response**
+
+```json 200
+{
+    "SessionId": "idnver_xxxxx",
+    "Status": "VALIDATED",
+    "CreationDate": "2023-06-03T15:20:30Z",
+    "LastUpdate": "2023-06-03T15:20:30Z",
+    "Checks": [
+        {
+            "CheckId": "idnchc_xxxxx",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "CreationDate": "2023-06-03T15:20:30Z",
+            "LastUpdate": "2023-06-03T15:20:30Z",
+            "Data": [
+                {
+                    "Type": "FIRST_NAME",
+                    "Value": "John"
+                },
+                {
+                    "Type": "LAST_NAME",
+                    "Value": "Doe"
+                },
+            ]
+        },
+        {
+            "CheckId": "idnchc_xxxxx",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "REJECTED",
+            "CreationDate": "2023-06-03T15:20:30Z",
+            "LastUpdate": "2023-06-03T15:20:30Z",
+            "Data": [
+                {
+                    "Type": "REFUSAL_REASON",
+                    "Value": "DOCUMENT_NOT_ACCEPTED"
+                },
+                {
+                    "Type": "REFUSAL_DESCRIPTION",
+                    "Value": "Business was not found in registry"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_xxxxx",
+            "Type": "PERSONS_SIGNIFICANT_CONTROL",
+            "CheckStatus": "VALIDATED",
+            "CreationDate": "2023-06-03T15:20:30Z",
+            "LastUpdate": "2023-06-03T15:20:30Z",
+            "Data": []
+        }
+    ]
+}
+```
+### Verified data returned
+
+For more details on refusal reasons and descriptions, see the [Refusal reasons glossary](/guides/users/verification/hosted#refusal-reasons-glossary).
+
+#### Natural person
+
+**IDENTITY_DOCUMENT_VERIFICATION**
+
+- **FIRST_NAME** - First name from the identity verification check.
+- **LAST_NAME** - Last name from the identity verification check.
+- **BIRTHDATE** - Birthdate as a unix timestamp.
+- **NATIONALITY** - Nationality as a country code.
+- **RESIDENCY** - Country as a country code.
+- **REFUSAL_REASON** - Reason for refusal, which can be: 
+  - FACE_MATCH_FAIL
+  - DOCUMENT_NOT_ACCEPTED
+  - DOCUMENT_FALSIFIED
+  - DOCUMENT_UNREADABLE
+  - DOCUMENT_HAS_EXPIRED
+  - TIMEOUT
+  - ERROR
+  - EXPIRED_CREDENTIALS
+- **REFUSAL_DESCRIPTION**: Custom string with feedback from support agent.
+
+#### Legal user
+
+**BUSINESS_VERIFICATION**
+
+- **COMPANY_NAME** - Company name.
+- **COMPANY_NUMBER** - Company number.
+- **REFUSAL_REASON** - Reason for refusal, which can be:
+  - DOCUMENT_FALSIFIED
+  - DOCUMENT_NOT_ACCEPTED
+  - DOCUMENT_TYPE_NOT_SUPPORTED
+  - DOCUMENT_EXPIRED, DOCUMENT_UNREADABLE
+  - DOCUMENT_INCOMPLETE
+  - TIMEOUT
+  - ERROR
+  - EXPIRED_CREDENTIALS
+- **REFUSAL_DESCRIPTION** - Custom string with feedback from support agent.
+
+**IDENTITY_DOCUMENT_VERIFICATION**
+
+- **LEGAL_REPRESENTATIVE_FIRST_NAME** - First name from identity verification check.
+- **LEGAL_REPRESENTATIVE_LAST_NAME** - Last name from identity verification check.
+- **LEGAL_REPRESENTATIVE_BIRTHDATE** - Birthdate as a unix timestamp.
+- **LEGAL_REPRESENTATIVE_NATIONALITY** - Nationality as a country code.
+- **LEGAL_REPRESENTATIVE_FIRST_RESIDENCY** - Country as a country code.
+- **REFUSAL_REASON** -  Reason for refusal, which can be:
+  - FACE_MATCH_FAIL
+  - DOCUMENT_NOT_ACCEPTED
+  - DOCUMENT_FALSIFIED
+  - DOCUMENT_UNREADABLE
+  - DOCUMENT_HAS_EXPIRED
+  - TIMEOUT
+  - ERROR
+  - EXPIRED_CREDENTIALS
+- **REFUSAL_DESCRIPTION** - Custom string with feedback from support agent.
+
+
+**PERSONS_SIGNIFICANT_CONTROL**
+- **REFUSAL_REASON** - Reason for refusal, which can be:
+  - PSC_MATCH_FAIL
+  - PSC_NAME_FAIL
+  - TIMEOUT
+  - ERROR
+  - EXPIRED_CREDENTIALS
+- **REFUSAL_DESCRIPTION** - Custom string with feedback from support agent.
+
+### Refusal reasons glossary
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Check Type</th>
+            <th class="header">Refusal Reason</th>
+            <th class="header">Reason&nbsp;description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content" rowSpan={3}> **BUSINESS_VERIFICATION**, **IDENTITY_DOCUMENT_VERIFICATION**, **PERSONS_SIGNIFICANT_CONTROL**</td>
+            <td class="table-content">TIMEOUT</td>
+            <td class="table-content">The session timed out due to inactivity by the user. They started but did not finish the KYC check.</td>
+        </tr>
+        <tr>
+            <td class="table-content">EXPIRED_CREDENTIALS</td>
+            <td class="table-content">The KYC check has become invalid due to changes in the user's personal details, the expiration of a submitted document, or when their KYC status necessitates renewal.</td>
+        </tr>
+        <tr>
+            <td class="table-content">ERROR</td>
+            <td class="table-content">A critical error occurred during the verification process and a new KYC session should be started.</td>
+        </tr>
+        <tr>
+            <td class="table-content" rowSpan={6}>**BUSINESS_VERIFICATION**</td>
+            <td class="table-content">DOCUMENT_FALSIFIED</td>
+            <td class="table-content">The business document provided appears to be fraudulent or tampered with.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_NOT_ACCEPTED</td>
+            <td class="table-content">The document submitted is not an acceptable form of verification for the business.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_TYPE_NOT_SUPPORTED</td>
+            <td class="table-content">The type of business document provided is not currently supported.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_EXPIRED</td>
+            <td class="table-content">The business document provided has expired.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_UNREADABLE</td>
+            <td class="table-content">The information on the business document is illegible or cannot be processed.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_INCOMPLETE</td>
+            <td class="table-content">The business document is missing essential information or sections.</td>
+        </tr>
+        <tr>
+            <td class="table-content" rowSpan={5}>**IDENTITY_DOCUMENT_VERIFICATION**</td>
+            <td class="table-content">FACE_MATCH_FAIL</td>
+            <td class="table-content">The selfie does not match the photo on the ID document.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_NOT_ACCEPTED</td>
+            <td class="table-content">The provided document is not an acceptable form of identification for this verification.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_FALSIFIED</td>
+            <td class="table-content">The provided document appears to be fraudulent or has been tampered with.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_UNREADABLE</td>
+            <td class="table-content">The information on the document is illegible or cannot be processed.</td>
+        </tr>
+        <tr>
+            <td class="table-content">DOCUMENT_HAS_EXPIRED</td>
+            <td class="table-content">The document provided has expired.</td>
+        </tr>
+        <tr>
+            <td class="table-content" rowSpan={2}>**PERSONS_SIGNIFICANT_CONTROL**</td>
+            <td class="table-content">PSC_MATCH_FAIL</td>
+            <td class="table-content">The individual's information doesn't match the criteria for a Person of Significant Control.</td>
+        </tr>
+        <tr>
+            <td class="table-content">PSC_NAME_FAIL</td>
+            <td class="table-content">The individual's name doesn't match the records associated with the business.</td>
+        </tr>
+    </tbody>
+</table>
+
 ## Webhooks
 
-You can set up [webhook notifications](/webhooks) for following event types relating to the identity verification session:
+You can set up [webhook notifications](/webhooks) for following event types relating to the identity verification session.
+
+### Identity Verification events
 
 - **IDENTITY_VERIFICATION_PENDING** – The identity verification session is in progress and requires further action from the user to complete.
 - **IDENTITY_VERIFICATION_VALIDATED** – The identity verification session was successful. 
@@ -140,7 +427,9 @@ You can set up [webhook notifications](/webhooks) for following event types rela
 
 The `ResourceId` of these webhooks corresponds to the `IdentityVerificationId`.
 
-These event types complement the existing ones relating to the user's KYCLevel:
+### User KYC Level events
 
-- **USER_KYC_REGULAR** – The user has been successfully verified by Mangopay, either using the hosted experience or through submission of KYC Documents.
-- **USER_KYC_LIGHT** – The user has not been verified by Mangopay and is therefore subject to product limitations for AML purposes.
+These event types complement the existing ones relating to the user's KYC Level:
+
+- **USER_KYC_REGULAR** – The user has been successfully verified by Mangopay.
+- **USER_KYC_LIGHT** – The user has not been verified by Mangopay and is therefore subject to product limitations.

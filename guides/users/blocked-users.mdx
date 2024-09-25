@@ -7,6 +7,7 @@ import Issuer from '/snippets/glossary/issuer.mdx';
 import Payout from '/snippets/glossary/payout.mdx';
 import PayIn from '/snippets/glossary/pay-in.mdx';
 import Platform from '/snippets/glossary/platform.mdx';
+import Transfer from '/snippets/glossary/transfer.mdx';
   
 
 As part of Mangopay's aim to guarantee the integrity of transactions conducted using its services, and in accordance with relevant regulations, Mangopay teams may block users.  
@@ -15,108 +16,110 @@ Blocking involves the restriction of payment services to a specific user for rea
 
 ## Scope  
 
-The scope for blocked user may be one or both of the following:  
-- Inflows - When inflows are blocked, the user is no longer allowed to make <PayIn content="pay-ins" />.  
-- Outflows - When outflows are blocked, the user is no longer allowed to make <Payout content="payouts" />.  
+The scope of the blocking of a user may be one or both of the following:  
+- Inflows - When inflows are blocked, the user is no longer allowed to make <PayIn content="pay-ins" /> or send <Transfer content="transfers"/>.  
+- Outflows - When outflows are blocked, the user is no longer allowed to make <Payout content="payouts" /> or send transfers.  
 
 <Note>  
 **Note - Refund may be needed for blocked pay-ins** 
   
-Direct bank wire and bank wire to a banking alias pay-ins will also be refused even if already processed (i.e., funds already left the <Issuer content="issuing bank" />).  
+Pay-ins via <a href="/api-reference/bank-wire-payins/bank-wire-payin-object">bank wire</a> or to a <a href="/api-reference/banking-aliases/external-instruction-bank-wire-payin-object">vIBAN</a> are refused even if already processed (i.e., funds already left the <Issuer content="issuing bank" />).  
 
-As a consequence, funds will have to be reimbursed by the <Platform content="platform" />. To avoid such a situation, you can use the <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> endpoint prior to executing your pay-in.  
+As a consequence, funds must be reimbursed by the <Platform content="platform" />. To avoid such a situation, you can use the <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> endpoint prior to executing your pay-in.  
 </Note>  
 
 ## Notifications  
 
-You can know whether or not a user has been blocked by setting up <a href="/webhooks">webhook notifications</a>.  
+You can find out whether or not a user has been blocked by setting up <a href="/webhooks">webhook notifications</a>.  
 
-The endpoint <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> returns the `ScopeBlocked` parameter containing dedicated parameters for inflows and outflows, which are `true` if blocked.  
+The endpoint <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> returns the `ScopeBlocked` parameter containing dedicated parameters for inflows and outflows, which are `true` if blocked.  
 
 The following <a href="/webhooks/event-types">event types</a> are available to set up hooks:  
-- USER_INFLOWS_BLOCKED  
-- USER_INFLOWS_UNBLOCKED  
-- USER_OUTFLOWS_BLOCKED  
-- USER_OUTFLOWS_UNBLOCKED  
+- `USER_INFLOWS_BLOCKED`
+- `USER_INFLOWS_UNBLOCKED` 
+- `USER_OUTFLOWS_BLOCKED`
+- `USER_OUTFLOWS_UNBLOCKED`
 
-## Steps to unblocking  
+## Steps to unblocking
 
 Once you know a user is blocked, you can take action to unblock the user.  
 
-The <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">View a User Regulatory Status</a> endpoint returns an `ActionCode`. The table below describes the possible action codes and the actions you can take.
+The <a href="/api-reference/user-regulatory-status/view-user-regulatory-status">GET View a User Regulatory Status</a> endpoint returns an `ActionCode`. The table below describes the possible action codes and the actions you can take.
+
+### Action codes
 
 <table>
 <thead>
 <tr>
-<th class="header">`ActionCode`</th>
+<th class="header">Action&nbsp;code</th>
 <th class="header">Description</th>
 <th class="header">Action to take</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="table-content">`008701`</td>
+<td class="table-content">008701</td>
 <td class="table-content">The user has been blocked because of suspected fraudulent behavior.</td>
-<td class="table-content">Please contact our Support team [via the Hub](https://hub.mangopay.com/).</td>
+<td class="table-content">Please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.</td>
 </tr>
 <tr>
-<td class="table-content">`008702`</td>
+<td class="table-content">008702</td>
 <td class="table-content">The user has been blocked because of a compliance issue.</td>
-<td class="table-content">Please contact our Support team [via the Hub](https://hub.mangopay.com/).</td>
+<td class="table-content">Please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.</td>
 </tr>
 <tr>
-<td class="table-content">`008703`</td>
+<td class="table-content">008703</td>
 <td class="table-content">The user has been blocked by one of our teams due to a more general issue.</td>
-<td class="table-content">Please contact our Support team [via the Hub](https://hub.mangopay.com/).</td>
+<td class="table-content">Please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.</td>
 </tr>
 <tr>
-<td class="table-content">`008704`</td>
+<td class="table-content">008704</td>
 <td class="table-content">The user asked for their data to be deleted. Part of that process is to block the user.</td>
 <td class="table-content">Please contact our data protection officer via email to dpo.mangopay@mangopay.com.</td>
 </tr>
 <tr>
-<td class="table-content">`008705`</td>
+<td class="table-content">008705</td>
 <td class="table-content">The document is suspected to be fraudulent. The account will remain blocked until reception of a valid identity proof document (with a better visual quality or a different kind of proof).</td>
 <td class="table-content">
-Please submit a new identity proof document, if possible a different one. 
+Please submit a new identity proof document, if possible a different one.
 
-For further inquiries, please contact our Support team [via the Hub](https://hub.mangopay.com/).
+For further inquiries, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
 </tr>
 <tr>
-<td class="table-content">`008710`</td>
+<td class="table-content">008710</td>
 <td class="table-content">The user has been identified as a potential politically exposed person (PEP).</td>
 <td class="table-content">
 The user needs to complete the Mangopay Declaration Regarding Politically Exposed Persons ([English](https://mangopay.com/terms/PEP/PEP_form_EN.pdf) / [French](https://mangopay.com/terms/PEP/PEP_form_FR.pdf) / [German](https://mangopay.com/terms/PEP/PEP_form_DE.pdf) / [Spanish](https://mangopay.com/terms/PEP/PEP_form_ES.pdf)). 
 
-Once this has been completed, please contact our Support team [via the Hub](https://hub.mangopay.com/).
+Once this has been completed, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
 </tr>
 <tr>
-<td class="table-content">`008711`</td>
-<td class="table-content">The user needs to upload a new proof of identity and a proof of address.</td>
+<td class="table-content">008711</td>
+<td class="table-content">The user needs to upload a new proof of identity. For a Legal User, please upload a registration proof in addition to the proof of identity.</td>
 <td class="table-content">
-Please upload a proof of identity and a proof of address (e.g., utility bill) through the dashboard. 
+Please upload a proof of identity and a proof of registration (Legal User only) through the dashboard. 
 
-Once done, please contact our Support team [via the Hub](https://hub.mangopay.com/).
+Once done, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
 </tr>
 <tr>
-<td class="table-content">`008712`</td>
+<td class="table-content">008712</td>
 <td class="table-content">The user needs to modify their legal personality type and submit the correct verification documents.</td>
 <td class="table-content">
-Please change the Legal User's `LegalPersonType` to the one specified for in the <a href="/guides/users/verification/requirements/kyb-local">local KYB structures</a> for their country, then submit their verification documents. 
+Please change the Legal User's `LegalPersonType` to the one specified in the <a href="/guides/users/verification/requirements/kyb-local">local KYB structures</a> for their kind of entity, then submit their verification documents. 
 
-Once done, please contact our Support team [via the Hub](https://hub.mangopay.com/).
+Once done, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
 </tr>
 <tr>
-<td class="table-content">`008714`</td>
+<td class="table-content">008714</td>
 <td class="table-content">A proof of address is required.</td>
 <td class="table-content">
 Please upload a proof of address through the dashboard.
 
-Once done, please contact our Support team [via the Hub](https://hub.mangopay.com/).
+Once done, please contact our Support team <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
 </td>
 </tr>
 </tbody>

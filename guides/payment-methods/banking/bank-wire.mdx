@@ -34,9 +34,9 @@ title: Bank wire
 
 ## About
 
-Bank wire pay-ins – also known as wire, credit, or bank transfers – enable users to wire funds to an e-wallet by requesting the payment with their bank (for example, from their bank’s online banking app). 
+Bank wire pay-ins – also known as wire, credit, or bank transfers – enable users to wire funds to a Mangopay wallet by requesting the payment with their bank (for example, from their bank’s online banking app). 
 
-Unlike virtual IBANs, Mangopay’s bank wire pay-in relies on a specific wire reference for the payment, which must be entered by the user when they initiate the wire transfer with their bank.
+Unlike <a href="/guides/payment-methods/banking/virtual-iban">pay-ins to virtual IBANs</a>, Mangopay’s bank wire pay-in relies on a specific wire reference for the payment, which must be entered by the user when they initiate the wire transfer with their bank.
 
 ## How it works
 <Steps>
@@ -58,20 +58,26 @@ The `WireReference` parameter contains the reference that must also be passed by
 The platform must display the details as they appear in the response of the pay-in call.
 
 <Check>
-**Best practice – Display details clearly and dynamically**
+**Best practice – Display instructions and details clearly to the user**
 
-Your user must understand that they need to initiate the bank wire on their side. Therefore: 
-- Ensure the bank details and wire reference are clearly displayed and **easy to copy and use**
+Your user must understand that they need to initiate the bank wire on their side using the wire reference.
 
-Mangopay may also periodically change the underlying bank account details without prior notice in an effort to offer the best quality of service. Therefore:
-- Ensure you implement the `BankAccount` object parameter dynamically so the `IBAN`, `BIC`, and other values appear **as returned in the pay-in response**
+Ensure your messaging is clear and that the `BankAccount` and `WireReference` values are easy to copy and use. 
 </Check>
 
 <Warning>
-**Caution – Mismatched data may lead to delays**
+**Caution – Do not hardcode bank details**
+
+Mangopay may periodically change the underlying bank account details without prior notice in an effort to offer the best quality of service.
+
+Ensure you retrieve the `BankAccount` object parameter dynamically so the `IBAN`, `BIC`, and other response values appear as returned in for each pay-in.
+</Warning>
+
+<Note>
+**Note – Mismatched data may lead to delays**
 
 If any of the reference, bank details, amount, or currency are not those specified in the pay-in, delays or failures can occur.
-</Warning>
+</Note>
 
 </Step>
 <Step title="The user makes the payment via online banking"

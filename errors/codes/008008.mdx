@@ -1,0 +1,125 @@
+---
+title: '008008'  
+description: '<small>&#8249; [All error codes](/errors/codes#card-related)</small>'
+---
+  
+<table>
+    <tbody>
+        <tr>
+            <th class="header"><strong>Error message</strong></th>
+            <td class="table-content">Pay-in failed: the issuing bank reports that the bank account linked to this card does not exist.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Description</strong></th>
+            <td class="table-content">The issuer indicates the account linked to this card no longer exists, perhaps because it has been closed.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Categories</strong></th>
+            <td class="table-content">  
+<div class="label">Card-related</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+#### Causes
+This error is caused when the issuing bank refuses the transaction because the account linked to a card no longer exists, perhaps because it has been closed.
+
+#### What to do
+If this error arises, register a new card for the user and retry the payment.
+
+If the card is being used for a recurring card payment, then you need to register a new card and update the recurring object, which will then require re-authentication by the user. See the <a href="/guides/payment-methods/card/recurring/how-to">recurring card pay-in</a> guide for details.
+
+#### Example
+The example below shows this error in response to the <a href="/api-reference/direct-card-payins/create-direct-card-payin">POST Create a Direct Card PayIn</a> endpoint:
+
+```json
+{
+    "Id": "payin_m_01T4SZW7YJ0G8672CG5FZFJJ71",
+    "Tag": "Custom data",
+    "CreationDate": 1723154179,
+    "AuthorId": "user_m_01J6A4SMDG86D4PAYAYPFJ8B8U",
+    "CreditedUserId": "user_m_01J6A4SMDG86D4PAYAYPFJ8B8U",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 782
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 782
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "FAILED",
+    "ResultCode": "008008",
+    "ResultMessage": "Pay-in failed: the issuing bank reports that the bank account linked to this card does not exist.",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01J6VYDMBQBP75F86W51QA9EZ4",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": "DEFAULT",
+    "CardId": "4213673797",
+    "SecureModeReturnURL": "https://example.com",
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": null,
+    "BrowserInfo": {
+        "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
+        "JavaEnabled": true,
+        "Language": "FR-FR",
+        "ColorDepth": 4,
+        "ScreenHeight": 1800,
+        "ScreenWidth": 400,
+        "TimeZoneOffset": 60,
+        "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+        "JavascriptEnabled": true
+    },
+    "IpAddress": "82.39.107.22",
+    "Billing": {
+        "FirstName": "Dorothy",
+        "LastName": "Michael",
+        "Address": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "City": null,
+            "Region": null,
+            "PostalCode": null,
+            "Country": null
+        }
+    },
+    "Shipping": {
+        "FirstName": "Dorothy",
+        "LastName": "Michael",
+        "Address": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "City": null,
+            "Region": null,
+            "PostalCode": null,
+            "Country": null
+        }
+    },
+    "Requested3DSVersion": "V2_1",
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": null,
+    "PreferredCardNetwork": null,
+    "PaymentCategory": "ECommerce",
+    "CardInfo": {
+        "BIN": "465858",
+        "IssuingBank": "BARCLAYS BANK PLC.",
+        "IssuerCountryCode": "GB",
+        "Type": "DEBIT",
+        "Brand": "VISA",
+        "SubType": "CLASSIC"
+    }
+}
+```
