@@ -1,0 +1,22 @@
+```csharp .NET 
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var reportId = "report_m_01J55Z0TCA6998ZRGR2Y9AKDTZ";
+
+        var viewReport = await api.Reports.GetAsync(reportId);
+
+        string prettyPrint = JsonConvert.SerializeObject(viewReport, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```
