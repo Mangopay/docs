@@ -6,14 +6,16 @@ api: 'GET /v2.01/{ClientId}/clients/wallets/{FundsType}/{Currency}/transactions'
 import Array_Transactions1Response from '/snippets/p-response/Array_Transactions1Response.mdx';
 import Currency from '/snippets/p-path/Currency.mdx';
 import FundsType from '/snippets/p-path/FundsType.mdx';
-  
+
+import RestNoBody from '/snippets/code/rest-no-body.mdx';
 import NodeListTransactionsClientWallet from '/snippets/code/node-list-transactions-client-wallet.mdx';
 import ListClientWalletTransactionsJava from '/snippets/code/list-client-wallet-transactions-java.mdx';
 import NetListClientWalletTransactions from '/snippets/code/net-list-client-wallet-transactions.mdx';
 
-This call returns all the transactions targeting or emitted from the Client Wallet:  
-- Fees wallet – Returns all the payouts made from the wallet.  
-- Credit wallet – Returns the repudiations and settlements made from or to the wallet.  
+This call returns all the transactions targeting or emitted from a Client Wallet, for example:
+- Fees payouts made from the Fees Wallet (`FEES_CCY`)
+- Repudiations and settlements made from or to the Repudiation Wallet (`CREDIT_CCY`)
+- Conversions between Client Wallets
 
 ### Path parameters  
 
@@ -29,42 +31,71 @@ This call returns all the transactions targeting or emitted from the Client Wall
 
 <ResponseExample>  
 
-```json 200  
+```json 200
 [
     {
-        "Id": "163311508",
-        "Tag": null,
-        "CreationDate": 1677579888,
-        "AuthorId": "ClientId",
-        "CreditedUserId": "ClientId",
+        "Id": "po_m_01HY343CF0KFEPKFJ0QZ4HZ2VK",
+        "Tag": "Custom data",
+        "CreationDate": 1715944403,
+        "AuthorId": "ExampleClientId",
+        "CreditedUserId": null,
         "DebitedFunds": {
-            "Currency": "XXX",
-            "Amount": 0
+            "Currency": "EUR",
+            "Amount": 7836
         },
         "CreditedFunds": {
-            "Currency": "XXX",
-            "Amount": 0
+            "Currency": "EUR",
+            "Amount": 7836
         },
         "Fees": {
-            "Currency": "XXX",
+            "Currency": "EUR",
             "Amount": 0
         },
-        "Status": "CREATED",
-        "ResultCode": null,
-        "ResultMessage": null,
-        "ExecutionDate": null,
-        "Type": "PAYIN",
+        "Status": "SUCCEEDED",
+        "ResultCode": "000000",
+        "ResultMessage": "Success",
+        "ExecutionDate": 1715944624,
+        "Type": "PAYOUT",
         "Nature": "REGULAR",
-        "CreditedWalletId": "CREDIT_EUR",
-        "DebitedWalletId": null
+        "CreditedWalletId": null,
+        "DebitedWalletId": "FEES_EUR",
+        "DepositId": null
+    },
+    {
+        "Id": "cvr_01J2BS3XE0JE9F05MM5B6VCT15",
+        "Tag": "Custom data",
+        "CreationDate": 1720529843,
+        "AuthorId": "ExampleClientId",
+        "CreditedUserId": "ExampleClientId",
+        "DebitedFunds": {
+            "Currency": "EUR",
+            "Amount": 2617
+        },
+        "CreditedFunds": {
+            "Currency": "USD",
+            "Amount": 2830
+        },
+        "Fees": {
+            "Currency": "EUR",
+            "Amount": 0
+        },
+        "Status": "SUCCEEDED",
+        "ResultCode": "000000",
+        "ResultMessage": "Success",
+        "ExecutionDate": 1720529845,
+        "Type": "CONVERSION",
+        "Nature": "REGULAR",
+        "CreditedWalletId": "FEES_USD",
+        "DebitedWalletId": "FEES_EUR",
+        "DepositId": null
     }
-]  
-
- ```  
+]
+```  
 
 </ResponseExample>  
 
 <RequestExample>  
+    <RestNoBody />
     <NodeListTransactionsClientWallet />
     <ListClientWalletTransactionsJava />
     <PythonListClientWalletTransactions />
