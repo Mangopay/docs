@@ -1,0 +1,18 @@
+export const DownloadLink = ({ fileName, filePath, linkText }) => {
+  function downloadFile = (e) => {
+    e.preventDefault(); // Prevent default link behavior
+
+    const link = document.createElement('a');
+    link.href = filePath; // Path to your file
+    link.download = fileName; // The name for the downloaded file
+    document.body.appendChild(link); // Append the link to the DOM
+    link.click(); // Trigger click to start download
+    document.body.removeChild(link); // Remove link from the DOM
+  };
+
+  return (
+    <a href={filePath} onClick={downloadFile}>
+      {linkText}
+    </a>
+  );
+};
