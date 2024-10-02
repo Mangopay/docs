@@ -1,0 +1,98 @@
+---
+title: Virtual accounts
+description: Beta docs
+---
+
+## Introduction
+
+Mangopay enables you to create virtual IBANs attached to a wallet. Once created, any funds wired by the user to that dedicated IBAN are credited automatically to the associated wallet, which simplifies reconciliation and improves the user experience. 
+
+In the API, the **Virtual Account** object allows you to create and manage dedicated IBANs for your users’ wallets. You can also see local and international pay-in capabilities available to your platform.
+
+<Warning>
+**Caution - Replaces deprecated Banking Alias feature**
+
+The Virtual Account endpoints replace the legacy Banking Alias endpoints, which should be considered deprecated and no longer used.
+
+New platforms should integrate using Virtual Accounts. Existing platforms are invited to change their integration to benefit from extended country and currency coverage.
+</Warning>
+
+The Virtual Account endpoints bring many advantages over the deprecated Banking Alias: 
+- Extended country and currency coverage, including country-specific IBANs for EUR countries and expansion into new international markets
+- Multiple accounts per wallet, including local IBANs for EUR markets
+- Ability to open accounts in the name of the user
+- Adherence to financial market standards (ISO 20022)
+
+
+<Note>
+**Note - Beta release**
+
+This beta documentation is designed to allow early-adopting platforms to integrate virtual accounts. The feature is subject to minor changes until public launch.
+</Note>
+
+## How it works
+
+As a payment method, virtual accounts allow a user to wire funds directly to their wallet. You should create the account first before inviting the user to wire the funds.
+
+### Creating the account
+
+The steps to set up the virtual account are: 
+
+<Steps>
+  <Step title="You create a wallet for the account">
+    You call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
+    <Warning>
+      Caution – Currency must be consistent
+
+      The currency of the wallet must match the currency of the account you intend to create. See (countries and currencies)[#iban-countries-and-currencies] for details.
+    </Warning>
+  </Step>
+  <Step title="You create the virtual account">
+    You call the <a href="">POST Create a Virtual Account</a> endpoint, specifying the country and type (see (types)[#types] for details).
+
+    The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
+
+    You should setup a <a href="/webhooks">webhook</a> for the `VIRTUAL_ACCOUNT_ACTIVE` event type to be notified that the account has been successfully set up.
+  </Step>
+</Steps>
+
+### Payment flow
+
+Once the Virtual Account is set up and its `Status` is `Active`, the user can wire funds to it.
+
+The payment flow is as follow:
+
+<Steps>
+  <Step title="You obtain the account details and create a reference">
+    You call the <a href="">GET View a Virtual Account</a> endpoint to obtain the account details in international or local formats.
+
+    You can also create a unique custom reference for the user to use for the payment.
+
+    <Note>
+      **Note – Ensure account is `ACTIVE`**
+
+      In most countries, setting up virtual accounts is instantaneous and so can be done just before presenting the account to the user.
+      
+      However, you must always ensure the account is `ACTIVE` before inviting the payment.
+    </Note>
+  </Step>
+  <Step title="You present the payment details to the user">
+    You display the account details along with your custom reference.
+
+    <Check>
+      **Best practice – Display instructions and details clearly to the user**
+
+      Your user must understand that they need to initiate the bank wire on their side.
+
+      Ensure your messaging is clear and that the payment details are easy to copy and use.
+    </Check>
+  </Step>
+  <Step title="The user makes the payment via online banking">
+    The user requests the wire transfer via their online banking app, specifying the virtual account as the payee.
+  </Step>
+  <Step title="Mangopay creates the pay-in and credits the wallet">
+    On receipt of the funds, Mangopay automatically creates an <a href="">External Instruction Bank Wire PayIn</a>.
+
+    You can be notified of this by setting up a <a href="/webhooks">webhook</a> for the `PAYIN_NORMAL_SUCCEEDED` event type.
+  </Step>
+</Steps>
