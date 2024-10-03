@@ -1,7 +1,11 @@
 ---
 title: Virtual accounts
-description: Beta docs
+description: Guide for beta release
 ---
+
+import IconGreenCheck from '/snippets/icons/icon-green-check.mdx';
+import IconGrayCross from '/snippets/icons/icon-gray-cross.mdx';
+
 
 ## Introduction
 
@@ -42,13 +46,13 @@ The steps to set up the virtual account are:
   <Step title="You create a wallet for the account">
     You call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
     <Warning>
-      Caution – Currency must be consistent
+      **Caution – Currency must be consistent**
 
-      The currency of the wallet must match the currency of the account you intend to create. See (countries and currencies)[#iban-countries-and-currencies] for details.
+      The currency of the wallet must match the currency of the account you intend to create. See [countries and currencies](#iban-countries-and-currencies) for details.
     </Warning>
   </Step>
   <Step title="You create the virtual account">
-    You call the <a href="">POST Create a Virtual Account</a> endpoint, specifying the country and type (see (types)[#types] for details).
+    You call the <a href="">POST Create a Virtual Account</a> endpoint, specifying the country and type (see [types](#types) for details).
 
     The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
@@ -60,7 +64,7 @@ The steps to set up the virtual account are:
 
 Once the Virtual Account is set up and its `Status` is `Active`, the user can wire funds to it.
 
-The payment flow is as follow:
+The payment flow is as follows:
 
 <Steps>
   <Step title="You obtain the account details and create a reference">
@@ -98,4 +102,213 @@ The payment flow is as follow:
     You can then use the <a href="/">GET View a PayIn</a> endpoint to get the custom `WireReference` you provided to the user, as well as confirm the amount and status.
   </Step>
 </Steps>
+
+## IBAN countries and currencies
+
+Mangopay offers IBANs for the following countries, specified in the `Country` parameter of both the Virtual Account object and the deprecated Banking Alias object. 
+
+When you create an account, the `Country` must correspond to the `Currency` of the account’s Wallet. If a payment is attempted to the account in a different currency than the wallet currency, the payment is returned to the payer and the wallet is not credited.
+
+The following tables summarize the account coverage available to platforms who have contracted with **Mangopay S.A. (in the EU)** and **Mangopay UK Ltd. (in the UK)**. It also shows a comparison between the Virtual Account endpoints and the deprecated Banking Alias.
+
+<Tabs>
+  <Tab title="EU">
+  <table>
+    <thead>
+      <tr>
+        <th class="header">IBAN country</th>
+        <th class="header">Wallet currency</th>
+        <th class="header">Virtual Account</th>
+        <th class="header">Banking Alias (deprecated)</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="table-content">AU - Australia</td>
+          <td class="table-content">AUD</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">DK - Denmark</td>
+          <td class="table-content">DKK</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr rowS>
+          <td class="table-content">DE - Germany</td>
+          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">ES - Spain</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">FR - France</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">GB - UK</td>
+          <td class="table-content">GBP</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">PL - Poland</td>
+          <td class="table-content">PLN</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+    </tbody>
+  </table>
+  </Tab>
+  <Tab title="UK">
+  <table>
+    <thead>
+      <tr>
+        <th class="header">IBAN country</th>
+        <th class="header">Wallet currency</th>
+        <th class="header">Virtual Account</th>
+        <th class="header">Banking Alias (deprecated)</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="table-content">AU - Australia</td>
+          <td class="table-content">AUD</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">DK - Denmark</td>
+          <td class="table-content">DKK</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr rowS>
+          <td class="table-content">DE - Germany</td>
+          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">{IconGrayCross}</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">ES - Spain</td>
+          <td class="table-content">{IconGrayCross}</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">FR - France</td>
+          <td class="table-content">{IconGrayCross}</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">GB - UK</td>
+          <td class="table-content">GBP</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">PL - Poland</td>
+          <td class="table-content">PLN</td>
+          <td class="table-content">{IconGreenCheck}</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+    </tbody>
+  </table>
+  </Tab>
+</Tabs>
+
+Platforms can see what countries and currencies are available to them at any time using the <a href="">GET List Virtual Account Availabilities</a> endpoint. 
+
+## Types
+
+There are two types of virtual accounts, defined by the `VirtualAccountPurpose` on creation:
+
+- `COLLECTION` - The IBAN is owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. 
+- `USER-OWNED` – The IBAN is owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
+
+<Note>
+  Note – One `VirtualAccountPurpose` per wallet
+
+  You can create multiple virtual accounts attached to the same wallet, but they must all be of the same type.
+</Note>
+
+The following table summarizes the differences between the two types:
+
+<table>
+  <thead>
+    <tr>
+      <th class="header"></th>
+      <th class="header">Collection account</th>
+      <th class="header">User-owned account</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th class="header">Purpose</th>
+      <td class="table-content">Collection and reconciliation of funds by the platform</td>
+      <td class="table-content">User’s acceptance and storing of funds</td>
+    </tr>
+    <tr>
+      <th class="header">Account owner</th>
+      <td class="table-content">Mangopay S.A. or Mangopay UK Ltd.</td>
+      <td class="table-content">Wallet owner</td>
+    </tr>
+    <tr>
+      <th class="header">Account holder name example</th>
+      <td class="table-content">Mangopay S.A (for ACME Corp)</td>
+      <td class="table-content">Alex Smith</td>
+    </tr>
+    <tr>
+      <th class="header">Allowed user types</th>
+      <td class="table-content">Owner or Payer</td>
+      <td class="table-content">Owner</td>
+    </tr>
+    <tr>
+      <th class="header">KYC verification</th>
+      <td class="table-content">Not required</td>
+      <td class="table-content">Required</td>
+    </tr>
+    <tr>
+      <th class="header">Payouts</th>
+      <td class="table-content">Prohibited from the associated  wallet, except for refunds returning funds to their origin</td>
+      <td class="table-content">Authorized from the associated wallet</td>
+    </tr>
+  </tbody>
+</table>
+
+### Collection accounts
+
+Collection accounts allow users to wire funds to their wallet using a designated virtual IBAN. Once created, any funds received on the IBAN are automatically credited to the wallet. The IBAN is owned by Mangopay, and the name of the account reflects both Mangopay and the platform’s name in the format “Mangopay S.A. (for PlatformTradingName)” or "Mangopay UK Ltd. (for PlatformTradingName)" 
+
+Collection accounts need to be attached to the wallet of the user making the pay-in, meaning that you need to create one Virtual Account object per user. This **first user** can be categorized as a Payer and they don’t need to be KYC verified. In your workflow, you can trigger a transfer from the wallet to a **second user**, who must be categorized as an Owner to receive the transfer.
+
+This type of account is mainly used for collecting and reconciling incoming funds, making it ideal for platforms that want to streamline these processes. Payouts are prohibited unless they’re for a refund.
+
+### User-owned accounts
+
+User-owned accounts allow platforms to create a unique IBAN for a specific user. Once created, the IBAN can be used to receive pay-ins, and the wallet can be used to make transfers and payouts. Because this IBAN is owned by the user, they must be categorized as an Owner and be KYC verified. The account holder can collect and make payments and transfer funds with full functionality. 
+
+
+
+## Endpoints
+
+
+
+
+## Webhooks
 
