@@ -1,0 +1,69 @@
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "your-client-id",
+    clientApiKey: "your-api-key"
+})
+
+let myPayIn = {
+    PaymentType: 'PAYPAL',
+    ExecutionType: 'WEB',
+    AuthorId: 'user_m_01J84RCFJ0Q9RVQZ13618FSNWN',
+    DebitedFunds: {
+      Currency: 'EUR',
+      Amount: 1000,
+    },
+    Fees: {
+      Currency: 'EUR',
+      Amount: 0,
+    },
+    CreditedWalletId: 'wlt_m_01HWAR863HPA3FAVEXA9J6JSYD',
+    ReturnURL: 'https://mangopay.com/docs/please-ignore',
+    StatementDescriptor: "MGP24",
+    Shipping: {
+      FirstName: 'Alex',
+      LastName: 'Smith',
+      Address: {
+        AddressLine1: 'Rue des plantes',
+        AddressLine2: 'The Oasis',
+        City: 'Paris',
+        Region: 'Ile-de-France',
+        PostalCode: '75000',
+        Country: 'FR',
+      },
+    },
+    LineItems: [
+      {
+          Name: "running shoes",
+          Quantity: 1,
+          UnitAmount: 500,
+          TaxAmount: 0,
+          Description: "Red"
+      },
+      {
+          Name: "running shoes",
+          Quantity: 1,
+          UnitAmount: 500,
+          TaxAmount: 0,
+          Description: "Black"
+      }
+    ],
+    ShippingPreference: "SET_PROVIDED_ADDRESS",
+    Reference: "Ref24",
+    Tag: 'Created with Mangopay NodeJS SDK'
+  }
+
+const createPayPalPayIn = async (payin) => {
+  return await mangopay.PayIns.createPayPal(payin)    
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayPalPayIn(myPayIn)
+```
