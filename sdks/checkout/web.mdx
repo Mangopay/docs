@@ -835,7 +835,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             </td>
         </tr>
         <tr>
-            <td class="table-content">`buttonColor`</td>
+            <td class="table-content">`button.buttonColor`</td>
             <td class="table-content">String</td>
             <td class="table-content">
                 The color of the button.
@@ -849,7 +849,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             </td>
         </tr>
         <tr>
-            <td class="table-content">`buttonType`</td>
+            <td class="table-content">`button.buttonType`</td>
             <td class="table-content">String</td>
             <td class="table-content">
                 The type of the button, determining the text to display.
@@ -868,7 +868,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
             </td>
         </tr>
         <tr>
-            <td class="table-content">`buttonLocale`</td>
+            <td class="table-content">`button.buttonLocale`</td>
             <td class="table-content">String</td>
             <td class="table-content">
                 The ISO 639-1 code representing the desired button language.
@@ -881,7 +881,7 @@ To configure the Google Pay payment method, specify `google_pay` as the `type` o
     </tbody>
 </table> 
 
-### Handling Google Pay authorization
+### Obtaining Google Pay token
 
 The `onTokenizationComplete` function is called after the user approves the payment on the Google Pay form. The output contains the `paymentData` object (see [Google Pay documentation](https://developers.google.com/pay/api/web/reference/response-objects#PaymentData)) which is needed to request the Google Pay payment via the API from your backend.
 
@@ -945,7 +945,11 @@ const options = {
 			  paymentData: {
 			    emailRequired: true,
 			  },
-			  onCreatePayment: (paymentData) => handleCreateGooglePayPayIn(paymentData)
+			  onCreatePayment: (paymentData) => handleCreateGooglePayPayIn(paymentData),
+        button: {
+          buttonLocale: 'fr',
+          buttonType: 'book'
+        },
       },
     }
 	]

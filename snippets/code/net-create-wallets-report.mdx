@@ -1,0 +1,45 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+        var report = new ReportRequestPostDTO(ReportType.WALLETS) {
+            Filters = {
+                MinBalanceAmount = 500,
+                MinBalanceCurrency = CurrencyIso.EUR,
+                MaxBalanceAmount = 50000,
+                MaxBalanceCurrency = CurrencyIso.EUR
+            },
+            Columns = [
+                "Id",
+                "CreationDate",
+                "Tag",
+                "Owners",
+                "Description",
+                "BalanceAmount",
+                "BalanceCurrency",
+                "Currency",
+                "FundsType",
+            ],
+            CallbackURL = "https://mangopay.com/docs/please-ignore",
+            Tag = "Created using the Mangopay .NET SDK"
+        };
+        
+
+        var createReport = await api.Reports.CreateAsync(report);
+
+        string prettyPrint = JsonConvert.SerializeObject(createReport, Formatting.Indented);
+        Console.WriteLine(prettyPrint);
+    }
+}
+```
