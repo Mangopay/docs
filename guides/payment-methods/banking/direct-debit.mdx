@@ -8,6 +8,7 @@ sidebarTitle: Overview
 import Chargeback from '/snippets/glossary/chargeback.mdx';
 import Issuer from '/snippets/glossary/issuer.mdx';
 import Wallet from '/snippets/glossary/wallet.mdx';
+import WorkingDay from '/snippets/glossary/working-day.mdx';
 
 import LogoSepa from '/snippets/logos/logo-sepa.mdx';
 import LogoBacs from '/snippets/logos/logo-bacs.mdx';
@@ -60,7 +61,6 @@ import LogoBacs from '/snippets/logos/logo-bacs.mdx';
     </tbody>
 </table>  
 
-
 ## Introduction  
 
 Direct debit is a term used to describe a preauthorized bank debit from a user’s bank account. Payments are authorized by the user by way of a **mandate**, which is an authorization from the user to their bank to allow the future debits by the collecting party.
@@ -73,26 +73,28 @@ Mangopay offers two schemes:
 
 <CardGroup cols={2}>  
 <Card title="SEPA Direct Debit (SDD) Core" icon={LogoSepa}>  
-Scheme operated by the European Payments Council (EPC) in the Eurozone for payments in EUR.
+Scheme operated by the European Payments Council (EPC) for collecting payments in the Eurozone in EUR.
 
 An IBAN-type Bank Account is required for the mandate.
 </Card>  
 <Card title="Bacs Direct Debit" icon={LogoBacs}>  
-Scheme operated by Pay.UK in the UK for payments in GBP.
+Scheme operated by Pay.UK in the UK for collecting payments in the UK in GBP.
 
 A GB-type Bank Account is required for the mandate. 
 </Card>  
 </CardGroup>  
 
-The user’s bank must be participating in the relevant scheme, which is not always the case. It may also be that the scheme rules prevent the use of certain account types. Mangopay does not offer the SEPA B2B scheme.
+The user’s bank must be participating in the relevant scheme, which is not always the case. It may also be that the scheme rules prevent the use of certain account types. 
+
+Mangopay does not offer the SEPA B2B scheme.
 
 ## How it works
 
 <Steps>
-<Step title="You create a bank account for the paying user">
-The scheme of the mandate is determined automatically by the type of bank account.
-- For the SEPA scheme, you must use the <a href="/api-reference/bank-accounts/create-iban-bank-account">POST Create an IBAN Bank Account</a> endpoint.
-- For the Bacs scheme, you must use the <a href="/api-reference/bank-accounts/create-gb-bank-account">POST Create a GB Bank Account</a> endpoint.
+<Step title="You register the user's bank account">
+The scheme of the mandate is determined automatically by the type of bank account you create.
+- For the **SEPA scheme**, you must use the <a href="/api-reference/bank-accounts/create-iban-bank-account">POST Create an IBAN Bank Account</a> endpoint.
+- For the **Bacs scheme**, you must use the <a href="/api-reference/bank-accounts/create-gb-bank-account">POST Create a GB Bank Account</a> endpoint.
 </Step>
 <Step title="You create the mandate">
 Once the bank account is created and active, you can create the mandate using the <a href="/api-reference/mandates/create-mandate">POST Create a Mandate</a> endpoint.
@@ -106,12 +108,12 @@ In the response to the mandate creation request, the API returns a `RedirectURL`
 The user must validate the mandate within 1 hour, otherwise it expires and a new mandate must be created.
 </Note>
 
-The Mandate’s `Status`changes from `CREATED` to `SUBMITTED`, indicating that it has been submitted to the issuing bank. It becomes `ACTIVE`:
+The Mandate’s `Status` changes from `CREATED` to `SUBMITTED`, indicating that it has been submitted to the issuing bank. It becomes `ACTIVE`:
 - After the first successful pay-in for SEPA
 - After a few days (usually 3) for Bacs
 
 </Step>
-<Step title="You create the pay-in">
+<Step title="You request the pay-in">
 Once the mandate’s `Status` is `SUBMITTED`, you can request the first pay-in using the <a href="/api-reference/direct-debit-payins/create-direct-debit-payin">POST Create a Direct Debit PayIn</a> endpoint.
 
 When the pay-in is created, the user receives an email notification of the scheduled charge.
@@ -130,23 +132,19 @@ You can continue requesting direct debit pay-ins as agreed with the user until t
 - Canceled - The user or the platform has canceled the mandate (Mandate `Status` becomes `FAILED`)
 - Expired - No pay-ins were made against the mandate in the last 24 months, which makes it expire (Mandate `Status` becomes `EXPIRED`)
 
-You can be notified if this happens by setting up <a href="/webhooks/event-types#direct-debit-mandates">mandate event types</a>.
+You can be notified if this happens by setting up webhooks for <a href="/webhooks/event-types#direct-debit-mandates">mandate event types</a>.
 </Step>
 </Steps>
 
 ## Pay-in processing times
 
-When a direct debit pay-in is created, the API returns a `ChargeDate`. The charge date is used to provide advance notice to the issuing bank and the user of the future charge, and is set at midnight (00:00) on the given day.
+When a direct debit pay-in is created, the API returns a `ChargeDate`. The charge date is used to provide advance notice to the user of the future charge, and is set at midnight (00:00) on the given day.
 
-The payment does not succeed until it is confirmed by the issuer, at which point the pay-in `Status` changes to `SUCCEEDED`. 
-
-The time it takes for a payment to be cleared depends on the issuing bank and also the scheme, meaning that the timelines given below are a strong indication but never a certainty.
-
-For Bacs, the first pay-in against a mandate takes an extra day. 
+The payment does not succeed until it is confirmed by the issuer, at which point the pay-in `Status` changes to `SUCCEEDED`. The user's account is usually debited the following day.
 
 ### Timings
 
-The following table describes the timings relative to the pay-in's `ChargeDate` in **business days**.
+The following table describes the timings relative to the pay-in's `ChargeDate` in <WorkingDay content="business days" />. Note that for Bacs, the first pay-in against a mandate takes an extra day as shown.
 <table>
     <thead>
         <tr>
@@ -167,7 +165,7 @@ The following table describes the timings relative to the pay-in's `ChargeDate` 
             <td class="table-content">D-3, 4:00 pm GMT</td>
         </tr>
         <tr>
-            <th class="header">User email notification</th>
+            <th class="header">Email notification</th>
             <td class="table-content">D-1</td>
             <td class="table-content">D-3</td>
             <td class="table-content">D-3</td>
@@ -185,7 +183,7 @@ The following table describes the timings relative to the pay-in's `ChargeDate` 
             <td class="table-content">D+1</td>
         </tr>
         <tr>
-            <th class="header">User's account debited</th>
+            <th class="header">Account debited</th>
             <td class="table-content">D+2</td>
             <td class="table-content">D+2</td>
             <td class="table-content">D+2</td>
@@ -199,9 +197,19 @@ The following table describes the timings relative to the pay-in's `ChargeDate` 
     </tbody>
 </table> 
 
+<Note>
+**Note – Timings are typical durations**
+
+The time it takes for a specific payment to be cleared depends on the issuing bank and the scheme. 
+
+The timings given here are a strong general indication but never a certainty.
+
+You should also create pay-ins well in advance of the cutoff to ensure expected processing.
+</Note>
+
 ### Example
 
-This table gives an example for a pay-in created at 11 am local time. Note that the SEPA cutoff time results in an extra day.
+The following table provides an example in terms of weekdays:
 <table>
     <thead>
         <tr>
@@ -216,34 +224,34 @@ This table gives an example for a pay-in created at 11 am local time. Note that 
     </thead>
     <tbody>
         <tr>
-            <th class="header">Pay-in `CREATED`</th>
-            <td class="table-content">Tue, 11:00 am CET</td>
-            <td class="table-content">Tue, 11:00 am GMT</td>
-            <td class="table-content">Tue, 11:00 am GMT</td>
+            <th class="header">Pay-in creation cutoff</th>
+            <td class="table-content">Fri, 5:30 am CET</td>
+            <td class="table-content">Tue, 4:00 pm GMT</td>
+            <td class="table-content">Wed, 4:00 pm GMT</td>
         </tr>
         <tr>
-            <th class="header">User email notification</th>
-            <td class="table-content">Tue</td>
+            <th class="header">Email notification</th>
+            <td class="table-content">Fri</td>
             <td class="table-content">Wed</td>
-            <td class="table-content">Tue</td>
+            <td class="table-content">Wed</td>
         </tr>
         <tr>
             <th class="header">Pay-in `ChargeDate`</th>
-            <td class="table-content">Thu</td>
             <td class="table-content">Mon</td>
-            <td class="table-content">Fri</td>
+            <td class="table-content">Mon</td>
+            <td class="table-content">Mon</td>
         </tr>
         <tr>
             <th class="header">Pay-in `SUCCEEDED`</th>
-            <td class="table-content">Fri</td>
             <td class="table-content">Tue</td>
-            <td class="table-content">Mon</td>
+            <td class="table-content">Tue</td>
+            <td class="table-content">Tue</td>
         </tr>
         <tr>
-            <th class="header">User's account debited</th>
-            <td class="table-content">Mon</td>
+            <th class="header">Account debited</th>
             <td class="table-content">Wed</td>
-            <td class="table-content">Tue</td>
+            <td class="table-content">Wed</td>
+            <td class="table-content">Wed</td>
         </tr>
         <tr>
             <th class="header">Total business days</th>
@@ -254,49 +262,46 @@ This table gives an example for a pay-in created at 11 am local time. Note that 
     </tbody>
 </table> 
 
-## Bacs scheme specificities  
+## Emails and other notes
+The emails mentioned in the tables above are sent by Mangopay (to the user’s `Email` parameter) to notify the user of the payment amount, the charge date, and other details about the collecting party. While these emails are not customizable, it is possible to deactivate them so you can put in place your own flow.
 
-When using a Bacs scheme mandate, note that:
-- Confirmation pages and emails are only available in English.
-- When the mandate is confirmed, an email is automatically sent by Mangopay on the platform’s behalf.  
-- NatWest, RBS, HSBC, Metro, and Nationwide banks don’t show the platform trading name on bank statements; only Mangopay is displayed.  
-- Mandates can't be created on accounts where multiple signatures are required (e.g. business accounts).  
+Note that for Bacs, there is an additional email sent when the mandate is first confirmed.
 
-## Late failures and chargebacks  
+Note also for Bacs: 
+- NatWest, RBS, HSBC, Metro, and Nationwide banks don’t show the platform trading name on bank statements – only Mangopay is displayed.
+- Mandates can't be created on accounts where multiple signatures are required (e.g. business accounts).
 
-In direct debits, a late failure is when the issuing bank fails to inform the collecting party that the funds could not be collected as scheduled. The payment is confirmed, and thus the pay-in is `SUCCEEDED`, but the funds are not debited from the account.
+## Late failures, chargebacks and refunds
 
-When a late failure happens, Mangopay automatically creates a Dispute object (as well as the corresponding Repudiation transaction) in the same way as for a regular <Chargeback content="chargeback" />.  
+In direct debits, a late failure occurs when the issuing bank fails to inform the collecting party that the funds could not be collected as scheduled (for example if the account is closed or has insufficient funds). As a result, the pay-in `Status` is `SUCCEEDED` but the funds are not subsequently debited from the account.
 
-The Dispute `DisputeReasonType` parameter displays one of the late failure-related reasons:  
-- LATE_FAILURE_BANKACCOUNT_CLOSED  
-- LATE_FAILURE_BANKACCOUNT_INCOMPATIBLE  
-- LATE_FAILURE_BANKACCOUNT_INCORRECT  
-- LATE_FAILURE_CONTACT_USER  
-- LATE_FAILURE_INSUFFICIENT_FUNDS
+When a late failure happens, Mangopay creates a <a href="/api-reference/disputes/dispute-object">Dispute</a> object (and corresponding <a href="/api-reference/repudiations/repudiation-object">Repudiation</a>) in the same way as for a regular <Chargeback content="chargeback" />.
 
-<a href="/guides/disputes">Learn more about disputes</a> **&rarr;**
+The Dispute `DisputeReasonType` parameter indicates the reason for the late failure: 
+- `LATE_FAILURE_BANKACCOUNT_CLOSED`
+- `LATE_FAILURE_BANKACCOUNT_INCOMPATIBLE`
+- `LATE_FAILURE_BANKACCOUNT_INCORRECT`
+- `LATE_FAILURE_CONTACT_USER`
+- `LATE_FAILURE_INSUFFICIENT_FUN`
 
-<Note>  
-**Note - It is not possible to cumulate disputes and refunds** 
-  
-If a Refund was made on for the direct debit pay-in, no Dispute can be created for the pay-in as it was already refunded.  
+Usually, late failures occur:
+- Within 5 days for the SEPA scheme
+- Within 2 or 3 days for the Bacs scheme.
 
-In the same way, if a Dispute has already been created for a direct debit pay-in, no Refund can be created.  
-</Note>  
+Besides late failures, a dispute can also be created if a user requests a chargeback on a direct debit payment with their bank.
 
-Usually, late failures occur:  
-- Within 2 or 3 days for the Bacs scheme.  
-- Within 5 days for the SEPA scheme  
+The resulting disputes are always non-contestable and are possible:
+- For up to 8 weeks for the SEPA scheme.
+- Indefinitely for the Bacs scheme.
 
-Chargebacks are always non-contestable and are still possible:  
-- Indefinitely for the Bacs scheme.  
-- Up to 8 weeks for the SEPA scheme.  
+<a href="/guides/disputes">Read more about disputes</a> **&rarr;**
 
 <Check>  
-**Best practice - Make sure you wait prior to doing a refund** 
+**Best practice - Wait prior to doing a refund** 
+
+For direct debits, refunds are not possible on disputed payments and vice versa.
   
-To avoid conflicts between a refund and a chargeback, we recommend waiting at least 8 business days following a successful transaction prior to processing a refund.   
+To avoid conflicts between a refund and a chargeback, we recommend waiting at least 8 business days following a successful transaction before processing a refund.   
 </Check>  
 
 ## Related resources  
@@ -310,7 +315,7 @@ To avoid conflicts between a refund and a chargeback, we recommend waiting at le
     The Direct Debit PayIn object
     </Card>  
 
-    <Card title="Testing" href="/testing/payment-methods#sepa-direct-debit">
-    Learn about testing SEPA Direct Debit
+    <Card title="Testing" href="/testing/payment-methods#direct-debit">
+    Learn about testing direct debits
     </Card>
 </CardGroup>
