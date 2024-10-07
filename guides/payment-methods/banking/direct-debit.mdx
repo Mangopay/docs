@@ -115,8 +115,6 @@ The Mandate’s `Status` changes from `CREATED` to `SUBMITTED`, indicating that 
 </Step>
 <Step title="You request the pay-in">
 Once the mandate’s `Status` is `SUBMITTED`, you can request the first pay-in using the <a href="/api-reference/direct-debit-payins/create-direct-debit-payin">POST Create a Direct Debit PayIn</a> endpoint.
-
-When the pay-in is created, the user receives an email notification of the scheduled charge.
 </Step>
 <Step title="Mangopay processes the pay-in">
 Due to the nature of direct debits, payments take a few days to clear – see [processing times](#pay-in-processing-times) below.
@@ -163,12 +161,6 @@ The following table describes the timings relative to the pay-in's `ChargeDate` 
             <td class="table-content">D-1, 5:30 am CET</td>
             <td class="table-content">D-4, 4:00 pm GMT</td>
             <td class="table-content">D-3, 4:00 pm GMT</td>
-        </tr>
-        <tr>
-            <th class="header">Email notification</th>
-            <td class="table-content">D-1</td>
-            <td class="table-content">D-3</td>
-            <td class="table-content">D-3</td>
         </tr>
         <tr>
             <th class="header">Pay-in `ChargeDate`</th>
@@ -230,12 +222,6 @@ The following table provides an example in terms of weekdays:
             <td class="table-content">Wed, 4:00 pm GMT</td>
         </tr>
         <tr>
-            <th class="header">Email notification</th>
-            <td class="table-content">Fri</td>
-            <td class="table-content">Wed</td>
-            <td class="table-content">Wed</td>
-        </tr>
-        <tr>
             <th class="header">Pay-in `ChargeDate`</th>
             <td class="table-content">Mon</td>
             <td class="table-content">Mon</td>
@@ -262,12 +248,13 @@ The following table provides an example in terms of weekdays:
     </tbody>
 </table> 
 
-## Emails and other notes
-The emails mentioned in the tables above are sent by Mangopay (to the user’s `Email` parameter) to notify the user of the payment amount, the charge date, and other details about the collecting party. While these emails are not customizable, it is possible to deactivate them so you can put in place your own flow.
+## Email notifications
+Mangopay notifies the user by email (to the user’s `Email` parameter) when a mandate is first confirmed and when a pay-in is created.
 
-Note that for Bacs, there is an additional email sent when the mandate is first confirmed.
+While Mangopay's emails can't be customized, it is possible to deactivate them so you can put in place your own flow in accordance with scheme rules.
 
-Note also for Bacs: 
+## Bacs specificities
+Note that for Bacs: 
 - NatWest, RBS, HSBC, Metro, and Nationwide banks don’t show the platform trading name on bank statements – only Mangopay is displayed.
 - Mandates can't be created on accounts where multiple signatures are required (e.g. business accounts).
 
