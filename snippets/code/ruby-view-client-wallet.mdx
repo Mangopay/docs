@@ -1,0 +1,29 @@
+```ruby Ruby 
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewClientWallet(fundsType, currency)
+    begin
+        response = MangoPay::Client.fetch_wallet(fundsType, currency)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to fetch client wallets: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myClientWallet = {
+    FundsType: 'FEES',
+    Currency: 'EUR'
+}
+
+viewClientWallet(myClientWallet[:FundsType], myClientWallet[:Currency])
+```
