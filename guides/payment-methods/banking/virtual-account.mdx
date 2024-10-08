@@ -107,12 +107,55 @@ The payment flow is as follows:
 
 ### Status and webhooks
 
+The `Status` of the Virtual Account can have the following values:  
+- `PENDING` – The account creation request is being processed. The `PENDING` status can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
+- `ACTIVE` – The account is active and can receive funds. The `ACTIVE` status can transition to `BLOCKED` or `CLOSED`.
+- `FAILED` – The account creation request failed or was rejected. This is a final state. In cases of failure during the creation process, further information may be available in the `ResultCode` and `ResultMessage`.
+- `BLOCKED` – The account is blocked. The `BLOCKED` status can transition to `ACTIVE` or `CLOSED`.
+- `CLOSED` – The account has been deactivated and is closed. This is a final state.
 
-
+You can set up <a href="/webhooks">webhook notifications</a> for the following event types to be notified when a Virtual Account changes status:
+- `VIRTUAL_ACCOUNT_ACTIVE`
+- `VIRTUAL_ACCOUNT_BLOCKED`
+- `VIRTUAL_ACCOUNT_CLOSED`
+- `VIRTUAL_ACCOUNT_FAILED`
 
 ### Endpoints
 
+The following endpoints are available for managing virtual accounts:
 
+<CardGroup cols={1}>
+<Card
+  title="POST Create a Virtual Account"
+  href="/api-reference/virtual-accounts/create-virtual-account"
+>
+Set up a virtual IBAN or local account attached to a wallet
+</Card>
+<Card
+  title="PUT Deactivate a Virtual Account"
+  href="/api-reference/virtual-accounts/deactivate-virtual-account"
+>
+Close an account permanently to prevent it being used
+</Card>
+<Card
+  title="GET View a Virtual Account"
+  href="/api-reference/virtual-accounts/view-virtual-account"
+>
+See details of a virtual account
+</Card>
+<Card
+  title="GET List Virtual Accounts for a Wallet"
+  href="/api-reference/virtual-accounts/list-virtual-accounts-wallet"
+>
+See all virtual accounts attached to a wallet
+</Card>
+<Card
+  title="GET View Virtual Account Availabilities"
+  href="/api-reference/virtual-accounts/view-virtual-account-availabilities"
+>
+See your platform's account capabilities per account type and country
+</Card>
+</CardGroup>
 
 ## IBAN countries and currencies
 
@@ -249,13 +292,13 @@ Platforms can see what countries and currencies are available to them at any tim
 
 There are two types of virtual accounts, defined by the `VirtualAccountPurpose` on creation:
 
-- `COLLECTION` - The IBAN is owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. 
-- `USER-OWNED` – The IBAN is owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
+- `COLLECTION` – Owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. 
+- `USER_OWNED` – Owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
 
 <Note>
   Note – One `VirtualAccountPurpose` per wallet
 
-  You can create multiple virtual accounts attached to the same wallet, but they must all be of the same type.
+  You can create multiple virtual accounts attached to the same wallet, but they must all have the same purpose (either `COLLECTION` or `USER_OWNED`).
 </Note>
 
 The following table summarizes the differences between the two types:

@@ -1,5 +1,5 @@
 ---
-title: 'The Wallet object'
+title: 'The Virtual Account object'
 ---
 
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
@@ -18,7 +18,27 @@ import CapabilitiesResponse from '/snippets/p-response/CapabilitiesResponse.mdx'
 
 ### Description
 
-The Virtual Account object represents a virtual IBAN or local account identifier attached to a wallet.
+The Virtual Account object enables platforms to attached one or more virtual IBANs to a wallet.
+
+There are two types of Virtual Account, indicated by the `VirtualAccountPurpose`:
+- `COLLECTION` – Owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. 
+- `USER_OWNED` – Owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
+
+For more information, see the [Virtual Account](/guides/payment-methods/banking/virtual-account) guide. 
+
+<Warning>
+**Caution - Replaces deprecated Banking Alias feature**
+
+The Virtual Account endpoints replace the legacy Banking Alias endpoints, which should be considered deprecated and no longer used.
+
+New platforms should integrate using Virtual Accounts. Existing platforms are invited to change their integration to benefit from extended country and currency coverage.
+</Warning>
+
+<Note>
+**Note - Beta release**
+
+This beta documentation is designed to allow early-adopting platforms to integrate virtual accounts. The feature is subject to minor changes until public launch.
+</Note>
 
 ### Attributes
 
@@ -36,6 +56,46 @@ The Virtual Account object represents a virtual IBAN or local account identifier
 <InternationalAccountDetails_VirtualAccountResponse />
 <CapabilitiesResponse />
 
+### Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="Guide"
+  href="/guides/payment-methods/banking/virtual-account"
+>
+Learn more about virtual accounts
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/virtual-accounts/create-virtual-account"
+>
+POST Create a Virtual Account
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/virtual-accounts/deactivate-virtual-account"
+>
+PUT Deactivate a Virtual Account
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/virtual-accounts/view-virtual-account"
+>
+GET View a Virtual Account
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/virtual-accounts/list-virtual-accounts-wallet"
+>
+GET List Virtual Accounts for a Wallet
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/virtual-accounts/view-virtual-account-availabilities"
+>
+GET View Virtual Account Availabilities
+</Card>
+</CardGroup>
 
 <ResponseExample>
 ````json 200
