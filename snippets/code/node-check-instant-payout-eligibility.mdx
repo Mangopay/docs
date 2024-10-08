@@ -1,0 +1,48 @@
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: 'user_m_01J2TZ261WZNDM0ZDRWGDYA4GN',
+  WalletId: 'wlt_m_01J3D02K6ETV3BDP88C7PD2NDB',
+}
+
+let myBankAccount = {
+  Id: 'bankacc_m_01J534QNZZSRCXXAJ1VXP58DDH',
+}
+
+let myPayout = {
+  DebitedWalletId: myUser.WalletId,
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount.Id,
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'INSTANT_PAYMENT',
+  AuthorId: myUser.Id,
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const checkInstantPayoutEligibility = async (payout) => {
+  return await mangopay.PayOuts.checkEligibility(payout)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+checkInstantPayoutEligibility(myPayout)
+```
