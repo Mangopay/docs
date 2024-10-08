@@ -23,7 +23,7 @@ New platforms should integrate using Virtual Accounts. Existing platforms are in
 
 The Virtual Account endpoints bring many advantages over the deprecated Banking Alias: 
 - Extended country and currency coverage, including country-specific IBANs for EUR countries and expansion into new international markets
-- Multiple accounts per wallet, including local IBANs for EUR markets
+- Multiple accounts per wallet
 - Ability to open accounts in the name of the user
 - Adherence to financial market standards (ISO 20022)
 
@@ -51,7 +51,7 @@ The steps to set up the virtual account are:
     </Warning>
   </Step>
   <Step title="You create the virtual account">
-    You call the <a href="">POST Create a Virtual Account</a> endpoint, specifying the country and type (see [types](#types) for details).
+    You call the <a href="">POST Create a Virtual Account</a> endpoint, specifying the country and purpose (see [types](#types) for details).
 
     The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
@@ -295,7 +295,7 @@ There are two types of virtual accounts, defined by the `VirtualAccountPurpose` 
 - `USER_OWNED` – Owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
 
 <Note>
-  Note – One `VirtualAccountPurpose` per wallet
+  **Note – One VirtualAccountPurpose per wallet**
 
   You can create multiple virtual accounts attached to the same wallet, but they must all have the same purpose (either `COLLECTION` or `USER_OWNED`).
 </Note>
@@ -352,6 +352,10 @@ Collection accounts need to be attached to the wallet of the user making the pay
 
 This type of account is mainly used for collecting and reconciling incoming funds, making it ideal for platforms that want to streamline these processes. Payouts are prohibited unless they’re for a refund.
 
+<img src="images/illu-virtual-accounts-collection.svg"/>
+
 ### User-owned accounts
 
 User-owned accounts allow platforms to create a unique IBAN for a specific user. Once created, the IBAN can be used to receive pay-ins, and the wallet can be used to make transfers and payouts. Because this IBAN is owned by the user, they must be categorized as an Owner and be KYC verified. The account holder can collect and make payments and transfer funds with full functionality. 
+
+<img src="images/illu-virtual-accounts-user-owned.svg"/>
