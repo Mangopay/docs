@@ -1,0 +1,59 @@
+---
+title: 'API - Oct 7, 2024'  
+description: '<small>&#8249; [All releases](/release-notes)</small>'  
+mode: wide  
+# 'og:description': ''
+---
+<div class="release-notes-page">
+
+<div class="pill pill-blue">Changed</div>
+## SEPA Direct Debit ChargeDate now 2 days earlier after creation
+
+When a SEPA <a href="/api-reference/direct-debit-payins/create-direct-debit-payin">Direct Debit pay-in</a> is created, the `ChargeDate` returned is now 2 days earlier than it was previously. The timings following the charge date have not changed: the user’s account is typically debited 2 days after the charge date.
+
+### SEPA Direct Debit timing change
+
+<table>
+    <thead>
+        <tr>
+            <th class="header" ></th>
+            <th class="header" >Previously</th>
+            <th class="header" >Now</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th class="header">Pay-in creation cutoff</th>
+            <td class="table-content">D-3, 5:00 pm CET</td>
+            <td class="table-content">D-1, 5:30 am CET</td>
+        </tr>
+        <tr>
+            <th class="header">Pay-in `ChargeDate`</th>
+            <td class="table-content">D</td>
+            <td class="table-content">D</td>
+        </tr>
+        <tr>
+            <th class="header">Pay-in `SUCCEEDED`</th>
+            <td class="table-content">D+1</td>
+            <td class="table-content">D+1</td>
+        </tr>
+        <tr>
+            <th class="header">Account debited</th>
+            <td class="table-content">D+2</td>
+            <td class="table-content">D+2</td>
+        </tr>
+        <tr>
+            <th class="header">Total business days</th>
+            <td class="table-content">5</td>
+            <td class="table-content">3</td>
+        </tr>
+    </tbody>
+</table> 
+
+This improvement in cash flow means that you need to adjust your pay-in creation date to ensure users are debited as expected. You should adjust your custom email notifications as well, if using them.a
+
+There is no change in Bacs Direct Debit timings.
+
+See the updated <a href="/guides/payment-methods/banking/direct-debit#pay-in-processing-times">direct debit guide</a> for details on timings for both schemes.
+
+</div>
