@@ -1,0 +1,129 @@
+---
+title: Deactivate a Virtual Account
+api: PUT /v2.01/{ClientId}/wallets/{WalletId}/virtual-accounts/{VirtualAccountId}
+description: Close an account permanently to prevent it being used
+---
+import WalletId from '/snippets/p-path/WalletId.mdx'
+import VirtualAccountId from '/snippets/p-path/VirtualAccountId.mdx'
+
+import Active_VirtualAccount from '/snippets/p-body/Active_VirtualAccount.mdx';
+
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import WalletId1Response from '/snippets/p-response/WalletId1Response.mdx';
+import CreditedUserId5Response from '/snippets/p-response/CreditedUserId5Response.mdx';
+import VirtualAccountPurposeResponse from '/snippets/p-response/VirtualAccountPurposeResponse.mdx';
+import Country_VirtualAccountResponse from '/snippets/p-response/Country_VirtualAccountResponse.mdx';
+import Status_VirtualAccountResponse from '/snippets/p-response/Status_VirtualAccountResponse.mdx';
+import Active_VirtualAccountResponse from '/snippets/p-response/Active_VirtualAccountResponse.mdx';
+import AccountOwnerResponse from '/snippets/p-response/AccountOwnerResponse.mdx';
+import LocalAccountDetails_VirtualAccountResponse from '/snippets/p-response/LocalAccountDetails_VirtualAccountResponse.mdx';
+import InternationalAccountDetails_VirtualAccountResponse from '/snippets/p-response/InternationalAccountDetails_VirtualAccountResponse.mdx';
+import CapabilitiesResponse from '/snippets/p-response/CapabilitiesResponse.mdx';
+
+import RestDeactivateVirtualCode from '/snippets/code/rest-deactivate-virtual-account.mdx';
+
+This call serves only to deactivate a virtual account if it is no longer needed. Once deactivated, the account `Status` is `CLOSED`.
+
+<Warning>
+**Caution - Deactivating a Virtual Account is irreversible**
+
+Once the Virtual Account object is deactivated, it is closed and cannot be reopened. 
+
+Any funds wired to this IBAN or local account details won’t be credited to the corresponding wallet and will be returned to the sender.
+
+If such cases arise, contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Hub</a>.
+</Warning>
+
+### Path parameters
+
+<WalletId />
+
+<VirtualAccountId />
+
+### Body parameters
+
+<Active_VirtualAccount />
+
+### Responses
+
+<AccordionGroup>
+
+<Accordion title="200">
+
+<IdResponse />
+<Tag2Response />
+<CreationDateResponse />
+<WalletId1Response />
+<CreditedUserId5Response />
+<VirtualAccountPurposeResponse />
+<Country_VirtualAccountResponse />
+<Status_VirtualAccountResponse />
+<Active_VirtualAccountResponse />
+<AccountOwnerResponse />
+<LocalAccountDetails_VirtualAccountResponse />
+<InternationalAccountDetails_VirtualAccountResponse />
+<CapabilitiesResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>
+````json 200 - Deactivated
+{
+    "Id": "wltbank_m_01J7NCAT73Q15SVSM9S6Z36GRZ",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1726220691,
+    "WalletId": "wlt_m_01J7NC9YKP3NB1PADF4SHZY712",
+    "CreditedUserId": "user_m_01J7KACBPAV7XAF8AH9BDCJPRS",
+    "VirtualAccountPurpose": "COLLECTION",
+    "Country": "GB",
+    "Status": "CLOSED",
+    "Active": false,
+    "AccountOwner": "Mangopay SA (for ACME Platform)",
+    "LocalAccountDetails": {
+	    "Account": {
+			"SortCode": "608382",
+			"AccountNumber": "21762697",
+		},
+        "Address": {
+            "StreetName": "2, Avenue Amélie",
+            "PostCode": "L-1125",
+            "TownName": "Luxembourg",
+            "CountrySubDivision": null,
+            "Country": "Luxembourg",
+        }
+    },
+    "InternationalAccountDetails": [
+        {
+            "Address": {
+				"StreetName": "2, Avenue Amélie",
+				"PostCode": "L-1125",
+				"TownName": "Luxembourg",
+				"CountrySubDivision": null,
+				"Country": "Luxembourg",
+            },
+            "Account": {
+                "Iban": "GB62SAPY60838221762697",
+                "Bic": null
+            }
+        }
+    ],
+    "Capabilities": {
+        "LocalPayinAvailable": true,
+        "InternationalPayinAvailable": true,
+        "Currencies": [
+            "GBP"
+        ]
+    }
+}
+````
+</ResponseExample>
+
+<RequestExample>
+
+<RestDeactivateVirtualCode />
+
+</RequestExample>
