@@ -9,17 +9,71 @@ import Emi from '/snippets/glossary/emi.mdx';
 import Psp from '/snippets/glossary/psp.mdx';
   
 
-Mangopay’s payments solution relies on electronic wallets. These wallets hold the funds processed by Mangopay on behalf of platforms and their users.  
+Your platform's community of users are looking to make and receive payments. By integrating our payments API into your app or website, your platform can leverage Mangopay's flexible wallets to accept, hold, and pay out funds for your users, while taking fees for the services you provide them. 
 
-Mangopay is the only partner a platform needs to handle all payments from beginning to end. We specialize in third-party payments, which means that platforms using our services are intermediaries between two groups. For example, they could be buyers and sellers on a marketplace, or project owners and contributors on a crowdfunding platform.  
+Mangopay's API acts as your platform's gateway to everything needed to make payments happen. We are your one-stop solution dealing with card issuers and networks, banks, payment methods, technical protocols, and more. 
 
-## Value chain  
+In typical integrations, Mangopay takes the role of a **payment processor** and **acquirer** (so called due to the acquisition of the funds from the paying user). As a regulated <Emi content="electronic money institution (EMI)" />, Mangopay provides tools to prevent fraud and complies with regulations for identity verification of payout beneficiaries (also known as KYC/KYB). 
 
-Your end users are using your platform to make payments. Mangopay handles these payments via our API, which is integrated into your app or website. Our API acts as a payment gateway and we deal with everything needed to make payments happen: card issuers and networks, banks, payment methods, technical protocols, and so on.   
+## Users 
 
-In a typical integration, Mangopay takes the role of a **payment processor** and **acquirer** (so called due to the acquisition of the funds from the end user). As a licensed <Emi content="electronic money institution (EMI)" />, Mangopay places the acquired funds on an e-wallet for the paying user.  
+A transaction starts with a paying user. To make a payment with Mangopay via your platform, a user must be registered on our systems and provide basic details such as a name and an email address. We categorize this kind of user as a **Payer**. 
 
-Once the funds arrive on an e-wallet, they are inside what we call the Mangopay environment. This digital space is where your platform can unlock the power of our e-wallet system.  
+The user receiving the funds must be registered with a greater level of detail. This category is called an **Owner** (because they hold the funds paid in).
+
+Owner users are restricted from freely paying the funds out to their external bank account by regulations in place to combat money laundering and terrorism financing. To handle funds beyond the relevant limits, Owner users must be **verified** to ensure that their identity and business activity are genuine. This process is often known as KYC/KYB. 
+
+**Read more about managing users** --> to users section
+
+--- 
+DIAGRAM - 3 user states: payer, owner, verified owner
+---
+
+## Wallets
+
+Mangopay's payments solution relies on electronic wallets to hold the funds processed on behalf of your platform and your users. 
+
+### User wallets
+
+Once the user is registered, they can be assigned a unlimited number of wallets. In typical integrations, Payer users make a **pay-in** via their chosen payment method to a wallet in their name, before the funds are moved automatically to the wallet of the recipient in a **transfer**. The Payer user won't know that they have been assigned a wallet; they only know that they are making a transaction with the recipient via your platform. 
+
+For Owner users, you can make the wallet visible to them for the funds they are receiving. You can embed financial services, like taking advantage of Mangopay's FX offerings for **conversions** between wallets, or on-demand or scheduled **payouts** in local currencies (provided the user is verified).
+
+**Read about these transaction types in detail below** --> to transaction types
+
+--- 
+DIAGRAM - E2E flow pay-in, transfer, conversion, payout between Payer and Owner
+---
+
+### Platform wallets
+
+Beside wallets assigned to users, Mangopay creates two specific wallets automatically in each currency.
+
+#### Fees Wallet
+
+Mangopay's wallet system allows your platform to flexibly take fees at any stage of your integration workflow. On any pay-in, transfer, conversion, or payout, you can specify the amount of Fees to be diverted to the
+
+
+#### Repudiation wallet
+
+        The platform’s Fees Wallet is where any fees taken are sent. You can collect fees on any pay-in, transfer, or payout.  
+        
+        Your fees are automatically wired to your bank account every month.
+        
+        <a href="/guides/fees">Learn more &rarr;</a>
+      </td>
+      <td class="table-content"> 
+        When an end user contests a pay-in with their bank (known as a <Chargeback content="chargeback" />), the Repudiation Wallet comes into play. 
+        
+        The funds are automatically deducted from this wallet and sent back to the user. A dispute is created which can be contested by the platform in some cases.
+        
+        <a href="/guides/disputes">Learn more &rarr;</a>
+
+
+## Transaction types 
+
+
+
 
 ## The Mangopay environment  
 
@@ -54,37 +108,4 @@ Payments handled by Mangopay can be understood along three basic stages:
   </tbody>
 </table>
 
-## Understanding wallets  
 
-Mangopay e-wallets hold funds inside the Mangopay environment. Each wallet (as they are called in the API) is attached to one user and holds funds in one currency. Currencies can be converted between wallets using Mangopay's FX offerings.  
-
-All users need to have at least one wallet, whether they’re only making pay-ins to it, also receiving funds from other wallets, or looking to make a payout to their bank account. Mangopay’s system of user types and categories simplifies registration and verification.  
-
-When a platform creates an API account, there are two specific types of wallets that are created automatically by Mangopay: 
-
-<table>
-  <thead>
-    <tr>
-      <th class="header">Fees Wallet</th>
-      <th class="header">Repudiation Wallet</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="table-content"> 
-        The platform’s Fees Wallet is where any fees taken are sent. You can collect fees on any pay-in, transfer, or payout.  
-        
-        Your fees are automatically wired to your bank account every month.
-        
-        <a href="/guides/fees">Learn more &rarr;</a>
-      </td>
-      <td class="table-content"> 
-        When an end user contests a pay-in with their bank (known as a <Chargeback content="chargeback" />), the Repudiation Wallet comes into play. 
-        
-        The funds are automatically deducted from this wallet and sent back to the user. A dispute is created which can be contested by the platform in some cases.
-        
-        <a href="/guides/disputes">Learn more &rarr;</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
