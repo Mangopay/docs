@@ -63,9 +63,9 @@ The <a href="/api-reference/bancontact/bancontact-payin-object">Bancontact pay-i
 On your app or website, the user selects Bancontact as the payment method
 </Step>
 <Step title="Payment initiation">
-You create the payment request by calling <a href="/api-reference/bancontact/create-bancontact-payin">POST Create a Bancontact PayIn</a>.
+You create the payment request by calling <a href="/api-reference/bancontact/create-bancontact-payin">POST Create a Bancontact PayIn</a>, specifying the `ReturnURL`. 
 
-For an app-to-app flow, you need to set the `PaymentFlow` to `APP` to bring the user back to your platform's app (otherwise `WEB` for browser-based by default).
+If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
 </Step>
 <Step title="Redirection">
 On a web browser, you redirect the user to a hosted payment page via the `RedirectURL` in the API response.
@@ -80,12 +80,13 @@ The Bancontact pay-in flow only accepts Bancontact cards, which are always co-br
 
 Cards that don't carry the Bancontact name, but are only branded Maestro for example, can't be used on Bancontact pay-ins.
 </Note>
+
 In an app-to-app flow, you redirect the user to their Payconiq by Bancontact app via the `DeepLinkURL` in the API response, where they confirm and authenticate the payment.
 </Step>
 <Step title="Return">
-After payment, the user is returned:
-- To your specified `ReturnURL` if the `PaymentFlow` is `WEB` (default value)
-- To your platform's app if the `PaymentFlow` is `APP`
+After payment, the user is returned on your specified `ReturnURL`:
+- To a website if `PaymentFlow` is `WEB` (default value)
+- To a mobile app if the `PaymentFlow` is `APP`
 </Step>
 <Step title="Outcome">
 The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
