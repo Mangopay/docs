@@ -59,30 +59,37 @@ Mangopay offers two other flows from the Bancontact Payconiq Group:
 The <a href="/api-reference/bancontact/bancontact-payin-object">Bancontact pay-in</a> flow provides the following checkout experience:
 
 <Steps>
-  <Step title="User chooses payment method">
+<Step title="User chooses payment method">
 On your app or website, the user selects Bancontact as the payment method
-  </Step>
-  <Step title="Redirection">
-On a website, you redirect the user to a hosted payment page via the `RedirectURL`. 
+</Step>
+<Step title="Payment initiation">
+You create the payment request by calling <a href="/api-reference/bancontact/create-bancontact-payin">POST Create a Bancontact PayIn</a>.
+
+For an app-to-app flow, you need to set the `PaymentFlow` to `APP` to bring the user back to your platform's app (otherwise `WEB` for browser-based by default).
+</Step>
+<Step title="Redirection">
+On a web browser, you redirect the user to a hosted payment page via the `RedirectURL` in the API response.
 
 On the webpage, the user can: 
 - Enter their Bancontact card number, or
 - Scan a QR code with a Belgian banking app (that supports QR code scan) or the Payconiq by Bancontact app. The QR-code flow is available for transactions up to €1,500. Above this amount, the user is only presented with the card option.
 <Note>
-  **Note – Card must be branded Bancontact**
+**Note – Card must be branded Bancontact**
 
-  The Bancontact pay-in flow only accepts Bancontact cards, which are always co-branded with Visa, Mastercard, or Maestro.
-  
-  Cards that don't carry the Bancontact name, but are only branded Maestro for example, can't be used on Bancontact pay-ins.
+The Bancontact pay-in flow only accepts Bancontact cards, which are always co-branded with Visa, Mastercard, or Maestro.
+
+Cards that don't carry the Bancontact name, but are only branded Maestro for example, can't be used on Bancontact pay-ins.
 </Note>
-In an app-to-app flow, you redirect the user to their Payconiq by Bancontact app via the `DeepLinkURL`, where they confirm and authenticate the payment.
-  </Step>
-  <Step title="Return">
-After payment, the user is returned to the `ReturnURL` that you specify in the payment request    
-  </Step>
-  <Step title="Outcome">
+In an app-to-app flow, you redirect the user to their Payconiq by Bancontact app via the `DeepLinkURL` in the API response, where they confirm and authenticate the payment.
+</Step>
+<Step title="Return">
+After payment, the user is returned:
+- To your specified `ReturnURL` if the `PaymentFlow` is `WEB` (default value)
+- To your platform's app if the `PaymentFlow` is `APP`
+</Step>
+<Step title="Outcome">
 The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
-  </Step>
+</Step>
 </Steps>
 
 ## Hooks
