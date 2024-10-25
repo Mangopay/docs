@@ -17,22 +17,24 @@ Funds entering the Mangopay environment as pay- Ins may be refused based on the 
 
 ### 2. Restrictions on the creation of API objects   
 
-The Mangopay API prevents platforms from creating certain objects because of country-related data. Three API objects are concerned:  
+The Mangopay API prevents platforms from creating or modifying certain objects because of country-related data. Three API objects are concerned:  
 
 #### Users  
 
-For <a href="/api-reference/users">users</a>, it is not possible to create or modify users using blocked countries as the following parameters:  
+For <a href="/api-reference/users">users</a>, it is not possible to create users using restricted countries as the following parameters:  
 
 #### Natural Users  
-- `Nationality`  
 - `CountryOfResidence`  
 - `Country` of the `Address`  
 
 #### Legal Users  
 - `Country` of the `HeadquartersAddress`  
-- `LegalRepresentativeNationality`  
 - `LegalRepresentativeCountryOfResidence`  
 - `Country` of the `LegalRepresentativeAddress`  
+
+Updating these parameters to a restricted country on an existing user results in the user being blocked. To be unblocked, the user must submit a proof of identity and/or address. For further details, see the <a href="/guides/users/blocked-users">blocked user</a> guide.
+
+Restrictions on North Korea (KP) also apply to the parameters `Nationality` (Natural User) and `LegalRepresentativeNationality` (Legal User), in addition to the residency parameters described above.
 
 #### Bank accounts  
 
@@ -51,7 +53,7 @@ The following endpoints are available to find out about restrictions in place:
 - <a href="/api-reference/country-authorizations/list-authorizations-countries">GET List Authorizations for all countries</a>
 
 You can also set up a <a href="/webhooks">hook notification</a> for the following <a href="/webhooks/event-types">event type</a> to be notified when a country's restrictions are modified:  
-- COUNTRY_AUTHORIZATION_UPDATED  
+- `COUNTRY_AUTHORIZATION_UPDATED`
 
 ## Additional checks  
 
