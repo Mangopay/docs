@@ -1,0 +1,100 @@
+---
+title: 'Swish'  
+'og:description': 'Learn more about offering Swish with Mangopay'  
+---
+
+## About
+
+Swish is a popular payment method in Sweden that allows users to scan a QR code to validate the payment in their Swish app. 
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                Sweden
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                SEK
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/guides/refunds)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Disputes](/guides/disputes)</th>
+            <td class="table-content">
+                Users authenticate directly with their bank, so there is no dispute process and a low risk of unrecognized or fraudulent payments
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring&nbsp;payments</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## How it works
+The <a href="/api-reference/swish/swish-payin-object">Swish pay-in</a> flow provides the following checkout experience: 
+
+<Steps>
+<Step title="User chooses payment method">
+On your app or website, the user selects Swish as the payment method
+</Step>
+<Step title="Payment initiation">
+You create the payment request by calling <a href="/api-reference/swish/create-swish-payin">POST Create a Swish PayIn</a>, specifying the `ReturnURL`.
+</Step>
+<Step title="Redirection">
+On a website, you redirect the user via the `RedirectURL` response value to a hosted payment page containing the QR code. Alternatively, you can integrate a PNG of the QR code into your payment page using the `QRCodeURL` value (which is Base64-encoded).
+
+In an app-to-app flow, you redirect the user to their Swish app via the `DeepLinkURL` response value. 
+
+After pressing the pay button, the user uses the Swedish Mobile BankID system to validate the payment.
+
+<Note>  
+**Note – Timeout after 3 minutes**
+
+The payment session lasts for 3 minutes, at which point the pay-in fails automatically if no action has been taken by the user.
+</Note>
+</Step>
+<Step title="Return">
+After payment, the user is returned to the `ReturnURL` that you specified in the payment request.
+
+</Step>
+<Step title="Outcome">
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+</Step>
+</Steps>
+
+## Hooks
+
+You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
+
+- PAYIN_NORMAL_SUCCEEDED  
+- PAYIN_NORMAL_FAILED  
+
+## Related resources  
+
+<CardGroup col={2}> 
+    <Card title="Endpoint" href="/api-reference/swish/swish-payin-object">
+    The Swish PayIn object
+    </Card>  
+
+    <Card title="Testing" href="/testing/payment-methods#swish">
+    Learn about testing Swish
+    </Card>
+</CardGroup>

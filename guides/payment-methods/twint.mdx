@@ -1,0 +1,111 @@
+---
+title: 'TWINT'  
+'og:description': 'Learn more about offering TWINT with Mangopay'  
+---
+
+## About
+
+TWINT is a popular payment method in Switzerland that allows users to connect their bank account or card with their phone.
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                Switzerland
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                CHF
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/guides/refunds)</th>
+            <td class="table-content">
+                Yes, up to 365 days
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Disputes](/guides/disputes)</th>
+            <td class="table-content">
+                Yes, within 120 days 
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring&nbsp;payments</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## How it works
+The <a href="/api-reference/twint/twint-payin-object">TWINT pay-in</a> flow provides the following checkout experience: 
+
+<Steps>
+<Step title="User chooses payment method">
+On your app or website, the user selects TWINT as the payment method
+</Step>
+<Step title="Payment initiation">
+You create the payment request by calling <a href="/api-reference/twint/create-twint-payin">POST Create a TWINT PayIn</a>, specifying the `ReturnURL`.
+</Step>
+<Step title="Redirection">
+You redirect the user to the hosted TWINT page via the `RedirectURL` in the API response.
+
+The TWINT page displays a 5-digit verification code and a QR code. 
+
+The user either scans the QR code or enters the verification code in their mobile app, before reviewing and confirming the payment. 
+
+<Note>  
+**Note – Session timeout** 
+  
+The TWINT session times out after:
+- 15 minutes for the hosted webpage
+- 3 minutes once the user scans the QR code
+</Note>
+</Step>
+<Step title="Return">
+After payment, the user is returned to the `ReturnURL` that you specified in the payment request.
+
+</Step>
+<Step title="Outcome">
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+</Step>
+</Steps>
+
+## Hooks
+
+You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
+
+- PAYIN_NORMAL_SUCCEEDED  
+- PAYIN_NORMAL_FAILED  
+
+## Disputes
+A user can request a chargeback with their issuing bank of a TWINT payment up to 120 days after the payment date.
+
+When this happens, Mangopay automatically deducts the disputed amount from the Reputation Wallet (by way of a Repudiation) and creates a <a href="/api-reference/disputes/dispute-object">Dispute object</a>, which is `CONTESTABLE`. 
+
+With TWINT, platforms usually have 30 days to submit evidence to contest the dispute.
+
+<a href="/guides/disputes">Read more about disputes</a> **&rarr;**
+
+## Related resources  
+
+<CardGroup col={2}> 
+    <Card title="Endpoint" href="/api-reference/twint/twint-payin-object">
+    The TWINT PayIn object
+    </Card>  
+
+    <Card title="Testing" href="/testing/payment-methods#twint">
+    Learn about testing TWINT
+    </Card>
+</CardGroup>
