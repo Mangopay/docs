@@ -1,0 +1,133 @@
+---
+title: 'View a PayIn (TWINT)'  
+api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---
+
+import PaymentType13Response from '/snippets/p-response/PaymentType13Response.mdx';
+import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
+import RedirectURLResponse from '/snippets/p-response/RedirectURLResponse.mdx';
+import StatementDescriptorResponse from '/snippets/p-response/StatementDescriptorResponse.mdx';
+import ExecutionType1Response from '/snippets/p-response/ExecutionType1Response.mdx';
+import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
+import TypeResponse from '/snippets/p-response/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/p-response/Status2Response.mdx';
+import FeesResponse_CHF from '/snippets/p-response/FeesResponse_CHF.mdx';
+import CreditedFundsResponse_CHF from '/snippets/p-response/CreditedFundsResponse_CHF.mdx';
+import DebitedFundsResponse_CHF from '/snippets/p-response/DebitedFundsResponse_CHF.mdx';
+import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import TagResponse from '/snippets/p-response/TagResponse.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
+import PayInId from '/snippets/p-path/PayInId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+  
+<Note>
+**Note – Pay-in data retained for 13 months**
+
+An API call to retrieve a pay-in whose `CreationDate` is older than 13 months may return 404 Not Found.
+
+For more information, see the <a href="/api-reference/overview/data-availability-periods">Data availability periods</a> article.
+</Note>
+
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200 - Succeeded">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFundsResponse_CHF />  
+
+<CreditedFundsResponse_CHF />  
+
+<FeesResponse_CHF />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType13Response />  
+
+<ExecutionType1Response />  
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+</Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200 - Succeeded  
+{
+    "Id": "wt_c84feed5-6a5e-4a58-b1f5-3433aac9a699",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1729065886,
+    "AuthorId": "user_m_01HSDQD2RPPQ8NMM36EDGYBMEY",
+    "DebitedFunds": {
+        "Currency": "CHF",
+        "Amount": 1267
+    },
+    "CreditedFunds": {
+        "Currency": "CHF",
+        "Amount": 895
+    },
+    "Fees": {
+        "Currency": "CHF",
+        "Amount": 372
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1729065905,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01JAA5Q2ZY72H0PNWPK1Z3DX74",
+    "CreditedUserId": "user_m_01HSDQD2RPPQ8NMM36EDGYBMEY",
+    "PaymentType": "TWINT",
+    "ExecutionType": "WEB",
+    "ReturnURL": "http://docs.mangopay.com/please-ignore?transactionId=wt_c84feed5-6a5e-4a58-b1f5-3433aac9a699",
+    "RedirectURL": "https://r3.girogate.de/ti/dumbdummy?tx=140301405018&rs=Ff5U3DihmCenOh5x3pS1HYmeITxf7dtz&cs=cd782c761b30125b86bc9727b5fb32a988248ae0eafbcae62ab9cec05a27c2f1",
+    "StatementDescriptor": "Example123"
+}
+```
+</ResponseExample>  
+
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>
