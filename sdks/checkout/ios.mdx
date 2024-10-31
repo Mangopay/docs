@@ -54,9 +54,23 @@ source 'https://gitlab.com/mangopay/dev/checkout-ios-sdk'
 
 Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).
 
-```swift Initialization
-MangopayCheckoutSDK.initialize(clientId: "<client_id>", environment: .sandbox)
-```  
+<Info>
+**Note – Initialize once per app instance**
+
+The initialization should only be done once for an instance of the application. 
+
+We recommend putting this inside the `AppDelegate` class.
+</Info>
+
+```swift
+
+        MangopayCheckoutSDK.initialize(
+            clientId: <client_id>,
+            profilingMerchantId: <profilingMerchant_id>,
+            checkoutReference: <checkoutReference>,
+            environment: <env>
+        )
+```
 
 ### Initialization parameters
 
@@ -96,14 +110,245 @@ MangopayCheckoutSDK.initialize(clientId: "<client_id>", environment: .sandbox)
     </tbody>
 </table>
 
-## Configuring the payment sheet  
+## Configuration
 
-To configure the Checkout SDK’s payment sheet:   
+To configure the Checkout SDK’s payment sheet:
+
+#### Create a payment sheet instance in your ViewController
+```swift
+var checkout: MGPPaymentSheet!
+```
+
+#### Configure paymentSheet with paymentMethodOptions
+```swift
+let paymentMethodOptions = PaymentMethodOptions(
+    cardOptions: cardOptions,
+    applePayOptions: applePayOptions,
+    paypalOptions: paypalOptions
+)
+```
+
+## Handling redirection  
+
+<Warning>  
+**Warning – Use Mangopay Checkout domain as return URL** 
+  
+When making the pay-in request from your backend, use the Mangopay Checkout URL as the `SecureModeReturnURL` or `ReturnURL` (depending on the payment method):  
+
+> http<span>://</span>checkout.mangopay.com  
+
+The user must be returned to this URL after redirection.  
+</Warning>  
+
+Some payment methods (card, Google Pay, PayPal) require or may require the user to be redirected to authorize or complete a transaction.  
+
+The Checkout SDK allows you to manage the entire payment flow seamlessly while retaining control over transaction logic in your backend. Once a payment method is selected and payment details are provided, use the `options.onCreatePayment` function to request the transaction from your backend.  
+
+Subsequently, and when necessary for the transaction type, the Checkout SDK seamlessly manages additional redirect actions for 3DS authorization or otherwise validating the payment.  
+
+To manage transaction redirects effectively with the SDK:  
+
+1. In your `paymentMethods` configurations, define an `options.onCreatePayment` attribute as a function.  
+
+2. Within your function:   
+- Request a transaction from your server and subsequently, Mangopay.  
+- Return the unaltered transaction response object to the SDK.  
+
+3. The SDK:   
+- Redirects the user to the payment authentication page when necessary.  
+- Manages payment provider redirects back to the SDK.  
+- Triggers the `onPaymentComplete` event with the ID and status of the transaction.  
+- Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
+- Presents the payment result to the user.  
+
+### Redirection example
+
+```swift
+            callback: CallBack(
+                 onCreatePayment: { paymentMethod, attemptRef in
+                     // 1. implement server-side call to request a transaction (with the attempt reference).
+                                     // 2. return the card transaction object.
+                                     return <Card_Transaction_Object>
+                 }
+             )    
+```
+
+## Creating payment handler callbacks
+
+```swift
+    let callback = CallBack(
+         onPaymentMethodSelected: { paymentMethod in
+         },
+         onTokenizationCompleted: { tokenizedData in
+         
+         },
+         onCreateCardRegistration: { cardInfo in
+         },
+         onPaymentCompleted: { attemptReference, result in
+         },
+         onCreatePayment: { paymentMethod, attemptReference in
+           switch paymentMethod {
+             case .card(_):
+             //
+             case .payPal:
+             default: return nil
+             }
+             },
+        onCancel: {
+         },
+         onError: { error in
+         }
+     )
+```
+
+### Callback parameters
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`onPaymentMethodSelected`</td>
+            <td class="table-content">((PaymentMethod) -> Void)</td>
+            <td class="table-content">Triggered when a payment method has been selected.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onTokenizationCompleted`</td>
+            <td class="table-content">((TokenizedCardData) -> Void)</td>
+            <td class="table-content">Triggered when a card tokenization is completed and a `CardId` is returned.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onCreateCardRegistration`</td>
+            <td class="table-content">((MGPCardInfo) async -> MGPCardRegistration?)</td>
+            <td class="table-content">This gives developers control over making card registration creation optional during the Payment session. It is only called when the user taps the "Pay" button for card payment.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onPaymentCompleted`</td>
+            <td class="table-content">((PaymentMethod, String?) async -> Payable?)</td>
+            <td class="table-content">Triggered when the transaction is completed, whatever the outcome (whether successful or failed).</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onCancelled`</td>
+            <td class="table-content">() -> Void)?</td>
+            <td class="table-content">Called when the payment sheet is closed.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onError`</td>
+            <td class="table-content"></td>
+            <td class="table-content">Triggered when an internal Checkout SDK error has occurred.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Presenting the payment result
+
+```kotlin
+    
+Checkout Screen  -> Payment sheet -> Confirmation screen 
+
+checkout = MGPPaymentSheet.create(
+           paymentMethodOptions: paymentConfig,
+           branding: PaymentFormStyle(),
+           callback: CallBack(
+               onTokenizationCompleted: { cardRegistration in
+                                    **//dismiss the payment sheet**
+                                     self.checkout.teardown()
+                                    **//present the confirmation screen**
+               },
+               onError: { error in
+               },
+               onSheetDismissed: {
+               }
+           )
+       )
+
+       checkout.present(in: self)
+```
+
+## Configuring card payments 
+
+```swift
+let cardOptions = MGPCardOptions(supportedCardBrands: [.mastercard, .visa, .discover])
+```
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`supportedCardSchemes`</td>
+            <td class="table-content">`Array<[CardType]>`</td>
+            <td class="table-content">The card brands to be shown.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`cardRegistration`</td>
+            <td class="table-content">CardRegistration?</td>
+            <td class="table-content">You can provide CardRegistration optionally from configuration or provide it from callbacks.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Configuring Apple Pay
+
+```swift
+      let applePayOptions = MGPApplePayOptions(
+            amount: 10,
+            delegate: self,
+            merchantIdentifier: <Merchant_ID>,
+            merchantCapabilities: .capability3DS,
+            currencyCode: "USD",
+            countryCode: "US",
+            supportedNetworks: [
+                .masterCard,
+                .visa
+            ],
+            requiredBillingContactFields: [.name],
+            shippingType: .delivery
+         )
+```
+
+## Configuring PayPal
+
+```swift
+**let** paypalOptions = MGPPaypalOptions()
+```
+
+Paypal Options Configuration Parameters
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| color | PayPalButton.Color | Color of the paypal button. Default to gold if not provided. |
+| edges | PaymentButtonEdges | Edges of the button. Default to softEdges if not provided. |
+| label | PayPalButton.Label | Label displayed next to the button's logo. Default to no label. |
+
+
+z
+Refer to [configuring Apple Pay](#configuring-apple-pay) for more information
+</Step>
+<Step title="Configure PayPal">
+  
+</Step>
+<Step title="step 2">
+  
+</Step>
+</Steps>
 
 #### 1. Create a payment sheet instance in your view controller  
-```swift Payment sheet instance
+```swift
 var checkout: MGPPaymentSheet!
-```  
+```
+#### 2. Create callbacks to handle the payment  
+
 
 #### 2. Create callbacks to handle the payment  
 ```swift Payment handler
