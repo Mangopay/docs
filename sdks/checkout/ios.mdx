@@ -1,7 +1,6 @@
 ---
 title: 'Checkout - iOS'  
-sidebarTitle: 'iOS'  
-'og:description': 'How to set up the Mangopay Checkout SDK on iOS, including handling 3DS redirection and offering Apple Pay.'  
+sidebarTitle: 'iOS'
 ---
 
 This guide helps you get started with the Checkout SDK on iOS.  
@@ -110,16 +109,17 @@ We recommend putting this inside the `AppDelegate` class.
     </tbody>
 </table>
 
-## Configuration
+## Payment sheet configuration
 
 To configure the Checkout SDK’s payment sheet:
 
-##### Create a payment sheet instance in your ViewController
+<Steps>
+<Step title="Create a payment sheet instance in your ViewController">
 ```swift
 var checkout: MGPPaymentSheet!
 ```
-
-##### Configure paymentSheet with paymentMethodOptions
+</Step>
+<Step title="Configure paymentSheet with paymentMethodOptions">
 ```swift
 let paymentMethodOptions = PaymentMethodOptions(
     cardOptions: cardOptions,
@@ -127,12 +127,13 @@ let paymentMethodOptions = PaymentMethodOptions(
     paypalOptions: paypalOptions
 )
 ```
-##### Present the payment sheet
-
+</Step>
+<Step title="Present the payment sheet">
 ```swift
 checkout.present(in: self)
 ```
-
+</Step>
+</Steps>
 
 ## Handling redirection  
 
@@ -148,24 +149,27 @@ The user must be returned to this URL after redirection.
 
 Some payment methods (card, Google Pay, PayPal) require or may require the user to be redirected to authorize or complete a transaction.  
 
-The Checkout SDK allows you to manage the entire payment flow seamlessly while retaining control over transaction logic in your backend. Once a payment method is selected and payment details are provided, use the `options.onCreatePayment` function to request the transaction from your backend.  
+The Checkout SDK allows you to manage the entire payment flow seamlessly while retaining control over transaction logic in your backend. Once a payment method is selected and payment details are provided, use the `onCreatePayment` function to request the transaction from your backend.  
 
 Subsequently, and when necessary for the transaction type, the Checkout SDK seamlessly manages additional redirect actions for 3DS authorization or otherwise validating the payment.  
 
 To manage transaction redirects effectively with the SDK:  
-
-1. In your `paymentMethods` configurations, define an `options.onCreatePayment` attribute as a function.  
-
-2. Within your function:   
+<Steps>
+<Step title="Define onCreatePayment">
+In your `paymentMethodOptions` configurations, define an `onCreatePayment` attribute as a function.  
+</Step>
+<Step title="Within your function:">
 - Request a transaction from your server and subsequently, Mangopay.  
 - Return the unaltered transaction response object to the SDK.  
-
-3. The SDK:   
+</Step>
+<Step title="The SDK:">
 - Redirects the user to the payment authentication page when necessary.  
 - Manages payment provider redirects back to the SDK.  
 - Triggers the `onPaymentComplete` event with the ID and status of the transaction.  
 - Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
-- Presents the payment result to the user.  
+- Presents the payment result to the user. 
+</Step>
+</Steps>
 
 ### Redirection example
 
@@ -231,7 +235,7 @@ To manage transaction redirects effectively with the SDK:
         <tr>
             <td class="table-content">`onCreateCardRegistration`</td>
             <td class="table-content">((MGPCardInfo) async -> MGPCardRegistration?)</td>
-            <td class="table-content">This gives developers control over making card registration creation optional during the Payment session. It is only called when the user taps the "Pay" button for card payment.</td>
+            <td class="table-content">Triggered only when the user selects card payment. This callback gives you control over making the card registration optional during the session.</td>
         </tr>
         <tr>
             <td class="table-content">`onPaymentCompleted`</td>
@@ -389,7 +393,7 @@ checkout = MGPPaymentSheet.create(
    )
 ```
 
-### Apple Pay parameters
+### Apple Pay configuration parameters
 
 <table>
     <thead>
