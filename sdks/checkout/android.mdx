@@ -47,10 +47,26 @@ maven {
 
 ## Initializing the SDK  
 
-Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).  
-```kotlin Initialization
-Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environment.SANDBOX)
-```  
+Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).
+
+<Note>
+**Note – Initialize once per app instance**
+
+The initialization should only be done once for an instance of the application. 
+
+We recommend putting this inside the `Application()` class.
+</Note>
+
+```kotlin
+MangopaySdk.initialize(
+    context = this,
+    clientId = “clientId”,
+    profilingMerchantId = “profilingMerchantId”,
+    tenantId = TenantId.EU,
+    environment = Environment.SANDBOX,
+    logLevel = LogLevel.Basic
+)
+```
 
 ### Initialization parameters
 
@@ -64,23 +80,39 @@ Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environm
     </thead>
     <tbody>
         <tr>
-            <td class="table-content">`clientId`</td>
-            <td class="table-content">String</td>
+            <td class="table-content">`context` </td>
+            <td class="table-content">Application </td>
+            <td class="table-content">The application context. </td>
+        </tr>
+        <tr>
+            <td class="table-content">`clientId` </td>
+            <td class="table-content">String </td>
             <td class="table-content">The unique identifier associated with the Mangopay API key, giving access to the Mangopay API.</td>
         </tr>
         <tr>
-            <td class="table-content">`environment`</td>
-            <td class="table-content">Environment</td>
-            <td class="table-content">The Mangopay environment.\
-**Allowed values:** SANDBOX, PRODUCTION\
-**Default values:** SANDBOX</td>
+            <td class="table-content">`profilingMerchantId` </td>
+            <td class="table-content">Int </td>
+            <td class="table-content">The unique identifier associated with your fraud protection package. Contact Mangopay to obtain this value.</td>
         </tr>
         <tr>
-            <td class="table-content">`logLevel`</td>
-            <td class="table-content">LogLevel</td>
+            <td class="table-content">`environment` </td>
+            <td class="table-content">Environment </td>
+            <td class="table-content">The Mangopay environment.
+**Allowed values:** `Environment.SANDBOX`, `Environment.PRODUCTION`
+**Default values:** `Environment.SANDBOX`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`logLevel` </td>
+            <td class="table-content">LogLevel </td>
             <td class="table-content">The specification of the HTTP request and response log. We recommend `None` for Production build.\
-**Allowed values:** None, Basic\
-**Default values:** None</td>
+**Allowed values:** `LogLevel.None` , `LogLevel.Basic`
+**Default values:** `LogLevel.None`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`tenantId` </td>
+            <td class="table-content">TenantId </td>
+            <td class="table-content">The identifier of the Mangopay tenant. 
+**Allowed values:** `TenantId.EU`, `TenantId.UK`</td>
         </tr>
     </tbody>
 </table>
