@@ -1,7 +1,6 @@
 ---
 title: 'Checkout – Web'  
-sidebarTitle: 'Web'  
-'og:description': 'How to set up the Mangopay Checkout SDK on web browsers, including handling 3DS redirection, payment result verification, and offering Apple Pay and Google Pay.'  
+sidebarTitle: 'Web'
 ---
 
 This guide helps you get started with the Checkout SDK on web browsers.  
@@ -361,19 +360,22 @@ The Checkout SDK allows you to manage the entire payment flow seamlessly while r
 Subsequently, and when necessary for the transaction type, the Checkout SDK seamlessly manages additional redirect actions for 3DS authorization or otherwise validating the payment.  
 
 To manage transaction redirects effectively with the SDK:  
-
-1. In your `paymentMethods` configurations, define an `options.onCreatePayment` attribute as a function.  
-
-2. Within your function:   
+<Steps>
+<Step title="Define onCreatePayment">
+In your `paymentMethods` configurations, define an `options.onCreatePayment` attribute as a function.  
+</Step>
+<Step title="Within your function:">
 - Request a transaction from your server and subsequently, Mangopay.  
 - Return the unaltered transaction response object to the SDK.  
-
-3. The SDK:   
+</Step>
+<Step title="The SDK:">
 - Redirects the user to the payment authentication page when necessary.  
 - Manages payment provider redirects back to the SDK.  
 - Triggers the `onPaymentComplete` event with the ID and status of the transaction.  
 - Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
-- Presents the payment result to the user.  
+- Presents the payment result to the user. 
+</Step>
+</Steps>
 
 ```javascript JavaScript - Redirection example
 paymentMethods: [

@@ -1,7 +1,6 @@
 ---
 title: 'Checkout - Android'  
 sidebarTitle: 'Android'  
-'og:description': 'How to set up the Mangopay Checkout SDK on Android, including handling 3DS redirection, payment result verification, and offering Google Pay.'  
 ---
 
 This guide helps you get started with the Checkout SDK on Android.  
@@ -38,46 +37,35 @@ dependencies {
 }
 ```  
 
-## Creating a Card Registration  
-
-In your backend, create the Card Registration via the Mangopay API, using the `Id` of the user as the `UserId` .  
-
-You must also define the currency and type of the card at this stage.  
-```json 
-{
-    "Tag": "Created with the Mangopay Checkout SDK",
-    "UserId": "142036728",
-    "CardType": "CB_VISA_MASTERCARD",
-    "Currency": "EUR"
+Optionally, to enable the fraud prevention Profiler SDK, add the following to `settings.gradle.kts`:
+```
+maven {
+    url = uri("https://nethone.jfrog.io/artifactory/nethonesdk-android-mangopay/")
 }
-```  
-```json API response
-{
-    "Id": "193020188",
-    "Tag": null,
-    "CreationDate": 1686147148,
-    "UserId": "193020185",
-    "AccessKey": "1X0m87dmM2LiwFgxPLBJ",
-    "PreregistrationData": "XBDYiG8w9PrylPS01KmupZunmK2QRHKIC-yUF6il3aIpAnKba1TGkR9VJe5lHjHt2ddFLVXdicolcUIkv_kKEA",
-    "RegistrationData": null,
-    "CardId": null,
-    "CardType": "CB_VISA_MASTERCARD",
-    "CardRegistrationURL": "https://pci.sandbox.mangopay.com/api/mangopay/vault/tokenize/eyJjbGllbnQiOiJjbGllbnRJZCIsInRva2VuIjoidW5xaXVlVG9rZW4ifQ==",
-    "ResultCode": null,
-    "ResultMessage": null,
-    "Currency": "EUR",
-    "Status": "CREATED"
-}
-```  
-
-The data obtained in the response will be used in the `cardConfig` of the card payment method configured below.  
+```
 
 ## Initializing the SDK  
 
-Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).  
-```kotlin Initialization
-Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environment.SANDBOX)
-```  
+Initialize the SDK with your `ClientId` and select your environment (Sandbox or Production).
+
+<Note>
+**Note – Initialize once per app instance**
+
+The initialization should only be done once for an instance of the application. 
+
+We recommend putting this inside the `Application()` class.
+</Note>
+
+```kotlin
+MangopaySdk.initialize(
+    context = this,
+    clientId = “clientId”,
+    profilingMerchantId = “profilingMerchantId”,
+    tenantId = TenantId.EU,
+    environment = Environment.SANDBOX,
+    logLevel = LogLevel.Basic
+)
+```
 
 ### Initialization parameters
 
@@ -91,107 +79,71 @@ Mangopay.initialize(clientId = "your-mangopay-client-id", environment = Environm
     </thead>
     <tbody>
         <tr>
-            <td class="table-content">`clientId`</td>
-            <td class="table-content">String</td>
+            <td class="table-content">`context` </td>
+            <td class="table-content">Application </td>
+            <td class="table-content">The application context. </td>
+        </tr>
+        <tr>
+            <td class="table-content">`clientId` </td>
+            <td class="table-content">String </td>
             <td class="table-content">The unique identifier associated with the Mangopay API key, giving access to the Mangopay API.</td>
         </tr>
         <tr>
-            <td class="table-content">`environment`</td>
-            <td class="table-content">Environment</td>
-            <td class="table-content">The Mangopay environment.\
-**Allowed values:** SANDBOX, PRODUCTION\
-**Default values:** SANDBOX</td>
+            <td class="table-content">`profilingMerchantId` </td>
+            <td class="table-content">Int </td>
+            <td class="table-content">The unique identifier associated with your fraud protection package. Contact Mangopay to obtain this value.</td>
         </tr>
         <tr>
-            <td class="table-content">`logLevel`</td>
-            <td class="table-content">LogLevel</td>
+            <td class="table-content">`environment` </td>
+            <td class="table-content">Environment </td>
+            <td class="table-content">The Mangopay environment.
+**Allowed values:** `Environment.SANDBOX`, `Environment.PRODUCTION`
+**Default values:** `Environment.SANDBOX`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`logLevel` </td>
+            <td class="table-content">LogLevel </td>
             <td class="table-content">The specification of the HTTP request and response log. We recommend `None` for Production build.\
-**Allowed values:** None, Basic\
-**Default values:** None</td>
+**Allowed values:** `LogLevel.None` , `LogLevel.Basic`
+**Default values:** `LogLevel.None`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`tenantId` </td>
+            <td class="table-content">TenantId </td>
+            <td class="table-content">The identifier of the Mangopay tenant. 
+**Allowed values:** `TenantId.EU`, `TenantId.UK`</td>
         </tr>
     </tbody>
 </table>
 
-## Configuring the checkout  
+## Configuration
 
-### Create the payment tokenization handler  
+To configure the Checkout SDK’s payment sheet:
 
-Create a method for `ActivityResultLauncher` to receive and handle `PaymentSheetResult`.  
-```kotlin Tokenization handler
-private var resultLauncher = registerForActivityResult(
-       ActivityResultContracts.StartActivityForResult()) { result ->
-    
-		when(val paymentSheetResult = MangopayCheckoutSdk
-            .handlePaymentSheetResult(resultCode = result.resultCode, intentResult = result.data)) {
+<Steps>
+<Step title="Create a payment sheet instance">
+{/* Comment to prevent JSX error on Steps component */}
+</Step>
+<Step title="Configure the PaymentMethodOptions">
+Configure the options for each payment method as described below.
+</Step>
+<Step title="Present the payment sheet">
+Add `PaymentMethodOptions` and callbacks and display the payment sheet.
 
-					is PaymentSheetResult.onTokenizationCompleted -> {
-                // Handle payment method tokenization
-          }
-					is PaymentSheetResult.onError -> {
-								// Handle sheet exceptions
-	        }
-					is PaymentSheetResult.onCancelled -> {
-                // Handle sheet closed event
-          }
-     }
-}
-```  
-
-### Payment sheet callbacks
-
-<table>
-    <thead>
-        <tr>
-            <th class="header">Callback</th>
-            <th class="header">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">`onTokenizationCompleted`</td>
-            <td class="table-content">When tokenization of the payment method is successful.</td>
-        </tr>
-        <tr>
-            <td class="table-content">`onError`</td>
-            <td class="table-content">When there is an error, the exception is propagated and can be accessed.</td>
-        </tr>
-        <tr>
-            <td class="table-content">`onCancelled`</td>
-            <td class="table-content">When the payment is canceled by the user (either by pressing the back button or the cancel button from the appbar).</td>
-        </tr>
-    </tbody>
-</table>
-
-The payment sheet automatically closes when events are emitted to prevent users from clicking again.  
-
-## Offering card payments  
-
-To offer card payments in the payment sheet:  
-- Build the `cardRegistration` using the values of the Card Registration object created previously.  
-- Define the `paymentMethodConfig` and add the `cardConfig`  
-- Create the `cardConfig` and add the `cardRegistration`  
-```kotlin Presenting the payment sheet
-val cardRegistration = CardRegistration.Builder()
-        .id(Id)
-        .userId(UserId)
-        .accessKey(AccessKey)
-        .preRegistrationData(PreregistrationData)
-        .cardRegistrationURL(CardRegistrationURL)
+```kotlin
+val paymentMethodOptions = PaymentMethodOptions.Builder()
+        .cardOptions(cardOptions)
+        .googlePayOptions(googlePayOptions) // OPTIONAL
+        .paypalOptions(paypalOptions) // OPTIONAL
+        .amount(amount)
         .build()
 
-val cardConfig = CardConfig.Builder()
-        .cardRegistration(cardRegistration)
-				.supportCardBrands(listOf(CardScheme.MasterCard, CardScheme.Visa))
-        .build()
-
-val paymentMethodConfig = PaymentMethodConfig.Builder()
-        .cardConfig(cardConfig)
-        .build();
-
-MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
-```  
-
-### Payment sheet properties
+MangopayCheckoutSdk.create(
+    mContext = this,
+    paymentMethodOptions = paymentMethodOptions, 
+    listener = paymentSheetCallbacks()
+) 
+```
 
 <table>
     <thead>
@@ -203,37 +155,240 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
     </thead>
     <tbody>
         <tr>
-            <td class="table-content">`launcher`</td>
-            <td class="table-content">ActivityResultLauncher</td>
-            <td class="table-content">Activity result handler created previously.</td>
+            <td class="table-content">`mContext`</td>
+            <td class="table-content">Activity / Fragment</td>
+            <td class="table-content">Activity or Fragment context</td>
         </tr>
         <tr>
-            <td class="table-content">`context`</td>
-            <td class="table-content">Context</td>
-            <td class="table-content">Activity or fragment context.</td>
+            <td class="table-content">`paymentMethodOptions`</td>
+            <td class="table-content">PaymentMethodOptions</td>
+            <td class="table-content">Configuration parameters</td>
         </tr>
         <tr>
-            <td class="table-content">`paymentMethodConfig`</td>
-            <td class="table-content">PaymentMethodConfig</td>
-            <td class="table-content">The configuration options of the payment method.</td>
+            <td class="table-content">`listener`</td>
+            <td class="table-content">Mangopay.PaymentSheetResultListener</td>
+            <td class="table-content">Callback listeners</td>
+        </tr>
+    </tbody>
+</table>
+</Step>
+</Steps>
+
+The payment sheet closes automatically when events are emitted to prevent users from clicking again.
+
+## Handling redirection  
+
+<Warning>  
+**Warning – Use Mangopay Checkout domain as return URL** 
+  
+When making the pay-in request from your backend, use the Mangopay Checkout URL as the `SecureModeReturnURL` or `ReturnURL` (depending on the payment method):  
+
+> http<span>://</span>checkout.mangopay.com  
+
+The user must be returned to this URL after redirection.  
+</Warning>  
+
+Some payment methods (card, Google Pay, PayPal) require or may require the user to be redirected to authorize or complete a transaction.  
+
+The Checkout SDK allows you to manage the entire payment flow seamlessly while retaining control over transaction logic in your backend. Once a payment method is selected and payment details are provided, use the `onCreatePayment` function to request the transaction from your backend.  
+
+Subsequently, and when necessary for the transaction type, the Checkout SDK seamlessly manages additional redirect actions for 3DS authorization or otherwise validating the payment.  
+
+To manage transaction redirects effectively with the SDK:  
+<Steps>
+<Step title="Define onCreatePayment">
+In your `PaymentMethodOptions` configurations, define an `onCreatePayment` attribute as a function.  
+</Step>
+<Step title="Within your function:">
+- Request a transaction from your server and subsequently, Mangopay.  
+- Return the unaltered transaction response object to the SDK.  
+</Step>
+<Step title="The SDK:">
+- Redirects the user to the payment authentication page when necessary.  
+- Manages payment provider redirects back to the SDK.  
+- Triggers the `onPaymentCompleted` event with the ID and status of the transaction.  
+- Confirms the redirect result on your server by invoking the corresponding GET API of the transaction.  
+- Presents the payment result to the user. 
+</Step>
+</Steps>
+
+### Creating payment handler callbacks
+
+```kotlin
+private fun paymentSheetCallbacks() = object : Mangopay.PaymentSheetResultListener {
+    override fun onTokenizationCompleted(paymentMethod: PaymentMethod?, profilerAttemptReference: String?) {
+
+        when (paymentMethod) {
+            is PaymentMethod.CARD -> TODO()
+            is PaymentMethod.GOOGLE_PAY -> TODO()
+            else -> TODO()
+        }
+    }
+
+    override fun onPaymentCompleted(id: String?, resultCode: ResultCode) {
+
+    }
+
+    override fun onPaymentMethodSelected(paymentMethod: PaymentMethod) {
+
+    }
+
+    override suspend fun onCreatePayment(paymentMethod: PaymentMethod, profilerAttemptReference: String?): Payment? {
+        return when(paymentMethod){
+            is PaymentMethod.PAYPAL -> TODO()
+            is PaymentMethod.CARD -> TODO()
+            is PaymentMethod.GOOGLE_PAY -> TODO()
+            is GooglepayObject -> TODO()
+        }
+    }
+
+    override suspend fun onCreateCardRegistration(card: Card): CardRegistration {
+
+    }
+
+    override fun onError(exception: MangopayException?) {
+
+    }
+
+    override fun onCancel() {
+
+    }
+}
+```
+
+#### PaymentSheet callbacks
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Callback</th>
+            <th class="header">Description</th>
+            <th class="header">Argument</th>
+            <th class="header">Return type </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`onTokenizationCompleted(paymentMethod: PaymentMethod?, profilerAttemptReference: String?)`</td>
+            <td class="table-content">Triggered when a card tokenization is completed and a `CardId` is returned.</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
         </tr>
         <tr>
-            <td class="table-content">`cardRegistration`</td>
-            <td class="table-content">CardRegistration</td>
-            <td class="table-content">The card registration information.</td>
+            <td class="table-content">`onPaymentCompleted(id: String?, resultCode: ResultCode)`</td>
+            <td class="table-content">Triggered when the transaction is completed, whatever the outcome (whether successful or failed).</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
         </tr>
         <tr>
-            <td class="table-content">`supportCardBrands`</td>
-            <td class="table-content">SupportedCard</td>
-            <td class="table-content">The card networks displayed to the user.\
-**Allowed values:** CardScheme.MasterCard, CardScheme.Visa</td>
+            <td class="table-content"> `onPaymentMethodSelected(paymentMethod: PaymentMethod)`</td>
+            <td class="table-content">Triggered when a payment method has been selected.</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content"> `onCreatePayment(paymentMethod: PaymentMethod, profilerAttemptReference: String?): Payment?`</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
+            <td class="table-content">`Payment?`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onCreateCardRegistration(card: Card): CardRegistration?`</td>
+            <td class="table-content">Triggered only when the user selects card payment. This callback gives you control over making the card registration optional during the session.</td>
+            <td class="table-content"></td>
+            <td class="table-content">`CardRegistration?`</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onError(exception: MangopayException?)`</td>
+            <td class="table-content">Triggered when an internal Checkout SDK error has occurred, which propagates the exception.</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content">`onCancel()`</td>
+            <td class="table-content">Called when the payment sheet is closed.</td>
+            <td class="table-content"></td>
+            <td class="table-content"></td>
+        </tr>
+    </tbody>
+</table>
+
+The payment sheet automatically closes when events are emitted to prevent users from clicking again.  
+
+## Configuring the amount
+
+```kotlin
+val amount = Amount.Builder()
+        .value(200.00)
+        .currency(Currency.EUR)
+        .build()
+```
+
+### Amount configuration parameters
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`value`</td>
+            <td class="table-content">Double</td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content">`currency`</td>
+            <td class="table-content">Currency</td>
+            <td class="table-content"></td>
         </tr>
     </tbody>
 </table> 
 
+## Configuring card payments
+
+```kotlin
+val cardOptions = CardOptions.Builder()
+                    .supportedCardSchemes(
+                        listOf(CardScheme.Maestro,CardScheme.MasterCard,CardScheme.Visa,)
+                    )
+                    .build()
+```
+
+### Card configuration parameters
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content"> `supportedCardSchemes` </td>
+            <td class="table-content"> List\<Card> </td>
+            <td class="table-content"> The card networks displayed to the user.</td>
+        </tr>
+        <tr>
+            <td class="table-content"> `cardRegistration` </td>
+            <td class="table-content"> CardRegistration? </td>
+            <td class="table-content"> You can provide CardRegistration optionally from configuration or provide it from callbacks. </td>
+        </tr>
+    </tbody>
+</table>
+
 ### Handling card tokenization  
 
-The SDK automatically handles the card tokenization, updating the Card Registration object to create the `CardId` which is used for payment.  
+In the options for the card payment method, create a function to handle creation of Card Registration event handler in the payment methods object:  
+- Your `onCreateCardRegistration` function calls your server, and passes it the card brand of the user.  
+- Your server makes a request to [Create a Card Registration](/api-reference/card-registrations/create-card-registration).  
+- In response, your server receives a Card Registration object.  
+- In your `onCreateCardRegistration` function, return the unmodified Card Registration object to the SDK.  
+- The SDK [tokenizes the card](/api-reference/card-registrations/tokenize-card) and [updates the Card Registration](/api-reference/card-registrations/update-card-registration) object to create the `CardId` which is used for payment.  
 
 ### Managing cards  
 
@@ -263,96 +418,7 @@ You can use a registered card (`CardId`) for pay-ins with the following objects:
 When you make a payment request, you need to be ready to handle 3DS redirection.  
 </Note>  
 
-## Handling 3DS redirection  
-
-When requesting a payment or other card authorization, you need to be able to handle 3DS redirection if it is required by the issuer. This is indicated by the `SecureModeNeeded` in the API response, and the `SecureModeRedirectURL` provides the redirection URL.  
-
-The Checkout SDK’s 3DS helper allows you to redirect users to authenticate securely and seamlessly.   
-```kotlin Create 3DS redirection event
-//Create threeds (3DS) instance 
-
-val threedsDialog = ThreedsBottomDialogFragment.newInstance()
-
-threedsDialog.handleThreeds(this, returnUrl = "returnUrl", 
-					redirectUrl = "redirectUrl", transactionType = TransactionType.CARD_DIRECT)
-```  
-```kotlin Handle the redirect result
-threedsDialog.handleThreeds(this,
-        returnUrl = "secureModeReturnURL", redirectUrl = "secureModeRedirectURL", transactionType = TransactionType.CARD_DIRECT,
-            listener = object : Mangopay.OnThreedsFinishedListener {
-                override fun success(transactionId: String, status: ResultCode) {
-                    // onSuccess response
-                }
-
-                override fun error(exception: MangopayException) {
-                    // onError response
-                }
-       }
-)
-```  
-
-### 3DS handler parameters
-
-<table>
-    <thead>
-        <tr>
-            <th class="header">Property</th>
-            <th class="header">Type</th>
-            <th class="header">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">`SecureModeRedirectURL`</td>
-            <td class="table-content">String</td>
-            <td class="table-content">The URL to which users are redirected to authenticate with 3DS (if required).</td>
-        </tr>
-        <tr>
-            <td class="table-content">`SecureModeReturnURL`</td>
-            <td class="table-content">String</td>
-            <td class="table-content">The URL to which users are returned after the payment, whether a 3DS challenge was triggered or not and whatever the transaction outcome.</td>
-        </tr>
-        <tr>
-            <td class="table-content">`TransactionType`</td>
-            <td class="table-content">TransactionType</td>
-            <td class="table-content">The type of the authorization request.\
-                **Allowed values:** CARD_DIRECT, PREAUTHORIZE, CARD_VALIDATION</td>
-        </tr>
-        <tr>
-            <td class="table-content">`listener`</td>
-            <td class="table-content">Mangopay.OnThreedsFinishedListener</td>
-            <td class="table-content"></td>
-        </tr>
-        <tr>
-            <td class="table-content">`context`</td>
-            <td class="table-content">[Context](https://developer.android.com/reference/android/content/Context)</td>
-            <td class="table-content"></td>
-        </tr>
-    </tbody>
-</table>
-
-#### 3DS listener events
-
-<table>
-    <thead>
-        <tr>
-            <th class="header">Event</th>
-            <th class="header">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">`complete`</td>
-            <td class="table-content">The 3DS authentication was completed and the status indicates whether SUCCEEDED or FAILED. In this case, the SDK provides the unique identifier of the transaction.</td>
-        </tr>
-        <tr>
-            <td class="table-content">`error`</td>
-            <td class="table-content">An error occurred during the 3DS redirection request.</td>
-        </tr>
-    </tbody>
-</table>
-
-### Verifying the payment result`  
+### Verifying the payment result
 
 <Check>  
 **Best practice – Check payment result from backend** 
@@ -360,7 +426,7 @@ threedsDialog.handleThreeds(this,
 It is highly recommended that you confirm the transaction result from your backend using the API endpoint.  
 </Check>  
 
-## Offering Google Pay  
+## Configuring Google Pay  
 
 <Note>  
 **Note – Google Pay setup required** 
@@ -368,10 +434,13 @@ It is highly recommended that you confirm the transaction result from your backe
 Offering Google Pay requires additional setup by the platform. For more information, see the <a href="/guides/payment-methods/google-pay/how-to">How to process a Google Pay payment</a> tutorial.   
 </Note>  
 
-To offer the Google Pay payment method, include the `googlePayConfig` in the `paymentMethodConfig`.  
+To offer the Google Pay payment method, include the `GooglePayOptions` in the payment sheet:
+1. Configure `TransactionInfo` object 
+2. Create `GooglePay` object
+3. Configure `GooglePayObject`
 
-Create the `googlePayConfig` with the `googlePayObject`, containing Google Pay configuration parameters, card parameters, and transaction information.  
-```json Example - Google Pay
+
+```kotlin
 
 val transactionInfo = TransactionInfo.Builder()
         .currencyCode("EUR")
@@ -393,19 +462,11 @@ val googlePayObject = GooglePayObject.Builder()
         .cardParameters(cardParameters)
         .build()
 
-val googlePayConfig = GooglePayConfig.Builder()
+val googlePayOptions = GooglePayOptions.Builder()
         .googlePayObject(googlePayObject)
         .build()
-
-val paymentMethodConfig = PaymentMethodConfig.Builder()
-        .cardConfig(cardConfig)
-				.googlePayConfig(googlePayConfig) // OPTIONAL
-        .build()
-
-MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
-```  
-
-#### googlePayObject
+```
+### Google Pay Parameters
 
 <table>
     <thead>
@@ -416,11 +477,6 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td class="table-content">`merchantName`</td>
-            <td class="table-content">String</td>
-            <td class="table-content">The name of your platform. If a merchant is recognized, the message displayed in the payment sheet is “Pay Unverified Merchant”. <a href="https://developers.google.com/pay/api/android/reference/request-objects#MerchantInfo" target="_blank">More information</a>.</td>
-        </tr>
         <tr>
             <td class="table-content">`gatewayMerchantId`</td>
             <td class="table-content">String</td>
@@ -439,7 +495,7 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
     </tbody>
 </table>
 
-#### cardParameters
+#### `CardParameters` required parameters 
 
 <table>
     <thead>
@@ -452,48 +508,91 @@ MangopayCheckoutSdk.create(launcher = resultLauncher, this, paymentMethodConfig)
     <tbody>
         <tr>
             <td class="table-content">`allowedAuthMethods`</td>
-            <td class="table-content">List</td>
-            <td class="table-content">The supported authentication methods: **PAN_ONLY**, meaning the card is registered in the user’s Google account and requires additional authentication; **CRYPTOGRAM_3DS**, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.\
-                **Allowed values:** PAN_ONLY, CRYPTOGRAM_3DS</td>
+            <td class="table-content">List\<String></td>
+            <td class="table-content">
+            The supported authentication methods: 
+              - **PAN_ONLY**, meaning the card is registered in the user’s Google account and requires additional authentication; 
+              - **CRYPTOGRAM_3DS**, meaning the card is enrolled in the customer’s Google Wallet and authentication is handled by Google, with no 3DS redirection and no liability for the platform.
+            
+            **Allowed values:** PAN_ONLY, CRYPTOGRAM_3DS
+            </td>
         </tr>
         <tr>
             <td class="table-content">`allowedCardNetworks`</td>
             <td class="table-content">List</td>
-            <td class="table-content">The card networks supported by Mangopay: VISA and MASTERCARD.\
-                **Allowed values:** VISA, MASTERCARD</td>
+            <td class="table-content">
+            The card networks supported by Mangopay: VISA and MASTERCARD.
+            
+            **Allowed values:** VISA, MASTERCARD
+            </td>
         </tr>
     </tbody>
 </table> 
 
-#### transactionInfo  
+#### `TransactionInfo` required parameters
 
-Information about the transaction and its authorization, such as whether the user agrees to the transaction, the total price and price status. For more information on this object parameter, see the <a href="https://developers.google.com/pay/api/android/reference/request-objects#TransactionInfo" target="_blank">Google Pay documentation</a>.   
-
-### Handling Google Pay result  
-```kotlin 
-private var resultLauncher = registerForActivityResult(
-       ActivityResultContracts.StartActivityForResult()) { result ->
-    
-		when(val paymentSheetResult = MangopayCheckoutSdk
-            .handlePaymentSheetResult(resultCode = result.resultCode, intentResult = result.data)) {
-
-					is PaymentSheetResult.onTokenizationCompleted -> {
-                // Handle payment method tokenization
-								when(val cardPaymentMethodResult = paymentSheetResult.paymentMethod){
-                    
-                    is PaymentMethod.GOOGLE_PAY -> {
-												// Get result token for testing
-                        Log.v(TAG, cardPaymentMethodResult.token)
-                    }
-                }
-          }
-     }
-}
-```  
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`countryCode`</td>
+            <td class="table-content">String</td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content">`currencyCode`</td>
+            <td class="table-content">String</td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content">`totalPriceStatus`</td>
+            <td class="table-content">TotalPriceStatus</td>
+            <td class="table-content"></td>
+        </tr>
+        <tr>
+            <td class="table-content">`totalPrice`</td>
+            <td class="table-content">Double</td>
+            <td class="table-content"></td>
+        </tr>
+    </tbody>
+</table> 
 
 ### Requesting Google Pay pay-in  
 
-To request the payment, use the <a href="/api-reference/google-pay/create-google-pay-payin">Create a Google Pay PayIn</a> endpoint and include the Google Pay `PaymentData`.  
+To request the payment, use the <a href="/api-reference/google-pay/create-google-pay-payin">Create a Google Pay PayIn</a> endpoint and include the Google Pay `PaymentData` provided by the Checkout SDK.
+
+## Configuring PayPal
+
+```kotlin
+val paypalOptions = PaypalOptions.Builder()
+          .buttonOptions(buttonOptions)
+          .build()
+```
+
+### PayPal configuration parameters
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Property</th>
+            <th class="header">Type</th>
+            <th class="header">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">`buttonOptions`</td>
+            <td class="table-content">PaymentButtonOptions</td>
+            <td class="table-content"></td>
+        </tr>
+    </tbody>
+</table> 
 
 ## Using Card Element  
 
@@ -540,15 +639,13 @@ val cardRegistration = CardRegistration.Builder()
 //Find and connect PaymentFormView from Java/Kotlin code
 val paymentForm = findViewById<PaymentFormView>(R.id.payment_form)
 val payButton = findViewById<PaymentFormView>(R.id.btn_pay)
-
-
 // tokenize card with the paymentForm object.
  payButton.setOnClickListener {
-   
-	//check if the paymentForm passed validation
-	if(paymentForm.isComplete()){
 
-			MangopayCheckoutSdk.tokenizeCard(
+    //check if the paymentForm passed validation
+    if(paymentForm.isComplete()){
+
+            MangopayCheckoutSdk.tokenizeCard(
      paymentForm.toCardRequest(), cardRegistration,
        this@PaymentFormActivity, object: Mangopay.CheckoutTokenizeCardResultCallback {
 
@@ -560,13 +657,13 @@ val payButton = findViewById<PaymentFormView>(R.id.btn_pay)
              }
            }
         )
-	}
+    }
  }
-```  
+```
 
 ## Branding  
 
-You can customize the appearance of the payment sheet by adding a theme.xml file to the `thePaymentFormView` object.
+You can customize the appearance of the payment sheet by adding a theme.xml file to the `PaymentFormView` object.
 
 <table>
     <thead>
