@@ -2,33 +2,6 @@
 title: 'KYC renewal - Guide'
 ---
 
-import RestCreateKycDoc from '/snippets/code/rest-create-kyc-doc.mdx';
-import PhpCreateKycDoc from '/snippets/code/php-create-kyc-doc.mdx';
-import NodeCreateKycDoc from '/snippets/code/node-create-kyc-doc.mdx';
-import RubyCreateKycDocument from '/snippets/code/ruby-create-kyc-document.mdx';
-import JavaCreateKycDocument from '/snippets/code/java-create-kyc-document.mdx';
-import PythonCreateKycDocument from '/snippets/code/python-create-kyc-document.mdx';
-
-import RestCreateKycPage from '/snippets/code/rest-create-kyc-page.mdx';
-import PhpCreateKycPage from '/snippets/code/php-create-kyc-page.mdx';
-import NodeCreateKycPage from '/snippets/code/node-create-kyc-page.mdx';
-import RubyCreateKycPage from '/snippets/code/ruby-create-kyc-page.mdx';
-import PythonCreateKycPage from '/snippets/code/python-create-kyc-page.mdx';
-
-import RestSubmitKycDocument from '/snippets/code/rest-submit-kyc-document.mdx';
-import PhpSubmitKycDocument from '/snippets/code/php-submit-kyc-document.mdx';
-import NodeSubmitKycDoc from '/snippets/code/node-submit-kyc-doc.mdx';
-import RubySubmitKycDocument from '/snippets/code/ruby-submit-kyc-document.mdx';
-import JavaSubmitKycDocument from '/snippets/code/submit-kyc-document-java.mdx';
-import PythonSubmitKycDocument from '/snippets/code/python-submit-kyc-document.mdx';
-      
-
-import PhpListKycDocumentsUser from '/snippets/code/php-list-kyc-documents-user.mdx';
-import NodeListKycUser from '/snippets/code/node-list-kyc-user.mdx';
-import RubyListKycDocumentsUser from '/snippets/code/ruby-list-kyc-documents-user.mdx';
-import ListUserKycDocumentsJava from '/snippets/code/list-user-kyc-documents-java.mdx';
-import PythonListKycDocumentsForUser from '/snippets/code/python-list-kyc-documents-for-user.mdx';
-
 ## Introduction
 The payout stage of the payments workflow is highly regulated. Mangopay has stringent legal obligations not only to verify the identity of users initially, but also to conduct ongoing monitoring of its users and re-verify their identities after a certain period of time to ensure they remain legitimate. This is in line with our <a  href="https://mangopay.com/terms-and-conditions" target="_blank">Terms & Conditions</a> and is necessary to comply with European Union anti-money laundering (AML) obligations.
 
@@ -36,8 +9,8 @@ These obligations placed on payment companies like Mangopay are designed to prev
 
 <a href="/guides/users/verification/kyc-renewal-faq" target="_blank" class="btn Primary normal">Read more in our FAQs &rarr;</a>  
 
-## Which type of users are affected
-This renewal applies to all types of users: 
+## Types of users affected
+This renewal applies to all <a href="/guides/users/types">types</a> of users: 
 - Natural
 - Legal
   - Business
@@ -50,123 +23,101 @@ For more information about the verification requirements for each type, see the 
 <Note>  
 **Note - Users are already verified** 
   
-These users are already `KYC_REGULAR`, so their status won't change. You will need to check that a new document has been validated and there will be no notification of a successful KYC renewal.
+The <a href="/api-reference/users/natural-user-object">Natural</a> and <a href="/api-reference/users/legal-user-object">Legal</a> users concerned by renewal are already `KYC_REGULAR` and their `KYCLevel` won't change. There is no notification of a successful verification renewal.
+
+You will need to check that new <a href="/api-reference/kyc-documents/view-kyc-document">KYC Documents</a> and <a href="/api-reference/ubo-declarations/view-ubo-declaration">UBO Declarations</a> have been successfully validated. For Business users, you should also check that the <a href="/users/verification/company-number">company number</a> is correctly formatted.
+
+You can use webhook notifications to help you, as described [below](#outcome).
 </Note> 
 
-## How to submit an identity document
+## How to verify a Natural user
 
-You can submit end users’ verification documents with the dedicated KYC Documents endpoints.
+<Steps>
+<Step title="Ask the user to prepare their ID document">
+Natural users need to provide one of the [accepted ID documents](/guides/users/verification/requirements/id-accepted) as per the document’s issuing country.
+</Step>
+<Step title="Ensure the declarative data matches the documents">
+The details registered in the [Natural User](/api-reference/users/natural-user-object) object must match the document provided.
+</Step>
+<Step title="Submit the ID document">
+Submit the ID document as a [KYC Document](/api-reference/kyc-documents/kyc-document-object) object containing the file or files in 1 or more [KYC Document Pages](/api-reference/kyc-documents/create-kyc-document-page). See the [submission](/guides/users/verification/documents/submission) guide and [how-to](/guides/users/verification/documents/submission/how-to) for details.
 
-Submission requires a minimum of 3 API calls:
+Ensure the user respects these [best practices](/guides/users/verification/documents/submission/id-best-practices) for a successful ID proof submission.
+</Step>
+<Step title="Await outcome of verification">
+If a [KYC Document](/api-reference/kyc-documents/kyc-document-object) is refused, you can see more details in the `Flags`, `RefusedReasonType`, and `RefusedReasonMessage`.
 
-### 1. Create the KYC Document
+For more details and guidance in each case, see the [dealing with refusals](/guides/users/verification/documents/submission/refusals) guide. 
+</Step>
+</Steps>
 
-Create the document with the `UserId` and indicate which type is being submitted.
+## How to verify a Legal User
 
-> <a href="/api-reference/kyc-documents/create-kyc-document">POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents</a>
+<Steps>
+<Step title="Ensure the legal user has the correct LegalPersonType">
+The [local KYB](/guides/users/verification/requirements/kyb-local) guide lists legal structures for countries in Europe and the corresponding `LegalPersonType` that should be used to register them with Mangopay as a [Legal User](/api-reference/users/legal-user-object).
+</Step>
+<Step title="Ask the user to prepare the required documents and information">
+See the [requirements](/guides/users/verification/requirements) guide to determine the required [KYC Document](/api-reference/kyc-documents/kyc-document-object) types, and whether the [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) is required.
 
-<CodeGroup>
-    <RestCreateKycDoc />
-    <PhpCreateKycDoc />
-    <NodeCreateKycDoc />
-    <RubyCreateKycDocument />
-    <JavaCreateKycDocument />
-    <PythonCreateKycDocument />
-</CodeGroup>
+See the [accepted local KYB](/guides/users/verification/requirements/kyb-local) reference for details on exactly which document is expected per KYC Document `Type`, depending on the country of registration and legal structure.
 
-### 2. Create the page for the user’s file
+See the [accepted ID documents](/guides/users/verification/requirements/id-accepted) for the accepted ID documents (as per country of issue) for the legal representative.
 
-Upload each file as a <a href="api-reference/kyc-documents/create-kyc-document-page.mdx">KYC Document Page</a> (this call must be repeated for each file). With the `Id` of the KYC Document as the `KycDocumentId` path parameter, create the KYC Document Page containing the file uploaded by the user. The file must be encoded in Base64 (which is handled natively in our SDKs) and respect the format and size constraints described in the Document validation process article.
+If a UBO Declaration is necessary, the user will also need to provide details of all [beneficial owners](/guides/glossary#beneficial-owner).
+</Step>
+<Step title="Ensure declarative data matches the documents">
+The data in the [Legal User](/api-reference/users/legal-user-object) object (for the entity and the declared legal representative) is checked against the documents and information submitted for them, so incorrect information will prevent a successful verification. 
 
-> <a href="/api-reference/kyc-documents/create-kyc-document-page">POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents/&lcub;KycDocumentId&rcub;/pages</a> 
+For Businesses, the `CompanyNumber` must be in the correct format. An incorrect format can prevent successful verification. You can verify the format is correct via the dedicated [API endpoint](/api-reference/user-data-format/validate-user-data-format). See the [guide](/guides/users/verification/company-number) for details.
+</Step>
+<Step title="Submit the required documents">
+For each document type required, submit a [KYC Document](/api-reference/kyc-documents/kyc-document-object) object containing the files in [KYC Document Pages](/api-reference/kyc-documents/create-kyc-document-page). See the [submission](/guides/users/verification/documents/submission) guide and [how-to](/guides/users/verification/documents/submission/how-to) for details.
 
-<CodeGroup>
-    <RestCreateKycPage />
-    <PhpCreateKycPage />
-    <NodeCreateKycPage />
-    <RubyCreateKycPage />
-    <PythonCreateKycPage />
-</CodeGroup>
+Ensure that the legal representative’s Identity Proof respects these [best practices](/guides/users/verification/documents/submission/id-best-practices).
+</Step>
+<Step title="Complete the UBO declaration, if needed">
+The beneficial owners submitted in the UBO Declaration must match the KYC Documents provided for the user (in the Registration Proof and/or Articles of Association). See the UBO Declaration [guide](/guides/users/verification/beneficial-owners) and [how-to](/guides/users/verification/beneficial-owners/how-to) for details.
+</Step>
+<Step title="Await outcome of verification">
+If a KYC Document is refused, you can see more details in the `Flags` (for Identity Proof) and the `RefusedReasonType` and `RefusedReasonMessage` (for all types). See the [refusals](/guides/users/verification/documents/submission/refusals) guide for details.
 
-Repeat this step as many times as necessary. Each file of the real-life document requires a separate API call to upload the file in a dedicated KYC Document Page.
+If further evidence is required by Mangopay, such as the [Shareholder Declaration](/guides/users/verification/documents/types) or another piece of evidence, you will be notified via the `Reason` and `Message` of the [UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration).
 
-For example: National identity cards typically have 2 files: the front side and back side of the card.
+To resolve issues, submit (or re-submit) the necessary evidence in the same way as before.
+</Step>
+</Steps>
 
-### 3. Submit the KYC Document
-Once all pages are uploaded, submit the document for review by Mangopay’s teams by changing the `Status` from `CREATED` to `VALIDATION_ASKED`.
 
-> <a href="/api-reference/kyc-documents/submit-kyc-document">PUT /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents/&lcub;KycDocumentId&rcub;</a>
 
-<CodeGroup>
-    <RestSubmitKycDocument />
-    <PhpSubmitKycDocument />
-    <NodeSubmitKycDoc />
-    <RubySubmitKycDocument />
-    <JavaSubmitKycDocument />
-    <PythonSubmitKycDocument />
-</CodeGroup>
+## Outcome
 
-## View results of KYC check
+You should use the following webhook <a href="/webhooks/event-types">event types</a> to help you during the verification renewal process. A successful notification for the required elements indicates that the renewal was successful. Because the user's `KYCLevel` is already regular, there is no `USER_KYC_REGULAR` notification sent.
 
-We recommend that you configure <a href="/api-reference/webhooks/hook-object">webhooks</a> to receive alerts when KYC document statuses change:
+### Successful cases
 
-Listen for the KYC_SUCCEEDED event to know when a document is successfully validated.
-Listen for the KYC_FAILED event to be notified of document rejections.
-Webhooks can be unreliable so if you need to query document statuses on-demand, use the following endpoint:
+##### Natural users:
+- A `KYC_SUCCEEDED` notification for the ID document submitted for them
 
-> <a href="/api-reference/kyc-documents/list-kyc-documents-user">GET /v2.01//&lcub;ClientId&rcub;/users//&lcub;UserId&rcub;/kyc/documents</a>
+##### Legal users
+- A `KYC_SUCCEEDED` notification for each KYC Document submitted for them
+- For Businesses, a `LEGAL_COMPANY_NUMBER_VALIDATION_SUCCEEDED` for their `CompanyNumber` if you updated their data (with the [PUT Update a Legal User](/api-reference/users/update-legal-user) otherwise you can use [POST Validate the format of User data](/api-reference/user-data-format/validate-user-data-format))
+- A `UBO_DECLARATION_VALIDATED` notification if the UBO Declaration was required
 
-<CodeGroup>
-    <PhpListKycDocumentsUser />
-    <NodeListKycUser />
-    <RubyListKycDocumentsUser />
-    <ListUserKycDocumentsJava />
-    <PythonListKycDocumentsForUser />
-</CodeGroup>
+### Unsuccessful cases
 
-This will return the current status of the user's KYC documents:
+You should also set up the corresponding event types for unsuccessful outcomes: 
+- `KYC_FAILED`
+- `LEGAL_COMPANY_NUMBER_VALIDATION_FAILED`
+- `UBO_DECLARATION_REFUSED`
+- `UBO_DECLARATION_INCOMPLETE`
 
-```json 200
-[
-    {
-        "Type": "IDENTITY_PROOF",
-        "UserId": "151479566",
-        "Flags": [],
-        "Id": "158785224",
-        "Tag": "Created using MANGOPAY API Collection Postman",
-        "CreationDate": 1671864905,
-        "ProcessedDate": null,
-        "Status": "VALIDATION_ASKED",
-        "RefusedReasonType": null,
-        "RefusedReasonMessage": null
-    }
-]
-```
+## Downgrade
 
-## What happens when a User is downgraded?
+If you do not complete the verification process for the user before the communicated deadline, they will lose their verified status and be unable to request a payout. 
 
-If a user does not submit and have their documents validated before the deadline they will lose their verified status (i.e., `KYCLevel` changes from `REGULAR` to `LIGHT`) and as a result of the downgraded mechanism and will be unable to request a payout. They will need to submit the documents again according to the verification status.
+In this case, the user's `KYCLevel` changes from `REGULAR` to `LIGHT` and the webhook `USER_KYC_LIGHT` is sent. The documents previously submitted for the user are outdated with a `KYC_OUTDATED` webhook notification. 
 
-The following hooks enable you to be notified in case of a user being downgraded.
+If a user is downgraded, you will need to verify them again as to restore their capabilities.
 
-<table>
-    <thead>
-        <tr>
-            <th class="header">Event type</th>
-            <th class="header">`ResourceId`</th>
-            <th class="header">What it means</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">KYC_OUTDATED</td>
-            <td class="table-content">`KYCDocumentId`</td>
-            <td class="table-content">This alert tells you when a KYC document is no longer valid because a document has expired or is no longer valid.</td>
-        </tr>
-        <tr>
-            <td class="table-content">USER_KYC_LIGHT</td>
-            <td class="table-content">`KYCDocumentId`</td>
-            <td class="table-content">The KYC Document has been refused by the Mangopay Compliance team.</td>
-        </tr>
-    </tbody>
-</table>
+For more information about the downgrade mechanism, see the [guide](/guides/users/verification/downgrade).
