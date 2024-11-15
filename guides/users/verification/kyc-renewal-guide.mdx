@@ -56,9 +56,6 @@ For more details and guidance in each case, see the [dealing with refusals](/gui
 ## How to verify a Legal User
 
 <Steps>
-<Step title="Ensure the legal user has the correct LegalPersonType">
-The [local KYB](/guides/users/verification/requirements/kyb-local) guide lists legal structures for countries in Europe and the corresponding `LegalPersonType` that should be used to register them with Mangopay as a [Legal User](/api-reference/users/legal-user-object).
-</Step>
 <Step title="Ask the user to prepare the required documents and information">
 See the [requirements](/guides/users/verification/requirements) guide to determine the required [KYC Document](/api-reference/kyc-documents/kyc-document-object) types, and whether the [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) is required.
 
@@ -73,7 +70,9 @@ The data in the [Legal User](/api-reference/users/legal-user-object) object (for
 
 For Businesses, the `CompanyNumber` must be in the correct format. An incorrect format can prevent successful verification. You can verify the format is correct via the dedicated [API endpoint](/api-reference/user-data-format/validate-user-data-format). See the [guide](/guides/users/verification/company-number) for details.
 
-If the user changes the `LegalRepresentativeFirstName`, `LegalRepresentativeLastName`, `LegalRepresentativeBirthday`, or `LegalRepresentativeNationality`, then they will be [downgraded](#downgrade) at this stage.
+The user also needs to be registered as the correct `LegalPersonType` as per the [local structures](/guides/users/verification/requirements/kyb-local) listed per type. It may be relevant to check this if the user's legal structure has changed.
+
+If there is a change in the `LegalRepresentativeFirstName`, `LegalRepresentativeLastName`, `LegalRepresentativeBirthday`, `LegalRepresentativeNationality`, or `LegalPersonType`, then they will be [downgraded](#downgrade) at this stage.
 </Step>
 <Step title="Submit the required documents">
 For each document type required, submit a [KYC Document](/api-reference/kyc-documents/kyc-document-object) object containing the files in [KYC Document Pages](/api-reference/kyc-documents/create-kyc-document-page). See the [submission](/guides/users/verification/documents/submission) guide and [how-to](/guides/users/verification/documents/submission/how-to) for details.
