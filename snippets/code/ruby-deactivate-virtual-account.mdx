@@ -1,0 +1,30 @@
+```ruby Ruby 
+require 'mangopay'
+
+require 'PP'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'client-id'
+    client.client_apiKey = 'api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myVirtualAccount = {
+    Id: 'wltbank_01JCNN78THB9B2FX63RZ0F76KM'
+}
+
+myWallet = {
+    Id: 'wlt_m_01J30991BXBB7VF28PBS82EWD3'
+}
+
+def deactivateVirtualAccount(walletId, virtualAccountId)
+    begin
+        response = MangoPay::VirtualAccount.deactivate(walletId, virtualAccountId)
+        puts response
+        return response
+    end
+end
+
+pp(deactivateVirtualAccount(myWallet[:Id], myVirtualAccount[:Id]))
+```

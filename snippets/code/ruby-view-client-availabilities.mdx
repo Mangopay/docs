@@ -1,0 +1,22 @@
+```ruby Ruby 
+require 'mangopay'
+
+require 'PP'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'client-id'
+    client.client_apiKey = 'api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def viewClientAvailabilities()
+    begin
+        response = MangoPay::VirtualAccount.fetch_availabilities
+        puts response
+        return response
+    end
+end
+
+pp(viewClientAvailabilities())
+```

@@ -1,0 +1,30 @@
+```javascript NodeJS
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: 'client-id',
+    clientApiKey: 'api-key',
+})
+
+let myWallet = {
+  Id: 'wlt_m_01J30991BXBB7VF28PBS82EWD3'
+}
+
+let myVirtualAccount = {
+    Country: 'FR',
+    VirtualAccountPurpose: 'Collection',
+    Tag: 'Created using the Mangopay NodeJS SDK'
+}
+
+const createVirtualAccount = async (walletId, virtualAccount) => {
+    return await mangopay.VirtualAccounts.create(walletId, virtualAccount)
+    .then((response) => {
+        console.info(response)
+        return response
+    }).catch((err) => {
+        console.log(err);
+        return false
+    }); 
+}
+
+createVirtualAccount(myWallet.Id, myVirtualAccount)
+```
