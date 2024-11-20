@@ -1,0 +1,25 @@
+```php PHP 
+<?php 
+
+require_once "../vendor/autoload.php";
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = "client-id";
+$api->Config->ClientPassword = "api-key";
+$api->Config->TemporaryFolder = "../tmp/";
+
+try {
+    $response = $api->VirtualAccounts->GetAvailabilities();
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
