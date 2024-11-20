@@ -57,13 +57,33 @@ For more details and guidance in each case, see the [dealing with refusals](/gui
 
 <Steps>
 <Step title="Ask the user to prepare the required documents and information">
-See the [requirements](/guides/users/verification/requirements) guide to determine the required [KYC Document](/api-reference/kyc-documents/kyc-document-object) types, and whether the [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) is required.
+These are the mandatory [document types](/guides/users/verification/documents/types) required for the renewal process:
+
+##### Legal - Business
+- Identity proof of the legal representative
+- Registration proof dated within the last 3 months
+- Articles of association – the latest version, signed and up to date
+
+<Note>
+**Note – Declaring beneficial owners in renewal**
+
+The [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) and [Shareholder Declaration](/guides/users/verification/documents/types) **may** be requested if there has been a change in the shareholding structure since the previous identity verification.
+
+For the identity verification renewal, these elements are **not** mandatory by default.
+</Note>
+
+##### Legal - Organization
+- Identity proof of the legal representative
+- Registration proof dated within the last 3 months
+- Articles of association – the latest version, signed and up to date
+
+##### Legal - Soletrader
+- Identity proof of the legal representative
+- Registration proof dated within the last 3 months
+
+See the [accepted ID documents](/guides/users/verification/requirements/id-accepted) for the accepted identity proof documents (as per country of issue) for the legal representative.
 
 See the [accepted local KYB](/guides/users/verification/requirements/kyb-local) reference for details on exactly which document is expected per KYC Document `Type`, depending on the country of registration and legal structure.
-
-See the [accepted ID documents](/guides/users/verification/requirements/id-accepted) for the accepted ID documents (as per country of issue) for the legal representative.
-
-If a UBO Declaration is necessary, the user will also need to provide details of all [beneficial owners](/guides/glossary#beneficial-owner).
 </Step>
 <Step title="Ask the user to check that their account details are correct">
 The data in the [Legal User](/api-reference/users/legal-user-object) object (for the entity and the declared legal representative) is checked against the documents and information submitted for them, so incorrect information will prevent a successful verification.
@@ -75,21 +95,23 @@ The user also needs to be registered as the correct `LegalPersonType` as per the
 If there is a change in the `LegalRepresentativeFirstName`, `LegalRepresentativeLastName`, `LegalRepresentativeBirthday`, `LegalRepresentativeNationality`, or `LegalPersonType`, then they will be [downgraded](#downgrade) at this stage.
 </Step>
 <Step title="Submit the required documents">
-For each document type required, submit a [KYC Document](/api-reference/kyc-documents/kyc-document-object) object containing the files in [KYC Document Pages](/api-reference/kyc-documents/create-kyc-document-page). See the [submission](/guides/users/verification/documents/submission) guide and [how-to](/guides/users/verification/documents/submission/how-to) for details.
+For each document type required, submit a [KYC Document](/api-reference/kyc-documents/kyc-document-object) object containing the files in [KYC Document Pages](/api-reference/kyc-documents/create-kyc-document-page). See the [submission](/guides/users/verification/documents/submission) guide and [how-to](/guides/users/verification/documents/submission/how-to) for more details.
 
 Ensure that the legal representative’s Identity Proof respects these [best practices](/guides/users/verification/documents/submission/id-best-practices).
 </Step>
 <Step title="Complete the UBO declaration, if needed">
-If the user's `LegalPersonType` is `BUSINESS` or `PARTNERSHIP`, submit a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) for them listing the necessary UBOs.
+If there has been a change in shareholding structure since the user was initially verified, then submit a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object) for them listing the necessary UBOs.
 
 The beneficial owners (UBOs) submitted in the UBO Declaration must match the KYC Documents provided for the user (in the Registration Proof and/or Articles of Association). See the UBO Declaration [guide](/guides/users/verification/beneficial-owners) and [how-to](/guides/users/verification/beneficial-owners/how-to) for details.
+
+The [Shareholder Declaration](/guides/users/verification/documents/types) may be requested if the other KYB documents don't give sufficient information about the new shareholding structure. You will be notified via the `Reason` and `Message` of the [UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration).
 </Step>
 <Step title="Await outcome of verification">
 If a KYC Document is refused, you can see more details in the `Flags` (for Identity Proof) and the `RefusedReasonType` and `RefusedReasonMessage` (for all types). See the [refusals](/guides/users/verification/documents/submission/refusals) guide for details.
 
-If further evidence is required by Mangopay, such as the [Shareholder Declaration](/guides/users/verification/documents/types) or another piece of evidence, you will be notified via the `Reason` and `Message` of the [UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration).
+For the [UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration), you can see more details in the `Reason` and `Message`.
 
-To resolve issues, submit (or re-submit) the necessary evidence in the same way as before.
+To resolve issues, submit the necessary evidence in the same way as before.
 </Step>
 </Steps>
 
