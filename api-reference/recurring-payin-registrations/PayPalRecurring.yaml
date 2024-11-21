@@ -1,0 +1,364 @@
+openapi: 3.1.0
+info:
+  title: PayPal Recurring
+  description: |
+    API endpoints for PayPal Recurring
+  version: "2.01"
+servers:
+  - url: https://api.mangopay.com
+  - url: https://api.sandbox.mangopay.com
+paths:
+  /recurringpayinregistrations:
+    post:
+      summary: Create a Recurring PayIn Registration
+      operationId: POST Create a Recurring PayIn Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AuthorId:
+                  $ref: "#/components/schemas/AuthorId"
+                CreditedWalletId:
+                  $ref: "#/components/schemas/CreditedWalletId"
+                FirstTransactionDebitedFunds:
+                  $ref: "#/components/schemas/FirstTransactionDebitedFunds"
+                FirstTransactionFees:
+                  $ref: "#/components/schemas/FirstTransactionFees"
+                NextTransactionDebitedFunds:
+                  $ref: "#/components/schemas/NextTransactionDebitedFunds"
+                NextTransactionFees:
+                  $ref: "#/components/schemas/NextTransactionFees"
+                Billing:
+                  $ref: "#/components/schemas/Billing"
+                Shipping:
+                  $ref: "#/components/schemas/Shipping"
+                PaymentType:
+                  $ref: "#/components/schemas/PaymentType"
+              required:
+                - AuthorId
+                - CreditedWalletId
+                - FirstTransactionDebitedFunds
+                - FirstTransactionFees
+                - PaymentType
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Id:
+                    $ref: "#/components/schemas/Id"
+                  Status:
+                    $ref: "#/components/schemas/Status"
+                  ResultCode:
+                    $ref: "#/components/schemas/ResultCode"
+                  ResultMessage:
+                    $ref: "#/components/schemas/ResultMessage"
+                  CurrentState:
+                    $ref: "#/components/schemas/CurrentState"
+                  RecurringType:
+                    $ref: "#/components/schemas/RecurringType"
+                  TotalAmount:
+                    $ref: "#/components/schemas/TotalAmount"
+                  CycleNumber:
+                    $ref: "#/components/schemas/CycleNumber"
+                  AuthorId:
+                    $ref: "#/components/schemas/AuthorId"
+                  CreditedUserId:
+                    $ref: "#/components/schemas/CreditedUserId"
+                  CreditedWalletId:
+                    $ref: "#/components/schemas/CreditedWalletId"
+                  Billing:
+                    $ref: "#/components/schemas/Billing"
+                  Shipping:
+                    $ref: "#/components/schemas/Shipping"
+                  EndDate:
+                    $ref: "#/components/schemas/EndDate"
+                  Frequency:
+                    $ref: "#/components/schemas/Frequency"
+                  FixedNextAmount:
+                    $ref: "#/components/schemas/FixedNextAmount"
+                  FractionedPayment:
+                    $ref: "#/components/schemas/FractionedPayment"
+                  FreeCycles:
+                    $ref: "#/components/schemas/FreeCycles"
+                  FirstTransactionDebitedFunds:
+                    $ref: "#/components/schemas/FirstTransactionDebitedFunds"
+                  FirstTransactionFees:
+                    $ref: "#/components/schemas/FirstTransactionFees"
+                  NextTransactionDebitedFunds:
+                    $ref: "#/components/schemas/NextTransactionDebitedFunds"
+                  NextTransactionFees:
+                    $ref: "#/components/schemas/NextTransactionFees"
+                  Migration:
+                    $ref: "#/components/schemas/Migration"
+                  PaymentType:
+                    $ref: "#/components/schemas/PaymentType"
+components:
+  schemas:
+    Id:
+      type: string
+      description: The unique identifier of the object.
+    Status:
+      type: string
+      enum: [CREATED, AUTHENTICATION_NEEDED, IN_PROGRESS, ENDED]
+      description: |
+        The status of the recurring registration: 
+        - `CREATED` – The recurring registration was created, but no recurring pay-in has yet been made.
+        - `AUTHENTICATION_NEEDED` – The latest recurring pay-in linked to the registration object was refused. The registration object can still be used, but you need to execute a new customer-initiated transaction (CIT) for the end user to reauthenticate.
+        - `IN_PROGRESS` – The recurring registration object is in use and the subsequent corresponding recurring pay-ins can be made.
+        - `ENDED` – The recurrence ended: the registration can no longer be modified nor reused.
+    ResultCode:
+      type: string
+      nullable: true
+      description: |
+        The code indicating the result of the operation. This information is mostly used to <a href="/errors/codes">handle errors</a> or for filtering purposes.
+    ResultMessage:
+      type: string
+      nullable: true
+      description: |
+        The explanation of the result code.
+    Currency_Funds:
+      type: string
+      description: |
+        The currency of the funds in the three-letter <a href="/api-reference/overview/data-formats" target="_blank">ISO 4217 code</a> format (EUR, GBP, etc). <a href="/guides/currencies" target="_blank">Supported currencies</a> depend on the feature, contract, and activation settings.
+    Amount_Funds:
+      type: integer
+      description: |
+        The amount of the funds in the smallest sub-division of the currency (e.g., EUR 12.60 would be represented as `1260` whereas JPY 12 would be represented as just `12`).
+    Currency_Fees:
+      type: string
+      description: |
+        The currency of the fees in the three-letter <a href="/api-reference/overview/data-formats" target="_blank">ISO 4217 code</a> format (EUR, GBP, etc). <a href="/guides/currencies" target="_blank">Supported currencies</a> depend on the feature, contract, and activation settings.
+    Amount_Fees:
+      type: integer
+      description: |
+        The amount of the fees in the smallest sub-division of the currency (e.g., EUR 12.60 would be represented as `1260` whereas JPY 12 would be represented as just `12`).
+    CurrentState:
+      type: object
+      description: |
+        Information about the recurring pay-ins related to the registration object.
+
+        **Note:** If the `LastPayinId` references a transaction older than 13 months, it may have been [archived](/api-reference/overview/data-availability-periods).
+      properties:
+        PayinsLinked:
+          type: integer
+          description: The number of recurring pay-ins already made for the registration object.
+        CumulatedDebitedAmount:
+          type: object
+          description: |
+            The sum of the `DebitedFunds` amounts of the recurring pay-ins made for the registration.
+          properties:
+            Currency:
+              $ref: "#/components/schemas/Currency_Funds"
+            Amount:
+              $ref: "#/components/schemas/Amount_Funds"
+          required: [Currency, Amount]
+        CumulatedFeesAmount:
+          type: object
+          description: |
+            The sum of the `Fees` amounts of the recurring pay-ins made for the registration.
+          properties:
+            Currency:
+              $ref: "#/components/schemas/Currency_Fees"
+            Amount:
+              $ref: "#/components/schemas/Amount_Fees"
+          required: [Currency, Amount]
+        LastPayinId:
+          type: string
+          nullable: true
+          description: The unique identifier of the last recurring pay-in made for the registration.
+      required:
+        [PayinsLinked, CumulatedDebitedAmount, CumulatedFeesAmount, LastPayinId]
+    RecurringType:
+      type: string
+      enum: [CUSTOM]
+      description: |
+        For PayPal recurring pay-ins, this value is always `CUSTOM`.
+    TotalAmount:
+      type: integer
+      nullable: true
+      description: |
+        For PayPal recurring pay-ins, this value is always `null`.
+    CycleNumber:
+      type: integer
+      nullable: true
+      description: |
+        For PayPal recurring pay-ins, this value is always `null`.
+    AuthorId:
+      type: string
+      description: |
+        The unique identifier of the user at the source of the transaction.
+    CreditedUserId:
+      type: string
+      description: |
+        The unique identifier of the user whose wallet is credited.
+    CreditedWalletId:
+      type: string
+      description: The unique identifier of the credited wallet.
+    FirstName_User:
+      type: string
+      description: |
+        The first name of the user.
+    LastName_User:
+      type: string
+      description: |
+        The last name of the user.
+    Address_Billing:
+      type: object
+      description: |
+        Information about the billing address.
+      properties:
+        AddressLine1:
+          $ref: "#/components/schemas/AddressLine1"
+        AddressLine2:
+          $ref: "#/components/schemas/AddressLine2"
+        City:
+          $ref: "#/components/schemas/City"
+        Region:
+          $ref: "#/components/schemas/Region_IfThenElse"
+        PostalCode:
+          $ref: "#/components/schemas/PostalCode"
+        Country:
+          $ref: "#/components/schemas/Country"
+      if:
+        properties:
+          Region:
+            oneOf:
+              - CA
+              - MX
+              - US
+        then:
+          required:
+            - AddressLine1
+            - City
+            - Region
+            - PostalCode
+            - Country
+        else:
+          required:
+            - AddressLine1
+            - City
+            - PostalCode
+            - Country
+    AddressLine1:
+      type: string
+      maxLength: 255
+      description: The first line of the address.
+    AddressLine2:
+      type: string
+      maxLength: 255
+      description: The second line of the address.
+    City:
+      type: string
+      maxLength: 255
+      description: The city of the address.
+    Region_IfThenElse:
+      type: string
+      maxLength: 255
+      description: |
+        The region of the address. This field is optional except if the `Country` is US, CA, or MX.
+    PostalCode:
+      type: string
+      description: |
+        The postal code of the address. The postal code can contain the following characters: alphanumeric, dashes, and spaces.
+    Country:
+      type: string
+      description: The country of the address in the two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) format.
+    Billing:
+      type: object
+      description: |
+        **Default value:** `FirstName`, `LastName`, and `Address` information of the `Shipping` object if provided, otherwise the user (`AuthorId`).
+      properties:
+        FirstName:
+          $ref: "#/components/schemas/FirstName_User"
+        LastName:
+          $ref: "#/components/schemas/LastName_User"
+        Address:
+          $ref: "#/components/schemas/Address_Billing"
+      required: [FirstName, LastName, Address]
+    Shipping:
+      type: object
+      description: |
+        **Default value:** `FirstName`, `LastName`, and `Address` information of the `Billing` object if provided, otherwise the user (`AuthorId`).
+      properties:
+        FirstName:
+          $ref: "#/components/schemas/FirstName_User"
+        LastName:
+          $ref: "#/components/schemas/LastName_User"
+        Address:
+          $ref: "#/components/schemas/Address_Billing"
+      required: [FirstName, LastName, Address]
+    EndDate:
+      type: integer
+      description: |
+        For PayPal recurring pay-ins, this value is always `null`.
+    Frequency:
+      type: string
+      description: |
+        For PayPal recurring pay-ins, this value is always `null`.
+    FixedNextAmount:
+      type: boolean
+      description: |
+        Whether or not the recurring pay-ins’ debited amounts remain the same for all the pay-ins linked to the recurring registration object.
+    FractionedPayment:
+      type: boolean
+      description: For PayPal recurring pay-ins, this value is always `false`.
+    FreeCycles:
+      type: integer
+      description: For PayPal recurring pay-ins, this value is always `null`.
+    FirstTransactionDebitedFunds:
+      type: object
+      description: |
+        The amount of the first recurring pay-in.
+
+        This value can be different from the `NextTransactionDebitedFunds`
+      properties:
+        Currency:
+          $ref: "#/components/schemas/Currency_Funds"
+        Amount:
+          $ref: "#/components/schemas/Amount_Funds"
+      required: [Currency, Amount]
+    FirstTransactionFees:
+      type: object
+      description: |
+        The fees of the first recurring pay-in.
+
+        This value can be different from the `NextTransactionDebitedFees`
+      properties:
+        Currency:
+          $ref: "#/components/schemas/Currency_Fees"
+        Amount:
+          $ref: "#/components/schemas/Amount_Fees"
+      required: [Currency, Amount]
+    NextTransactionDebitedFunds:
+      type: object
+      description: |
+        The amount of the subsequent recurring pay-ins. If this field is empty and `FixedNextAmount` is `true`, the subsequent amount will be the same as `FirstTransactionDebitedFunds` amount.
+      properties:
+        Currency:
+          $ref: "#/components/schemas/Currency_Fees"
+        Amount:
+          $ref: "#/components/schemas/Amount_Fees"
+      required: [Currency, Amount]
+    NextTransactionFees:
+      type: object
+      description: The fees of the subsequent recurring pay-ins.
+      properties:
+        Currency:
+          $ref: "#/components/schemas/Currency_Fees"
+        Amount:
+          $ref: "#/components/schemas/Amount_Fees"
+      required: [Currency, Amount]
+    Migration:
+      type: boolean
+      description: For PayPal recurring pay-ins, this value is always `false`.
+    PaymentType:
+      type: string
+      enum: [PAYPAL]
+      description: Set this value to `PAYPAL` to use the recurring object for PayPal pay-ins.
