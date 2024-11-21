@@ -1,0 +1,26 @@
+```ruby Ruby 
+require 'mangopay'
+
+require 'PP'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'client-id'
+    client.client_apiKey = 'api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+myWallet = {
+    Id: 'wlt_m_01J30991BXBB7VF28PBS82EWD3'
+}
+
+def listWalletVirtualAccounts(walletId)
+    begin
+        response = MangoPay::VirtualAccount.fetch_all(walletId)
+        puts response
+        return response
+    end
+end
+
+pp(listWalletVirtualAccounts(myWallet[:Id]))
+```
