@@ -1,0 +1,29 @@
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: "client-id",
+    clientApiKey: "api-key"
+  })
+
+let myConversion = {
+    QuoteId: "cvrquote_01JDHAEJF2QRC0MZ6WTJHETDQZ",
+    AuthorId: "user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    DebitedWalletId: "wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
+    CreditedWalletId: "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV",
+    Tag: "Created using the Mangopay NodeJS SDK"
+}
+  
+const createQuotedUserConversion = async (conversion) => {
+return await mangopay.Conversions.createQuotedConversion(conversion)
+    .then((response) => {
+    console.info(response)
+    return response
+    })
+    .catch((err) => {
+    console.log(err)
+    return false
+    })
+}
+  
+createQuotedUserConversion(myConversion)
+```
