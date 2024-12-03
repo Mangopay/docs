@@ -1,0 +1,27 @@
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk');
+const mangopay = new mangopayInstance({
+    clientId: 'client-id',
+    clientApiKey: 'api-key',
+})
+
+let myVirtualAccount = {
+  Id: 'wltbank_01JCNPKMG875WHH0XFQPRHRHP6'
+}
+let myWallet = {
+  Id: 'wlt_m_01J30991BXBB7VF28PBS82EWD3'
+}
+
+const deactivateVirtualAccount = async (walletId, virtualAccountId) => {
+    return await mangopay.VirtualAccounts.deactivate(walletId, virtualAccountId)
+    .then((response) => {
+        console.info(response)
+        return response
+    }).catch((err) => {
+        console.log(err);
+        return false
+    }); 
+}
+
+deactivateVirtualAccount(myWallet.Id, myVirtualAccount.Id)
+```

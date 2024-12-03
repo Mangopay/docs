@@ -1,0 +1,32 @@
+```php PHP
+<?php 
+
+require_once "../vendor/autoload.php";
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = "client-id";
+$api->Config->ClientPassword = "api-key";
+$api->Config->TemporaryFolder = "../tmp/";
+
+try {
+    $walletId = "wlt_m_01JBYEE1PEK9C6DWD8PWXK2TSQ";
+
+    $virtualAccount = new \MangoPay\VirtualAccount();
+    $virtualAccount->Country = "GB";
+    $virtualAccount->VirtualAccountPurpose = "Collection";
+    $virtualAccount->Tag = "Created using the Mangopay PHP SDK";
+
+    $response = $api->VirtualAccounts->Create($virtualAccount, $walletId);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
