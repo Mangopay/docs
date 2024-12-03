@@ -40,7 +40,7 @@ yarn add @mangopay/checkout-sdk
 #### Install via CDN  
 
 If you are using script tags to load files, include the Mangopay SDK script in your HTML:  
-```shell HTML script tags
+```html
 <script src="https://checkout.mangopay.com/sdk/checkout-sdk.min.js"></script>
 ```  
 
@@ -341,6 +341,17 @@ const CheckoutComponent = () => {
     </tbody>
 </table>
 
+## Updating options
+
+After the SDK has been initialized you can update the options without needing to fully reinitialize again by using the `updateOptions` method. Make sure you pass a complete updated `options` object as specified in the Configuration section.
+
+```js
+import { CheckoutSdk } from '@mangopay/checkout-sdk';
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
+// update options
+mangopaySdk.updateOptions({...options, amount: {...options.amount, value: updatedValue});
+```
+
 ## Handling redirection  
 
 <Warning>  
@@ -377,7 +388,7 @@ In your `paymentMethods` configurations, define an `options.onCreatePayment` att
 </Step>
 </Steps>
 
-```javascript JavaScript - Redirection example
+```js
 paymentMethods: [
     {
         type: 'card | paypal | googlepay',
@@ -429,7 +440,7 @@ To configure the card payment method, specify `card` as the `type` of the `payme
 </table>
 
 ### Card configuration example  
-```typescript Typescript
+```typescript TypeScript
 
 export interface CreatePaymentData {
   Id: string;
@@ -477,7 +488,7 @@ In the `options` for the card payment method, create a function to handle creati
 - In your `onCreateCardRegistration` function, return the unmodified Card Registration object to the SDK.  
 - The SDK [tokenizes the card](/api-reference/card-registrations/tokenize-card) and [updates the Card Registration](/api-reference/card-registrations/update-card-registration) object to create the `CardId` which is used for payment.  
 
-```typescript Typescript - Card tokenization example
+```typescript TypeScript
 // Vanilla JS
 mangopaySdk.on('tokenizationComplete', (event: CustomEvent<TokenizationCompleteEventDetails>) => {
     // handle tokenization complete
@@ -720,7 +731,7 @@ const handleCreateApplePayPayIn = (data: CreateApplePayPaymentData): Promise<Cre
 ```
 
 ### Apple Pay configuration example  
-```typescript Typescript
+```typescript TypeScript
 const options = {
   clientId: 'MANGOPAY_CLIENT_ID',
 	environment: 'SANDBOX | PRODUCTION',
@@ -1109,8 +1120,8 @@ mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetail
 
 When processing a token request, the SDK shows a loading spinner and retains it until the loading state is set to `false`. This provides a temporary state for the user until the full payment is complete, including calls from your platform's backend.  
 
-The `setLoading` method handles the loading state for displaying and dismissing the spinner.  
-```json REST - setLoading example
+The `setLoading` method handles the loading state for displaying and dismissing the spinner.
+```js
 import { CheckoutSdk } from '@mangopay/checkout-sdk';
 const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
 // dismiss the  loader spinner
@@ -1124,7 +1135,7 @@ Card Element is a ready-made component that allows you to create your own card p
 When using Card Element, you still benefit from card data validation, and the ability to customize the payment form.  
 
 Initialize the `cardFormElement` with your `ClientId` and select your environment (Sandbox or Production).  
-```shell Initialization - cardFormElement
+```js
 import { CheckoutSdk } from '@mangopay/checkout-sdk';
 
 const cardFormElement = await CheckoutSdk.loadCardFormElement(elementOrSelector, options);
@@ -1160,7 +1171,7 @@ const cardFormElement = await CheckoutSdk.loadCardFormElement(elementOrSelector,
 </body>
 ```  
 
-```typescript Typescript
+```typescript TypeScript
 import { CheckoutSdk } from '@mangopay/checkout-sdk';
 
 window.addEventListener('load', async () => {
@@ -1193,7 +1204,7 @@ window.addEventListener('load', async () => {
 ```  
 
 ### ReactJS usage example  
-```typescript Typescript
+```typescript TypeScript
 import { CardFormElement } from '@mangopay/checkout-sdk-react';
 
 const CheckoutFormComponent = () => {
@@ -1230,7 +1241,7 @@ const CheckoutFormComponent = () => {
 ## Branding  
 
 You can customize the appearance of the checkout using the `branding` object.  
-```typescript Typescript - Branding example
+```typescript TypeScript - Branding example
 const options = {
     branding: {
         fontFamily: 'Helvetica Neue',
@@ -1272,7 +1283,7 @@ You can use the `rules` and `variables` objects for further customization.
 #### Variables  
 
 Variables are CSS variables that you can declare and use in your theme rules.  
-```typescript Typescript
+```typescript TypeScript
 {
     theme: {
     ...,
@@ -1293,7 +1304,7 @@ Variables are CSS variables that you can declare and use in your theme rules.
 #### Rules  
 
 Rules allows you to apply CSS styles to Checkout SDK components. To do so, target components by class names, with or without the CSS class selector prefix (`FieldContainer` or `.FieldContainer`), and specify the styles to apply. The feature supports all native CSS properties and nesting.  
-```typescript Typescript
+```typescript TypeScript
 {
     theme: {
       ...,
@@ -1321,7 +1332,7 @@ Rules allows you to apply CSS styles to Checkout SDK components. To do so, targe
 
 Mangopay Checkout SDK has built-in localization support for: DE, EN, ES, FR, NL, PT
 
-```typescript Typescript
+```typescript TypeScript
 const options = {
     locale: 'en', // 'en' | 'fr' | 'es' | 'de' | 'pt' | 'nl' | Object
 };
