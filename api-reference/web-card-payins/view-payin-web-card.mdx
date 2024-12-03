@@ -1,6 +1,6 @@
 ---
-title: 'Create a Web Card PayIn'  
-api: 'POST /v2.01/{ClientId}/payins/card/web'  
+title: 'View a PayIn (Web Card)'  
+api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
 ---
 
 import DebitedWalletIdResponse from '/snippets/p-response/DebitedWalletIdResponse.mdx';
@@ -32,71 +32,28 @@ import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.
 import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
-import ProfilingAttemptReference from '/snippets/p-body/ProfilingAttemptReference.mdx';
-import StatementDescriptor from '/snippets/p-body/StatementDescriptor.mdx';
-import Shipping2 from '/snippets/p-body/Shipping2.mdx';
-import Billing2 from '/snippets/p-body/Billing2.mdx';
-import SecureMode from '/snippets/p-body/SecureMode.mdx';
-import Culture1 from '/snippets/p-body/Culture1.mdx';
-import CardType4 from '/snippets/p-body/CardType4.mdx';
-import TemplateURLOptions from '/snippets/p-body/TemplateURLOptions.mdx';
-import ReturnURL3 from '/snippets/p-body/ReturnURL3.mdx';
-import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
-import Fees9 from '/snippets/p-body/Fees9.mdx';
-import DebitedFunds9 from '/snippets/p-body/DebitedFunds9.mdx';
-import CreditedUserId from '/snippets/p-body/CreditedUserId.mdx';
-import AuthorId from '/snippets/p-body/AuthorId.mdx';
-import Tag from '/snippets/p-body/Tag.mdx';
 
-import RestCreateWebCardPayin from '/snippets/code/rest-create-web-card-payin.mdx';
-import PhpCreateWebCardPayin from '/snippets/code/php-create-web-card-payin.mdx';
-import NodeCreateWebCardPayin from '/snippets/code/node-create-web-card-payin.mdx';
-import RubyCreatePaypalPayin from '/snippets/code/ruby-create-paypal-payin.mdx';
-import JavaCreateWebCardPayin from '/snippets/code/java-create-web-card-payin.mdx';
-import PythonCreateWebCardPayin from '/snippets/code/python-create-web-card-payin.mdx';
-import NetCreateWebCardPayin from '/snippets/code/net-create-web-card-payin.mdx';
+import PayInId from '/snippets/p-path/PayInId.mdx';
 
-<Note>  
-**Note – Tracking the payment status** 
-  
-Once the pay-in is created, the object status will be `CREATED` until the end user completes the payment. To be notified of a change in status, set up <a href="/webhooks">webhook notifications</a>.  
-</Note>  
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
-### Body parameters  
+<Note>
+**Note – Pay-in data retained for 13 months**
 
-<Tag />  
+An API call to retrieve a pay-in whose `CreationDate` is older than 13 months may return 404 Not Found.
 
-<AuthorId />  
+For more information, see the <a href="/api-reference/overview/data-availability-periods">Data availability periods</a> article.
+</Note>
 
-<CreditedUserId />  
+### Path parameters  
 
-<DebitedFunds9 />  
-
-<Fees9 />  
-
-<CreditedWalletId />  
-
-<ReturnURL3 />  
-
-<TemplateURLOptions />  
-
-<CardType4 />  
-
-<Culture1 />  
-
-<SecureMode />  
-
-<Billing2 />  
-
-<Shipping2 />  
-
-<StatementDescriptor />  
-
-<ProfilingAttemptReference />  
+<PayInId />  
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -292,12 +249,6 @@ Once the pay-in is created, the object status will be `CREATED` until the end us
 
 <RequestExample>  
 
-  <RestCreateWebCardPayin />
-  <PhpCreateWebCardPayin />
-  <NodeCreateWebCardPayin />
-  <RubyCreatePaypalPayin />
-  <JavaCreateWebCardPayin />
-  <PythonCreateWebCardPayin />
-  <NetCreateWebCardPayin />
+  <RestGetNoBody />
   
 </RequestExample>
