@@ -1,0 +1,196 @@
+---
+title: 'Update a Recurring PayIn Registration (PayPal)'  
+api: 'PUT /v2.01/{ClientId}/recurringpayinregistrations/{RecurringPayinRegistrationId}'
+---
+
+import Migration1Response from '/snippets/p-response/Migration1Response.mdx';
+import NextTransactionFeesResponse from '/snippets/p-response/NextTransactionFeesResponse.mdx';
+import NextTransactionDebitedFundsResponse from '/snippets/p-response/NextTransactionDebitedFundsResponse.mdx';
+import FirstTransactionFeesResponse from '/snippets/p-response/FirstTransactionFeesResponse.mdx';
+import FirstTransactionDebitedFundsResponse from '/snippets/p-response/FirstTransactionDebitedFundsResponse.mdx';
+import FreeCycles1Response from '/snippets/p-response/FreeCycles1Response.mdx';
+import FractionedPayment1Response from '/snippets/p-response/FractionedPayment1Response.mdx';
+import FixedNextAmountResponse from '/snippets/p-response/FixedNextAmountResponse.mdx';
+import Frequency1Response from '/snippets/p-response/Frequency1Response.mdx';
+import EndDate1Response from '/snippets/p-response/EndDate1Response.mdx';
+import Shipping2Response from '/snippets/p-response/Shipping2Response.mdx';
+import Billing1Response from '/snippets/p-response/Billing1Response.mdx';
+import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
+import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.mdx';
+import CardId2Response from '/snippets/p-response/CardId2Response.mdx';
+import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
+import CycleNumber1Response from '/snippets/p-response/CycleNumber1Response.mdx';
+import TotalAmountResponse from '/snippets/p-response/TotalAmountResponse.mdx';
+import RecurringType1Response from '/snippets/p-response/RecurringType1Response.mdx';
+import CurrentStateResponse from '/snippets/p-response/CurrentStateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import Status15Response from '/snippets/p-response/Status15Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
+import RecurringPayinRegistrationId from '/snippets/p-query/RecurringPayinRegistrationId.mdx';
+
+import Billing2 from '/snippets/p-body/Billing2.mdx';
+import Shipping2 from '/snippets/p-body/Shipping2.mdx';
+import Status15 from '/snippets/p-body/Status15.mdx';
+
+import RestUpdateRecurringPayinRegistration from '/snippets/code/rest-update-recurring-payin-registration.mdx';
+
+This call can be used to change the following parameters:  
+- `Status` – To manually close the recurring pay-in registration with the `ENDED` status. When doing so, no recurring pay-in can be created based on the registration anymore.
+- `Billing` and `Shipping` – To change information about billing and shipping.  
+
+### Path parameters
+
+<RecurringPayinRegistrationId />
+
+### Body parameters   
+
+<Status15 />  
+
+<Shipping2 />  
+
+<Billing2 />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200">  
+
+<IdResponse />  
+
+<Status15Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<CurrentStateResponse />  
+
+<RecurringType1Response />  
+
+<TotalAmountResponse />  
+
+<CycleNumber1Response />  
+
+<AuthorIdResponse />  
+
+<CardId2Response />  
+
+<CreditedUserIdResponse />  
+
+<CreditedWalletIdResponse />  
+
+<Billing1Response />  
+
+<Shipping2Response />  
+
+<EndDate1Response />  
+
+<Frequency1Response />  
+
+<FixedNextAmountResponse />  
+
+<FractionedPayment1Response />  
+
+<FreeCycles1Response />  
+
+<FirstTransactionDebitedFundsResponse />  
+
+<FirstTransactionFeesResponse />  
+
+<NextTransactionDebitedFundsResponse />  
+
+<NextTransactionFeesResponse />  
+
+<Migration1Response />
+
+</Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>  
+
+```json 200  
+{
+    "Id": "recpayinreg_wt_c1fb7e3f-8204-4427-9251-df886fbb4e42",
+    "Status": "ENDED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "CurrentState": {
+        "PayinsLinked": 2,
+        "CumulatedDebitedAmount": {
+            "Currency": "EUR",
+            "Amount": 14500
+        },
+        "CumulatedFeesAmount": {
+            "Currency": "EUR",
+            "Amount": 1000
+        },
+        "LastPayinId": "wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17"
+    },
+    "RecurringType": "CUSTOM",
+    "TotalAmount": null,
+    "CycleNumber": null,
+    "AuthorId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+    "CardId": null,
+    "CreditedUserId": null,
+    "CreditedWalletId": "wlt_m_01J9KR4A7BH8KVE4PG6DTNS817",
+    "Billing": {
+        "FirstName": "Ofelia",
+        "LastName": "Kilback",
+        "Address": {
+            "AddressLine1": "8151 Sipes Turnpike",
+            "AddressLine2": "Garfield Meadows",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Leland",
+        "LastName": "Baumbach",
+        "Address": {
+            "AddressLine1": "65247 Hand Walk",
+            "AddressLine2": "Mraz Neck",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "EndDate": null,
+    "Frequency": null,
+    "FixedNextAmount": false,
+    "FractionedPayment": false,
+    "FreeCycles": 0,
+    "FirstTransactionDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "FirstTransactionFees": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "NextTransactionDebitedFunds": null,
+    "NextTransactionFees": null,
+    "Migration": false,
+    "PaymentType": "PAYPAL"
+}
+```  
+
+</ResponseExample>  
+
+<RequestExample>  
+
+  <RestUpdateRecurringPayinRegistration />
+  <PhpUpdateRecurringPayinRegistration />
+  <NodeUpdateRecurringPayinRegistration />
+  <RubyUpdateRecurringRegistration />
+  <JavaUpdateRecurringPayinRegistration />
+  <PythonUpdateRecurringPayinRegistration />
+  <NetUpdateRecurringPayinRegistration />
+
+</RequestExample>
