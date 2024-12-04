@@ -1,6 +1,6 @@
 ---
-title: 'View a PayIn (PayPal)'  
-api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+title: 'Create a Recurring PayPal PayIn (CIT)'  
+api: 'POST /v2.01/{ClientId}/payins/payment-methods/paypal/recurring'
 ---
 
 import RecurringPayinRegistrationIdResponse from '/snippets/p-response/RecurringPayinRegistrationIdResponse.mdx';
@@ -30,43 +30,56 @@ import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.md
 import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
 import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
 import Status2Response from '/snippets/p-response/Status2Response.mdx';
-import Fees6Response from '/snippets/p-response/Fees6Response.mdx';
-import CreditedFunds6Response from '/snippets/p-response/CreditedFunds6Response.mdx';
-import DebitedFunds8Response from '/snippets/p-response/DebitedFunds8Response.mdx';
+import Fees13Response from '/snippets/p-response/Fees13Response.mdx';
+import CreditedFunds9Response from '/snippets/p-response/CreditedFunds9Response.mdx';
+import DebitedFunds14Response from '/snippets/p-response/DebitedFunds14Response.mdx';
 import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 
-import PayInId from '/snippets/p-path/PayInId.mdx';
-  
-import PhpViewPayin from '/snippets/code/php-view-payin.mdx';
-import NodeViewPayin from '/snippets/code/node-view-payin.mdx';
-import RubyViewPayin from '/snippets/code/ruby-view-payin.mdx';
-import JavaViewPayin from '/snippets/code/java-view-payin.mdx';
-import PythonViewPayin from '/snippets/code/view-payin-python.mdx';
-import NetViewPaypalPayin from '/snippets/code/net-view-paypal-payin.mdx';
+import CancelURL from '/snippets/p-body/CancelURL.mdx';
+import Reference1 from '/snippets/p-body/Reference1.mdx';
+import ShippingPreference from '/snippets/p-body/ShippingPreference.mdx';
+import Culture4 from '/snippets/p-body/Culture4.mdx';
+import LineItems1 from '/snippets/p-body/LineItems1.mdx';
+import Shipping3 from '/snippets/p-body/Shipping3.mdx';
+import StatementDescriptor from '/snippets/p-body/StatementDescriptor.mdx';
+import ReturnURL from '/snippets/p-body/ReturnURL.mdx';
+import Tag from '/snippets/p-body/Tag.mdx';
+import RecurringPayinRegistrationId from '/snippets/p-body/RecurringPayinRegistrationId.mdx';
 
-For PayPal, the pay-in object viewable on this endpoint is the same for one-time and recurring except that `RecurringPayinRegistrationId` is only returned for recurring pay-ins.
+import RestCreateRecurringPayPalPayinCit from '/snippets/code/rest-create-recurring-paypal-payin-cit.mdx';
 
-<Note>
-**Note – Pay-in data retained for 13 months**
+[Read more about the Recurring PayPal PayIn object](/api-reference/recurring-paypal-payins/recurring-paypal-payin-object) **→**
 
-An API call to retrieve a pay-in whose `CreationDate` is older than 13 months may return 404 Not Found.
+### Body parameters  
 
-For more information, see the <a href="/api-reference/overview/data-availability-periods">Data availability periods</a> article.
-</Note>
+<RecurringPayinRegistrationId />
 
+<Tag />  
 
-### Path parameters  
+<ReturnURL />  
 
-<PayInId />  
+<CancelURL />
+
+<StatementDescriptor />  
+
+<Shipping3 />  
+
+<LineItems1 />  
+
+<Culture4 />  
+
+<ShippingPreference />  
+
+<Reference1 />  
 
 ### Responses  
 
 <AccordionGroup>
 
-<Accordion title="200 - Succeeded">  
+<Accordion title="200 - Created">  
 
 <IdResponse />  
 
@@ -127,7 +140,6 @@ For more information, see the <a href="/api-reference/overview/data-availability
 <BuyerLastnameResponse/>
 <BuyerPhoneResponse/>
 <PaypalOrderIDResponse/>
-
 <RecurringPayinRegistrationIdResponse/>
 
 </Accordion>
@@ -136,37 +148,37 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <ResponseExample>  
 
-````json 200 - One-time  
+```json 200  
 {
-    "Id": "wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
+    "Id": "wt_0c7bd61f-c3f0-49b7-94dc-b97bd650be3d",
     "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1699367848,
-    "AuthorId": "204068024",
+    "CreationDate": 1732630635,
+    "AuthorId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
     "DebitedFunds": {
         "Currency": "EUR",
-        "Amount": 1500
+        "Amount": 10000
     },
     "CreditedFunds": {
         "Currency": "EUR",
-        "Amount": 1200
+        "Amount": 9900
     },
     "Fees": {
         "Currency": "EUR",
-        "Amount": 300
+        "Amount": 100
     },
-    "Status": "SUCCEEDED",
-    "ResultCode": "000000",
-    "ResultMessage": "Success",
-    "ExecutionDate": 1699368834,
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
     "Type": "PAYIN",
     "Nature": "REGULAR",
-    "CreditedWalletId": "204089031",
-    "CreditedUserId": "204068024",
+    "CreditedWalletId": "wlt_m_01J9KR4A7BH8KVE4PG6DTNS817",
+    "CreditedUserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
     "PaymentType": "PAYPAL",
     "ExecutionType": "WEB",
-    "ReturnURL": "http://www.mangopay.com/docs/please-ignore?transactionId=wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
-    "RedirectURL": "https://www.sandbox.paypal.com/checkoutnow?token=48X37022FD879043B",
-    "StatementDescriptor": "Mangopay",
+    "ReturnURL": "http://example.com?transactionId=wt_0c7bd61f-c3f0-49b7-94dc-b97bd650be3d",
+    "RedirectURL": "https://www.sandbox.paypal.com/agreements/approve?approval_session_id=8C820771K64683846",
+    "StatementDescriptor": "Example123",
     "Shipping": {
         "FirstName": "Alex",
         "LastName": "Smith",
@@ -181,118 +193,42 @@ For more information, see the <a href="/api-reference/overview/data-availability
     },
     "LineItems": [
         {
-            "Name": "Running shoes",
-            "Quantity": 2,
-            "UnitAmount": 400,
-            "TaxAmount": 100,
-            "Description": "ID of Seller 1"
+            "Name": "Product A subscription package",
+            "Quantity": 1,
+            "UnitAmount": 4000,
+            "TaxAmount": 1000,
+            "Description": "ID of Seller 1",
+            "Category": "PHYSICAL_GOODS"
         },
         {
-            "Name": "Walking shoes",
+            "Name": "Product B subscription package",
             "Quantity": 1,
-            "UnitAmount": 400,
-            "TaxAmount": 100,
-            "Description": "ID of Seller 2"
+            "UnitAmount": 4000,
+            "TaxAmount": 1000,
+            "Description": "ID of Seller 2",
+            "Category": "PHYSICAL_GOODS"
         }
     ],
-    "Culture": "FR",
+    "Culture": null,
     "ShippingPreference": "SET_PROVIDED_ADDRESS",
-    "PaypalBuyerAccountEmail": "alex.smith@example.com",
-    "Reference": "1234",
+    "PaypalBuyerAccountEmail": null,
+    "Reference": "abcd-efgh-ijkl",
     "Trackings": null,
-    "CancelURL": null,
+    "CancelURL": "http://example.net?transactionId=wt_0c7bd61f-c3f0-49b7-94dc-b97bd650be3d",
     "PaypalPayerID": null,
     "BuyerCountry": null,
     "BuyerFirstname": null,
     "BuyerLastname": null,
     "BuyerPhone": null,
-    "PaypalOrderID": "0V2469407F242402P"
-}  
-````
-````json 200 - Recurring
-{
-    "Id": "wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
-    "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1731580317,
-    "AuthorId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 4500
-    },
-    "CreditedFunds": {
-        "Currency": "EUR",
-        "Amount": 4500
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 0
-    },
-    "Status": "SUCCEEDED",
-    "ResultCode": "000000",
-    "ResultMessage": "Success",
-    "ExecutionDate": 1731580323,
-    "Type": "PAYIN",
-    "Nature": "REGULAR",
-    "CreditedWalletId": "wlt_m_01J9KR4A7BH8KVE4PG6DTNS817",
-    "CreditedUserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
-    "PaymentType": "PAYPAL",
-    "ExecutionType": "WEB",
-    "ReturnURL": "http://example.com?transactionId=wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
-    "StatementDescriptor": "Example123",
-    "Shipping": {
-        "FirstName": "Leland",
-        "LastName": "Baumbach",
-        "Address": {
-            "AddressLine1": "65247 Hand Walk",
-            "AddressLine2": "Mraz Neck",
-            "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75001",
-            "Country": "FR"
-        }
-    },
-    "LineItems": [
-        {
-            "Name": "Product C",
-            "Quantity": 1,
-            "UnitAmount": 1500,
-            "TaxAmount": 0,
-            "Description": "ID of Seller 1",
-            "Category": "PHYSICAL_GOODS"
-        },
-        {
-            "Name": "Product D",
-            "Quantity": 1,
-            "UnitAmount": 3000,
-            "TaxAmount": 0,
-            "Description": "ID of Seller 2",
-            "Category": "PHYSICAL_GOODS"
-        }
-    ],
-    "Culture": "FR",
-    "ShippingPreference": "SET_PROVIDED_ADDRESS",
-    "PaypalBuyerAccountEmail": "sb-xej7a6945106@business.example.com",
-    "Reference": "abcd-efgh-ijkl",
-    "Trackings": null,
-    "CancelURL": "http://google.com?transactionId=wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
-    "PaypalPayerID": "RVN3GJJS2KGV4",
-    "BuyerCountry": "FR",
-    "BuyerFirstname": "John",
-    "BuyerLastname": "Doe",
-    "BuyerPhone": null,
-    "PaypalOrderID": "9KH88598NK328901B",
+    "PaypalOrderID": null,
     "RecurringPayinRegistrationId": "recpayinreg_wt_c1fb7e3f-8204-4427-9251-df886fbb4e42"
 }
-````
+```
+
 </ResponseExample>  
 
 <RequestExample>  
 
-    <PhpViewPayin />
-    <NodeViewPayin />
-    <RubyViewPayin />
-    <JavaViewPayin />
-    <PythonViewPayin />
-    <NetViewPaypalPayin />
-  
+    <RestCreateRecurringPayinCitPayPal />
+    
 </RequestExample>
