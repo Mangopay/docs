@@ -1,0 +1,38 @@
+```php PHP 
+<?php 
+
+require_once '../vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Money;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'client-id';
+$api->Config->ClientPassword = 'api-key';
+$api->Config->TemporaryFolder = '../tmp/';
+$api->Config->DebugMode = false;
+
+try { 
+    $Quote = new \MangoPay\ConversionQuote();
+
+    $Quote->DebitedFunds = new Money();
+    $Quote->DebitedFunds->Currency = "GBP";
+
+    $Quote->CreditedFunds = new Money();
+    $Quote->CreditedFunds->Currency = "EUR";
+    $Quote->CreditedFunds->Amount = 10;
+
+    $Quote->Duration = 300;
+    $Quote->Tag = "Created using the Mangopay PHP SDK";
+
+    $response = $api->Conversions->CreateConversionQuote($Quote);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}

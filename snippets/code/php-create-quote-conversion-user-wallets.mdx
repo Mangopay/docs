@@ -1,0 +1,40 @@
+```php PHP 
+<?php 
+
+require_once '../vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Money;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'client-id';
+$api->Config->ClientPassword = 'api-key';
+$api->Config->TemporaryFolder = '../tmp/';
+$api->Config->DebugMode = false;
+
+try { 
+    $quotedConversion = new \MangoPay\Conversion();
+
+    $debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+    $debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
+    $creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+    $quoteId = "cvrquote_01JE92SJATA0X9YXNXKP9N1VFT";
+
+    $quotedConversion->QuoteId = $quoteId;
+    $quotedConversion->AuthorId = $debitedUserId;
+    $quotedConversion->DebitedWalletId = $debitedWalletId;
+    $quotedConversion->CreditedWalletId = $creditedWalletId;
+    $quotedConversion->Tag = "Created using the Mangopay PHP SDK";
+
+    $response = $api->Conversions->CreateQuotedConversion($quotedConversion);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
