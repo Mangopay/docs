@@ -1,0 +1,42 @@
+```php PHP 
+<?php 
+
+require_once '../vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Money;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'client-id';
+$api->Config->ClientPassword = 'api-key';
+$api->Config->TemporaryFolder = '../tmp/';
+$api->Config->DebugMode = false;
+
+try { 
+    $instantConversion = new \MangoPay\Conversion();
+
+    $debitedUserId = "user_m_01HQK25M6KVHKDV0S36JY9NRKR";
+    $debitedWalletId = "wlt_m_01HQT7AS0FJPGYXDXJ0R151NBV";
+    $creditedWalletId = "wlt_m_01HQT6422EER2N7FPRXWTSDCSV";
+
+    $instantConversion->AuthorId = $debitedUserId;
+    $instantConversion->DebitedWalletId = $debitedWalletId;
+    $instantConversion->CreditedWalletId = $creditedWalletId;
+    $instantConversion->DebitedFunds = new Money();
+    $instantConversion->DebitedFunds->Amount = 100;
+    $instantConversion->DebitedFunds->Currency = "GBP";
+    $instantConversion->CreditedFunds = new Money();
+    $instantConversion->CreditedFunds->Currency = "EUR";
+    $instantConversion->Tag = "Created using the Mangopay PHP SDK";
+
+    $response = $api->Conversions->CreateInstantConversion($instantConversion);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
