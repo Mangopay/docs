@@ -22,11 +22,17 @@ PayPal is a popular international payment method that allows users to pay by con
             </td>
             </tr>
         <tr>
-            <th class="header">[Refunds](/guides/refunds)</th>
+            <th class="header">[Refunds](/#refunds)</th>
             <td class="table-content">
-                Yes
+                Yes, within 180 days
             </td>
-            </tr>
+        </tr>
+        <tr>
+            <th class="header">[Partial refunds](/#refunds)</th>
+            <td class="table-content">
+                Yes, within 180 days
+            </td>
+        </tr>
         <tr>
             <th class="header">Disputes</th>
             <td class="table-content">
@@ -40,71 +46,144 @@ PayPal is a popular international payment method that allows users to pay by con
             </td>
             </tr>
         <tr>
-            <th class="header">Recurring&nbsp;payments</th>
+            <th class="header">[Recurring&nbsp;payments](/#)</th>
             <td class="table-content">
-                No
+                Yes
             </td>
             </tr>
     </tbody>
 </table>
 
-
-## User prerequisites
-
-To use this payment method, users must:  
-- Create a PayPal account  
-- Connect a card or bank account to their PayPal account  
-
-## User experience  
-- On your app or website, the user selects PayPal as the payment method during checkout  
-- The user is redirected to the PayPal payment page (`RedirectURL`)  
-- The user logs in to their PayPal account, selects a payment method, and confirms payment  
-- The user is returned to your app or website (on `ReturnURL`)
-
-### Outcome
-
-The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome.  
-
-You should also set up [hook notifications](/webhooks) for the relevant [event types](/webhooks/event-types):
--   `PAYIN_NORMAL_SUCCEEDED`
--   `PAYIN_NORMAL_FAILED`
-
 ## Activation  
 
 PayPal requires approval and integration with PayPal and activation by Mangopay. Contact the Mangopay Support team <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to get started.  
 
-The activation process is as follows:  
+<Accordion
+  title="Activation process"
+>
+<Steps>
+<Step title="Mangopay checks your platform’s eligibility">
+PayPal is only available for platforms that are:  
+- Based in the EU, UK, or Switzerland  
+- Not operating a crowdfunding business model  
+</Step>
+<Step title="Mangopay refers your platform to PayPal">
+At this stage, Mangopay can activate Sandbox for your platform to begin testing.
+</Step>
+<Step title="PayPal approves your request">
+
+</Step>
+<Step title="PayPal accompanies your platform in setting up a PayPal Business account">
+This includes:  
+- Due diligence and business registration
+- Pricing negotiation, on top of <a href="https://mangopay.com/pricing" target="_blank">Mangopay’s commission</a>
+- Creation of the PayPal account
+- Integration support (PayPal button etc.)  
+
+</Step>
+<Step title="PayPal notifies Mangopay that your platform is ready to go live">
+
+</Step>
+<Step title="Mangopay activates PayPal in Production">
+Upon activation, Mangopay provides you with an activation link.
+</Step>
+<Step title="You approve Mangopay in PayPal">
+Using the activation link provided at activation, you give approval to Mangopay to process payments on behalf of your PayPal Business account.
+</Step>
+</Steps>
+</Accordion>
+
+## How it works
+<Steps>
+<Step title="User chooses payment method">
+On your app or website, the user selects PayPal as the payment method
+</Step>
+<Step title="Payment initiation">
+For one-time payments, you create the payment request by calling <a href="/api-reference/paypal/create-paypal-payin">POST Create a PayPal PayIn</a>, specifying the `ReturnURL`.
+
+If the payments are recurring (for example, a subscription), you need an additional API call to setup the recurrence before requesting the pay-in (see [Recurring](#recurring) section)
+</Step>
+<Step title="Redirection">
+You redirect the user to the hosted PayPal page via the `RedirectURL` in the API response.
+
+On the PayPal page, the user connects to their PayPal account, selects a card, bank, or PayPal balance, and confirms the payment.
+<Note>  
+**Note – Session timeout** 
+  
+The PayPal session times out after 3 hours
+</Note>
+</Step>
+<Step title="Return">
+After payment, the user is returned to the `ReturnURL` that you specified in the payment request.
+
+</Step>
+<Step title="Outcome">
+The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+</Step>
+</Steps>
+
+## Hooks
+
+You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
+
+- `PAYIN_NORMAL_SUCCEEDED`
+- `PAYIN_NORMAL_FAILED`
+
+## Recurring
+
+Recurring payments with PayPal requires a pay-in registration object to setup the recurrence, before your platform can request pay-ins linked to the registration.
+
+The first pay-in, a customer-initiated transaction (CIT), requires the user to authenticate the payment (in the same way as one-time pay-ins). Your platform can then request subsequent pay-ins without the user present, known as merchant-initiated transactions (MITs), at the frequency and amount agreed by the user.
+
+The steps are as follows:
 
 <Steps>
-    <Step title="Mangopay checks your platform’s eligibility  ">
-        PayPal is only available for platforms that are:  
-        - Based in the EU, UK, or Switzerland  
-        - Not operating a crowdfunding business model  
-    </Step>
-    <Step title="Mangopay refers your platform to PayPal">
-        At this stage, Mangopay can activate Sandbox for your platform to begin testing.
-    </Step>
-    <Step title="PayPal approves your request">
-        
-    </Step>
-    <Step title="PayPal accompanies your platform in setting up a PayPal Business account">
-        This includes:  
-        - Due diligence and business registration
-        - Pricing negotiation, on top of <a href="https://mangopay.com/pricing" target="_blank">Mangopay’s commission</a>
-        - Creation of the PayPal account
-        - Integration support (PayPal button etc.)  
+<Step title="Set up the recurring registration">
+Call the [POST Create a Recurring PayIn Registration](/api-reference/recurring-payin-registrations/create-recurring-payin-registration-paypal) to register details about the user, the wallet, and the payments.
 
-    </Step>
-    <Step title="PayPal notifies Mangopay that your platform is ready to go live">
-        
-    </Step>
-    <Step title="Mangopay activates PayPal in Production">
-        Upon activation, Mangopay provides you with an activation link.
-    </Step>
-    <Step title="You approve Mangopay in PayPal">
-        Using the activation link provided at activation, you give approval to Mangopay to process payments on behalf of your PayPal Business account.
-    </Step>
+The registration contains the amount of the first transaction. It is possible to specify the amount of subsequent transactions, but if you do so you are not able to change them later.
+
+In the response, the `RecurringPayinRegistrationId` allows you to link the recurring pay-ins to this registration object. The `Status` of the registration object is `CREATED`.
+</Step>
+<Step title="Process the customer-initiated transaction (CIT)">
+Call the [POST Create a Recurring PayPal PayIn (CIT)](/api-reference/paypal/create-recurring-paypal-payin-cit) to initiate the first transaction. When the first transaction is initiated, the `Status` of the registration object becomes `AUTHENTICATION_NEEDED`. 
+
+To authenticate the CIT, you need to redirect the user to the `RedirectURL` so they can agree to the recurring payments and validate the first transaction.
+
+<img src="/images/screenshot_paypal_recurring.png" />
+
+For compliance, this screen specifies your platform’s name alongside Mangopay’s in the format:
+
+> PlatformName (payment services by Mangopay)
+
+Once the user agrees and the first payment is successfully authorized, the `Status` of the registration object changes to `IN_PROGRESS`. This indicates that you can debit subsequent payments without the user present.
+
+Set up a webhook for the `RECURRING_REGISTRATION_IN_PROGRESS` event type to be notified of this.
+</Step>
+<Step title="Process merchant-initiated transactions (MIT)">
+For subsequent payments, without the user present, you can call the [POST Create a Recurring PayPal PayIn (MIT)](/api-reference/paypal/create-recurring-paypal-payin-mit) endpoint.
+
+<Note>
+**Note – No re-authentication with PayPal**
+
+With PayPal recurring, it is not possible for the `Status` to change to `AUTHENTICATION_NEEDED` during the recurrence. The status may become `ENDED`, as described below.
+</Note>
+</Step>
 </Steps>
+
+### Ending the recurrence
+
+The registration object `Status` can be set to `ENDED` to indicate that it can no longer be used. You can do this using the **PUT Update a Recurring PayIn Registration** endpoint.
+
+<Note>
+**Note – Limit of one registration per user**
+
+On PayPal, only one recurring registration can be used per `UserId`, so you may need to set the registration to `ENDED` in order to create a new one with the same user. 
+</Note>
+
+Mangopay may set the `ENDED` status in the event that PayPal notifies that the user has revoked the recurrence directly from their PayPal account.
+
+Set up a <a href="/webhooks">webhook notification</a> for the `RECURRING_REGISTRATION_ENDED` <a href="/webhooks/event-types">event type</a> to be notified of this.
 
 ## Shipping preference  
 
@@ -122,19 +201,19 @@ The tracking number provides evidence of shipping and delivery. For a dispute op
 To provide the tracking information for a transaction:  
 
 <Steps>
-    <Step title="Obtain the shipment’s tracking number from the carrier">
-        The carriers supported by PayPal are listed in <a href="https://developer.paypal.com/docs/tracking/reference/carriers/" target="_blank">PayPal's documentation</a>.
-    </Step>
-    <Step title="Send the tracking number and carrier to Mangopay">
-        Use the <a href="/api-reference/paypal/add-tracking-paypal-payin">PUT Add tracking information to a PayPal PayIn</a> to update the pay-in with the tracking number and carrier.
-        
-        There is no link between the line items and the shipments. If multiple line items are in the same shipment, you only need to add the tracking information once. You should add all the tracking numbers relating to all the line items.
-    </Step>
-    <Step title="Optionally, trigger an email from PayPal to the buyer">
-        To do so, set the `NotifyBuyer` parameter to `true` when you make the PUT call.
-        
-        If making multiple calls for the same transaction, notify the buyer on only one of the calls (for example, the first).
-    </Step>
+<Step title="Obtain the shipment’s tracking number from the carrier">
+The carriers supported by PayPal are listed in <a href="https://developer.paypal.com/docs/tracking/reference/carriers/" target="_blank">PayPal's documentation</a>.
+</Step>
+<Step title="Send the tracking number and carrier to Mangopay">
+Use the <a href="/api-reference/paypal/add-tracking-paypal-payin">PUT Add tracking information to a PayPal PayIn</a> to update the pay-in with the tracking number and carrier.
+
+There is no link between the line items and the shipments. If multiple line items are in the same shipment, you only need to add the tracking information once. You should add all the tracking numbers relating to all the line items.
+</Step>
+<Step title="Optionally, trigger an email from PayPal to the buyer">
+To do so, set the `NotifyBuyer` parameter to `true` when you make the PUT call.
+
+If making multiple calls for the same transaction, notify the buyer on only one of the calls (for example, the first).
+</Step>
 </Steps>
 
 <Warning>  
