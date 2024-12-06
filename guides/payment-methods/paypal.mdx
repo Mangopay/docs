@@ -22,13 +22,13 @@ PayPal is a popular international payment method that allows users to pay by con
             </td>
             </tr>
         <tr>
-            <th class="header">[Refunds](/#refunds)</th>
+            <th class="header">[Refunds](#refunds)</th>
             <td class="table-content">
                 Yes, within 180 days
             </td>
         </tr>
         <tr>
-            <th class="header">[Partial refunds](/#refunds)</th>
+            <th class="header">[Partial refunds](#refunds)</th>
             <td class="table-content">
                 Yes, within 180 days
             </td>
@@ -93,7 +93,7 @@ Using the activation link provided at activation, you give approval to Mangopay 
 </Steps>
 </Accordion>
 
-## How it works
+## One-time payments
 <Steps>
 <Step title="User chooses payment method">
 On your app or website, the user selects PayPal as the payment method
@@ -110,7 +110,7 @@ On the PayPal page, the user connects to their PayPal account, selects a card, b
 <Note>  
 **Note – Session timeout** 
   
-The PayPal session times out after 3 hours
+The PayPal session times out after 3 hours.
 </Note>
 </Step>
 <Step title="Return">
@@ -119,21 +119,16 @@ After payment, the user is returned to the `ReturnURL` that you specified in the
 </Step>
 <Step title="Outcome">
 The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
+
+Set up [webhooks](/webhooks) for the `PAYIN_NORMAL_SUCCEEDED` and `PAYIN_NORMAL_FAILED` [event types](/webhooks/event-types) to be notified of this.
 </Step>
 </Steps>
 
-## Hooks
-
-You should also set up <a href="/webhooks">hook notifications</a> for the relevant <a href="/webhooks/event-types">event types</a>:
-
-- `PAYIN_NORMAL_SUCCEEDED`
-- `PAYIN_NORMAL_FAILED`
-
-## Recurring
+## Recurring payments
 
 Recurring payments with PayPal requires a pay-in registration object to setup the recurrence, before your platform can request pay-ins linked to the registration.
 
-The first pay-in, a customer-initiated transaction (CIT), requires the user to authenticate the payment (in the same way as one-time pay-ins). Your platform can then request subsequent pay-ins without the user present, known as merchant-initiated transactions (MITs), at the frequency and amount agreed by the user.
+The first pay-in, a **customer-initiated transaction (CIT)**, requires the user to authenticate the payment (in the same way as one-time pay-ins). Your platform can then request subsequent pay-ins without the user present, known as **merchant-initiated transactions (MITs)**, at the frequency and amount agreed by the user.
 
 The steps are as follows:
 
@@ -183,7 +178,7 @@ On PayPal, only one recurring registration can be used per `UserId`, so you may 
 
 Mangopay may set the `ENDED` status in the event that PayPal notifies that the user has revoked the recurrence directly from their PayPal account.
 
-Set up a <a href="/webhooks">webhook notification</a> for the `RECURRING_REGISTRATION_ENDED` <a href="/webhooks/event-types">event type</a> to be notified of this.
+Set up a [webhook](/webhooks) for the `RECURRING_REGISTRATION_ENDED` [event type](/webhooks/event-types) to be notified of this.
 
 ## Shipping preference  
 
