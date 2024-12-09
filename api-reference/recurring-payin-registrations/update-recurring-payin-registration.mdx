@@ -3,6 +3,7 @@ title: 'Update a Recurring PayIn Registration'
 api: 'PUT /v2.01/{ClientId}/recurringpayinregistrations/{RecurringPayinRegistrationId}'  
 ---
 
+import PaymentType15Response from '/snippets/p-response/PaymentType15Response.mdx';
 import MigrationResponse from '/snippets/p-response/MigrationResponse.mdx';
 import NextTransactionFeesResponse from '/snippets/p-response/NextTransactionFeesResponse.mdx';
 import NextTransactionDebitedFundsResponse from '/snippets/p-response/NextTransactionDebitedFundsResponse.mdx';
@@ -27,10 +28,13 @@ import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.md
 import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
 import Status8Response from '/snippets/p-response/Status8Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
 import Billing2 from '/snippets/p-body/Billing2.mdx';
 import Shipping2 from '/snippets/p-body/Shipping2.mdx';
 import Status3 from '/snippets/p-body/Status3.mdx';
 import CardId from '/snippets/p-body/CardId.mdx';
+
+import RecurringPayinRegistrationId from '/snippets/p-query/RecurringPayinRegistrationId.mdx';
 
 import RestUpdateRecurringPayinRegistration from '/snippets/code/rest-update-recurring-payin-registration.mdx';
 import PhpUpdateRecurringPayinRegistration from '/snippets/code/php-update-recurring-payin-registration.mdx';
@@ -45,6 +49,10 @@ This call can be used to change the following parameters:
 - `CardId` – To modify the card to use for recurring pay-ins. When doing so, a new CIT is required (with SCA).  
 - `Billing` and `Shipping` – To change information about billing and shipping.  
 
+### Path parameters
+
+<RecurringPayinRegistrationId />
+
 ### Body parameters  
 
 <CardId />  
@@ -57,7 +65,9 @@ This call can be used to change the following parameters:
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -105,7 +115,13 @@ This call can be used to change the following parameters:
 
 <NextTransactionFeesResponse />  
 
-<MigrationResponse /></Accordion></AccordionGroup>  
+<MigrationResponse />
+
+<PaymentType15Response />
+
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
@@ -168,7 +184,8 @@ This call can be used to change the following parameters:
     "FirstTransactionFees":null,
     "NextTransactionDebitedFunds":null,
     "NextTransactionFees":null,
-    "Migration":true
+    "Migration":true,
+    "PaymentType":"CARD_DIRECT"
 }  
  ```  
 
