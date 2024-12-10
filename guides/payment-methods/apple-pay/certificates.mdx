@@ -1,0 +1,90 @@
+---
+title: 'Payment processing certificates'
+sidebarTitle: Certificates
+---
+
+As part of your integration with Apple Pay, you need to create a **Merchant ID** and a **Payment Processing Certificate**. This process must be done according to the guidance below for your platform to be able to process Apple Pay payments with Mangopay.
+
+## How to set up your Payment Processing Certificate
+
+<Info>
+**Prerequisites**
+
+- Enrollment in the <a href="https://developer.apple.com/programs/enroll/" target="_blank">Apple Developer Program</a> 
+</Info>
+
+### 1. Create your Apple Pay Merchant ID using the Mangopay format  
+
+The Apple Pay Merchant ID is a unique identifier that identifies your platform to Apple Pay. You need a separate Merchant ID for each Mangopay `ClientId`, in both Sandbox and Production. You can use the same Merchant ID for more than one website or iOS app.
+
+Use the formats below to <a href="https://developer.apple.com/help/account/configure-app-capabilities/configure-apple-pay#create-a-merchant-identifier" target="_blank">create your Apple Pay Merchant ID</a>. Note that Apple Pay auto-populates the `merchant.` prefix shown below.
+
+Sandbox: 
+> merchant.com.mangopay.`ClientId`.sandbox
+
+Production:
+> merchant.com.mangopay.`ClientId`
+
+<Warning>  
+**Warning - Respect the Merchant ID formatting** 
+  
+Because the Apple Pay merchant identifier must match the processing certificate that will be created by Mangopay, it is important to respect the nomenclature above.  
+</Warning>  
+
+### 2. Send your Merchant ID to Mangopay  
+
+Once generated, send your Merchant ID to Mangopay by contacting the Support team via the <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a>.  
+
+Mangopay will generate a Certificate Signing Request (CSR) file and return it to you.  
+
+### 3. Create your Payment Processing Certificate with the CSR file  
+
+Once you receive the CSR file from Mangopay, create a Payment Processing Certificate (as per the <a href="https://developer.apple.com/help/account/configure-app-capabilities/configure-apple-pay#create-a-payment-processing-certificate" target="_blank">Apple Pay documentation</a>), uploading this file in the process.
+
+<Warning>  
+**Warning - Do not activate your certificate** 
+  
+You must not activate your Payment Processing Certificate at this stage - only create it.  
+</Warning>  
+
+### 4. Download and send the CER file to Mangopay  
+
+Download the Payment Processing Certificate's CER file and send it to Mangopay Support team via the Dashboard.  
+
+### 5. Await confirmation from Mangopay  
+
+Mangopay will use the CER file to finalize the configuration of Apple Pay on your Mangopay API environment. One of our team members will confirm that everything is ready.  
+
+### 6. Activate your certificate  
+
+Once you have received confirmation from Mangopay that everything is ready, activate your Payment Processing Certificate.  
+
+## Renewal
+
+Your certificate has limited validity and expires every 25 months.
+
+The process to renew your certificate is the same as when you created it first time. You create a new certificate which, when activated, automatically revokes the previous one.  
+
+When your certificate is nearing expiry, Mangopay will send you a CSR file for your `ClientId`. 
+
+Once you receive the CSR file from Mangopay, create a Payment Processing Certificate (as per the <a href="https://developer.apple.com/help/account/configure-app-capabilities/configure-apple-pay#create-a-payment-processing-certificate" target="_blank">Apple Pay documentation</a>), uploading this file in the process.
+
+<Warning>  
+**Warning - Do not activate your certificate** 
+  
+You must not activate your Payment Processing Certificate when you create it. Activation must be done later once you have received confirmation from Mangopay.  
+</Warning>  
+
+Follow Steps 4 to 6 above to complete the renewal of your certificate.  
+
+## Related resources  
+
+<CardGroup col={2}>
+    <Card title="Guide" href="/guides/payment-methods/apple-pay">
+    Learn more about Apple Pay
+    </Card>  
+
+    <Card title="Endpoint" href="/api-reference/apple-pay/apple-pay-payin-object">
+    The Apple Pay PayIn object
+    </Card>
+</CardGroup>
