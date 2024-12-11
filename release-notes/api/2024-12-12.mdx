@@ -1,0 +1,51 @@
+---
+title: 'API - Dec 12, 2024'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+mode: wide  
+# 'og:description': ''
+---
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+## API keys: Assign permission scopes, reset, and revoke
+
+Platforms can now rotate API keys and create them with access rights only to certain endpoints. This improves security for platforms and their collaboration with external partners.
+
+### Permission scopes
+All Mangopay API endpoints now belong to permission scopes. When generating an API key, platforms can assign specific scopes to give the key access only to certain endpoints. Each scope can be assigned to give read access to data (via GET HTTP methods) and/or write access (via POST and PUT methods).
+
+### Multiple API keys per Client ID
+A single Client ID can now have multiple API keys created for it, each identified with an **alias**. When an API account is created, the first key is automatically generated with all permission scopes assigned and the alias ***Auto-generated key***.
+
+Platforms can generate new keys via the <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a> (***Developers*** > ***API accounts***). 
+
+When you generate a new key in Production, it is only shown once at creation for you to copy a store securely in an encrypted vault. Sandbox keys are always available in the Dashboard. 
+
+<Note>
+**Note – No action required on existing keys**
+
+Prior to this release, only one API key was possible per Client ID and the key had access to all endpoints. This key has become the ***Auto-generated key*** and continues to have full access. 
+
+This release has no impact on your existing integration and no action is ***required***. Your platform can continue to use only the auto-generated key in your integration. However, we ***recommend*** that you use the **reset** functionality to periodically rotate your API key.
+
+Assigning permission scopes ***may*** be useful to your platform to improve security, especially if you work with external partners who are calling the Mangopay API, but it is entirely optional.
+</Note>
+
+### Reset and revoke
+All API keys can be **reset**, which generates a new encrypted string associated with the Client ID. The newly generated key has the same permission scopes and alias. This allows platforms to rotate their API keys periodically for improved security.
+
+User-generated API keys can be **revoked**, which permanently deletes the encrypted string, its alias and permission scopes.
+
+The ***Auto-generated key*** can be reset but not revoked. Resetting and revoking is available for both Production and Sandbox keys.
+
+Read more in the new guide:
+<CardGroup cols={2}>
+<Card title="Guide" href="/api-reference/overview/api-keys">
+Managing API keys
+</Card>
+<Card title="Reference" href="/api-reference/overview/api-keys/scopes">
+View the endpoints in each scope
+</Card>
+</CardGroup>
+
+</div>
