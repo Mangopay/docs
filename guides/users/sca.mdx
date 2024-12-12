@@ -1,0 +1,76 @@
+---
+title: SCA on Owner users
+sidebarTitle: Introduction
+---
+
+Mangopay is implementing **strong customer authentication** (SCA) to enhance security in its payments infrastructure for platform users. The feature also aims to comply with European regulations.
+
+SCA is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different classes.
+
+## SCA session
+
+SCA requires the user to complete the authentication action with Mangopay directly. For legal users, the person authenticating must be the declared legal representative.
+
+Mangopay's SCA feature allows platforms to redirect the user to a Mangopay-hosted web page where the user can enroll or authenticate during an **SCA session**.
+
+This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features.
+
+To deliver this session, Mangopay provides a unique URL in the `RedirectURL` response parameter on relevant actions across its API. The `RedirectURL` is returned as part of the `PendingUserAction` response object.
+
+## Authentication factors
+
+### SMS one-time passcode (OTP)
+
+In a first instance, authentication is done via **one-time passcode (OTP)**. Other methods will be developed in future, all relying on the same `RedirectURL`.
+
+In the OTP authentication, the SCA session provides the user a screen where they can request and submit an SMS to their mobile phone.
+
+<img src="/images/screenshot_sca_otp.png" />
+
+The use of OTP requires the platform to provide the `PhoneNumber` and `PhoneNumberCountry` for the user via the API. 
+
+The user's `Email` is used as a backup in case the phone number cannot be used.
+
+<Note>
+**Note – The legal representative's details are required for Legal users**
+
+For Legal users, the declared legal representative is the person who must enroll and authenticate the account.
+
+The email and phone number used for SCA are the ones in the `LegalRepresentative` object parameter (`LegalRepresentative.PhoneNumber`, `LegalRepresentative.PhoneNumberCountry`, `LegalRepresentative.Email`), and **NOT** the `Email` of the User API object. 
+</Note>
+
+## Feature scope
+
+Mangopay's SCA feature only applies to users categorized as Owners. Users categorized as Payers are not affected.
+
+The regulations apply SCA to situations where a user accesses or initiates certain payment activities, or to other situations considered at-risk.
+
+For Mangopay, this means that the scope of SCA will be extended over time.
+
+### Current scope - Enrollment
+
+In the first instance, Mangopay's SCA feature implements the enrollment of the user 
+
+- Categorization as Owner
+
+During this action, the User provides contact details (`PhoneNumber` and `Email`) that can be used to **enroll** them in SCA via a one-time passcode.
+
+The user can be created as an Owner to transition to Owner from Payer: both cases require SCA enrollment. 
+
+If the user changes their contact details, then they must re-enroll the new ones. 
+
+The user can enroll during an SCA session which they can access via the `RedirectURL` returned by the Mangopay API.
+
+This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
+
+### Future scope - Authentication
+
+In future, Mangopay’s SCA feature may also be applied to:
+
+- Bank account registration
+- Wallet access
+- Transfer initiation
+
+When these actions are requested, the user would be required to authenticate.
+
+For platforms, authentication works in the same way as enrollment: you must redirect the user to a Mangopay-hosted experience before the requested action can be delivered.

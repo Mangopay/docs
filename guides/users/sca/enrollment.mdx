@@ -1,0 +1,102 @@
+---
+title: Enrollment in the user lifecycle
+sidebarTitle: Enrollment
+---
+
+The introduction of SCA on Owners changes the lifecycle of a user, because the user cannot transition from Payer to Owner without completing SCA.
+
+This page describes the enrollment scenario and how it impacts the user lifecycle.
+
+## Payers
+
+SCA is not applicable to Payers. 
+
+You can create and modify Payers by providing the relevant information via the following endpoints. 
+
+In this scenario:
+- `UserCategory` is `PAYER`
+- `UserStatus` is `ACTIVE`
+- `PendingUserAction` is `null`
+
+Note that the same endpoints are used with Owners (but `UserCategory` is `OWNER`).
+
+<Card title="POST Create a Natural User (SCA)" href="/">
+Register a Natural Payer or Owner
+</Card>
+<Card title="PUT Edit a Natural User (SCA)" href="/">
+Modify details for a Natural Payer or Owner
+</Card>
+<Card title="POST Create a Legal User (SCA)" href="/">
+Register a Legal Payer or Owner
+</Card>
+<Card title="PUT Edit a Legal User (SCA)" href="/">
+Modify details for a Legal Payer or Owner
+</Card>
+
+## Owners
+
+SCA is applicable to Owners. 
+
+To become an Owner, the user must authenticate using SCA and provide additional information. They must also accept Mangopay’s T&Cs.
+
+Their `PhoneNumber` and `Email` are required for SCA. These details must be provided at creation or when you transition a Payer to an Owner.
+
+## SCA scenarios
+
+The following scenarios describe when you need to handle SCA redirection. 
+
+In all cases, the API response contains two parameters related to SCA.
+
+First, the `UserStatus` parameter, which has the values:
+
+- `PENDING_USER_ACTION` – The user must enroll in SCA before they can become `ACTIVE`.
+- `ACTIVE` – The user account is active and the user can access Mangopay features.
+- `CLOSED` – The user account is permanently closed. This value is used by Mangopay to close an account following the procedure outlined in the terms and conditions.
+
+Second, the `PendingUserAction` object containing the `RedirectURL` value to which you must redirect the user so they can enroll.
+
+You need to handle this redirection in the following scenarios: 
+
+### Creation
+
+At creation, if `UserCategory` is set to `OWNER` on the following endpoints:
+
+<Card title="Register a Natural Payer or Owner" href="/">
+Register a Natural Payer or Owner
+</Card>
+
+<Card title="POST Create a Legal User (SCA)" href="/">
+Register a Legal Payer or Owner
+</Card>
+
+### Transition
+
+When transitioning a Payer to an Owner, using the dedicated endpoints:
+
+<Card title="PUT Categorize a Natural User as Owner (SCA)" href="/">
+Transition a Natural Payer to Owner
+</Card>
+<Card title="PUT Categorize a Legal User as Owner (SCA)" href="/">
+Transition a Legal Payer to Owner
+</Card>
+
+### Modification
+
+At modification, if the `Email` or `PhoneNumber` (or `PhoneNumberCountry`) are modified:
+
+<Card title="PUT Edit a Natural User (SCA)" href="/">
+Modify details for a Natural Payer or Owner
+</Card>
+<Card title="PUT Edit a Legal User (SCA)" href="/">
+Modify details for a Legal Payer or Owner
+</Card>
+
+### Activation (or reactivation)
+
+You can also obtain a new SCA session link if a previous one expired or failed, or if the user has not been enrolled yet.
+
+This endpoint only returns the `PendingUserAction` object containing the `RedirectURL` – it does not return the `UserStatus`.
+
+<Card title="POST Obtain an SCA session" href="/">
+Obtain a new SCA redirection link to authenticate a user
+</Card>
