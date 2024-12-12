@@ -5,7 +5,7 @@ sidebarTitle: Enrollment
 
 The introduction of SCA on Owners changes the lifecycle of a user, because the user cannot transition from Payer to Owner without completing SCA.
 
-This page describes the enrollment scenario and how it impacts the user lifecycle.
+This page describes the enrollment scenario and how it impacts the user lifecycle – see the [diagram below](/#lifecycle-diagram) for an overview.
 
 ## Payers
 
@@ -39,9 +39,11 @@ SCA is applicable to Owners.
 
 To become an Owner, the user must authenticate using SCA and provide additional information. They must also accept Mangopay’s T&Cs.
 
-Their `PhoneNumber` and `Email` are required for SCA. These details must be provided at creation or when you transition a Payer to an Owner.
+For a User to become an Owner, they must provide additional information an enroll in SCA by providing contact details (`PhoneNumber` and `Email`) and authenticating via OTP. 
 
-## SCA scenarios
+The SCA contact details must be provided at creation or when you transition a user from Payer to Owner.
+
+### SCA scenarios
 
 The following scenarios describe when you need to handle SCA redirection. 
 
@@ -57,7 +59,7 @@ Second, the `PendingUserAction` object containing the `RedirectURL` value to whi
 
 You need to handle this redirection in the following scenarios: 
 
-### Creation
+#### Creation
 
 At creation, if `UserCategory` is set to `OWNER` on the following endpoints:
 
@@ -69,7 +71,7 @@ Register a Natural Payer or Owner
 Register a Legal Payer or Owner
 </Card>
 
-### Transition
+#### Transition
 
 When transitioning a Payer to an Owner, using the dedicated endpoints:
 
@@ -80,7 +82,7 @@ Transition a Natural Payer to Owner
 Transition a Legal Payer to Owner
 </Card>
 
-### Modification
+#### Modification
 
 At modification, if the `Email` or `PhoneNumber` (or `PhoneNumberCountry`) are modified:
 
@@ -91,7 +93,7 @@ Modify details for a Natural Payer or Owner
 Modify details for a Legal Payer or Owner
 </Card>
 
-### Activation (or reactivation)
+#### Activation (or reactivation)
 
 You can also obtain a new SCA session link if a previous one expired or failed, or if the user has not been enrolled yet.
 
@@ -100,3 +102,7 @@ This endpoint only returns the `PendingUserAction` object containing the `Redire
 <Card title="POST Obtain an SCA session" href="/">
 Obtain a new SCA redirection link to authenticate a user
 </Card>
+
+## Lifecycle diagram
+
+
