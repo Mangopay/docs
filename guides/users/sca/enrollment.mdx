@@ -3,11 +3,9 @@ title: Enrollment in the user lifecycle
 sidebarTitle: Enrollment
 ---
 
-import ScaUserLifecycle from '/snippets/icons/diagram_SCA_user_lifecycle.mdx';
-
 The introduction of SCA on Owners changes the lifecycle of a user, because the user cannot transition from Payer to Owner without completing SCA.
 
-This page describes the enrollment scenario (providing and authenticating device details) and how it impacts the user lifecycle – see the [diagram below](/#lifecycle-diagram) for an overview.
+This page describes the enrollment scenario (providing and authenticating device details) and how it impacts the user lifecycle – see the [diagram below](#lifecycle-diagram) for an overview.
 
 ## Payers
 
@@ -81,21 +79,19 @@ Optionally, your platform can also:
 <Step title="Redirect the user to the hosted page for SCA">
 Your platform must redirect the user to a Mangopay-hosted page where they can complete SCA. See the [How to redirect a user for SCA](guides/users/sca#how-to-redirect-a-user-for-sca) section for details on how to do this.
 
-The unique page URL for the SCA session is returned in the `RedirectURL` value of the `PendingUserAction` response parameter.
-
-The `UserStatus` response parameter is `PENDING_USER_ACTION`, showing that the user needs to enroll in SCA and authenticate before they can access Mangopay features as an Owner.
+The unique page URL for the SCA session is returned in the `RedirectURL` value of the `PendingUserAction` response parameter on the endpoints listed below.
 </Step>
 </Steps>
 
 ### SCA scenarios
 
-The need for a user to enroll in SCA is indicated by the response parameter `UserStatus`. The values are:
+In the user endpoints, the need for a user to enroll in SCA is indicated by the response parameter `UserStatus`. The values are:
 
 - `PENDING_USER_ACTION` – The user must enroll in SCA before they can become `ACTIVE`.
 - `ACTIVE` – The user account is active and the user can access Mangopay features.
 - `CLOSED` – The user account is permanently closed. This value is used by Mangopay to close an account following the procedure outlined in the terms and conditions.
 
-To allow a user to enroll in SCA, you must redirect them to the SCA session on the returned `RedirectURL` as described in the [How to redirect a user for SCA](guides/users/sca#how-to-redirect-a-user-for-sca) section.
+To allow a user to enroll in SCA, you must redirect them to the SCA session on the returned `RedirectURL` value in the `PendingUserAction` response parameter, as described in the [How to redirect a user for SCA](guides/users/sca#how-to-redirect-a-user-for-sca) section.
 
 You need to handle this redirection in the following scenarios: 
 
@@ -147,7 +143,7 @@ Obtain a new SCA redirection link to authenticate a user
 
 The following diagram provides an overview of how SCA impacts the user lifecycle:
 
-<img src="/images/diagram_SCA_user_lifecycle.svg" />
+<img src="/images/diagram_SCA_user_lifecycle.svg" width="100%"/>
 
 ## Related resources
 
