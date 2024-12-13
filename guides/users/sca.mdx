@@ -29,7 +29,9 @@ In the first instance, Mangopay's SCA feature implements the enrollment of the u
 
 The user can be created as an Owner to transition to Owner from Payer: both cases require SCA.
 
-The enrollment is delivered in an [SCA session](/#sca-session) that they can access via the `RedirectURL` returned by the Mangopay API. This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
+The enrollment is delivered in an [SCA session](#sca-session) that they can access via the `RedirectURL` returned by the Mangopay API. This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
+
+See the dedicated [enrollment guide](/guides/users/sca/enrollment) for details about SCA scenarios during user registration.
 
 #### Future scope - Authentication
 
@@ -81,7 +83,15 @@ In the API response from an endpoint triggering an [SCA scenario](/guides/users/
 
 The URL of the unique SCA session is:
 
-- https<span>://</span>sca.mangopay.com?sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6NC
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+https<span>://</span>sca.mangopay.com?&#8288;sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6NC
+</td>
+</tr>
+</tbody>
+</table> 
 
 </Step>
 <Step title="Add your ReturnURL before redirection">
@@ -89,7 +99,15 @@ Before redirecting the user on this URL, you must add your `ReturnURL` as a quer
 
 For example, if your `ReturnURL` is <span>https:</span>//example.com, you should redirect the user on:
 
-- <span>https:</span>//sca.mangopay.com?sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6N&ReturnURL=https%3A%2F%2Fexample.com
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+<span>https:</span>//sca.mangopay.com?&#8288;sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6N&ReturnURL=https%3A%2F%2Fexample.com
+</td>
+</tr>
+</tbody>
+</table> 
 
 <Warning>
 **Caution – Add your return URL before redirection**
@@ -153,7 +171,7 @@ You should check the API resource(s) involved in the SCA session to determine th
 
 In the case of Owner registration, both can be determined with the same call:
 
-<Card title="GET View a User (SCA)" href="/">
+<Card title="GET View a User (SCA)">
 See the details of a Natural or Legal user 
 </Card>
 
@@ -161,7 +179,7 @@ If `UserCategory` is `OWNER` and `UserStatus` is `ACTIVE`, then the SCA session 
 
 If the `UserStatus` is `PENDING_USER_ACTION`, then call the activation endpoint to obtain a new `RedirectURL` and retry the session.
 
-<Card title="POST Obtain an SCA session" href="/">
+<Card title="POST Obtain an SCA session">
 Obtain a new SCA redirection link to authenticate a user
 </Card>
 
