@@ -7,65 +7,33 @@ Mangopay is implementing **strong customer authentication** (SCA) to enhance sec
 
 SCA is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different classes.
 
-## SCA session
-
-SCA requires the user to complete the authentication action with Mangopay directly. For legal users, the person authenticating must be the declared legal representative.
-
-Mangopay's SCA feature allows platforms to redirect the user to a Mangopay-hosted web page where the user can enroll or authenticate during an **SCA session**.
-
-This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features.
-
-To deliver this session, Mangopay provides a unique URL in the `RedirectURL` response parameter on relevant actions across its API. The `RedirectURL` is returned as part of the `PendingUserAction` response object.
-
-## Authentication factors
-
-### SMS one-time passcode (OTP)
-
-In a first instance, authentication is done via **one-time passcode (OTP)**. Other methods will be developed in future, all relying on the same `RedirectURL`.
-
-In the OTP authentication, the SCA session provides the user a screen where they can request and submit an SMS to their mobile phone.
-
-<img src="/images/screenshot_sca_otp.png" />
-
-The use of OTP requires the platform to provide the `PhoneNumber` and `PhoneNumberCountry` for the user via the API. 
-
-The user's `Email` is used as a backup in case the phone number cannot be used.
-
-<Note>
-**Note – The legal representative's details are required for Legal users**
-
-For Legal users, the declared legal representative is the person who must enroll and authenticate the account.
-
-The email and phone number used for SCA are the ones in the `LegalRepresentative` object parameter (`LegalRepresentative.PhoneNumber`, `LegalRepresentative.PhoneNumberCountry`, `LegalRepresentative.Email`), and **NOT** the `Email` of the User API object. 
-</Note>
-
-## Feature scope
+## Scope
 
 Mangopay's SCA feature only applies to users categorized as Owners. Users categorized as Payers are not affected.
+
+SCA requires the user to complete the authentication action with Mangopay directly.
+
+For Legal Users, the person authenticating must be the declared legal representative, in the first instance. In future, Mangopay intends to enable Legal Users to declared several authorized persons who are able to complete SCA on behalf of the entity.
+
+### Actions
 
 The regulations apply SCA to situations where a user accesses or initiates certain payment activities, or to other situations considered at-risk.
 
 For Mangopay, this means that the scope of SCA will be extended over time.
 
-### Current scope - Enrollment
+#### Current scope - Enrollment
 
-In the first instance, Mangopay's SCA feature implements the enrollment of the user 
+In the first instance, Mangopay's SCA feature implements the enrollment of the user, meaning they register device details and authenticate them. 
 
-- Categorization as Owner
+- Registration as as Owner
 
-During this action, the User provides contact details (`PhoneNumber` and `Email`) that can be used to **enroll** them in SCA via a one-time passcode.
+The user can be created as an Owner to transition to Owner from Payer: both cases require SCA.
 
-The user can be created as an Owner to transition to Owner from Payer: both cases require SCA enrollment. 
+The enrollment is delivered in an [SCA session](/#sca-session) that they can access via the `RedirectURL` returned by the Mangopay API. This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
 
-If the user changes their contact details, then they must re-enroll the new ones. 
+#### Future scope - Authentication
 
-The user can enroll during an SCA session which they can access via the `RedirectURL` returned by the Mangopay API.
-
-This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
-
-### Future scope - Authentication
-
-In future, Mangopay’s SCA feature may also be applied to:
+In future, Mangopay’s SCA feature will also be applied to:
 
 - Bank account registration
 - Wallet access
@@ -73,4 +41,140 @@ In future, Mangopay’s SCA feature may also be applied to:
 
 When these actions are requested, the user would be required to authenticate.
 
-For platforms, authentication works in the same way as enrollment: you must redirect the user to a Mangopay-hosted experience before the requested action can be delivered.
+For platforms, authentication works in the same way as enrollment: you must redirect the user to a Mangopay-hosted SCA session before the requested action can be delivered.
+
+## SCA session
+
+Mangopay's SCA feature relies on Mangopay-hosted web page where the user can enroll or authenticate.
+
+To deliver this SCA session, Mangopay provides a unique URL in the `RedirectURL` response parameter on relevant actions across its API. The `RedirectURL` is returned as part of the `PendingUserAction` response object.
+
+### Authentication factors
+
+#### SMS one-time passcode (OTP)
+
+In a first instance, authentication is done via **one-time passcode (OTP)**. Other methods will be developed in future, all relying on the same `RedirectURL`.
+
+In OTP authentication, the SCA session provides the user a screen where they can provide their phone number (if not already supplied by the platform), request an OTP by SMS, and submit it.
+
+<img src="/images/screenshot_sca_otp.png" />
+
+### How to redirect a user for SCA
+
+This section describes how to handle the SCA redirection when required by an SCA scenario.
+
+<Steps>
+<Step title="Retrieve the SCA RedirectURL">
+
+In the API response from an endpoint triggering an [SCA scenario](/guides/users/sca/enrollment#owners), the `PendingUserAction` object contains a `RedirectURL` value. For example:
+
+```json
+{
+...
+	"UserStatus": "PENDING_USER_ACTION",
+	"PendingUserAction": {
+		"RedirectURL": "https://sca.mangopay.com?sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6NC"
+    },
+...
+}
+```
+
+The URL of the unique SCA session is:
+
+- https<span>://</span>sca.mangopay.com?sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6NC
+
+</Step>
+<Step title="Add your ReturnURL before redirection">
+Before redirecting the user on this URL, you must add your `ReturnURL` as a query parameter, being sure to percent-encode any non-ASCII characters in your URL.
+
+For example, if your `ReturnURL` is <span>https:</span>//example.com, you should redirect the user on:
+
+- <span>https:</span>//sca.mangopay.com?sessionId=sca_s_01J7NV9TTVGXSFH2MKRG98N6N&ReturnURL=https%3A%2F%2Fexample.com
+
+<Warning>
+**Caution – Add your return URL before redirection**
+
+You must add your return URL before you redirect the user on the `RedirectURL` value, otherwise the hosted web page cannot return them upon completion.
+</Warning>
+
+Note that the concatenation of Mangopay's `RedirectURL` and your encoded `ReturnURL` must be less than 2,000 characters, which is the limit of most web browsers.
+</Step>
+<Step title="Let the user authenticate">
+Once on the `RedirectURL`, the user can perform the necessary actions for SCA. 
+
+For the OTP authentication method, this means requesting and submitting a code via SMS. 
+
+<Note>
+**Note – Session timeout after 5 minutes**
+
+The session of the `RedirectURL` is valid for 5 minutes. If the user does not submit a successful SMS OTP before this time, the session can no longer be used and they are returned on your return URL.
+
+If this happens, you need to obtain a new `RedirectURL` for them using the endpoint **POST Obtain an SCA session**.
+</Note>
+</Step>
+<Step title="Handle the ReturnURL parameters">
+
+When the user submits a successful OTP, they are redirected to your `ReturnURL`.
+
+Mangopay adds two query parameters to your `ReturnURL`. For example:
+
+- <span>https:</span>//example.com/?controlStatus=VALIDATED&actionStatus=SUCCEEDED
+
+The first relates to the SCA control that was done:
+  
+<ResponseField
+  name="controlStatus"
+  type="string"
+>
+**Values:** `VALIDATED`, `FAILED` 
+
+The status of the SCA control:
+
+- `VALIDATED` - The control was successful.
+- `FAILED` - The control was unsuccessful and cannot be reused.
+</ResponseField>
+
+The second query parameter relates to the action that was being requested for the user:
+
+<ResponseField
+  name="actionStatus"
+  type="string"
+>
+**Values:** `SUCCEEDED`, `FAILED` 
+
+The status of the action being controlled:
+
+- `SUCCEEDED` - The action was successful.
+- `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown. You should check the API resource using a GET call to determine the final outcome.
+</ResponseField>
+</Step>
+<Step title="Check the status of the user and action">
+You should check the API resource(s) involved in the SCA session to determine the final outcome of the user and the action attempted.
+
+In the case of Owner registration, both can be determined with the same call:
+
+<Card title="GET View a User (SCA)" href="/">
+See the details of a Natural or Legal user 
+</Card>
+
+If `UserCategory` is `OWNER` and `UserStatus` is `ACTIVE`, then the SCA session was successful. 
+
+If the `UserStatus` is `PENDING_USER_ACTION`, then call the activation endpoint to obtain a new `RedirectURL` and retry the session.
+
+<Card title="POST Obtain an SCA session" href="/">
+Obtain a new SCA redirection link to authenticate a user
+</Card>
+
+</Step>
+</Steps>
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="Guide"
+  href="/guides/users/sca/enrollment"
+>
+Learn about enrollment scenarios in the user lifecycle
+</Card>
+</CardGroup>
