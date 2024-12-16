@@ -1,6 +1,6 @@
 ---
-title: 'Create a Natural User (SCA)'  
-api: 'POST /v2.01/{ClientId}/sca/users/natural'  
+title: 'Update a Natural User (SCA)'  
+api: 'PUT /v2.01/{ClientId}/sca/users/natural/{UserId}'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -30,9 +30,8 @@ import Address3Response from '/snippets/p-response/Address3Response.mdx';
 
 import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
 import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
-import UserCategory from '/snippets/p-body/UserCategory.mdx';
 import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
-import Email4 from '/snippets/p-body/Email4.mdx';
+import Email5 from '/snippets/p-body/Email5.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
 import Occupation from '/snippets/p-body/Occupation.mdx';
@@ -44,11 +43,41 @@ import FirstName1 from '/snippets/p-body/FirstName1.mdx';
 import Address3 from '/snippets/p-body/Address3.mdx';
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateNaturalUserSca from '/snippets/code/rest-create-natural-user-sca.mdx';
+import RestUpdateNaturalUserSca from '/snippets/code/rest-update-natural-user-sca.mdx';
+
+<Warning>
+**Caution – Modification may trigger SCA re-enrollment**
+
+If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+
+- `Email`
+- `PhoneNumber`
+- `PhoneNumberCountry`
+
+In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated. 
+
+If the user's `UserCategory` is `PAYER`, modifying these parameters has no impact on `UserStatus`.
+
+For more details see the [SCA guides](/guides/users/sca/enrollment).
+</Warning>
+
+<Warning>  
+**Caution – Modification may cause verification downgrade** 
+  
+Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+
+The impacted parameters are:  
+- `FirstName`  
+- `LastName`  
+- `Birthday`  
+- `Nationality`  
+
+For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
+</Warning>  
 
 <Note>  
 **Note – Country-based restrictions apply to users** 
-
+  
 Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
 
 For Natural Users, the following parameters are concerned:  
@@ -77,7 +106,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <Tag3 />  
 
-<Email4 />  
+<Email5 />  
 
 <PhoneNumber />
 
@@ -147,35 +176,31 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 </AccordionGroup>
 
-<AccordionGroup>
-
-    <Accordion title="400 - Restricted country as Nationality value">
-        ```json  
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
-            "Date": 1676551649.0,
-            "errors": {
-                "Nationality": "The Nationality used is blocked"
-            }
-        }  
-        ```  
-
+<AccordionGroup>  
+    <Accordion title="400 - Owner can't become Payer">
+    ```json 
+    {
+        "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+        "Type": "param_error",
+        "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+        "Date": 1707907057.0,
+        "errors": {
+            "UserCategory": "A User OWNER can't be modified to a user PAYER"
+        }
+    }  
+    ```  
     </Accordion>
-    <Accordion title="400 - Invalid email">
-        ```json 
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
-            "Date": 1690291065.0,
-            "errors": {
-                "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
-            }
-        }  
-        ```  
 
+    <Accordion title="400 - Terms and conditions acceptance can't be revoked">
+    ```json 
+    {
+        "Message": "The user cannot revoke the terms and conditions acceptance",
+        "Type": "invalid_action",
+        "Id": "f3126c80-1e1f-4f89-a031-237bf997759f",
+        "Date": 1690290675.0,
+        "errors": null
+    }  
+    ```  
     </Accordion>
     <Accordion title="403 - Owners must accept T&Cs">
         ```json 
@@ -188,7 +213,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         }  
         ```
     </Accordion>
-
 </AccordionGroup>  
 
 <ResponseExample>  
@@ -270,5 +294,5 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestCreateNaturalUserSca />
+    <RestUpdateNaturalUserSca />
 </RequestExample>

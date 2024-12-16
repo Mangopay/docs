@@ -1,6 +1,6 @@
 ---
-title: 'Create a Natural User (SCA)'  
-api: 'POST /v2.01/{ClientId}/sca/users/natural'  
+title: 'Categorize a Natural User (SCA)'  
+api: 'PUT /v2.01/{ClientId}/sca/users/natural/{UserId}/category'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -30,40 +30,20 @@ import Address3Response from '/snippets/p-response/Address3Response.mdx';
 
 import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
 import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
-import UserCategory from '/snippets/p-body/UserCategory.mdx';
-import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
-import Email4 from '/snippets/p-body/Email4.mdx';
-import Tag3 from '/snippets/p-body/Tag3.mdx';
+import Email5 from '/snippets/p-body/Email5.mdx';
 import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
 import Occupation from '/snippets/p-body/Occupation.mdx';
 import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
 import Nationality from '/snippets/p-body/Nationality.mdx';
 import Birthday from '/snippets/p-body/Birthday.mdx';
-import LastName1 from '/snippets/p-body/LastName1.mdx';
-import FirstName1 from '/snippets/p-body/FirstName1.mdx';
-import Address3 from '/snippets/p-body/Address3.mdx';
-import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateNaturalUserSca from '/snippets/code/rest-create-natural-user-sca.mdx';
-
-<Note>  
-**Note – Country-based restrictions apply to users** 
-
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Natural Users, the following parameters are concerned:  
-- `Nationality`  
-- `CountryOfResidence`  
-- `Country` of the `Address`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+import RestCategorizeNaturalUserSca from '/snippets/code/rest-categorize-natural-user-sca.mdx';
 
 ### Body parameters  
 
-<FirstName1 />  
+<UserCategory />
 
-<LastName1 />  
+<Email5 />  
 
 <Birthday />  
 
@@ -71,23 +51,13 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <CountryOfResidence />  
 
-<Occupation />  
-
-<IncomeRange />  
-
-<Tag3 />  
-
-<Email4 />  
-
 <PhoneNumber />
 
 <PhoneNumberCountry />
 
-<Address3 />  
+<Occupation />  
 
-<TermsAndConditionsAccepted />  
-
-<UserCategory /> 
+<IncomeRange />
 
 ### Responses  
 
@@ -147,88 +117,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 </AccordionGroup>
 
-<AccordionGroup>
-
-    <Accordion title="400 - Restricted country as Nationality value">
-        ```json  
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
-            "Date": 1676551649.0,
-            "errors": {
-                "Nationality": "The Nationality used is blocked"
-            }
-        }  
-        ```  
-
-    </Accordion>
-    <Accordion title="400 - Invalid email">
-        ```json 
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
-            "Date": 1690291065.0,
-            "errors": {
-                "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
-            }
-        }  
-        ```  
-
-    </Accordion>
-    <Accordion title="403 - Owners must accept T&Cs">
-        ```json 
-        {
-          "Message": "User must accept the terms and conditions before account creation or modification.",
-          "Type": "user_hasnt_accepted_terms_and_conditions",
-          "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
-          "Date": 1730810728,
-          "errors": null
-        }  
-        ```
-    </Accordion>
-
-</AccordionGroup>  
-
 <ResponseExample>  
-
-```json 200 - Payer
-{
-    "FirstName": "Ruby",
-    "LastName": "Reinger",
-    "Birthday": null,
-    "Nationality": null,
-    "CountryOfResidence": null,
-    "Occupation": null,
-    "IncomeRange": null,
-    "ProofOfIdentity": null,
-    "ProofOfAddress": null,
-    "Capacity": "NORMAL",
-    "PhoneNumber": null,
-    "PhoneNumberCountry": null,
-    "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
-        "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
-        "Country": "FR"
-    },
-    "PendingUserAction": null,
-    "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
-    "Tag": "Created using Mangopay API Postman Collection",
-    "CreationDate": 1734339135,
-    "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
-    "KYCLevel": "LIGHT",
-    "TermsAndConditionsAccepted": false,
-    "TermsAndConditionsAcceptedDate": null,
-    "UserCategory": "PAYER",
-    "UserStatus": "ACTIVE"
-}
-```  
-
 ```json 200 - Owner pending SCA
 {
     "FirstName": "Ruby",
@@ -270,5 +159,5 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestCreateNaturalUserSca />
+    <RestCategorizeNaturalUserSca />
 </RequestExample>
