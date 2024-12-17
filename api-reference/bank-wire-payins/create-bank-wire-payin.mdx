@@ -3,6 +3,7 @@ title: 'Create a Bank Wire PayIn'
 api: 'POST /v2.01/{ClientId}/payins/bankwire/direct/'  
 ---
 
+import TransactionDetailsResponse from '/snippets/p-response/TransactionDetailsResponse.mdx';
 import BankAccountResponse from '/snippets/p-response/BankAccountResponse.mdx';
 import WireReferenceResponse from '/snippets/p-response/WireReferenceResponse.mdx';
 import DeclaredFeesResponse from '/snippets/p-response/DeclaredFeesResponse.mdx';
@@ -25,6 +26,7 @@ import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
 import ProfilingAttemptReference from '/snippets/p-body/ProfilingAttemptReference.mdx';
 import DeclaredFees from '/snippets/p-body/DeclaredFees.mdx';
 import DeclaredDebitedFunds from '/snippets/p-body/DeclaredDebitedFunds.mdx';
@@ -69,7 +71,9 @@ Mangopay may change the underlying bank account without prior notice and mismatc
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Status is CREATED">  
+<AccordionGroup>
+
+<Accordion title="200" defaultOpen>  
 
 <IdResponse />  
 
@@ -113,19 +117,25 @@ Mangopay may change the underlying bank account without prior notice and mismatc
 
 <WireReferenceResponse />  
 
-<BankAccountResponse /></Accordion></AccordionGroup>  
+<BankAccountResponse />
+
+<TransactionDetailsResponse />
+
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - Status is CREATED
+```json 200 - CREATED
 {
-    "Id": "157579682",
-    "Tag": null,
-    "CreationDate": 1670249107,
+    "Id": "payin_m_01JFAJSSR3VW3SHX2X74C8GW82",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1734448310,
     "ResultCode": null,
     "ResultMessage": null,
-    "AuthorId": "156671912",
-    "CreditedUserId": "156671912",
+    "AuthorId": "user_m_01JCQYJNHFPENP1SKTCBYER0F8",
+    "CreditedUserId": "user_m_01JCQYJNHFPENP1SKTCBYER0F8",
     "DebitedFunds": {
         "Currency": "XXX",
         "Amount": 0
@@ -142,19 +152,19 @@ Mangopay may change the underlying bank account without prior notice and mismatc
     "ExecutionDate": null,
     "Type": "PAYIN",
     "Nature": "REGULAR",
-    "CreditedWalletId": "156683554",
+    "CreditedWalletId": "wlt_m_01JFAJS7838A32W7KPJ7NNGJ1D",
     "DebitedWalletId": null,
     "PaymentType": "BANK_WIRE",
     "ExecutionType": "DIRECT",
     "DeclaredDebitedFunds": {
         "Currency": "EUR",
-        "Amount": 1000
+        "Amount": 62789
     },
     "DeclaredFees": {
         "Currency": "EUR",
-        "Amount": 0
+        "Amount": 7826
     },
-    "WireReference": "MGi3dy0q42",
+    "WireReference": "MGgq1y8jjb",
     "BankAccount": {
         "OwnerAddress": {
             "AddressLine1": "2 Avenue Amélie",
@@ -168,9 +178,9 @@ Mangopay may change the underlying bank account without prior notice and mismatc
         "OwnerName": "MANGOPAY SA",
         "IBAN": "FR7630056009271234567890182",
         "BIC": "CCFRFRPPXXX"
-    }
+    },
+    "TransactionDetails": []
 }
-
 ```
 
 </ResponseExample>  
