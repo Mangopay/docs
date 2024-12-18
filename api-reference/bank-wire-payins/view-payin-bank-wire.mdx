@@ -3,6 +3,7 @@ title: 'View a PayIn (Bank Wire)'
 api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
 ---
 
+import TransactionDetailsResponse from '/snippets/p-response/TransactionDetailsResponse.mdx';
 import BankAccountResponse from '/snippets/p-response/BankAccountResponse.mdx';
 import WireReferenceResponse from '/snippets/p-response/WireReferenceResponse.mdx';
 import DeclaredFeesResponse from '/snippets/p-response/DeclaredFeesResponse.mdx';
@@ -49,7 +50,9 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Status is SUCCEEDED">  
+<AccordionGroup>
+
+<Accordion title="200" defaultOpen>  
 
 <IdResponse />  
 
@@ -93,65 +96,93 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <WireReferenceResponse />  
 
-<BankAccountResponse /></Accordion></AccordionGroup>  
+<BankAccountResponse />
+
+<TransactionDetailsResponse />
+
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - Status is SUCCEEDED  
-
+```json 200 - SUCCEEDED  
 {
-    "Id":"157579682",
-    "Tag":null,
-    "CreationDate":1670249107,
-    "ResultCode":"000000",
-    "ResultMessage":"Success",
-    "AuthorId":"156671912",
-    "CreditedUserId":"156671912",
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1000
+    "Id": "payin_m_01JFAJSSR3VW3SHX2X74C8GW82",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1734448310,
+    "ResultCode": null,
+    "ResultMessage": null,
+    "AuthorId": "user_m_01JCQYJNHFPENP1SKTCBYER0F8",
+    "CreditedUserId": "user_m_01JCQYJNHFPENP1SKTCBYER0F8",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 62789
     },
-    "CreditedFunds":{
-        "Currency":"EUR",
-        "Amount":1000
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 54963
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 7826
     },
-    "Status":"SUCCEEDED",
-    "ExecutionDate":1670249208,
-    "Type":"PAYIN",
-    "Nature":"REGULAR",
-    "CreditedWalletId":"156683554",
-    "DebitedWalletId":null,
-    "PaymentType":"BANK_WIRE",
-    "ExecutionType":"DIRECT",
-    "DeclaredDebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1000
+    "Status": "CREATED",
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01JFAJS7838A32W7KPJ7NNGJ1D",
+    "DebitedWalletId": null,
+    "PaymentType": "BANK_WIRE",
+    "ExecutionType": "DIRECT",
+    "DeclaredDebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 62789
     },
-    "DeclaredFees":{
-        "Currency":"EUR",
-        "Amount":0
+    "DeclaredFees": {
+        "Currency": "EUR",
+        "Amount": 7826
     },
-    "WireReference":"MGi3dy0q42",
-    "BankAccount":{
-        "OwnerAddress":{
-            "AddressLine1":"2 Avenue Amélie",
-            "AddressLine2":null,
-            "City":"Luxembourg",
-            "Region":null,
-            "PostalCode":"L-1125",
-            "Country":"LU"
+    "WireReference": "MGgq1y8jjb",
+    "BankAccount": {
+        "OwnerAddress": {
+            "AddressLine1": "2 Avenue Amélie",
+            "AddressLine2": null,
+            "City": "Luxembourg",
+            "Region": null,
+            "PostalCode": "L-1125",
+            "Country": "LU"
         },
-        "Type":"IBAN",
-        "OwnerName":"MANGOPAY SA",
-        "IBAN":"FR7630056009271234567890182",
-        "BIC":"CCFRFRPPXXX"
-    }
-}  
- ```  
+        "Type": "IBAN",
+        "OwnerName": "MANGOPAY SA",
+        "IBAN": "FR7630056009271234567890182",
+        "BIC": "CCFRFRPPXXX"
+    },
+    "TransactionDetails": [
+        {
+            "BankTransactionDomainCode": "PMNT",
+            "BankTransactionDomainFamilyCode": "RCDT",
+            "BankTransactionDomainSubFamilyCode": null,
+            "References": [
+                {
+                    "Type": "EndToEndId",
+                    "Value": "AAB.123.EU.ABC-00012345"
+                }
+            ],
+            "DebtorName": "Example Business Services GmbH",
+            "DebtorAccount": "DE95500400007892074911",
+            "DebtorAgent": "COBADEFFXXX",
+            "DebtorAddressLine1": null,
+            "DebtorAddressLine2": null,
+            "DebtorAddressLine3": null,
+            "RemittanceInformationLine1": "MG12AB34CD",
+            "RemittanceInformationLine2": "/SABF/9URQ",
+            "RemittanceInformationLine3": null,
+            "RemittanceInformationLine4": null
+        }
+    ]
+}
+```  
 
 </ResponseExample>  
 
