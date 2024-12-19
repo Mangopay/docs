@@ -1,0 +1,759 @@
+openapi: 3.0.3
+servers:
+  - url: https://api.nethone.io
+info:
+  title: Nethone API
+  version: "1.0"
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+paths:
+  /v1/inquiries:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Inquiries API
+      summary: Request for recommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "inquiries/schemas/request_v1.json"
+            examples:
+              ecommerce:
+                value:
+                  $ref: "inquiries/examples/request_ecommerce.json"
+              travel:
+                value:
+                  $ref: "inquiries/examples/request_travel.json"
+      responses:
+        "200":
+          description: Inquiry response with advice
+          content:
+            application/json:
+              schema:
+                $ref: inquiries/schemas/response_200.json
+              examples:
+                with_models:
+                  value:
+                    $ref: inquiries/examples/response_with_models.json
+                lowrisk:
+                  value:
+                    $ref: inquiries/examples/response_lowrisk.json
+        "400":
+          description: Inquiry rejection response
+          content:
+            application/json:
+              example:
+                $ref: inquiries/examples/response_400.json
+  /v1/inquiries/reference/{reference}:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Inquiries API
+      summary: Get past recommendation
+      parameters:
+        - name: reference
+          in: path
+          schema:
+            type: string
+          description: A reference for this inquiry matching the value from POST
+          required: true
+      responses:
+        "200":
+          description: Inquiry response with advice
+          content:
+            application/json:
+              schema:
+                $ref: inquiries/schemas/response_200.json
+              examples:
+                with_models:
+                  value:
+                    $ref: inquiries/examples/response_with_models.json
+                lowrisk:
+                  value:
+                    $ref: inquiries/examples/response_lowrisk.json
+        "404":
+          description: "Inquiry with such reference doesn't exist"
+          content:
+            application/json:
+              example:
+                $ref: inquiries/examples/response_404.json
+        "422":
+          description: "Failed to process this inquiry"
+          content:
+            application/json:
+              example:
+                $ref: inquiries/examples/response_422.json
+        "425":
+          description: "Inquiry still processed. Retry later to retrieve final result."
+          content:
+            application/json:
+              example:
+                $ref: inquiries/examples/response_425.json
+  /v1/transactions:
+    post:
+      tags:
+        - Transactions API
+      security:
+        - basicAuth: []
+      summary: Create a transaction
+      requestBody:
+        required: true
+        description: |
+          The request can use either `inquiry_id`, `inquiry_reference`, or both for performing a transaction inquiry lookup.
+
+          - If both are provided, the system retrieves the inquiry using `inquiry_id` and checks it against the `inquiry_reference`.
+          - If they match, processing completes successfully.
+          - If they do not match, an error code is returned.
+          - When only one field is provided, lookup proceeds with the given field.
+        content:
+          application/json:
+            examples:
+              optional:
+                value:
+                  $ref: transactions/examples/request_optional.json
+              simple:
+                value:
+                  $ref: transactions/examples/request_simple.json
+            schema:
+              $ref: transactions/schemas/request.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: transactions/schemas/response_200.json
+              example:
+                $ref: transactions/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: transactions/examples/response_400.json
+  /v1/transactions/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        description: An `id` from the response to the POST to the Transaction API
+        required: true
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Transactions API
+      summary: Update a transaction by id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: transactions/update-commons/schemas/request.json
+            examples:
+              auth_true:
+                value:
+                  $ref: transactions/update-commons/examples/request_auth_true.json
+              chargebacked:
+                value:
+                  $ref: transactions/update-commons/examples/request_chargebacked_true.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: transactions/update-commons/schemas/response_200.json
+              example:
+                $ref: transactions/update-commons/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: transactions/update-commons/examples/response_400.json
+  /v1/transactions/reference/{transaction_reference}:
+    parameters:
+      - name: transaction_reference
+        in: path
+        schema:
+          type: string
+        description: An `reference` from the response to the POST to the Transaction API
+        required: true
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Transactions API
+      summary: Update a transaction by reference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: transactions/update-commons/schemas/request.json
+            examples:
+              auth_true:
+                value:
+                  $ref: transactions/update-commons/examples/request_auth_true.json
+              chargebacked:
+                value:
+                  $ref: transactions/update-commons/examples/request_chargebacked_true.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: transactions/update-commons/schemas/response_200.json
+              example:
+                $ref: transactions/update-commons/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: transactions/update-commons/examples/response_400.json
+  /v1/lists:
+    post:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Create a new list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "lists/schemas/post_list.json"
+            examples:
+              "Create accept list":
+                value:
+                  $ref: "lists/examples/post_list_create_accept_list.json"
+              "Create refuse list":
+                value:
+                  $ref: "lists/examples/post_list_create_refuse_list.json"
+              "Create simple list":
+                value:
+                  $ref: "lists/examples/post_list_create_simple_list.json"
+      responses:
+        200:
+          description: "List creation request"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/post_list_response.json"
+              example:
+                $ref: "lists/examples/post_list_response_200.json"
+        400:
+          description: "There was an error in the received payload, see response body for reason"
+    get:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Get existing lists
+      parameters:
+        - in: query
+          name: page_size
+          schema:
+            type: number
+          description: Size of a page for pagination
+        - in: query
+          name: page_number
+          schema:
+            type: number
+          description: Page number 1-based
+        - in: query
+          name: lsr_attribute_format
+          schema:
+            $ref: "lists/schemas/common/field_type.json"
+          description: Filter by field type
+      responses:
+        200:
+          description: "List of lists"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/list_of_lists.json"
+              example:
+                $ref: "lists/examples/list_of_lists_200.json"
+        400:
+          description: "There was an error in the received payload, see response body for reason"
+  /v1/lists/{id}:
+    get:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Get single list details
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          description: Id of the list
+      responses:
+        200:
+          description: "List details"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/post_list_response.json"
+              example:
+                $ref: "lists/examples/post_list_response_200.json"
+        404:
+          description: "List was not found"
+    delete:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Delete a list
+      description:
+        Deletes a list. This can only be used if the list is not shared and not attached to an
+        active rule.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          description: Id of the list
+      responses:
+        200:
+          description: "The list was deleted successfully"
+        400:
+          description: There was a problem deleting a list, see response body for reason
+        403:
+          description: "The application has access to view the list, but not modify it"
+        404:
+          description: "List was not found"
+        409:
+          description: "Unable to remove the list due to other applications using it"
+  /v1/lists/{id}/items:
+    get:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: List items in a list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          description: List id
+        - in: query
+          name: page_size
+          schema:
+            type: number
+          description: Size of a page for pagination
+        - in: query
+          name: page_number
+          schema:
+            type: number
+          description: Page number 1-based
+        - in: query
+          name: contains
+          schema:
+            type: string
+          description: Search items by value
+        - in: query
+          name: removed
+          schema:
+            $ref: "lists/schemas/common/active_status.json"
+          description:
+            $ref: "lists/schemas/common/active_status.html"
+        - in: query
+          name: expired
+          schema:
+            $ref: "lists/schemas/common/expired_status.json"
+          description:
+            $ref: "lists/schemas/common/expired_status.html"
+      responses:
+        200:
+          description: "List of items"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/item_list.json"
+              example:
+                $ref: "lists/examples/item_list_200.json"
+        404:
+          description: "List was not found"
+    patch:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Batch list update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          description: List id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            # should be used $ref: "lists/schemas/batch.json" but produced bad empty response
+            schema:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "lists/schemas/batch_add.json"
+                  - $ref: "lists/schemas/batch_edit.json"
+                  - $ref: "lists/schemas/batch_delete.json"
+            examples:
+              "Add item(s) example":
+                value:
+                  $ref: "lists/examples/batch_add.json"
+              "Edit item(s) example":
+                value:
+                  $ref: "lists/examples/batch_edit.json"
+              "Delete item(s) example":
+                value:
+                  $ref: "lists/examples/batch_delete.json"
+              "Mixed operations example":
+                value:
+                  $ref: "lists/examples/batch_mixed.json"
+      responses:
+        200:
+          description: Batch update result
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/batch_result_success.json"
+              example:
+                $ref: "lists/examples/batch_result_success.json"
+        400:
+          description:
+            "There was at least 1 problem with batch request, see response body for reason. No
+            changes have been applied"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/batch_result_failure.json"
+              example:
+                $ref: "lists/examples/batch_result_failure.json"
+        403:
+          description: "The application has access to view the list, but not modify it"
+        404:
+          description: "List was not found"
+  /v1/list_items:
+    post:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Create list item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "lists/schemas/post_item.json"
+            example:
+              $ref: "lists/examples/post_item.json"
+      responses:
+        200:
+          description: "Item was created"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/item.json"
+              example:
+                $ref: "lists/examples/item.json"
+        400:
+          description: "There was an error in the received payload, see response body for reason"
+        403:
+          description: "The application has access to view the list, but not modify it"
+        404:
+          description: "List was not found"
+  /v1/list_items/{item_id}:
+    delete:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Delete list item
+      parameters:
+        - in: path
+          name: item_id
+          schema:
+            type: number
+          description: Item id
+      responses:
+        200:
+          description: "Item was deleted"
+        403:
+          description: "The application has access to view the list, but not modify it"
+        404:
+          description: "Item was not found"
+    patch:
+      tags:
+        - Lists API
+      security:
+        - basicAuth: []
+      summary: Edit list item
+      parameters:
+        - in: path
+          name: item_id
+          schema:
+            type: number
+          description: Item id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "lists/schemas/patch_item.json"
+            example:
+              $ref: "lists/examples/patch_item.json"
+      responses:
+        200:
+          description: "Item was edited"
+          content:
+            application/json:
+              schema:
+                $ref: "lists/schemas/item.json"
+              example:
+                $ref: "lists/examples/item.json"
+        400:
+          description: "There was an error in the received payload, see response body for reason"
+        403:
+          description: "The application has access to view the list, but not modify it"
+        404:
+          description: "Item was not found"
+  /v1/events:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Events API
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              register:
+                value:
+                  $ref: events/examples/request_register.json
+              order_created:
+                value:
+                  $ref: events/examples/request_order_created.json
+              search_phrase:
+                value:
+                  $ref: events/examples/request_search_phrase.json
+              data_submit:
+                value:
+                  $ref: events/examples/request_data_submit.json
+            schema:
+              $ref: events/schemas/request.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: events/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: events/examples/response_400.json
+  /v1/subscriptions:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Subscriptions API
+      summary: v1/subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              simple:
+                value:
+                  $ref: subscriptions/examples/request.json
+            schema:
+              $ref: subscriptions/schemas/request.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: subscriptions/schemas/response_200.json
+              example:
+                $ref: subscriptions/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: subscriptions/examples/response_400.json
+  /v1/subscriptions/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Subscriptions API
+      summary: v1/subscriptions/{id}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: subscriptions/{id}/schemas/request.json
+            examples:
+              cancelled:
+                value:
+                  $ref: subscriptions/{id}/examples/request.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: subscriptions/{id}/schemas/response_200.json
+              example:
+                $ref: subscriptions/{id}/examples/response_200.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: subscriptions/{id}/examples/response_400.json
+  /v1/notification_feedback:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Alerts API
+      summary: Feedback to notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: notification_feedback/schemas/request_notification_feedback.json
+            examples:
+              pong:
+                value:
+                  $ref: notification_feedback/examples/pong.json
+              alert update dispute:
+                value:
+                  $ref: notification_feedback/examples/alert_update_dispute.json
+              alert update fraud:
+                value:
+                  $ref: notification_feedback/examples/alert_update_fraud.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+              example: {}
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                errors:
+                  - code: 1
+                    message: Sample error message
+  /notifications:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Alerts API
+      summary: Notification from Nethone
+      servers:
+        - url: https://{your_server}
+          variables:
+            your_server:
+              default: your_server
+              description: address of your server
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: notifications/schemas/request_alert.json
+            examples:
+              dispute:
+                value:
+                  $ref: notifications/examples/alert_transaction_dispute.json
+              fraud:
+                value:
+                  $ref: notifications/examples/alert_transaction_fraud.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+              example: {}
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                errors:
+                  - code: 1
+                    message: Sample error message
+
+  /v1/inquiries/backfill:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Inquiries API
+      summary: Backfill historical data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: inquiries/schemas/request_backfill.json
+            example:
+              $ref: inquiries/examples/request_backfill.json
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: inquiries/schemas/response_backfill_200.json
+              example:
+                $ref: inquiries/examples/response_backfill.json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              example:
+                $ref: inquiries/examples/response_backfill_400.json

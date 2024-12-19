@@ -1,0 +1,2665 @@
+{
+  "openapi": "3.0.3",
+  "servers": [
+    {
+      "url": "https://api.nethone.io"
+    }
+  ],
+  "info": {
+    "title": "Nethone API",
+    "version": "1.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "InquiryType": {
+        "type": "string",
+        "description": "Type of the inquiry; needed only if it's exact behavior is established during integration process",
+        "enum": [
+          "register",
+          "transaction",
+          "submit",
+          "confirm",
+          "login",
+          "payment:pre-auth",
+          "payment:post-auth",
+          "payin",
+          "payout",
+          "transfer",
+          "create-virtual-account",
+          "register-bank-account"
+        ],
+        "nullable": true
+      },
+      "InquiryAttemptReference": {
+        "type": "string",
+        "description": "reference to the Profiling session, see <a href='/docs/integration_guide/faq#attempt_ref'>attempt_reference</a>",
+        "maxLength": 128
+      },
+      "InquiryReference": {
+        "type": "string",
+        "description": "Unique reference identifying this inquiry, as used in internal client's systems",
+        "maxLength": 128
+      },
+      "InquiryProfilingReference": {
+        "type": "string",
+        "description": "It is a session identifier. If the field is <code>null</code>, information in the Panel Inquiry view will be limited. See <a href='/docs/integration_guide/faq#prof_ref'>profiling_reference</a>",
+        "maxLength": 64
+      },
+      "InquiryId": {
+        "type": "integer",
+        "description": "Id of created inquiry to reference later - 64 bit value."
+      },
+      "InquiryIdString": {
+        "type": "string",
+        "description": "Id of created inquiry as string"
+      },
+      "InquiryAdvice": {
+        "type": "string",
+        "description": "Recommendation given for the inquiry",
+        "enum": ["trust", "accept", "refuse", "review"]
+      },
+      "InquiryInfo": {
+        "type": "object",
+        "description": "Additional info for this inquiry",
+        "properties": {
+          "models": {
+            "description": "Machine learning models results. Availability of this data depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the model",
+                  "example": "anti-fraud"
+                },
+                "prediction": {
+                  "description": "Prediction values",
+                  "anyOf": [
+                    {
+                      "title": "Binary classification",
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 1.0,
+                          "description": "Binary classification results, a real number in the inclusive range from 0 to 1.",
+                          "example": 0.5
+                        },
+                        "extra_data": {
+                          "type": "object",
+                          "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                          "example": {}
+                        }
+                      },
+                      "required": ["value", "extra_data"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "title": "Multiclass classification",
+                      "type": "object",
+                      "properties": {
+                        "values": {
+                          "type": "object",
+                          "description": "Multiclass classification results, a dictionary with class names as keys (string) and predictions (float) as values.",
+                          "example": "{'class A': 0.5, 'class B': 0.3}",
+                          "additionalProperties": {
+                            "type": "number",
+                            "minimum": 0.0,
+                            "maximum": 1.0
+                          }
+                        },
+                        "extra_data": {
+                          "type": "object",
+                          "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                          "example": {}
+                        }
+                      },
+                      "required": ["values", "extra_data"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "title": "Score",
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "example": 0.5,
+                          "description": "Scoring value provided by the model."
+                        },
+                        "extra_data": {
+                          "type": "object",
+                          "description": "Additional values passed from the model. Schema is specific to each integration. By default the field contains an empty object.",
+                          "example": {}
+                        }
+                      },
+                      "required": ["value", "extra_data"],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": ["name", "prediction"]
+            }
+          },
+          "fingerprint": {
+            "description": "Fingerprint data. Availability of this node depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+            "type": "object",
+            "anyOf": [
+              {
+                "description": "Fingerprint data. Availability of this node depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+                "title": "Web",
+                "type": "object",
+                "properties": {
+                  "profiling_type": {
+                    "enum": ["web"],
+                    "description": "Type of profiling",
+                    "type": "string"
+                  },
+                  "attempt_reference": {
+                    "type": "string",
+                    "description": "Identifier of a payment attempt (should not be used in a data mining)"
+                  },
+                  "created_date": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$",
+                    "description": "Date of receiving first request",
+                    "example": "2020-11-25 07:51:19.490002"
+                  },
+                  "ip": {
+                    "type": "string",
+                    "description": "The IP address from which a connection with the Profiler was established"
+                  },
+                  "proxied_for_ip": {
+                    "type": "string",
+                    "description": "The IP address on behalf of which the proxy connected to the profiler",
+                    "nullable": true
+                  },
+                  "behavior": {
+                    "type": "object",
+                    "description": "Group containing behavior information (null in case of mobile SDK)",
+                    "properties": {
+                      "profiling_time": {
+                        "type": "number",
+                        "description": "How long user data was gathered for, in milliseconds",
+                        "nullable": true
+                      },
+                      "time_spent_in_hidden": {
+                        "type": "number",
+                        "description": "Duration of the page being in the background ",
+                        "nullable": true
+                      },
+                      "time_spent_in_visible": {
+                        "type": "number",
+                        "description": "Duration of the page being in the foreground",
+                        "nullable": true
+                      },
+                      "kb_dwell_time_sd": {
+                        "type": "number",
+                        "description": "Standard deviation dwell keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_dwell_time_min": {
+                        "type": "number",
+                        "description": "Minimum dwell keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_dwell_time_median": {
+                        "type": "number",
+                        "description": "Median dwell keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_dwell_time_max": {
+                        "type": "number",
+                        "description": "Maximum dwell keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_flight_time_sd": {
+                        "type": "number",
+                        "description": "Standard deviation flight keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_flight_time_min": {
+                        "type": "number",
+                        "description": "Minimum flight keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_flight_time_median": {
+                        "type": "number",
+                        "description": "Median flight keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_flight_time_max": {
+                        "type": "number",
+                        "description": "Maximum flight keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_dwell_time_mean": {
+                        "type": "number",
+                        "description": "Average dwell keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_flight_time_mean": {
+                        "type": "number",
+                        "description": "Average flight keyboard time for specific field",
+                        "nullable": true
+                      },
+                      "kb_keys_frequency": {
+                        "type": "object",
+                        "description": "Mapping where each key is integer code of a keyboard key and value is the number of its occurrences.",
+                        "nullable": true
+                      },
+                      "clipboard": {
+                        "type": "object",
+                        "description": "Clipboard properties captured",
+                        "properties": {
+                          "data": {
+                            "type": "array",
+                            "description": "List of dict related to clipboard events",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "time": {
+                                  "type": "number",
+                                  "description": "Time of clipboard event ",
+                                  "nullable": true
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "description": "Type of clipboard event"
+                                },
+                                "targetId": {
+                                  "type": "string",
+                                  "description": "HTML ID of field related to event"
+                                },
+                                "clipboardText": {
+                                  "type": "string",
+                                  "description": "Text related to event, may be masked if sensitive text was detected"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "fields": {
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "HTML ID of specific field related to event"
+                            },
+                            "sensitive": {
+                              "type": "boolean",
+                              "description": "Information if field was marked as sensitive"
+                            },
+                            "kb_dwell_time_sd": {
+                              "type": "number",
+                              "description": "Standard deviation dwell keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_dwell_time_min": {
+                              "type": "number",
+                              "description": "Minimum dwell keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_dwell_time_median": {
+                              "type": "number",
+                              "description": "Median dwell keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_dwell_time_max": {
+                              "type": "number",
+                              "description": "Maximum dwell keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_flight_time_sd": {
+                              "type": "number",
+                              "description": "Standard deviation flight keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_flight_time_min": {
+                              "type": "number",
+                              "description": "Minimum flight keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_flight_time_median": {
+                              "type": "number",
+                              "description": "Median flight keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_flight_time_max": {
+                              "type": "number",
+                              "description": "Maximum flight keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_dwell_time_mean": {
+                              "type": "number",
+                              "description": "Average dwell keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_flight_time_mean": {
+                              "type": "number",
+                              "description": "Average flight keyboard time for specific field",
+                              "nullable": true
+                            },
+                            "kb_event_counts_keypress": {
+                              "type": "integer",
+                              "description": "Number of keypress events",
+                              "nullable": true
+                            },
+                            "kb_event_counts_keyup": {
+                              "type": "integer",
+                              "description": "Number of keyup events",
+                              "nullable": true
+                            },
+                            "kb_event_counts_keydown": {
+                              "type": "integer",
+                              "description": "Number of keydown events",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "type": "array",
+                        "description": "List of behavioral properties per field on form"
+                      },
+                      "sensor": {
+                        "type": "object",
+                        "description": "Sensor data",
+                        "properties": {
+                          "orientation": {
+                            "type": "object",
+                            "description": "orientation data",
+                            "properties": {
+                              "action_times": {
+                                "type": "object",
+                                "description": "Action Times group",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of acceleration events without long pauses "
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum time between acceleration events without long pauses "
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum time between acceleration events without long pauses "
+                                  },
+                                  "median": {
+                                    "type": "number",
+                                    "description": "Median time between acceleration events without long pauses "
+                                  },
+                                  "len": {
+                                    "type": "integer",
+                                    "description": "Number of processed events"
+                                  },
+                                  "avg": {
+                                    "type": "number",
+                                    "description": "Average time between acceleration events without long pauses "
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "alpha": {
+                                "type": "object",
+                                "description": "specific types of events",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of orientation events in given dimension"
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum orientation events in given dimension"
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum orientation events in given dimension"
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "beta": {
+                                "type": "object",
+                                "description": "specific types of events",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of orientation events in given dimension"
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum orientation events in given dimension"
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum orientation events in given dimension"
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "gamma": {
+                                "type": "object",
+                                "description": "specific types of events",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of orientation events in given dimension"
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum orientation events in given dimension"
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum orientation events in given dimension"
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "unchanging": {
+                                "type": "object",
+                                "description": "unchanging data",
+                                "properties": {
+                                  "longest_streak": {
+                                    "type": "integer",
+                                    "description": "Longest streak of unchanging events values"
+                                  },
+                                  "number_of_streaks": {
+                                    "type": "integer",
+                                    "description": "number of streaks with unchanged event values"
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "event_times": {
+                                "type": "object",
+                                "description": "Times of events",
+                                "properties": {
+                                  "raw": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without any additional processing"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without any additional processing"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without any additional processing"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without any additional processing"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without any additional processing"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "split": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "split_filtered": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "filtered": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses "
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses "
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses "
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses "
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses "
+                                      }
+                                    },
+                                    "nullable": true
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "pause_times": {
+                                "type": "object",
+                                "description": "pause times object",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of pause times "
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum pause times"
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum pause times"
+                                  },
+                                  "median": {
+                                    "type": "number",
+                                    "description": "Median pause times"
+                                  },
+                                  "len": {
+                                    "type": "integer",
+                                    "description": "Number of events related to pause times"
+                                  },
+                                  "avg": {
+                                    "type": "number",
+                                    "description": "Average pause times"
+                                  }
+                                },
+                                "nullable": true
+                              }
+                            }
+                          },
+                          "motion": {
+                            "type": "object",
+                            "description": "motion data",
+                            "properties": {
+                              "acceleration": {
+                                "type": "object",
+                                "description": "Data available on device with accelerometer",
+                                "properties": {
+                                  "x": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "y": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "z": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "accelerationIncludingGravity": {
+                                "type": "object",
+                                "description": "Data available on device with accelerometer, with gravitation data",
+                                "properties": {
+                                  "x": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "y": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "z": {
+                                    "type": "object",
+                                    "description": "dimensions",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum acceleration in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum acceleration in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median acceleration in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to acceleration in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average acceleration in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "rotationRate": {
+                                "type": "object",
+                                "description": "Rate of rotation",
+                                "properties": {
+                                  "x": {
+                                    "type": "object",
+                                    "description": "Given dimension",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of rotation in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum rotation in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum rotation in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median rotation in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to rotation rate in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average rotation rate in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "y": {
+                                    "type": "object",
+                                    "description": "Given dimension",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of rotation in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum rotation in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum rotation in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median rotation in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to rotation rate in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average rotation rate in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "z": {
+                                    "type": "object",
+                                    "description": "Given dimension",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of rotation in given dimension"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum rotation in given dimension"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum rotation in given dimension"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median rotation in given dimension"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of events related to rotation rate in given dimension"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average rotation rate in given dimension"
+                                      }
+                                    },
+                                    "nullable": true
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "unchanging": {
+                                "type": "object",
+                                "description": "unchanging data",
+                                "properties": {
+                                  "longest_streak": {
+                                    "type": "integer",
+                                    "description": "Longest streak of unchanging events values"
+                                  },
+                                  "number_of_streaks": {
+                                    "type": "integer",
+                                    "description": "number of streaks with unchanged event values"
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "event_times": {
+                                "type": "object",
+                                "description": "Times of events",
+                                "properties": {
+                                  "raw": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without any additional processing"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without any additional processing"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without any additional processing"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without any additional processing"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without any additional processing"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "split": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "split_filtered": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses and values greater than 3 standard deviations"
+                                      }
+                                    },
+                                    "nullable": true
+                                  },
+                                  "filtered": {
+                                    "type": "object",
+                                    "description": "Times of events",
+                                    "properties": {
+                                      "std": {
+                                        "type": "number",
+                                        "description": "Standard deviation of acceleration events without long pauses "
+                                      },
+                                      "min": {
+                                        "type": "number",
+                                        "description": "Minimum time between acceleration events without long pauses "
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "description": "Maximum time between acceleration events without long pauses "
+                                      },
+                                      "median": {
+                                        "type": "number",
+                                        "description": "Median time between acceleration events without long pauses "
+                                      },
+                                      "len": {
+                                        "type": "integer",
+                                        "description": "Number of processed events"
+                                      },
+                                      "avg": {
+                                        "type": "number",
+                                        "description": "Average time between acceleration events without long pauses "
+                                      }
+                                    },
+                                    "nullable": true
+                                  }
+                                },
+                                "nullable": true
+                              },
+                              "pause_times": {
+                                "type": "object",
+                                "description": "pause times object",
+                                "properties": {
+                                  "std": {
+                                    "type": "number",
+                                    "description": "Standard deviation of pause times "
+                                  },
+                                  "min": {
+                                    "type": "number",
+                                    "description": "Minimum pause times"
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "description": "Maximum pause times"
+                                  },
+                                  "median": {
+                                    "type": "number",
+                                    "description": "Median pause times"
+                                  },
+                                  "len": {
+                                    "type": "integer",
+                                    "description": "Number of events related to pause times"
+                                  },
+                                  "avg": {
+                                    "type": "number",
+                                    "description": "Average pause times"
+                                  }
+                                },
+                                "nullable": true
+                              }
+                            }
+                          }
+                        },
+                        "nullable": true
+                      }
+                    }
+                  },
+                  "first_persistent_cookie": {
+                    "description": "User identification saved in browser (null in case of mobile SDK)",
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "device": {
+                    "type": "object",
+                    "description": "Group containing device information",
+                    "properties": {
+                      "os_declared": {
+                        "type": "string",
+                        "description": "Parsed name of system declared by browser"
+                      },
+                      "battery": {
+                        "type": "object",
+                        "description": "Data related to various battery statistics",
+                        "properties": {
+                          "dischargingTime": {
+                            "type": "integer",
+                            "description": "Time to discharge in seconds",
+                            "nullable": true
+                          },
+                          "charging": {
+                            "type": "boolean",
+                            "description": "Indicates if charger is connected"
+                          },
+                          "chargingTime": {
+                            "type": "integer",
+                            "description": "Time to charge battery in seconds",
+                            "nullable": true
+                          },
+                          "level": {
+                            "type": "number",
+                            "description": "Battery level in range 0-1",
+                            "nullable": true
+                          }
+                        },
+                        "nullable": true
+                      },
+                      "rendering": {
+                        "type": "string",
+                        "description": "Information about graphic card used by client"
+                      },
+                      "number_of_fonts": {
+                        "type": "integer",
+                        "description": "Number of fonts detected in browser"
+                      },
+                      "concurrency": {
+                        "type": "integer",
+                        "description": "Number of CPU cores",
+                        "nullable": true
+                      },
+                      "is_mobile": {
+                        "type": "boolean",
+                        "description": "Determines if the device is a mobile one (phone/tablet)"
+                      },
+                      "screen": {
+                        "type": "object",
+                        "description": "Screen statistics",
+                        "properties": {
+                          "AvailableResolution": {
+                            "type": "array",
+                            "description": "Width and height of the space available for web content in pixels",
+                            "items": {
+                              "type": "integer"
+                            }
+                          },
+                          "ColorDepth": {
+                            "type": "number",
+                            "description": "Color depth of the screen in bits"
+                          },
+                          "ScreenResolution": {
+                            "type": "array",
+                            "description": "Width and height of the screen in pixels",
+                            "items": {
+                              "type": "integer"
+                            }
+                          },
+                          "ViewportSize": {
+                            "type": "array",
+                            "description": "Width and height of the space available for web content minus borders, margins and scrollbars",
+                            "items": {
+                              "type": "integer"
+                            }
+                          },
+                          "availableSize": {
+                            "type": "array",
+                            "description": "Number of pixels left available from the left and top of the window",
+                            "items": {
+                              "type": "integer"
+                            }
+                          },
+                          "orientation": {
+                            "type": "object",
+                            "description": "Orientation object",
+                            "properties": {
+                              "angle": {
+                                "type": "number",
+                                "description": "Screen orientation angle",
+                                "nullable": true
+                              },
+                              "type": {
+                                "type": "string",
+                                "description": "Screen orientation type, see: https://w3c.github.io/screen-orientation/#screenorientation-interface",
+                                "nullable": true
+                              }
+                            }
+                          },
+                          "visibility": {
+                            "type": "object",
+                            "description": "general visibility",
+                            "properties": {
+                              "hidden": {
+                                "type": "boolean",
+                                "description": "Indicates if the page is hidden",
+                                "nullable": true
+                              },
+                              "visibilityState": {
+                                "type": "string",
+                                "description": "Visibility state of the page"
+                              }
+                            }
+                          },
+                          "windowSize": {
+                            "type": "object",
+                            "description": "",
+                            "properties": {
+                              "innerHeight": {
+                                "type": "number",
+                                "description": "Height of the page"
+                              },
+                              "innerWidth": {
+                                "type": "number",
+                                "description": "Width of the page"
+                              },
+                              "outerHeight": {
+                                "type": "number",
+                                "description": "Height of the browser window"
+                              },
+                              "outerWidth": {
+                                "type": "number",
+                                "description": "Width of the browser window"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "network": {
+                    "properties": {
+                      "detected_hops": {
+                        "items": {
+                          "properties": {
+                            "addr": {
+                              "description": "Leaked WebRTC address",
+                              "type": "string"
+                            }
+                          },
+                          "description": "List of leaked IP addresses (null in case of mobile SDK)",
+                          "type": "object",
+                          "nullable": true
+                        },
+                        "description": "All leaked ip addresses (null in case of mobile SDK)",
+                        "type": "array",
+                        "nullable": true
+                      },
+                      "link_type": {
+                        "example": "OpenVPN TCP bs128 SHA1 lza",
+                        "description": "TCP/IP stack characteristics",
+                        "type": "string"
+                      },
+                      "user_declared_ip": {
+                        "type": "object",
+                        "deprecated": true,
+                        "properties": {
+                          "addr": {
+                            "type": "string",
+                            "description": "[DEPRECATED] Use `ip` field in root fingerprint object response. IP address declared by the user"
+                          }
+                        }
+                      },
+                      "local_ip_addresses": {
+                        "items": {
+                          "description": "Local ip address (null in case of mobile SDK)",
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "description": "All leaked ip addresses (null in case of mobile SDK)",
+                        "type": "array",
+                        "nullable": true
+                      }
+                    },
+                    "description": "Group containing network information",
+                    "type": "object"
+                  },
+                  "cookie_first_seen": {
+                    "description": "Timestamp of creation of first persistent cookie (null in case of mobile SDK)",
+                    "type": "string",
+                    "example": "2020-06-16 07:38:23.132000+00:00",
+                    "nullable": true
+                  },
+                  "client": {
+                    "type": "object",
+                    "description": "Group containing client information",
+                    "properties": {
+                      "declared": {
+                        "type": "string",
+                        "description": "Parsed name of browser declared by client"
+                      },
+                      "language": {
+                        "type": "string",
+                        "description": "Client's language"
+                      },
+                      "rendering": {
+                        "type": "string",
+                        "description": "Detected browser rendering family"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "description": "Browser headers of the client"
+                      },
+                      "entry_point": {
+                        "type": "string",
+                        "description": "Address from which user entered"
+                      },
+                      "timezone": {
+                        "type": "integer",
+                        "description": "Timezone of client as UTC offset in minutes"
+                      },
+                      "javaEnabled": {
+                        "type": "boolean",
+                        "description": "Java is enabled/disabled"
+                      },
+                      "cookieEnabled": {
+                        "type": "boolean",
+                        "description": "HTTP cookies is enabled/disabled"
+                      },
+                      "granular_fingerprint": {
+                        "type": "string",
+                        "description": "Fingerprint of user device which is middle ground between granularity and working time (usage on mobile devices is strongly discouraged)"
+                      },
+                      "do_not_track": {
+                        "type": "string",
+                        "description": "Do Not Track header"
+                      },
+                      "plugins": {
+                        "type": "object",
+                        "description": "Client plugins",
+                        "properties": {
+                          "NavigatorMimeTypes": {
+                            "type": "object",
+                            "description": "Various information related to file extensions supported by browser"
+                          },
+                          "NavigatorPlugins": {
+                            "type": "object",
+                            "description": "Various information related to plugins installed in browser"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "signals": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "<a href='/docs/integration_guide/inquiry#signals'>Signals list</a>",
+                    "type": "array"
+                  }
+                }
+              },
+              {
+                "title": "iOS",
+                "type": "object",
+                "properties": {
+                  "profiling_type": {
+                    "enum": ["ios"],
+                    "description": "Type of profiling",
+                    "type": "string"
+                  },
+                  "attempt_reference": {
+                    "type": "string",
+                    "description": "Identifier of a payment attempt (should not be used in a data mining)"
+                  },
+                  "created_date": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$",
+                    "description": "Date of receiving first request",
+                    "example": "2020-11-25 07:51:19.490002"
+                  },
+                  "ip": {
+                    "type": "string",
+                    "description": "The IP address from which a connection with the Profiler was established"
+                  },
+                  "proxied_for_ip": {
+                    "type": "string",
+                    "description": "The IP address on behalf of which the proxy connected to the profiler",
+                    "nullable": true
+                  },
+                  "signals": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "<a href='/docs/integration_guide/inquiry#ios-signals'>Unusual fact or behaviors that may indicate fraud</a>",
+                    "type": "array"
+                  },
+                  "device": {
+                    "type": "object",
+                    "description": "Group containing device information",
+                    "properties": {
+                      "battery": {
+                        "type": "object",
+                        "description": "Group containing device battery information",
+                        "properties": {
+                          "charging": {
+                            "type": "boolean",
+                            "description": "true if the device is plugged into power and the battery is less than 100% charged.",
+                            "nullable": true
+                          },
+                          "level": {
+                            "type": "number",
+                            "description": "Battery level ranges from 0.0 (fully discharged) to 1.0 (100% charged). If battery monitoring is not enabled, battery state is UIDevice.BatteryState.unknown and the value of this property is \u20131.0.",
+                            "nullable": true
+                          },
+                          "fully_charged": {
+                            "type": "boolean",
+                            "description": "true if the device is plugged into power and the battery is 100% charged.",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "carrier": {
+                        "type": "object",
+                        "description": "Group containing device carrier information",
+                        "properties": {
+                          "iso_country_code": {
+                            "type": "string",
+                            "description": "The ISO country code for the user's cellular service provider. This property uses the ISO 3166-1 country code representation. The value for this property is nil if any of the following apply: The device is in airplane mode. There is no SIM card in the device. The device is outside of the cellular service range.",
+                            "nullable": true
+                          },
+                          "mobile_country_code": {
+                            "type": "string",
+                            "description": "The mobile country code (MCC) for the user's cellular service provider.  MCCs are defined by ITU-T Recommendation E.212, \u201cList of Mobile Country or Geographical Area Codes\u201d. If not available means that there is no SIM card in the device or the device is outside of the cellular service range.",
+                            "nullable": true
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the user's home cellular service provider. The carrier provides this string, formatting it for presentation to the user. The value does not change if the user is roaming; it always represents the provider with which the user has an account. If you configure a device for a carrier and then remove the SIM card, this property retains the name of the carrier. If you then install a new SIM card, its carrier name replaces the previous value of this property. The value for this property is nil if the user never configured a carrier for the device.",
+                            "nullable": true
+                          },
+                          "mobile_network_code": {
+                            "type": "string",
+                            "description": "The mobile network code for the user's cellular service provider. That represents the numeric mobile network code (MNC) for the user's cellular service provider. The value for this property is nil if any of the following apply: There is no SIM card in the device. The device is outside of the cellular service range.",
+                            "nullable": true
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "The ISO country code for the user's cellular service provider. This property uses the ISO 3166-1 country code representation. The value is nil when The device is in airplane mode, there is no SIM card in the device, The device is outside of the cellular service range.",
+                            "nullable": true
+                          },
+                          "allows_voip": {
+                            "type": "boolean",
+                            "description": "Indicates if the carrier allows making VoIP calls on its network. If you configure a device for a carrier and then remove the SIM card, this property retains the boolean value indicating the carrier's policy regarding VoIP. If you then install a new SIM card, its VoIP policy boolean replaces the previous value of this property.",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "disk": {
+                        "type": "object",
+                        "description": "Group containing device disk information",
+                        "properties": {
+                          "free_space": {
+                            "type": "number",
+                            "description": "Home directory file system free size in bytes determined by statfs().",
+                            "nullable": true
+                          },
+                          "total_space": {
+                            "type": "number",
+                            "description": "Home directory file system size in bytes determined by statfs().",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "bluetooth": {
+                        "type": "object",
+                        "description": "Group containing device bluetooth information",
+                        "properties": {
+                          "state": {
+                            "type": "string",
+                            "description": "Possible values: \"unknown\", \"resetting\" - A state that indicates the connection with the system service was momentarily lost., \"unsupported\" - A state that indicates this device doesn't support the Bluetooth low energy central or client role., \"unauthorized\" - A state that indicates the application isn't authorized to use the Bluetooth low energy role., \"powered_off\", \"powered_on\"",
+                            "nullable": true
+                          }
+                        },
+                        "nullable": true
+                      },
+                      "hardware": {
+                        "type": "object",
+                        "description": "Group containing device hardware information",
+                        "properties": {
+                          "device_model": {
+                            "type": "string",
+                            "description": "The model of the device. e.g. \"iPhone\", \"iPod touch\"",
+                            "nullable": true
+                          },
+                          "model": {
+                            "type": "string",
+                            "description": "Model of device based on hardware",
+                            "nullable": true
+                          },
+                          "uptime": {
+                            "type": "string",
+                            "description": "systemUptime. The amount of time the system has been awake since the last time it was restarted. In format \"days hours minutes\"",
+                            "nullable": true
+                          },
+                          "device_name": {
+                            "type": "string",
+                            "description": "The name identifying the device. The value of this property is an arbitrary alphanumeric string that is associated with the device as an identifier. For example, you can find the name of an iOS device in the General > About settings.",
+                            "nullable": true
+                          },
+                          "orientation": {
+                            "type": "string",
+                            "description": "The physical orientation of the device. The orientation property uses these constants to identify the device orientation. These constants identify the physical orientation of the device and are not tied to the orientation of your application's user interface. Possible values unknown, portrait, portrait_upside_down, landscape_left, landscape_right, face_up, face_down.",
+                            "nullable": true
+                          },
+                          "device_system_name": {
+                            "type": "string",
+                            "description": "The name of the operating system running on the device represented by the receiver. e.g. @\"iOS\"",
+                            "nullable": true
+                          },
+                          "device_system_version": {
+                            "type": "string",
+                            "description": "The current version of the operating system. An example of the system version is @\u201d1.2\u201d. e.g. @\"4.0\"",
+                            "nullable": true
+                          },
+                          "multitasking_enabled": {
+                            "type": "boolean",
+                            "description": "A boolean value indicating whether multitasking is supported on the current device.",
+                            "nullable": true
+                          },
+                          "proximity_sensor_enabled": {
+                            "type": "boolean",
+                            "description": "A boolean value indicating whether proximity monitoring is enabled (YES) or not (NO). Not all iOS devices have proximity sensors.",
+                            "nullable": true
+                          },
+                          "device_identifier_for_vendor": {
+                            "type": "string",
+                            "description": "a UUID that may be used to uniquely identify the device, same across apps from a single vendor. The value of this property is the same for apps that come from the same vendor running on the same device. A different value is returned for apps on the same device that come from different vendors, and for apps on different devices regardless of vendor. Normally, the vendor is determined by data provided by the App Store. If the app was not installed from the app store (such as enterprise apps and apps still in development), then a vendor identifier is calculated based on the app's bundle ID. The bundle ID is assumed to be in reverse-DNS format. If the value is nil, wait and get the value again later. This happens, for example, after the device has been restarted but before the user has unlocked the device. The value in this property remains the same while the app (or another app from the same vendor) is installed on the iOS device. The value changes when the user deletes all of that vendor's apps from the device and subsequently reinstalls one or more of them. The value can also change when installing test builds using Xcode or when installing an app on a device using ad-hoc distribution. Therefore, if your app stores the value of this property anywhere, you should gracefully handle situations where the identifier changes.",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "process_info": {
+                        "type": "object",
+                        "description": "Group containing device process information",
+                        "properties": {
+                          "system_version_string": {
+                            "type": "string",
+                            "description": "A string containing the version of the operating system on which the process is executing. The operating system version string is human-readable, localized, and is appropriate for display to the user. This string is not appropriate for parsing.",
+                            "nullable": true
+                          },
+                          "processor_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295,
+                            "description": "The number of processing cores available on the computer. This property value is equal to the result of entering the command sysctl -n hw.ncpu on the current system.",
+                            "nullable": true
+                          },
+                          "active_processor_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295,
+                            "description": "The number of active processing cores available on the computer. Whereas the processor count property reports the number of advertised processing cores, the activeProcessorCount property reflects the actual number of active processing cores on the system. Several different factors may cause a core to not be active, including boot arguments, thermal throttling, or a manufacturing defect. This property value is equal to the result of entering the command sysctl -n hw.logicalcpu on the current system.",
+                            "nullable": true
+                          },
+                          "physical_memory": {
+                            "type": "string",
+                            "pattern": "\\d+",
+                            "description": "The amount of physical memory on the computer in bytes.",
+                            "nullable": true
+                          },
+                          "low_power_enabled": {
+                            "type": "boolean",
+                            "description": "A boolean indicating whether Low Power Mode is enabled on an iOS device. Users who wish to prolong their iPhone's battery life can enable Low Power Mode under Settings > Battery. In Low Power Mode, iOS conserves battery life by enacting certain energy-saving measures, such as reducing CPU and GPU performance, reducing screen brightness, and pausing discretionary and background activities.",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "client": {
+                    "type": "object",
+                    "description": "Group containing client information",
+                    "properties": {
+                      "accessibility": {
+                        "type": "object",
+                        "description": "Group containing client accessibility information",
+                        "properties": {
+                          "is_bold_text": {
+                            "type": "boolean",
+                            "description": "This value is true when user has enabled the Bold Text setting, default is false.",
+                            "nullable": true
+                          },
+                          "is_undo_shake": {
+                            "type": "boolean",
+                            "description": "This value is true when has enabled the Shake to Undo setting. Default is false, but in some condition the prompt is showing and you can turned it on easily.",
+                            "nullable": true
+                          },
+                          "is_reduced_motion": {
+                            "type": "boolean",
+                            "description": "This is false by default, however this option is often used when user wants extend battery life.",
+                            "nullable": true
+                          },
+                          "is_reduced_transparency": {
+                            "type": "boolean",
+                            "description": "This is false by default, however this option is often used when user wants extend battery life.",
+                            "nullable": true
+                          },
+                          "is_assistive_touch": {
+                            "type": "boolean",
+                            "description": "This is false by default, however this option is often used when used hsa damaged main button or when user has connected mouse or track pad to control the device.",
+                            "nullable": true
+                          },
+                          "is_darker_system_colors": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Increase Contrast setting. Default is false",
+                            "nullable": true
+                          },
+                          "is_switch_control": {
+                            "type": "boolean",
+                            "description": "This is false by default, however this option is often used when used hsa damaged main button or when user has connected mouse or track pad to control the device.",
+                            "nullable": true
+                          },
+                          "is_voice_over": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled VoiceOver. Default is false.",
+                            "nullable": true
+                          },
+                          "is_mono_audio": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Mono Audio setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_inverted_color": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Classic Invert setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_closed_caption": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Closed Captions + SDH setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_grayscale": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Gray-scale option in the Color Filters setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_video_autoplay": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the video auto-play setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_guided_access": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled Guided Access. Default is false. Guided access means that the device is limited to single app.",
+                            "nullable": true
+                          },
+                          "is_speak_selection": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Speak Selection setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_speak_screen": {
+                            "type": "boolean",
+                            "description": "This value is true when  the user has enabled the Speak Screen setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_diff_without_color": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the Differentiate Without Colour setting. Default is false.",
+                            "nullable": true
+                          },
+                          "is_switch_label": {
+                            "type": "boolean",
+                            "description": "This value is true when the user has enabled the On/Off Labels setting. Default is false.",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "preference": {
+                        "type": "object",
+                        "description": "Group containing client preference information",
+                        "properties": {
+                          "preferred_content_size_category": {
+                            "type": "string",
+                            "description": "The font sizing option preferred by the user. Unspecified, ExtraSmall, Small, Medium, Large, ExtraLarge, ExtraExtraLarge, ExtraExtraExtraLarge, AccessibilityMedium, AccessibilityLarge, AccessibilityExtraLarge, AccessibilityExtraExtraLarge, AccessibilityExtraExtraExtraLarge.",
+                            "nullable": true
+                          },
+                          "can_send_mail": {
+                            "type": "boolean",
+                            "description": "A boolean that indicates whether the current device is able to send email. Tru if the device is configured for sending email or False if it is not.",
+                            "nullable": true
+                          },
+                          "can_send_text": {
+                            "type": "boolean",
+                            "description": "A boolean value that indicates whether the current device is capable of sending text messages. A device may be unable to send messages if it does not support messaging or if it is not currently configured to send messages. This method applies only to the ability to send text messages via iMessage, SMS, and MMS. True if the device can send text messages or false if it cannot.",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "localization": {
+                        "type": "object",
+                        "description": "Group containing client localization information",
+                        "properties": {
+                          "country": {
+                            "type": "string",
+                            "description": "The identifier for the locale. Examples of locale identifiers include \"en_GB\", \"es_ES_PREEURO\", and \"zh-Hant_HK_POSIX@collation=pinyin;currency=CNY\".",
+                            "nullable": true
+                          },
+                          "currency": {
+                            "type": "string",
+                            "description": "The string used by the receiver as a local currency symbol. A country typically has a local currency symbol and an international currency symbol. The local symbol is used within the country, while the international currency symbol is used in international contexts to specify that country's currency unambiguously. The local currency symbol is often represented by a Unicode code point.",
+                            "nullable": true
+                          },
+                          "language": {
+                            "type": "string",
+                            "description": "Users choose a primary language when configuring a device.",
+                            "nullable": true
+                          },
+                          "time_zone": {
+                            "type": "string",
+                            "description": "The time zone currently used by the system. If the current system time zone cannot be determined, the GMT time zone is used instead.",
+                            "nullable": true
+                          },
+                          "region": {
+                            "type": "string",
+                            "description": "The country code for the locale. Examples of country codes include \"GB\", \"FR\", and \"HK\".",
+                            "nullable": true
+                          },
+                          "calendar": {
+                            "type": "string",
+                            "description": "The calendar identifier for the locale. Possible values: Gregorian, Buddhist, Chinese, Coptic, EthiopicAmeteMihret, EthiopicAmeteAlem, Hebrew, ISO8601, Indian, Islamic, IslamicCivil, Japanese, Persian, RepublicOfChina, IslamicTabular, IslamicUmmAlQura.",
+                            "nullable": true
+                          },
+                          "currency_code": {
+                            "type": "string",
+                            "description": "The currency code for the locale. Example currency codes include \"USD\", \"EUR\", and \"JPY\".",
+                            "nullable": true
+                          },
+                          "metric_system": {
+                            "type": "boolean",
+                            "description": "A boolean value that indicates whether the locale uses the metric system.",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "network": {
+                    "type": "object",
+                    "description": "Group containing network information",
+                    "properties": {
+                      "link_type": {
+                        "type": "string",
+                        "description": "TCP/IP stack characteristics",
+                        "example": "OpenVPN TCP bs128 SHA1 lza"
+                      },
+                      "user_declared_ip": {
+                        "type": "object",
+                        "deprecated": true,
+                        "properties": {
+                          "addr": {
+                            "type": "string",
+                            "description": "[DEPRECATED] Use `ip` field in root fingerprint object response. IP address declared by the user"
+                          }
+                        }
+                      },
+                      "external_ip_address": {
+                        "type": "string",
+                        "description": "IP gathered from https://api.ipify.org",
+                        "nullable": true
+                      },
+                      "connected_to_wifi": {
+                        "type": "boolean",
+                        "description": "Indicates that device is connected to wi-fi network. Gathered from structures describing the network interfaces of the local system searched for interface en0 that is uses for wi-fi",
+                        "nullable": true
+                      },
+                      "wifi_ip_address": {
+                        "type": "string",
+                        "description": "Wi-fi network address ip. Gathered from en0 interface.",
+                        "nullable": true
+                      },
+                      "connected_to_cell_network": {
+                        "type": "boolean",
+                        "description": "Indicates that device is connected to cellular network. Gathered from structures describing the network interfaces of the local system searched for interface pdp_ip0 that is uses for 3G and cellular data",
+                        "nullable": true
+                      },
+                      "cell_ip_address": {
+                        "type": "string",
+                        "description": "Cellular network address ip. Gathered from pdp_ip0 interface.",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "title": "Android",
+                "properties": {
+                  "profiling_type": {
+                    "enum": ["android"],
+                    "description": "Type of profiling",
+                    "type": "string"
+                  },
+                  "attempt_reference": {
+                    "type": "string",
+                    "description": "Identifier of a payment attempt (should not be used in a data mining)"
+                  },
+                  "created_date": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}$",
+                    "description": "Date of receiving first request",
+                    "example": "2020-11-25 07:51:19.490002"
+                  },
+                  "ip": {
+                    "type": "string",
+                    "description": "The IP address from which a connection with the Profiler was established"
+                  },
+                  "proxied_for_ip": {
+                    "type": "string",
+                    "description": "The IP address on behalf of which the proxy connected to the profiler",
+                    "nullable": true
+                  },
+                  "signals": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "<a href='/docs/integration_guide/inquiry#android-signals'>Unusual fact or behaviors that may indicate fraud</a>",
+                    "type": "array"
+                  },
+                  "network": {
+                    "type": "object",
+                    "description": "Group containing network information",
+                    "properties": {
+                      "link_type": {
+                        "type": "string",
+                        "description": "TCP/IP stack characteristics",
+                        "example": "OpenVPN TCP bs128 SHA1 lza"
+                      },
+                      "user_declared_ip": {
+                        "type": "object",
+                        "deprecated": true,
+                        "properties": {
+                          "addr": {
+                            "type": "string",
+                            "description": "[DEPRECATED] Use `ip` field in root fingerprint object response. IP address declared by the user"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "device": {
+                    "type": "object",
+                    "description": "Group containing device information",
+                    "properties": {
+                      "battery": {
+                        "type": "object",
+                        "description": "Group containing device battery information",
+                        "properties": {
+                          "battery_health": {
+                            "type": "string",
+                            "description": "Battery's health status - values: [\"unknown\", \"good\", \"overheat\", \"dead\", \"over_voltage\",\"unspecified_failure\", \"cold\"]",
+                            "nullable": true
+                          },
+                          "extra_health": {
+                            "type": "integer",
+                            "description": "Battery's health status, same as <code>battery_health</code> field, but as an integer value. 1 - BATTERY_HEALTH_UNKNOWN, 2 - BATTERY_HEALTH_GOOD, 3 - BATTERY_HEALTH_OVERHEAT, 4 - BATTERY_HEALTH_DEAD, 5 - BATTERY_HEALTH_OVER_VOLTAGE, 6 - BATTERY_HEALTH_UNSPECIFIED_FAILURE, 7 - BATTERY_HEALTH_COLD",
+                            "nullable": true
+                          },
+                          "level": {
+                            "type": "number",
+                            "description": "Battery's level - values: [0, 100]",
+                            "nullable": true
+                          },
+                          "extra_level": {
+                            "type": "integer",
+                            "description": "Battery's level as an unscaled value - values: [0, extra_scale_level]",
+                            "nullable": true
+                          },
+                          "extra_scale_level": {
+                            "type": "integer",
+                            "description": "Battery's maximum level",
+                            "nullable": true
+                          },
+                          "plugged": {
+                            "type": "string",
+                            "description": "Battery's plugged mode - values: [\"battery\", \"ac\", \"usb\", \"wireless\"]",
+                            "nullable": true
+                          },
+                          "extra_plugged": {
+                            "type": "integer",
+                            "description": "Battery's plugged mode, same as <code>plugged</code> field, but as an integer value. 0 - battery (default), 1 - BATTERY_PLUGGED_AC, 2 - BATTERY_PLUGGED_USB, 4 - BATTERY_PLUGGED_WIRELESS",
+                            "nullable": true
+                          },
+                          "charging_state": {
+                            "type": "string",
+                            "description": "Battery's charging status - values: [\"unknown\", \"charging\", \"discharging\",  \"not_charging\", \"full\"]",
+                            "nullable": true
+                          },
+                          "extra_status": {
+                            "type": "integer",
+                            "description": "Battery's charging status, same as <code>charging_state</code> field, bus as an integer value. 1 - BATTERY_STATUS_UNKNOWN, 2 - BATTERY_STATUS_CHARGING, 3 - BATTERY_STATUS_DISCHARGING, 4 - BATTERY_STATUS_NOT_CHARGING, 5 - BATTERY_STATUS_FULL",
+                            "nullable": true
+                          },
+                          "extra_present": {
+                            "type": "boolean",
+                            "description": "Specifies whether battery is present or not",
+                            "nullable": true
+                          },
+                          "extra_technology": {
+                            "type": "string",
+                            "description": "Describes the technology of the current battery",
+                            "nullable": true
+                          },
+                          "extra_temperature": {
+                            "type": "integer",
+                            "description": "Integer containing the current battery temperature",
+                            "nullable": true
+                          },
+                          "extra_voltage": {
+                            "type": "integer",
+                            "description": "Integer containing the current battery voltage level",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "carrier": {
+                        "type": "object",
+                        "description": "Group containing device carrier information",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Name of mobile carrier",
+                            "nullable": true
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "Describes the ISO-3166-1 alpha-2 country code equivalent for the SIM provider's country code",
+                            "nullable": true
+                          },
+                          "iso_country_code": {
+                            "type": "string",
+                            "description": "ISO code of mobile carrier",
+                            "nullable": true
+                          },
+                          "mobile_country_code": {
+                            "type": "string",
+                            "description": "Country code of mobile carrier",
+                            "nullable": true
+                          },
+                          "mobile_network_code": {
+                            "type": "string",
+                            "description": "Mobile carrier code",
+                            "nullable": true
+                          },
+                          "allows_voip": {
+                            "type": "boolean",
+                            "description": "True if the system supports SIP-based VOIP API",
+                            "nullable": true
+                          },
+                          "icc_card": {
+                            "type": "boolean",
+                            "description": "Specifies whether ICC card is present",
+                            "nullable": true
+                          },
+                          "roaming": {
+                            "type": "boolean",
+                            "description": "True if the device is considered roaming on the current network, for GSM purposes",
+                            "nullable": true
+                          },
+                          "sim_state": {
+                            "type": "integer",
+                            "description": "State of the device `SIM` card in a logical slot. <br> 0 - SIM_STATE_UNKNOWN, 1 - SIM_STATE_ABSENT, 2 - SIM_STATE_PIN_REQUIRED, 3 - SIM_STATE_PUK_REQUIRED, 4- SIM_STATE_NETWORK_LOCKED, 5 - SIM_STATE_READY, 6 - SIM_STATE_NOT_READY, 7 - SIM_STATE_PERM_DISABLED, 8 - SIM_STATE_CARD_IO_ERROR, 9 - SIM_STATE_CARD_RESTRICTED, 10 - SIM_STATE_LOADED, 11 - SIM_STATE_PRESENT",
+                            "nullable": true
+                          },
+                          "radio_phone_type": {
+                            "type": "integer",
+                            "description": "Specifies the device's phone radio type. This indicates the type of radio used to transmit voice calls. 0 - PHONE_TYPE_NONE, 1 - PHONE_TYPE_GSM, 2 - PHONE_TYPE_CDMA, 3 - PHONE_TYPE_SIP",
+                            "nullable": true
+                          },
+                          "network_type": {
+                            "type": "integer",
+                            "description": "Indicates the radio technology (network type) currently in use on the device for data transmission. 0 - NETWORK_TYPE_UNKNOWN, 1 - NETWORK_TYPE_GPRS, 2 - NETWORK_TYPE_EDGE, 3 - NETWORK_TYPE_UMTS, 4 - NETWORK_TYPE_HSDPA, 5 - NETWORK_TYPE_HSUPA, 6 - NETWORK_TYPE_HSPA, 7 - NETWORK_TYPE_CDMA, 8 - NETWORK_TYPE_EVDO_0, 9 - NETWORK_TYPE_EVDO_A, 10 - NETWORK_TYPE_EVDO_B, 11 - NETWORK_TYPE_1xRTT, 12 - NETWORK_TYPE_IDEN, 13 - NETWORK_TYPE_LTE, 14 - NETWORK_TYPE_EHRPD, 15 - NETWORK_TYPE_HSPAP, 16 - NETWORK_TYPE_NR",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "disk": {
+                        "type": "object",
+                        "description": "Group containing device disk information",
+                        "properties": {
+                          "total_space": {
+                            "type": "string",
+                            "description": "Total disk space in bytes (both used space and free space)",
+                            "nullable": true
+                          },
+                          "free_space_root": {
+                            "type": "string",
+                            "description": "The total number of bytes that are free on the file system, including bytes from reserved blocks (that are not available to normal applications)",
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "device": {
+                        "type": "object",
+                        "description": "Group containing general device information",
+                        "properties": {
+                          "android_id": {
+                            "type": "string",
+                            "description": "Unique identifier of a device. The Android ID value only changes if the device is factory reset or if the signing key rotates between uninstall and reinstall events. See: https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID",
+                            "nullable": true
+                          },
+                          "media_drm_id": {
+                            "type": "string",
+                            "description": "Unique identifier of a device. Mediadrm is a digital audio copyright framework, which is natively supported by Android in the Android architecture. Media DRM ID is the unique device ID that digital audio uses to track and protect copyright. See: https://developer.android.com/reference/android/media/MediaDrm#PROPERTY_DEVICE_UNIQUE_ID",
+                            "nullable": true
+                          },
+                          "gservices_id": {
+                            "type": "string",
+                            "description": "Unique identifier of a device. Available only if google account is present and the user has logged into it. The uuid is permanent. Requires READ_GSERVICES permission.",
+                            "nullable": true
+                          },
+                          "model": {
+                            "type": "string",
+                            "description": "Device's model name, value the same as a property: <code>ro.product.model</code>",
+                            "nullable": true
+                          },
+                          "manufacturer": {
+                            "type": "string",
+                            "description": "Device's manufacturer name, value the same as a property: <code>ro.product.manufacturer</code>",
+                            "nullable": true
+                          },
+                          "brand": {
+                            "type": "string",
+                            "description": "Device's brand name, value the same as a property: <code>ro.product.brand</code>",
+                            "nullable": true
+                          },
+                          "build_fingerprint": {
+                            "type": "string",
+                            "description": "Unique Android build identifier, concatenated string of <code>brand</code>, <code>name</code>, <code>device</code>, <code>release version</code>, <code>id</code>, <code>version incremental</code>, <code>type</code> and <code>tags</code> fields.",
+                            "nullable": true
+                          },
+                          "product": {
+                            "type": "string",
+                            "description": "Device's product name, value the same as a property: <code>ro.product.name</code>",
+                            "nullable": true
+                          },
+                          "http_proxy": {
+                            "type": "string",
+                            "description": "Proxy settings applied on a device. Host name and port for global http proxy. Uses <code>:</code> separator between host and port.",
+                            "nullable": true
+                          },
+                          "wifi_on": {
+                            "type": "boolean",
+                            "description": "Specifies whether <code>WiFi</code> is present or not",
+                            "nullable": true
+                          },
+                          "bt_on": {
+                            "type": "boolean",
+                            "description": "Specifies whether <code>bluetooth</code> is present or not",
+                            "nullable": true
+                          },
+                          "uptime_ms": {
+                            "type": "string",
+                            "description": "Device uptime in ms",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "title": "Platform-agnostic",
+                "type": "object",
+                "properties": {
+                  "profiling_type": {
+                    "enum": ["platform_agnostic"],
+                    "description": "Type of profiling",
+                    "type": "string"
+                  },
+                  "signals": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "<a href='/docs/integration_guide/inquiry#ios-signals'>Unusual fact or behaviors that may indicate fraud</a>",
+                    "type": "array"
+                  }
+                }
+              }
+            ]
+          },
+          "rules": {
+            "description": "Rule results. Availability of this data depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Rule Instance ID",
+                  "example": 456789876523
+                },
+                "id_str": {
+                  "type": "string",
+                  "description": "Rule Instance ID as string",
+                  "example": "456789876523"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Rule name",
+                  "example": "BlacklistEmail"
+                },
+                "advice": {
+                  "type": "string",
+                  "description": "Advice",
+                  "enum": ["accept", "review", "refuse", "skip"]
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "Mode",
+                  "enum": ["normal", "simulation"]
+                }
+              },
+              "required": ["id", "id_str", "name", "advice", "mode"]
+            }
+          },
+          "ip_info": {
+            "type": "object",
+            "description": "IP address info. Availability of this data depends on the configuration of your account, please contact our <a href=\"mailto: support@nethone.com\">Support Team</a> for more details.",
+            "properties": {
+              "input_ip": {
+                "allOf": [
+                  {
+                    "description": "Info related to the IP address sent by merchant in inquiry request `device.ipaddr`"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "description": "ipv4 or ipv6 address",
+                        "anyOf": [
+                          {
+                            "title": "IPv4",
+                            "type": "string",
+                            "format": "ipv4"
+                          },
+                          {
+                            "title": "IPv6",
+                            "type": "string",
+                            "format": "ipv6"
+                          }
+                        ]
+                      },
+                      "city_name": {
+                        "type": "string",
+                        "description": "City name",
+                        "nullable": true
+                      },
+                      "country_code": {
+                        "type": "string",
+                        "description": "ISO 3166-1 alpha-2 country code",
+                        "nullable": true
+                      },
+                      "country_name": {
+                        "type": "string",
+                        "description": "Country name",
+                        "nullable": true
+                      },
+                      "latitude": {
+                        "type": "number",
+                        "description": "Decimal latitude",
+                        "nullable": true
+                      },
+                      "longitude": {
+                        "type": "number",
+                        "description": "Decimal longitude",
+                        "nullable": true
+                      },
+                      "time_zone": {
+                        "type": "string",
+                        "description": "Name of timezone in the IANA Time Zone Database",
+                        "nullable": true
+                      },
+                      "postal_code": {
+                        "type": "string",
+                        "description": "ZIP or postal code",
+                        "nullable": true
+                      },
+                      "autonomous_system_number": {
+                        "type": "integer",
+                        "description": "Autonomous System number",
+                        "nullable": true
+                      },
+                      "autonomous_system_organization": {
+                        "type": "string",
+                        "description": "Autonomous System organization name",
+                        "nullable": true
+                      },
+                      "isp": {
+                        "type": "string",
+                        "description": "Internet Service Provider name",
+                        "nullable": true
+                      },
+                      "organization": {
+                        "type": "string",
+                        "description": "Organization name",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "nullable": true
+                  }
+                ]
+              },
+              "profiler_ip": {
+                "allOf": [
+                  {
+                    "description": "Info related to the IP address from which a connection with the Profiler was established"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "ip": {
+                        "description": "ipv4 or ipv6 address",
+                        "anyOf": [
+                          {
+                            "title": "IPv4",
+                            "type": "string",
+                            "format": "ipv4"
+                          },
+                          {
+                            "title": "IPv6",
+                            "type": "string",
+                            "format": "ipv6"
+                          }
+                        ]
+                      },
+                      "city_name": {
+                        "type": "string",
+                        "description": "City name",
+                        "nullable": true
+                      },
+                      "country_code": {
+                        "type": "string",
+                        "description": "ISO 3166-1 alpha-2 country code",
+                        "nullable": true
+                      },
+                      "country_name": {
+                        "type": "string",
+                        "description": "Country name",
+                        "nullable": true
+                      },
+                      "latitude": {
+                        "type": "number",
+                        "description": "Decimal latitude",
+                        "nullable": true
+                      },
+                      "longitude": {
+                        "type": "number",
+                        "description": "Decimal longitude",
+                        "nullable": true
+                      },
+                      "time_zone": {
+                        "type": "string",
+                        "description": "Name of timezone in the IANA Time Zone Database",
+                        "nullable": true
+                      },
+                      "postal_code": {
+                        "type": "string",
+                        "description": "ZIP or postal code",
+                        "nullable": true
+                      },
+                      "autonomous_system_number": {
+                        "type": "integer",
+                        "description": "Autonomous System number",
+                        "nullable": true
+                      },
+                      "autonomous_system_organization": {
+                        "type": "string",
+                        "description": "Autonomous System organization name",
+                        "nullable": true
+                      },
+                      "isp": {
+                        "type": "string",
+                        "description": "Internet Service Provider name",
+                        "nullable": true
+                      },
+                      "organization": {
+                        "type": "string",
+                        "description": "Organization name",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "nullable": true
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/inquiries": {
+      "post": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "tags": ["Inquiries API"],
+        "summary": "Request for recommendation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/InquiryType"
+                  },
+                  "attempt_reference": {
+                    "$ref": "#/components/schemas/InquiryAttemptReference"
+                  },
+                  "reference": {
+                    "$ref": "#/components/schemas/InquiryReference"
+                  },
+                  "profiling_reference": {
+                    "$ref": "#/components/schemas/InquiryProfilingReference"
+                  }
+                }
+              },
+              "examples": {
+                "ecommerce": {
+                  "value": {
+                    "attempt_reference": "7747a30a-1d3e-11eb-8309-372bd7dd6c37",
+                    "profiling_reference": "da267ce0-fe21-406d-a4dc-66325aeae13f"
+                  }
+                },
+                "travel": {
+                  "value": {
+                    "attempt_reference": "fcc43114514d11e5a8657c7a9166c5ec",
+                    "profiling_reference": "da267ce0-fe21-406d-a4dc-66325aeae13f"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Inquiry response with advice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "desc",
+                  "required": ["advice", "id", "id_str", "info"],
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/InquiryId"
+                    },
+                    "id_str": {
+                      "$ref": "#/components/schemas/InquiryIdString"
+                    },
+                    "advice": {
+                      "$ref": "#/components/schemas/InquiryAdvice"
+                    },
+                    "info": {
+                      "$ref": "#/components/schemas/InquiryInfo"
+                    }
+                  }
+                },
+                "examples": {
+                  "with_models": {
+                    "value": {
+                      "id": 1122334455,
+                      "id_str": "1122334455",
+                      "advice": "refuse",
+                      "info": {
+                        "models": [
+                          {
+                            "name": "anti-fraud",
+                            "prediction": {
+                              "value": 0.4,
+                              "extra_data": {}
+                            }
+                          },
+                          {
+                            "name": "customer_segmentation",
+                            "prediction": {
+                              "values": {
+                                "Class A": 0.5,
+                                "Class B": 0.1,
+                                "Class C": 0.4
+                              },
+                              "extra_data": {}
+                            }
+                          },
+                          {
+                            "name": "similar_users",
+                            "prediction": {
+                              "value": 1.7,
+                              "extra_data": {
+                                "most_similar": [
+                                  {
+                                    "references": {
+                                      "inquiry_id": "1323440692323580514",
+                                      "attempt_reference": "15698859736366053241569887422",
+                                      "profiling_reference": "11C64430B4B2DB1A",
+                                      "user_reference": "12398432423"
+                                    },
+                                    "similarity": 1.5
+                                  },
+                                  {
+                                    "references": {
+                                      "inquiry_id": "1323440692323580513",
+                                      "attempt_reference": "15698859736366053241569887421",
+                                      "profiling_reference": "11A64430B4B2DB1A",
+                                      "user_reference": "82398432403"
+                                    },
+                                    "similarity": 0.5
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "lowrisk": {
+                    "value": {
+                      "id": 1122334455,
+                      "id_str": "1122334455",
+                      "advice": "accept",
+                      "info": {
+                        "key1": "val1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inquiry rejection response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": [
+                    {
+                      "code": 1,
+                      "message": "Sample error message"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/inquiries/reference/{reference}": {
+      "get": {
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "tags": ["Inquiries API"],
+        "summary": "Get past recommendation",
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A reference for this inquiry matching the value from POST",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inquiry response with advice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "desc",
+                  "required": ["advice", "id", "id_str", "info"],
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/InquiryId"
+                    },
+                    "id_str": {
+                      "$ref": "#/components/schemas/InquiryIdString"
+                    },
+                    "advice": {
+                      "$ref": "#/components/schemas/InquiryAdvice"
+                    },
+                    "info": {
+                      "$ref": "#/components/schemas/InquiryInfo"
+                    }
+                  }
+                },
+                "examples": {
+                  "with_models": {
+                    "value": {
+                      "id": 1122334455,
+                      "id_str": "1122334455",
+                      "advice": "refuse",
+                      "info": {
+                        "models": [
+                          {
+                            "name": "anti-fraud",
+                            "prediction": {
+                              "value": 0.4,
+                              "extra_data": {}
+                            }
+                          },
+                          {
+                            "name": "customer_segmentation",
+                            "prediction": {
+                              "values": {
+                                "Class A": 0.5,
+                                "Class B": 0.1,
+                                "Class C": 0.4
+                              },
+                              "extra_data": {}
+                            }
+                          },
+                          {
+                            "name": "similar_users",
+                            "prediction": {
+                              "value": 1.7,
+                              "extra_data": {
+                                "most_similar": [
+                                  {
+                                    "references": {
+                                      "inquiry_id": "1323440692323580514",
+                                      "attempt_reference": "15698859736366053241569887422",
+                                      "profiling_reference": "11C64430B4B2DB1A",
+                                      "user_reference": "12398432423"
+                                    },
+                                    "similarity": 1.5
+                                  },
+                                  {
+                                    "references": {
+                                      "inquiry_id": "1323440692323580513",
+                                      "attempt_reference": "15698859736366053241569887421",
+                                      "profiling_reference": "11A64430B4B2DB1A",
+                                      "user_reference": "82398432403"
+                                    },
+                                    "similarity": 0.5
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "lowrisk": {
+                    "value": {
+                      "id": 1122334455,
+                      "id_str": "1122334455",
+                      "advice": "accept",
+                      "info": {
+                        "key1": "val1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inquiry with such reference doesn't exist",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Inquiry was not found"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Failed to process this inquiry",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Failed to process this inquiry"
+                }
+              }
+            }
+          },
+          "425": {
+            "description": "Inquiry still processed. Retry later to retrieve final result.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Inquiry still processed"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
