@@ -107,11 +107,22 @@ The payment flow is as follows:
 ### Status and webhooks
 
 The `Status` of the Virtual Account can have the following values:  
-- `PENDING` – The account creation request is being processed. The `PENDING` status can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
-- `ACTIVE` – The account is active and can receive funds. The `ACTIVE` status can transition to `BLOCKED` or `CLOSED`.
-- `FAILED` – The account creation request failed or was rejected. This is a final state. In cases of failure during the creation process, further information may be available in the `ResultCode` and `ResultMessage`.
-- `BLOCKED` – The account is blocked. The `BLOCKED` status can transition to `ACTIVE` or `CLOSED`.
-- `CLOSED` – The account has been deactivated and is closed. This is a final state.
+- `PENDING` – The account creation request is being processed and full account details may not yet be returned. `PENDING` can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
+- `ACTIVE` – The account is active and can receive funds. `ACTIVE` can transition to `BLOCKED` or `CLOSED`.
+- `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
+- `CLOSED` – The account has been deactivated and is closed. Any funds sent to the account are returned. This is a final state.
+- `FAILED` – The account creation request failed or was rejected. This final state is rare. Any funds sent to the account are returned (if account details exist). Depending on when the failure occurred, the following fields may be `null`:
+    - `CreditedUserId`
+    - `AccountOwner`
+    - `LocalAccountDetails.Address`
+    - `LocalAccountDetails.Account`
+    - `InternationalAccountDetails.Address`
+    - `InternationalAccountDetails.Account`
+
+The possible `Status` changes are summarized in this diagram:
+
+<img className="block dark:hidden" src="/images/diagram_virtual_account_status_light.svg" />
+<img className="hidden dark:block" src="/images/diagram_virtual_account_status_dark.svg" />
 
 You can set up <a href="/webhooks">webhook notifications</a> for the following event types to be notified when a Virtual Account changes status:
 - `VIRTUAL_ACCOUNT_ACTIVE`
@@ -286,6 +297,20 @@ The following tables summarize the account coverage available to platforms who h
 </Tabs>
 
 Platforms can see what countries and currencies are available to them at any time using the <a href="">GET List Virtual Account Availabilities</a> endpoint. 
+
+### Account formats
+The virtual account details are available in two response parameters: 
+
+- `LocalAccountDetails` – An object containing the `Address` and `Account` details in local format, based on the Virtual Account `Country`. Note that the properties of the `Account` object vary depending on the country.
+- `InternationalAccountDetails` – An array of objects containing the `Address` and `Account` in international format (typically IBAN/BIC but this may change). Where country-specific IBANs exist for the account, multiple objects are returned.
+
+<Check>
+**Best practice – Retrieve fields and values dynamically**
+
+You should retrieve the child objects, properties and values of the `LocalAccountDetails` and `InternationalAccountDetails` to present to the user.
+
+The properties of these objects may vary, so dynamic retrieval allows you to ensure that details are always presented correctly.
+</Check>
 
 ## Types
 
