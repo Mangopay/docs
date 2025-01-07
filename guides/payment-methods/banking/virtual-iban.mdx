@@ -5,6 +5,9 @@ sidebarTitle: Overview
 "og:description": "Learn about creating a dedicated virtual IBAN for a wallet, making it easy for users to wire funds to a wallet and for you to reconcile them."
 ---
 
+import IconGreenCheck from '/snippets/icons/icon-green-check.mdx';
+import IconGrayCross from '/snippets/icons/icon-gray-cross.mdx';
+
 import Wallet from "/snippets/glossary/wallet.mdx";
 
 <table>
@@ -71,43 +74,104 @@ See the how-to guide for step-by-step instructions:
 
 ## IBAN countries and currencies
 
-Mangopay offers virtual IBANs for the following countries (specified in the `Country` parameter of the Banking Alias). The IBAN country must be attached to a wallet of the corresponding currency:
+Mangopay offers IBANs for the following countries, specified in the `Country` parameter of the Banking Alias object. 
 
-<table>
+When you create an account, the `Country` must correspond to the `Currency` of the account's Wallet. If a payment is attempted to the account in a different currency than the wallet currency, the payment is returned to the payer and the wallet is not credited.
+
+The following tables summarize the account coverage available to platforms who have contracted with **Mangopay S.A. (in the EEA)** and **Mangopay UK Ltd. (in the UK)**.
+
+<Tabs>
+  <Tab title="EEA">
+  <table>
     <thead>
-        <tr>
-            <th class="header">Wallet currency</th>
-            <th class="header">vIBAN country</th>
-        </tr>
+      <tr>
+        <th class="header">IBAN country</th>
+        <th class="header">Wallet currency</th>
+        <th class="header">Banking Alias</th>
+      </tr>
     </thead>
     <tbody>
         <tr>
-            <td class="table-content">DKK</td>
-            <td class="table-content">DK - Denmark</td>
+          <td class="table-content">DK - Denmark</td>
+          <td class="table-content">DKK</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr rowS>
+          <td class="table-content">DE - Germany</td>
+          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
-            <td class="table-content" rowSpan={4}>EUR</td>
-            <td class="table-content">DE - Germany</td>
+          <td class="table-content">ES - Spain</td>
+          <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
-            <td class="table-content">ES - Spain</td>
+          <td class="table-content">FR - France</td>
+          <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
-            <td class="table-content">FR - France</td>
+          <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
-            <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">GB - UK</td>
+          <td class="table-content">GBP</td>
+          <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
-            <td class="table-content">GBP</td>
-            <td class="table-content">GB - UK</td>
-        </tr>
-        <tr>
-            <td class="table-content">PLN</td>
-            <td class="table-content">PL - Poland</td>
+          <td class="table-content">PL - Poland</td>
+          <td class="table-content">PLN</td>
+          <td class="table-content">Planned</td>
         </tr>
     </tbody>
-</table>
+  </table>
+  </Tab>
+  <Tab title="UK">
+  <table>
+    <thead>
+      <tr>
+        <th class="header">IBAN country</th>
+        <th class="header">Wallet currency</th>
+        <th class="header">Banking Alias</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="table-content">DK - Denmark</td>
+          <td class="table-content">DKK</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr rowS>
+          <td class="table-content">DE - Germany</td>
+          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">ES - Spain</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">FR - France</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">GB - UK</td>
+          <td class="table-content">GBP</td>
+          <td class="table-content">{IconGreenCheck}</td>
+        </tr>
+        <tr>
+          <td class="table-content">PL - Poland</td>
+          <td class="table-content">PLN</td>
+          <td class="table-content">Planned</td>
+        </tr>
+    </tbody>
+  </table>
+  </Tab>
+</Tabs>
 
 <Note>
     **Note - Sandbox only for DK, GB, and PL** 
