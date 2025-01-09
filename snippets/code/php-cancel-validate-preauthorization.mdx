@@ -1,0 +1,33 @@
+  
+```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $preauthId = 'preauth_m_01JH0PDQS1WT444DJE8VB7F848';
+
+    $preauth = $api->CardPreAuthorizations->Get($preauthId);
+    $preauth->PaymentStatus = CardPreAuthorizationPaymentStatus::Canceled;
+    // $preauth->PaymentStatus = CardPreAuthorizationPaymentStatus::Validated;
+    
+    $cancelPreauth = $api->CardPreAuthorizations->Update($preauth);
+    // $validatePreauth = $api->CardPreAuthorizations->Update($preauth);
+
+    print_r($cancelPreauth);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+} 
+```

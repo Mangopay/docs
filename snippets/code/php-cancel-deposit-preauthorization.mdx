@@ -1,5 +1,4 @@
-  
-```php PHP
+  ```php PHP
 <?php 
 
 require_once 'vendor/autoload.php';
@@ -15,14 +14,17 @@ $api->Config->ClientPassword = 'your-api-key';
 $api->Config->TemporaryFolder = 'tmp/';
 
 try {
-    $preauthId = 'preauth_m_01JH0PDQS1WT444DJE8VB7F848';
+    $depositId = 'deposit_m_01JH5W6ZE4FZFYY583XGK1AJAT';
 
-    $response = $api->CardPreAuthorizations->Get($preauthId);
+    $cancel = new CancelDeposit();
+    $cancel->PaymentStatus = "CANCELED";
+    
+    $cancelDeposit = $api->Deposits->Cancel($depositId, $cancel);
 
-    print_r($response);
+    print_r($cancelDeposit);
 } catch(MGPResponseException $e) {
     print_r($e);
 } catch(MGPException $e) {
     print_r($e);
-}  
+}
 ```
