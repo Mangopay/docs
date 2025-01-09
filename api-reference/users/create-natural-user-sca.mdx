@@ -1,0 +1,275 @@
+---
+title: 'Create a Natural User (SCA)'  
+api: 'POST /v2.01/{ClientId}/sca/users/natural'
+description: 'Register a Natural Payer or Owner'
+---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import PhoneNumberResponse from '/snippets/p-response/PhoneNumberResponse.mdx';
+import PhoneNumberCountryResponse from '/snippets/p-response/PhoneNumberCountryResponse.mdx';
+import UserStatusScaResponse from '/snippets/p-response/UserStatusScaResponse.mdx';
+import UserCategoryResponse from '/snippets/p-response/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/p-response/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/p-response/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/p-response/KYCLevelResponse.mdx';
+import Email4Response from '/snippets/p-response/Email4Response.mdx';
+import PersonTypeResponse from '/snippets/p-response/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import CapacityResponse from '/snippets/p-response/CapacityResponse.mdx';
+import ProofOfAddressResponse from '/snippets/p-response/ProofOfAddressResponse.mdx';
+import ProofOfIdentityResponse from '/snippets/p-response/ProofOfIdentityResponse.mdx';
+import IncomeRangeResponse from '/snippets/p-response/IncomeRangeResponse.mdx';
+import OccupationResponse from '/snippets/p-response/OccupationResponse.mdx';
+import CountryOfResidenceResponse from '/snippets/p-response/CountryOfResidenceResponse.mdx';
+import NationalityResponse from '/snippets/p-response/NationalityResponse.mdx';
+import BirthdayResponse from '/snippets/p-response/BirthdayResponse.mdx';
+import LastName1Response from '/snippets/p-response/LastName1Response.mdx';
+import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
+import Address3Response from '/snippets/p-response/Address3Response.mdx';
+
+import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
+import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
+import UserCategory from '/snippets/p-body/UserCategory.mdx';
+import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
+import Email4 from '/snippets/p-body/Email4.mdx';
+import Tag3 from '/snippets/p-body/Tag3.mdx';
+import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
+import Occupation from '/snippets/p-body/Occupation.mdx';
+import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
+import Nationality from '/snippets/p-body/Nationality.mdx';
+import Birthday from '/snippets/p-body/Birthday.mdx';
+import LastName1 from '/snippets/p-body/LastName1.mdx';
+import FirstName1 from '/snippets/p-body/FirstName1.mdx';
+import Address3 from '/snippets/p-body/Address3.mdx';
+import Aml from '/snippets/glossary/aml.mdx';
+
+import RestCreateNaturalUserSca from '/snippets/code/rest-create-natural-user-sca.mdx';
+
+[Read more about SCA](/guides/users/sca) **&rarr;**
+
+<Note>  
+**Note – Country-based restrictions apply to users** 
+
+Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+
+For Natural Users, the following parameters are concerned:  
+- `Nationality`  
+- `CountryOfResidence`  
+- `Country` of the `Address`  
+
+For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
+</Note>  
+
+### Body parameters  
+
+<FirstName1 />  
+
+<LastName1 />  
+
+<Birthday />  
+
+<Nationality />  
+
+<CountryOfResidence />  
+
+<Occupation />  
+
+<IncomeRange />  
+
+<Tag3 />  
+
+<Email4 />  
+
+<PhoneNumber />
+
+<PhoneNumberCountry />
+
+<Address3 />  
+
+<TermsAndConditionsAccepted />  
+
+<UserCategory /> 
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200">  
+
+<FirstName1Response />  
+
+<LastName1Response />  
+
+<BirthdayResponse />  
+
+<NationalityResponse />  
+
+<CountryOfResidenceResponse />  
+
+<OccupationResponse />  
+
+<IncomeRangeResponse />  
+
+<ProofOfIdentityResponse />  
+
+<ProofOfAddressResponse />  
+
+<CapacityResponse />  
+
+<PhoneNumberResponse />
+
+<PhoneNumberCountryResponse />
+
+<Address3Response />  
+
+<PendingUserActionResponse />
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<Email4Response />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusScaResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+    <Accordion title="400 - Restricted country as Nationality value">
+        ```json  
+        {
+            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+            "Type": "param_error",
+            "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
+            "Date": 1676551649.0,
+            "errors": {
+                "Nationality": "The Nationality used is blocked"
+            }
+        }  
+        ```  
+
+    </Accordion>
+    <Accordion title="400 - Invalid email">
+        ```json 
+        {
+            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+            "Type": "param_error",
+            "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+            "Date": 1690291065.0,
+            "errors": {
+                "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
+            }
+        }  
+        ```  
+
+    </Accordion>
+    <Accordion title="403 - Owners must accept T&Cs">
+        ```json 
+        {
+          "Message": "User must accept the terms and conditions before account creation or modification.",
+          "Type": "user_hasnt_accepted_terms_and_conditions",
+          "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
+          "Date": 1730810728,
+          "errors": null
+        }  
+        ```
+    </Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>  
+```json 200 - Payer
+{
+    "FirstName": "Ruby",
+    "LastName": "Ringer",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Address": {
+        "AddressLine1": "28136 Grimes Bridge",
+        "AddressLine2": "Finn Shoals",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "PendingUserAction": null,
+    "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1734339135,
+    "PersonType": "NATURAL",
+    "Email": "ruby.reinger@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```  
+
+```json 200 - Owner pending SCA
+{
+    "FirstName": "Ruby",
+    "LastName": "Ringer",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "CountryOfResidence": "FR",
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": "+33611111111",
+    "PhoneNumberCountry": "FR",
+    "Address": {
+        "AddressLine1": "28136 Grimes Bridge",
+        "AddressLine2": "Finn Shoals",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193ceab0948799a9af9726fb852fb98"
+    },
+    "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1734339135,
+    "PersonType": "NATURAL",
+    "Email": "ruby.reinger@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "OWNER",
+    "UserStatus": "PENDING_USER_ACTION"
+}
+```
+</ResponseExample>  
+
+<RequestExample>  
+    <RestCreateNaturalUserSca />
+</RequestExample>

@@ -1,0 +1,261 @@
+---
+title: 'Update a Legal User (SCA)'  
+api: 'PUT /v2.01/{ClientId}/sca/users/legal/{UserId}'
+description: 'Modify details for a Legal Payer or Owner without changing category'
+---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import UserStatusScaResponse from '/snippets/p-response/UserStatusScaResponse.mdx';
+import UserCategoryResponse from '/snippets/p-response/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/p-response/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/p-response/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/p-response/KYCLevelResponse.mdx';
+import Email1Response from '/snippets/p-response/Email1Response.mdx';
+import PersonTypeResponse from '/snippets/p-response/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import CompanyNumberResponse from '/snippets/p-response/CompanyNumberResponse.mdx';
+import StatuteResponse from '/snippets/p-response/StatuteResponse.mdx';
+import ShareholderDeclarationResponse from '/snippets/p-response/ShareholderDeclarationResponse.mdx';
+import ProofOfRegistrationResponse from '/snippets/p-response/ProofOfRegistrationResponse.mdx';
+import LegalPersonTypeResponse from '/snippets/p-response/LegalPersonTypeResponse.mdx';
+import Name2Response from '/snippets/p-response/Name2Response.mdx';
+import LegalRepresentativeAddressResponse from '/snippets/p-response/LegalRepresentativeAddressResponse.mdx';
+import HeadquartersAddressResponse from '/snippets/p-response/HeadquartersAddressResponse.mdx';
+import LegalRepresentativeResponse from '/snippets/p-response/LegalRepresentativeResponse.mdx';
+
+import Email1 from '/snippets/p-body/Email1.mdx';
+import Tag3 from '/snippets/p-body/Tag3.mdx';
+import CompanyNumber from '/snippets/p-body/CompanyNumber.mdx';
+import LegalRepresentative from '/snippets/p-body/LegalRepresentative.mdx';
+import LegalPersonType from '/snippets/p-body/LegalPersonType.mdx';
+import Name2 from '/snippets/p-body/Name2.mdx';
+import LegalRepresentativeAddress from '/snippets/p-body/LegalRepresentativeAddress.mdx';
+import HeadquartersAddress from '/snippets/p-body/HeadquartersAddress.mdx';
+
+import Aml from '/snippets/glossary/aml.mdx';
+
+import RestUpdateLegalUserSca from '/snippets/code/rest-update-legal-user-sca.mdx';
+
+[Read more about SCA](/guides/users/sca) **&rarr;**
+
+<Warning>
+**Caution – Modification may trigger SCA re-enrollment**
+
+If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+
+- `LegalRepresentative.Email`
+- `LegalRepresentative.PhoneNumber`
+- `LegalRepresentative.PhoneNumberCountry`
+
+In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated. 
+
+If the user's `UserCategory` is `PAYER`, modifying these parameters has no impact on `UserStatus`.
+
+For more details see the [SCA guides](/guides/users/sca/enrollment).
+</Warning>
+
+<Warning>  
+**Caution – Modification may cause verification downgrade** 
+  
+Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+
+The impacted parameters are:  
+- `LegalRepresentative.FirstName`  
+- `LegalRepresentative.LastName`  
+- `LegalRepresentative.Birthday`  
+- `LegalRepresentative.Nationality`  
+- `LegalPersonType`  
+
+For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
+</Warning>  
+
+<Note>  
+**Note – Country-based restrictions apply to users** 
+  
+Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+
+For Legal Users, the following parameters are concerned:  
+- `Country` of the `HeadquartersAddress`  
+- `Nationality` of the `LegalRepresentative`
+- `CountryOfResidence` of the `LegalRepresentative`
+- `Country` of the `LegalRepresentativeAddress`  
+
+For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
+</Note>  
+
+### Body parameters  
+
+<Name2 />  
+
+<LegalPersonType />  
+
+<LegalRepresentative />  
+
+<CompanyNumber />  
+
+<HeadquartersAddress />  
+
+<LegalRepresentativeAddress />  
+
+<Tag3 />  
+
+<Email1 />  
+
+<TermsAndConditionsAccepted />  
+
+### Responses  
+
+<AccordionGroup>
+
+    <Accordion title="200">  
+    
+    <Name2Response />  
+
+    <LegalPersonTypeResponse />  
+
+    <LegalRepresentativeResponse />  
+
+    <ProofOfRegistrationResponse />  
+
+    <ShareholderDeclarationResponse />  
+
+    <StatuteResponse />  
+
+    <CompanyNumberResponse />  
+
+    <PendingUserActionResponse />
+
+    <HeadquartersAddressResponse />  
+
+    <LegalRepresentativeAddressResponse />
+
+    <IdResponse />  
+
+    <Tag2Response />  
+
+    <CreationDateResponse />  
+
+    <PersonTypeResponse />  
+
+    <Email1Response />  
+
+    <KYCLevelResponse />  
+
+    <TermsAndConditionsAcceptedResponse />  
+
+    <TermsAndConditionsAcceptedDateResponse />  
+
+    <UserCategoryResponse />  
+
+    <UserStatusScaResponse />
+
+    </Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>
+```json 200 - Payer
+{
+    "Name": "ACME Corporation",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentative": {
+        "FirstName": "Gunner",
+        "LastName": "Beier",
+        "ProofOfIdentity": null,
+        "Birthday": null,
+        "Nationality": null,
+        "CountryOfResidence": null,
+        "Email": null,
+        "PhoneNumber": null,
+        "PhoneNumberCountry": null
+    },
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "CompanyNumber": null,
+    "PendingUserAction": null,
+    "HeadquartersAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "8949 Jeremy Garden",
+        "AddressLine2": "Zulauf Summit",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
+    "Tag": "Updated using the Mangopay API Postman collection",
+    "CreationDate": 1734344306,
+    "PersonType": "LEGAL",
+    "Email": "acme.corporation@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+```json 200 - Owner pending SCA
+{
+    "Name": "ACME Corporation",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentative": {
+        "FirstName": "Gunner",
+        "LastName": "Beier",
+        "ProofOfIdentity": null,
+        "Birthday": 652117514,
+        "Nationality": "FR",
+        "CountryOfResidence": "FR",
+        "Email": "gunner.beier@example.com",
+        "PhoneNumber": "+33611111111",
+        "PhoneNumberCountry": "FR"
+    },
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "CompanyNumber": "123456789",
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cef9efe7782881459b02bed1986c"
+    },
+    "HeadquartersAddress": {
+        "AddressLine1": "18014 Jermain Grove",
+        "AddressLine2": "Harry Unions",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": "8949 Jeremy Garden",
+        "AddressLine2": "Zulauf Summit",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
+    "Tag": "Updated using the Mangopay API Postman collection",
+    "CreationDate": 1734344306,
+    "PersonType": "LEGAL",
+    "Email": "acme.corporation@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": 1734344306,
+    "UserCategory": "OWNER",
+    "UserStatus": "PENDING_USER_ACTION"
+}
+```
+</ResponseExample>  
+
+<RequestExample>  
+    <RestUpdateLegalUserSca />
+</RequestExample>

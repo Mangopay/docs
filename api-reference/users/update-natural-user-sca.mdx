@@ -1,0 +1,262 @@
+---
+title: 'Update a Natural User (SCA)'  
+api: 'PUT /v2.01/{ClientId}/sca/users/natural/{UserId}'
+description: 'Modify details for a Natural Payer or Owner without changing category'
+---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import PhoneNumberResponse from '/snippets/p-response/PhoneNumberResponse.mdx';
+import PhoneNumberCountryResponse from '/snippets/p-response/PhoneNumberCountryResponse.mdx';
+import UserStatusScaResponse from '/snippets/p-response/UserStatusScaResponse.mdx';
+import UserCategoryResponse from '/snippets/p-response/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/p-response/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/p-response/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/p-response/KYCLevelResponse.mdx';
+import Email4Response from '/snippets/p-response/Email4Response.mdx';
+import PersonTypeResponse from '/snippets/p-response/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import CapacityResponse from '/snippets/p-response/CapacityResponse.mdx';
+import ProofOfAddressResponse from '/snippets/p-response/ProofOfAddressResponse.mdx';
+import ProofOfIdentityResponse from '/snippets/p-response/ProofOfIdentityResponse.mdx';
+import IncomeRangeResponse from '/snippets/p-response/IncomeRangeResponse.mdx';
+import OccupationResponse from '/snippets/p-response/OccupationResponse.mdx';
+import CountryOfResidenceResponse from '/snippets/p-response/CountryOfResidenceResponse.mdx';
+import NationalityResponse from '/snippets/p-response/NationalityResponse.mdx';
+import BirthdayResponse from '/snippets/p-response/BirthdayResponse.mdx';
+import LastName1Response from '/snippets/p-response/LastName1Response.mdx';
+import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
+import Address3Response from '/snippets/p-response/Address3Response.mdx';
+
+import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
+import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
+import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
+import Email5 from '/snippets/p-body/Email5.mdx';
+import Tag3 from '/snippets/p-body/Tag3.mdx';
+import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
+import Occupation from '/snippets/p-body/Occupation.mdx';
+import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
+import Nationality from '/snippets/p-body/Nationality.mdx';
+import Birthday from '/snippets/p-body/Birthday.mdx';
+import LastName1 from '/snippets/p-body/LastName1.mdx';
+import FirstName1 from '/snippets/p-body/FirstName1.mdx';
+import Address3 from '/snippets/p-body/Address3.mdx';
+import Aml from '/snippets/glossary/aml.mdx';
+
+import RestUpdateNaturalUserSca from '/snippets/code/rest-update-natural-user-sca.mdx';
+
+[Read more about SCA](/guides/users/sca) **&rarr;**
+
+<Warning>
+**Caution – Modification may trigger SCA re-enrollment**
+
+If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+
+- `Email`
+- `PhoneNumber`
+- `PhoneNumberCountry`
+
+In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated. 
+
+If the user's `UserCategory` is `PAYER`, modifying these parameters has no impact on `UserStatus`.
+
+For more details see the [SCA guides](/guides/users/sca/enrollment).
+</Warning>
+
+<Warning>  
+**Caution – Modification may cause verification downgrade** 
+  
+Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+
+The impacted parameters are:  
+- `FirstName`  
+- `LastName`  
+- `Birthday`  
+- `Nationality`  
+
+For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
+</Warning>  
+
+<Note>  
+**Note – Country-based restrictions apply to users** 
+  
+Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+
+For Natural Users, the following parameters are concerned:  
+- `Nationality`  
+- `CountryOfResidence`  
+- `Country` of the `Address`  
+
+For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
+</Note>  
+
+### Body parameters  
+
+<FirstName1 />  
+
+<LastName1 />  
+
+<Birthday />  
+
+<Nationality />  
+
+<CountryOfResidence />  
+
+<Occupation />  
+
+<IncomeRange />  
+
+<Tag3 />  
+
+<Email5 />  
+
+<PhoneNumber />
+
+<PhoneNumberCountry />
+
+<Address3 />  
+
+<TermsAndConditionsAccepted />  
+
+<UserCategory /> 
+
+### Responses 
+
+<AccordionGroup>
+
+<Accordion title="200">  
+
+<FirstName1Response />  
+
+<LastName1Response />  
+
+<BirthdayResponse />  
+
+<NationalityResponse />  
+
+<CountryOfResidenceResponse />  
+
+<OccupationResponse />  
+
+<IncomeRangeResponse />  
+
+<ProofOfIdentityResponse />  
+
+<ProofOfAddressResponse />  
+
+<CapacityResponse />  
+
+<PhoneNumberResponse />
+
+<PhoneNumberCountryResponse />
+
+<Address3Response />  
+
+<PendingUserActionResponse />
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<Email4Response />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusScaResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>  
+
+```json 200 - Payer
+{
+    "FirstName": "Ruby",
+    "LastName": "Ringer",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Address": {
+        "AddressLine1": "28136 Grimes Bridge",
+        "AddressLine2": "Finn Shoals",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "PendingUserAction": null,
+    "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
+    "Tag": "Updated using Mangopay API Collection Postman",
+    "CreationDate": 1734339135,
+    "PersonType": "NATURAL",
+    "Email": "ruby.reinger@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```  
+
+```json 200 - Owner pending SCA
+{
+    "FirstName": "Ruby",
+    "LastName": "Ringer",
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "CountryOfResidence": "FR",
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": "+33611111111",
+    "PhoneNumberCountry": "FR",
+    "Address": {
+        "AddressLine1": "28136 Grimes Bridge",
+        "AddressLine2": "Finn Shoals",
+        "City": "Paris",
+        "Region": "Ile-de-France",
+        "PostalCode": "75001",
+        "Country": "FR"
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193ceab0948799a9af9726fb852fb98"
+    },
+    "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
+    "Tag": "Updated using the Mangopay API Postman collection",
+    "CreationDate": 1734339135,
+    "PersonType": "NATURAL",
+    "Email": "ruby.reinger@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": true,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "OWNER",
+    "UserStatus": "PENDING_USER_ACTION"
+}
+```
+
+</ResponseExample>  
+
+<RequestExample>  
+    <RestUpdateNaturalUserSca />
+</RequestExample>

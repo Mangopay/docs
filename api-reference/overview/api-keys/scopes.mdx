@@ -1,0 +1,374 @@
+---
+title: Permission scopes
+sidebarTitle: Scopes
+---
+
+When you create an API key, you must assign it scopes and give it an alias to identify it. Each scope corresponds to endpoints that the key has permission to:
+- READ, via GET calls
+- WRITE, via POST and PUT calls
+
+For more details about managing scopes, see the [API key management](/api-reference/overview/api-keys) guide.
+
+This page lists the endpoints in each scope.
+
+**Notes on scope evolution:**
+- Each endpoint belongs to only one scope.
+- Endpoints will not be moved from their current scope.
+- If a new endpoint is added to an existing scope, keys already assigned to the scope automatically gain access to the new endpoint. This also applies to scope permissions that contain no endpoints today.
+- If a new sub-scope is created, e.g. `Bankaccounts.Xxxx`, then keys previously assigned the `Bankaccounts` scope inherit access to the new sub-scope.
+
+## Bankaccounts
+
+WRITE
+- [POST Create an IBAN Bank Account](/api-reference/bank-accounts/create-iban-bank-account)
+- [POST Create a US Bank Account](/api-reference/bank-accounts/create-us-bank-account)
+- [POST Create a CA Bank Account](/api-reference/bank-accounts/create-ca-bank-account)
+- [POST Create a GB Bank Account](/api-reference/bank-accounts/create-gb-bank-account)
+- [POST Create an OTHER Bank Account](/api-reference/bank-accounts/create-other-bank-account)
+- [PUT Deactivate a Bank Account](/api-reference/bank-accounts/deactivate-bank-account)
+
+READ
+- [GET View a Bank Account](/api-reference/bank-accounts/view-bank-account)
+- [GET List Bank Accounts for a User](/api-reference/bank-accounts/list-bank-accounts-user)
+
+## Client
+
+### Client.Details
+
+WRITE
+- [PUT Update a Client](/api-reference/client/update-client)
+- [PUT Upload a Client logo](/api-reference/client/upload-client-logo)
+
+READ
+- [GET View a Client](/api-reference/client/view-client)
+
+### Client.Developers
+
+WRITE
+- [POST Create a Hook](/api-reference/webhooks/create-hook)
+- [PUT Update a Hook](/api-reference/webhooks/update-hook)
+
+READ
+- [GET View an API Response](/api-reference/api-responses/view-api-response)
+- [GET View a Hook](/api-reference/webhooks/view-hook)
+- [GET List all Hooks](/api-reference/webhooks/list-hooks)
+- [GET List all Events](/api-reference/events/list-events)
+
+### Client.PayIns
+
+WRITE
+- [POST Create a Bank Wire PayIn to the Repudiation Wallet](/api-reference/dispute-settlement/create-bank-wire-payin-to-repudiation-wallet)
+
+READ
+- No endpoints with READ permission
+
+### Client.Permissions
+
+WRITE 
+
+- [POST Create a Permission Group](/api-reference/permission-groups/create-permission-group)
+- [PUT Update a Permission Group](/api-reference/permission-groups/update-permission-group)
+- [POST Create an SSO](/api-reference/ssos/create-sso)
+- [PUT Update an SSO](/api-reference/ssos/update-sso)
+- [PUT Extend an SSO invitation](/api-reference/ssos/extend-sso-invitation)
+
+READ
+- [GET View a Permission Group](/api-reference/permission-groups/view-permission-group)
+- [GET List all Permission Groups](/api-reference/permission-groups/list-permission-groups)
+- [GET View an SSO](/api-reference/ssos/view-sso)
+- [GET List all SSOs](/api-reference/ssos/list-ssos)
+- [GET List SSOs for a Permission Group](/api-reference/ssos/list-ssos-permission-group)
+
+### Client.Reports
+
+WRITE
+- [POST Create a Transactions Report](/api-reference/reports/create-transactions-report)
+- [POST Create a Wallets Report](/api-reference/reports/create-wallets-report)
+
+READ
+- [GET View a Report](/api-reference/reports/view-report)
+- [GET List all Reports](/api-reference/reports/list-reports)
+
+### Client.Wallets
+
+WRITE
+- No endpoints with WRITE permission
+
+READ
+- [GET View a Client Wallet](/api-reference/client-wallets/view-client-wallet)
+- [GET List all Client Wallets](/api-reference/client-wallets/list-client-wallets)
+- [GET List Client Wallets by FundsType](/api-reference/client-wallets/list-client-wallets-fundstype)
+- [GET List Transactions for a Client Wallet](/api-reference/transactions/list-transactions-client-wallet)
+
+## Conversions
+
+WRITE
+- [POST Create a Quote](/api-reference/quotes/create-quote)
+- [POST Create a Quoted Conversion between user Wallets](/api-reference/conversions/create-quoted-conversion-user-wallets)
+- [POST Create an Instant Conversion between user Wallets](/api-reference/conversions/create-instant-conversion-user-wallets)
+- [POST Create a Quoted Conversion between Client Wallets](/api-reference/conversions/create-quoted-conversion-client-wallets)
+- [POST Create an Instant Conversion between Client Wallets](/api-reference/conversions/create-instant-conversion-client-wallets)
+
+READ
+- [GET View an indicative Conversion Rate](/api-reference/conversion-rates/view-conversion-rate)
+- [GET View a Quote](/api-reference/quotes/view-quote)
+- [GET View a Conversion](/api-reference/conversions/view-conversion)
+
+## Disputes
+
+### Disputes.General
+
+WRITE
+- [PUT Submit a Dispute](/api-reference/disputes/submit-dispute)
+- [PUT Update a Dispute](/api-reference/disputes/update-dispute)
+- [PUT Close a Dispute](/api-reference/disputes/close-dispute)
+- [POST Create a Dispute Document](/api-reference/dispute-documents/create-dispute-document)
+- [PUT Submit a Dispute Document](/api-reference/dispute-documents/submit-dispute-document)
+- [POST Create a Dispute Document Page](/api-reference/dispute-documents/create-dispute-document-page)
+- [POST Create a weblink to view the Pages of a Dispute Document](/api-reference/dispute-documents/create-weblink-to-view-dispute-document-pages)
+
+READ
+- [GET View a Dispute](/api-reference/disputes/view-dispute)
+- [GET List all Disputes](/api-reference/disputes/list-disputes)
+- [GET List Disputes pending settlement](/api-reference/disputes/list-disputes-settlement)
+- [GET List Disputes for a PayIn](/api-reference/disputes/list-disputes-payin)
+- [GET List Disputes for a User](/api-reference/disputes/list-disputes-user)
+- [GET List Disputes for a Wallet](/api-reference/disputes/list-disputes-wallet)
+- [GET View a Dispute Document](/api-reference/dispute-documents/view-dispute-document)
+- [GET List all Dispute Documents](/api-reference/dispute-documents/list-dispute-documents)
+- [GET List Documents for a Dispute](/api-reference/dispute-documents/list-documents-dispute)
+- [GET View a Repudiation](/api-reference/repudiations/view-repudiation)
+
+### Disputes.Settlement
+
+WRITE
+- [POST Create a Settlement Transfer](/api-reference/dispute-settlement/create-settlement-transfer)
+
+READ
+- [GET View a Settlement Transfer](/api-reference/dispute-settlement/view-settlement-transfer)
+
+## Payins
+
+WRITE
+- [POST Create a Card Registration](/api-reference/card-registrations/create-card-registration)
+- [POST Tokenize the card](/api-reference/card-registrations/tokenize-card)
+- [PUT Update a Card Registration](/api-reference/card-registrations/update-card-registration)
+- [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card)
+- [POST Look up metadata for a payment method](/api-reference/payment-method-metadata/lookup-payment-method-metadata)
+- [POST Create a Card Validation](/api-reference/card-validations/create-card-validation)
+- [POST Create a Direct Card PayIn](/api-reference/direct-card-payins/create-direct-card-payin)
+- [POST Create a Recurring PayIn Registration (Card](/api-reference/recurring-payin-registrations/create-recurring-payin-registration)
+- [PUT Update a Recurring PayIn Registration](/api-reference/recurring-payin-registrations/update-recurring-payin-registration)
+- [POST Create a Recurring PayIn (CIT](/api-reference/recurring-card-payins/create-recurring-payin-cit)
+- [POST Create a Recurring PayIn (MIT](/api-reference/recurring-card-payins/create-recurring-payin-mit)
+- [POST Create a Preauthorization](/api-reference/preauthorizations/create-preauthorization)
+- [PUT Cancel or validate a Preauthorization](/api-reference/preauthorizations/cancel-validate-preauthorization)
+- [POST Create a Preauthorized PayIn](/api-reference/preauthorizations/create-preauthorized-payin)
+- [POST Create a Deposit Preauthorization](/api-reference/deposit-preauthorizations/create-deposit-preauthorization)
+- [PUT Cancel a Deposit Preauthorization or request a no-show](/api-reference/deposit-preauthorizations/cancel-deposit-preauthorization-request-no-show)
+- [POST Create a Deposit Preauthorized PayIn without complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-without-complement)
+- [POST Create a Deposit Preauthorized PayIn prior to complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-prior-to-complement)
+- [POST Create a Deposit Preauthorized PayIn complement](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-complement)
+- [POST Create a Web Card PayIn](/api-reference/web-card-payins/create-web-card-payin)
+- [POST Create a Bank Wire PayIn](/api-reference/bank-wire-payins/create-bank-wire-payin)
+- [POST Create an IBAN Banking Alias](/api-reference/banking-aliases/create-iban-banking-alias)
+- [PUT Deactivate a Banking Alias](/api-reference/banking-aliases/deactivate-banking-alias)
+- [POST Create a Mandate](/api-reference/mandates/create-mandate)
+- [PUT Cancel a Mandate](/api-reference/mandates/cancel-mandate)
+- [POST Create a Direct Debit PayIn](/api-reference/direct-debit-payins/create-direct-debit-payin)
+- [POST Create a Web Direct-Debit PayIn](/api-reference/web-direct-debit-payins/create-web-direct-debit-payin)
+- [POST Create an Apple Pay PayIn](/api-reference/apple-pay/create-apple-pay-payin)
+- [POST Create a Bancontact PayIn](/api-reference/bancontact/create-bancontact-payin)
+- [POST Create a BLIK PayIn (with code](/api-reference/blik/create-blik-payin-with-code)
+- [POST Create a BLIK PayIn (without code](/api-reference/blik/create-blik-payin-without-code)
+- [POST Create a Giropay PayIn](/api-reference/giropay/create-giropay-payin)
+- [POST Create a Google Pay PayIn](/api-reference/google-pay/create-google-pay-payin)
+- [POST Create an iDEAL PayIn](/api-reference/ideal/create-ideal-payin)
+- [POST Create a Klarna PayIn](/api-reference/klarna/create-klarna-payin)
+- [POST Create an MB WAY PayIn](/api-reference/mb-way/create-mb-way-payin)
+- [POST Create an Multibanco PayIn](/api-reference/multibanco/create-multibanco-payin)
+- [POST Create a Payconiq PayIn](/api-reference/payconiq/create-payconiq-payin)
+- [POST Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin)
+- [PUT Add tracking information to a PayPal PayIn](/api-reference/paypal/add-tracking-paypal-payin)
+- [POST Create a Recurring PayIn Registration (PayPal)](/api-reference/recurring-payin-registrations/create-recurring-payin-registration-paypal)
+- [PUT Update a Recurring PayIn Registration (PayPal)](/api-reference/recurring-payin-registrations/update-recurring-payin-registration-paypal)
+- [GET View a Recurring PayIn Registration (PayPal)](/api-reference/recurring-payin-registrations/view-recurring-payin-registration-paypal)
+- [POST Create a Recurring PayPal PayIn (CIT)](/api-reference/paypal/create-recurring-paypal-payin-cit)
+- [POST Create a Recurring PayPal PayIn (MIT)](/api-reference/paypal/create-recurring-paypal-payin-mit)
+- [POST Create a Satispay PayIn](/api-reference/satispay/create-satispay-payin)
+- [POST Create a Swish PayIn](/api-reference/swish/create-swish-payin)
+- [POST Create a TWINT PayIn](/api-reference/twint/create-twint-payin)
+
+READ
+- [GET View a PayIn](/api-reference/direct-card-payins/view-payin-direct-card) (all payment methods)
+- [GET View a Card Registration](/api-reference/card-registrations/view-card-registration)
+- [GET View a Card](/api-reference/cards/view-card)
+- [GET List Cards for a User](/api-reference/cards/list-cards-user)
+- [GET List Cards for a Fingerprint](/api-reference/cards/list-cards-fingerprint)
+- [GET List Transactions for a Card Fingerprint](/api-reference/transactions/list-transactions-card-fingerprint)
+- [GET View a Card Validation](/api-reference/card-validations/view-card-validation)
+- [GET View a Recurring PayIn Registration](/api-reference/recurring-payin-registrations/view-recurring-payin-registration)
+- [GET View a Preauthorization](/api-reference/preauthorizations/view-preauthorization)
+- [GET List Preauthorizations for a Card](/api-reference/preauthorizations/list-preauthorizations-card)
+- [GET List Preauthorizations for a User](/api-reference/preauthorizations/list-preauthorizations-user)
+- [GET View a Deposit Preauthorization](/api-reference/deposit-preauthorizations/view-deposit-preauthorization)
+- [GET List Deposit Preauthorizations for a Card](/api-reference/deposit-preauthorizations/list-deposit-preauthorizations-card)
+- [GET List Deposit Preauthorizations for a User](/api-reference/deposit-preauthorizations/list-deposit-preauthorizations-user)
+- [GET View card details for a Web Card PayIn](/api-reference/web-card-payins/view-card-details-web-card-payin)
+- [GET View a Banking Alias](/api-reference/banking-aliases/view-banking-alias)
+- [GET View a Banking Alias for a Wallet](/api-reference/banking-aliases/view-banking-alias-wallet)
+- [GET View a Mandate](/api-reference/mandates/view-mandate)
+- [GET List all Mandates](/api-reference/mandates/list-mandates)
+- [GET List Mandates for a User](/api-reference/mandates/list-mandates-user)
+- [GET List Mandates for a Bank Account](/api-reference/mandates/list-mandates-bank-account)
+
+{/* 
+- [POST - [Deprecated] Create a Web Card PayIn (iDEAL)](/api-reference/ideal/create-web-card-payin-ideal)
+
+- [GET View a PayIn (Direct Card)](/api-reference/direct-card-payins/view-payin-direct-card)
+- [GET View a PayIn (Recurring Card)](/api-reference/recurring-card-payins/view-payin-recurring)
+- [GET View a PayIn (Preauthorized Card)](/api-reference/preauthorizations/view-payin-preauthorized)
+- [GET View a PayIn (Deposit Preauthorized) Card](/api-reference/deposit-preauthorizations/view-payin-deposit-preauthorized)
+- [GET View a PayIn (Web Card)](/api-reference/web-card-payins/view-payin-web-card)
+- [GET View a PayIn (Bank Wire)](/api-reference/bank-wire-payins/view-payin-bank-wire)
+- [GET View a PayIn (Banking Alias)](/api-reference/banking-aliases/view-payin-banking-alias)
+- [GET View a PayIn (Direct Debit)](/api-reference/direct-debit-payins/view-payin-direct-debit)
+- [GET View a PayIn (Web Direct Debit)](/api-reference/web-direct-debit-payins/view-payin-web-direct-debit)
+- [GET View a PayIn (Apple Pay)](/api-reference/apple-pay/view-payin-apple-pay)
+- [GET View a PayIn (Bancontact)](/api-reference/bancontact/view-payin-bancontact)
+- [GET View a PayIn (BLIK)](/api-reference/blik/view-payin-blik)
+- [GET View a PayIn (Giropay)](/api-reference/giropay/view-payin-giropay)
+- [GET View a PayIn (Google Pay)](/api-reference/google-pay/view-payin-google-pay)
+- [GET View a PayIn (iDEAL)](/api-reference/ideal/view-payin-ideal)
+- [GET View a PayIn (Klarna)](/api-reference/klarna/view-payin-klarna)
+- [GET View a PayIn (MB WAY)](/api-reference/mb-way/view-payin-mb-way)
+- [GET View a PayIn (Multibanco)](/api-reference/multibanco/view-payin-multibanco)
+- [GET View a PayIn (Payconiq)](/api-reference/payconiq/view-payin-payconiq)
+- [GET View a PayIn (PayPal)](/api-reference/paypal/view-payin-paypal)
+- [GET View a PayIn (Satispay)](/api-reference/satispay/view-payin-satispay)
+- [GET View a PayIn (Swish)](/api-reference/swish/view-payin-swish)
+- [GET View a PayIn (TWINT)](/api-reference/twint/view-payin-twint)
+ */}
+
+## Payouts
+
+WRITE
+- [POST Create a Payout](/api-reference/payouts/create-payout)
+- [POST Check Instant Payout eligibility](/api-reference/payouts/check-instant-payout-eligibility)
+
+READ
+- [GET View a Payout](/api-reference/payouts/view-payout)
+- [GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied)
+
+## Refunds
+
+### Refunds.General
+
+WRITE
+- No endpoints with WRITE permission
+
+READ 
+- [GET View a Refund](/api-reference/refunds/view-refund)
+
+### Refunds.Payins
+
+WRITE
+- [POST Create a Refund for a PayIn](/api-reference/refunds/create-refund-payin)
+
+READ 
+- [GET List Refunds for a PayIn](/api-reference/refunds/list-refunds-payin)
+
+### Refunds.Payouts
+
+WRITE
+- No endpoints with WRITE permission
+
+READ 
+- [GET List Refunds for a Payout](/api-reference/refunds/list-refunds-payout)
+
+### Refunds.Repudiations
+
+WRITE
+- No endpoints with WRITE permission
+
+READ 
+- [GET List Refunds for a Repudiation](/api-reference/refunds/list-refunds-repudiation)
+
+### Refunds.Transfers
+
+WRITE
+- [POST Create a Refund for a Transfer](/api-reference/refunds/create-refund-transfer)
+
+READ 
+- [GET List Refunds for a Transfer](/api-reference/refunds/list-refunds-transfer)
+
+## Transactions
+
+WRITE
+- No endpoints with WRITE permission
+
+READ
+- [GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+- [GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+- [GET List Transactions for a Card](/api-reference/transactions/list-transactions-card)
+- [GET List Transactions for a Preauthorization](/api-reference/transactions/list-transactions-preauthorization)
+- [GET List Transactions for a Deposit Preauthorization](/api-reference/transactions/list-transactions-deposit-preauthorization)
+- [GET List Transactions for a Bank Account](/api-reference/transactions/list-transactions-bank-account)
+- [GET List Transactions for a Mandate](/api-reference/transactions/list-transactions-mandate)
+- [GET List Transactions for a Dispute](/api-reference/transactions/list-transactions-dispute)
+
+## Transfers
+
+WRITE
+- [POST Create a Transfer](/api-reference/transfers/create-transfer)
+
+READ
+- [GET View a Transfer](/api-reference/transfers/view-transfer)
+
+## Users
+
+### Users.Details
+
+WRITE
+- [POST Create a Natural User](/api-reference/users/create-natural-user)
+- [PUT Update a Natural User](/api-reference/users/update-natural-user)
+- [POST Create a Legal User](/api-reference/users/create-legal-user)
+- [PUT Update a Legal User](/api-reference/users/update-legal-user)
+
+READ
+- [GET View a User](/api-reference/users/view-user)
+- [GET List all Users](/api-reference/users/list-users)
+- [GET View a User Regulatory Status](/api-reference/user-regulatory-status/view-user-regulatory-status)
+- [GET View User EMoney](/api-reference/user-emoney/view-user-emoney)
+- [GET View Authorizations for a country](/api-reference/country-authorizations/view-authorizations-country)
+- [GET List Authorizations for all countries](/api-reference/country-authorizations/list-authorizations-countries)
+
+### Users.Verification
+
+WRITE
+- [POST Validate the format of User data](/api-reference/user-data-format/validate-user-data-format)
+- [POST Create a KYC Document](/api-reference/kyc-documents/create-kyc-document)
+- [POST Create a KYC Document Page](/api-reference/kyc-documents/create-kyc-document-page)
+- [PUT Submit a KYC Document](/api-reference/kyc-documents/submit-kyc-document)
+- [POST Create a UBO Declaration](/api-reference/ubo-declarations/create-ubo-declaration)
+- [POST Create a UBO](/api-reference/ubo-declarations/create-ubo)
+- [PUT Submit a UBO Declaration](/api-reference/ubo-declarations/submit-ubo-declaration)
+- [PUT Update a UBO](/api-reference/ubo-declarations/update-ubo)
+
+READ
+- [GET View a KYC Document](/api-reference/kyc-documents/view-kyc-document)
+- [GET List KYC Documents for a User](/api-reference/kyc-documents/list-kyc-documents-user)
+- [GET List all KYC Documents](/api-reference/kyc-documents/list-kyc-documents)
+- [GET View a UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration)
+- [GET View a UBO](/api-reference/ubo-declarations/view-ubo)
+- [GET List UBO Declarations for a User](/api-reference/ubo-declarations/list-ubo-declarations-user)
+
+## Wallet.Details
+
+WRITE
+- [POST Create a Wallet](/api-reference/wallets/create-wallet)
+- [PUT Update a Wallet](/api-reference/wallets/update-wallet)
+
+READ
+- [GET View a Wallet](/api-reference/wallets/view-wallet)
+- [GET List Wallets for a User](/api-reference/wallets/list-wallets-user)

@@ -24,10 +24,40 @@ mintlify dev
 
 See [Mintlify's docs](https://mintlify.com/docs/development) for more detail.
 
-### Tips
+### Tips for running Mintlify locally
 
-The API reference relies on Mintlify's reusable snippets to display attributes and parameters. If making changes here, terminate the local preview beforehand and relaunch it once you're done (the local preview slows down and becomes unusable).
+The API reference relies on Mintlify's reusable snippets to display attributes and parameters. If making changes in snippets, terminate the local preview beforehand and relaunch it once you're done (the local preview slows down and becomes unusable).
 
-## Markdown conventions
+## Conventions
+
+### Markdown
 - For tables, use HTML not markdown (see existing tables for CSS styles)
-- For hyperlinks, we generally use HTML but markdown is OK too (HTML enables opening in a new tab with `target="_blank"`)
+- For hyperlinks use markdown unless it's an external link, in which case force a new tab by using HTML with `target="_blank"` (or if you need other HTML-supported features)
+- For bullets, use hyphen dashes (rather than asterisks)
+- For italics, bold, and bold italics, use 1, 2, or 3 asterisks (rather than underscores)
+
+### Images 
+Prefer SVGs where possible as they are more easily re-editable in future. You can optimize them using https://svgomg.net/ (default settings, precision 2 or 3) or similar tools. 
+
+You can use separate images for light and dark mode as explained in [Mintlify docs](https://mintlify.com/docs/image-embeds#dark-mode):
+````
+<img className="block dark:hidden" src="/path/image-light.svg" />
+<img className="hidden dark:block" src="/path/image-dark.svg" />
+````
+
+## Troubleshooting, testing, deployment
+
+### Double-spaced code snippets
+
+If you find you have double-spaced lines in code samples, it's due to linespacing produced by some code editors. The difference may not be visible in VSCode but running `git diff` shows differences on every line. 
+
+To fix this, install dos2unix ([homebrew](https://formulae.brew.sh/formula/dos2unix)) and run it on the relevant MDX file(s), for example: `dos2unix snippets/code/rest-create-wallet.mdx`.
+
+### Linting and spell-checking
+
+You can use [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) VSCode extension to check for spelling errors in your working files, but be wise. Add key words (e.g. brand names) to workspace settings to add them to the `settings.json` file for others to benefit.
+
+### Broken links
+
+Use `mintlify broken-links` to check for broken links, as per the [Mintlify docs](https://mintlify.com/docs/settings/broken-links#broken-links).
+

@@ -3,6 +3,7 @@ title: 'View a PayIn (PayPal)'
 api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
 ---
 
+import RecurringPayinRegistrationId1Response from '/snippets/p-response/RecurringPayinRegistrationId1Response.mdx';
 import PaypalOrderIDResponse from '/snippets/p-response/PaypalOrderIDResponse.mdx';
 import BuyerPhoneResponse from '/snippets/p-response/BuyerPhoneResponse.mdx';
 import BuyerLastnameResponse from '/snippets/p-response/BuyerLastnameResponse.mdx';
@@ -36,6 +37,7 @@ import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
 import PayInId from '/snippets/p-path/PayInId.mdx';
   
 import PhpViewPayin from '/snippets/code/php-view-payin.mdx';
@@ -44,6 +46,8 @@ import RubyViewPayin from '/snippets/code/ruby-view-payin.mdx';
 import JavaViewPayin from '/snippets/code/java-view-payin.mdx';
 import PythonViewPayin from '/snippets/code/view-payin-python.mdx';
 import NetViewPaypalPayin from '/snippets/code/net-view-paypal-payin.mdx';
+
+For PayPal, the pay-in object viewable on this endpoint is the same for one-time and recurring except that `RecurringPayinRegistrationId` is only returned for recurring pay-ins.
 
 <Note>
 **Note – Pay-in data retained for 13 months**
@@ -124,13 +128,15 @@ For more information, see the <a href="/api-reference/overview/data-availability
 <BuyerPhoneResponse/>
 <PaypalOrderIDResponse/>
 
+<RecurringPayinRegistrationId1Response/>
+
 </Accordion>
 
 </AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - Succeeded  
+````json 200 - One-time  
 {
     "Id": "wt_00a046e2-cc5c-46ba-91e0-1feca23922e4",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -193,10 +199,91 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "ShippingPreference": "SET_PROVIDED_ADDRESS",
     "PaypalBuyerAccountEmail": "alex.smith@example.com",
     "Reference": "1234",
-    "Trackings": null
+    "Trackings": null,
+    "CancelURL": null,
+    "PaypalPayerID": null,
+    "BuyerCountry": null,
+    "BuyerFirstname": null,
+    "BuyerLastname": null,
+    "BuyerPhone": null,
+    "PaypalOrderID": "0V2469407F242402P"
 }  
- ```  
-
+````
+````json 200 - Recurring
+{
+    "Id": "wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1731580317,
+    "AuthorId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 4500
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 4500
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1731580323,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01J9KR4A7BH8KVE4PG6DTNS817",
+    "CreditedUserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+    "PaymentType": "PAYPAL",
+    "ExecutionType": "WEB",
+    "ReturnURL": "http://example.com?transactionId=wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
+    "StatementDescriptor": "Example123",
+    "Shipping": {
+        "FirstName": "Leland",
+        "LastName": "Baumbach",
+        "Address": {
+            "AddressLine1": "65247 Hand Walk",
+            "AddressLine2": "Mraz Neck",
+            "City": "Paris",
+            "Region": "Ile-de-France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "LineItems": [
+        {
+            "Name": "Product C",
+            "Quantity": 1,
+            "UnitAmount": 1500,
+            "TaxAmount": 0,
+            "Description": "ID of Seller 1",
+            "Category": "PHYSICAL_GOODS"
+        },
+        {
+            "Name": "Product D",
+            "Quantity": 1,
+            "UnitAmount": 3000,
+            "TaxAmount": 0,
+            "Description": "ID of Seller 2",
+            "Category": "PHYSICAL_GOODS"
+        }
+    ],
+    "Culture": "FR",
+    "ShippingPreference": "SET_PROVIDED_ADDRESS",
+    "PaypalBuyerAccountEmail": "sb-xej7a6945106@business.example.com",
+    "Reference": "abcd-efgh-ijkl",
+    "Trackings": null,
+    "CancelURL": "http://google.com?transactionId=wt_70621ad8-4ea8-4ea5-9893-b4b5ebb1da17",
+    "PaypalPayerID": "RVN3GJJS2KGV4",
+    "BuyerCountry": "FR",
+    "BuyerFirstname": "John",
+    "BuyerLastname": "Doe",
+    "BuyerPhone": null,
+    "PaypalOrderID": "9KH88598NK328901B",
+    "RecurringPayinRegistrationId": "recpayinreg_wt_c1fb7e3f-8204-4427-9251-df886fbb4e42"
+}
+````
 </ResponseExample>  
 
 <RequestExample>  
