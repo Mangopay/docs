@@ -42,21 +42,29 @@ As a payment method, virtual accounts allow a user to wire funds directly to the
 The steps to set up the virtual account are: 
 
 <Steps>
-  <Step title="You create a wallet for the account">
-    You call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
-    <Warning>
-      **Caution – Currency must be consistent**
+<Step title="You create a wallet for the account">
+You call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
+<Warning>
+**Caution – Currency must be consistent**
 
-      The currency of the wallet must match the currency of the account you intend to create. See [countries and currencies](#iban-countries-and-currencies) for details.
-    </Warning>
-  </Step>
-  <Step title="You create the virtual account">
-    You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the country and purpose (see [types](#types) for details).
+The currency of the wallet must match the currency of the account you intend to create. See [countries and currencies](#iban-countries-and-currencies) for details.
+</Warning>
+</Step>
+<Step title="You create the virtual account">
+You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the country and purpose (see [types](#types) for details).
 
-    The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
+The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
-    You should set up a <a href="/webhooks">webhook</a> for the `VIRTUAL_ACCOUNT_ACTIVE` event type to be notified that the account has been successfully set up.
-  </Step>
+<Check>
+**Best practice – Set up webhook for active accounts**
+
+The account `Status` must be `ACTIVE` to receive funds, otherwise any funds sent to the account details are returned. 
+
+Therefore, you are strongly advised to set up a <a href="/webhooks">webhook</a> for the `VIRTUAL_ACCOUNT_ACTIVE` event type to be notified that the account is ready for use.
+
+You should also set up the other [webhooks](#webhooks) for the other [status changes](#status).
+</Check>
+</Step>
 </Steps>
 
 ### Payment flow
@@ -71,13 +79,11 @@ The payment flow is as follows:
 
     You can also create a unique custom reference for the user to use for the payment.
 
-    <Note>
-      **Note – Ensure account is `ACTIVE`**
-
-      In most countries, setting up virtual accounts is instantaneous and so can be done just before presenting the account to the user.
+    <Warning>
+      **Caution – Ensure account is `ACTIVE`**
       
-      However, you must always ensure the account is `ACTIVE` before inviting the payment.
-    </Note>
+      You must always ensure the account is `ACTIVE` before inviting a payment, otherwise the funds will be returned.
+    </Warning>
   </Step>
   <Step title="You present the payment details to the user">
     You display the account details along with your custom reference.
@@ -104,12 +110,12 @@ The payment flow is as follows:
   </Step>
 </Steps>
 
-### Status and webhooks
+### Status
 
 The `Status` of the Virtual Account can have the following values:  
-- `PENDING` – The account creation request is being processed and full account details may not yet be returned. `PENDING` can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
+- `PENDING` – The account creation request is being processed and full account details may not yet be returned. Any funds sent to the account are returned (if account details exist). `PENDING` can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
 - `ACTIVE` – The account is active and can receive funds. `ACTIVE` can transition to `BLOCKED` or `CLOSED`.
-- `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
+- `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. This temporary status may be used during processes relating to user verification or fraud screening. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
 - `CLOSED` – The account has been deactivated and is closed. Any funds sent to the account are returned. This is a final state.
 - `FAILED` – The account creation request failed or was rejected. This final state is rare. Any funds sent to the account are returned (if account details exist). Depending on when the failure occurred, the following fields may be `null`:
     - `CreditedUserId`
@@ -124,11 +130,15 @@ The possible `Status` changes are summarized in this diagram:
 <img className="block dark:hidden" src="/images/diagram_virtual_account_status_light.svg" />
 <img className="hidden dark:block" src="/images/diagram_virtual_account_status_dark.svg" />
 
-You can set up <a href="/webhooks">webhook notifications</a> for the following event types to be notified when a Virtual Account changes status:
+### Webhooks
+
+You should set up <a href="/webhooks">webhook notifications</a> for the following event types to be notified when a Virtual Account changes status:
 - `VIRTUAL_ACCOUNT_ACTIVE`
 - `VIRTUAL_ACCOUNT_BLOCKED`
 - `VIRTUAL_ACCOUNT_CLOSED`
 - `VIRTUAL_ACCOUNT_FAILED`
+
+There is no event type corresponding to the `PENDING` status.
 
 ### Endpoints
 
