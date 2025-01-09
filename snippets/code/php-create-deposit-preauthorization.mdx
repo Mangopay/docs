@@ -1,0 +1,51 @@
+  ```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $cardId = 'card_m_01J420XC7KAW655XPP12SC28HS';
+
+    $depositPreauth = new MangoPay\CreateDeposit;
+    $depositPreauth->AuthorId = $userId;
+    $depositPreauth->CardId = $cardId;
+
+    $depositPreauth->DebitedFunds = new Money();
+    $depositPreauth->DebitedFunds->Amount = 1000;
+    $depositPreauth->DebitedFunds->Currency = 'EUR';
+
+    $depositPreauth->BrowserInfo = new BrowserInfo();    
+    $depositPreauth->BrowserInfo->AcceptHeader = "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8";
+    $depositPreauth->BrowserInfo->JavaEnabled = true;
+    $depositPreauth->BrowserInfo->Language = "en";
+    $depositPreauth->BrowserInfo->ColorDepth = 4;
+    $depositPreauth->BrowserInfo->ScreenHeight = 1800;
+    $depositPreauth->BrowserInfo->ScreenWidth = 400;
+    $depositPreauth->BrowserInfo->TimeZoneOffset = 60;
+    $depositPreauth->BrowserInfo->UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+    $depositPreauth->BrowserInfo->JavascriptEnabled = true;
+
+    $depositPreauth->IpAddress = "192.158.1.38";
+    $depositPreauth->Culture = "FR";
+    $depositPreauth->SecureModeReturnURL = "https://docs.mangopay.com/please-ignore";
+
+    $createDepositPreauth = $api->Deposits->Create($depositPreauth);
+
+    print_r($createDepositPreauth);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```

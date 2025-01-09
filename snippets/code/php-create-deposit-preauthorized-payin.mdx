@@ -1,0 +1,43 @@
+  ```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $cardId = 'card_m_01HT2C9KB8A6NZCN2X4PRMHHRX';
+    $walletId = 'wlt_m_01HQT6422EER2N7FPRXWTSDCSV';
+    $depositId = 'deposit_m_01HT2F0KX72D4JE70T4RQRT9XN';
+
+    $depositPayIn = new CreateCardPreAuthorizedDepositPayIn();
+    $depositPayIn->AuthorId = $userId;
+    $depositPayIn->DepositId = $depositId;
+    $depositPayIn->CreditedWalletId = $walletId;
+
+    $depositPayIn->DebitedFunds = new Money();
+    $depositPayIn->DebitedFunds->Amount = 1000;
+    $depositPayIn->DebitedFunds->Currency = 'EUR';
+
+    $depositPayIn->Fees = new Money();
+    $depositPayIn->Fees->Amount = 0;
+    $depositPayIn->Fees->Currency = 'EUR';
+
+    $createPayIn = $api->PayIns->CreateCardPreAuthorizedDepositPayIn($depositPayIn);
+
+    print_r($createPayIn);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```
