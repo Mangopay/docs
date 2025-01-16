@@ -1,0 +1,84 @@
+---
+title: Restrictions on Payer users
+---
+
+Mangopay is updating its rules on the Payer category of users to enhance security for your platform and comply with regulatory requirements. These changes aim to provide a safer experience for all users.
+
+This page outlines the rules that are being enforced. It aims to provide a description of what's changing.
+
+## User category
+
+The rules are based on Mangopay's user categories: Payer and Owner.
+
+All users – Natural and Legal (of all types) – must be categorized into one of two groups:
+
+- **Payer** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `PAYER`. The Payer category of user only requires basic information (e.g. name, email address). The Payer category is designed to register individuals or businesses making pay-ins on your platform using a Mangopay [payment method](/guides/payment-methods).
+- **Owner** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `OWNER`. The Owner category of user requires more detailed information (e.g. date of birth, country of residence), and requires the user to accept Mangopay [terms and conditions](/guides/users/terms). The Owner category is designed to register and identify individuals and businesses that are receiving funds from other users, and who can request [KYC verification](/guides/users/verification) and, once verified successfully, [payouts](/guides/payouts) to an external bank account.
+
+An Owner can do everything a Payer can do. Once a user is an Owner, they cannot revert back to the Payer category.
+
+### Rule: UserCategory parameter is mandatory on POST and PUT calls
+
+The `UserCategory` parameter is required on all API calls to create (POST) or update (PUT) a user. While Mangopay policy already requires categorization, the change is being enforced technically.
+
+API calls to the POST or PUT endpoints that don't contain `UserCategory` will return an error.
+
+<Accordion title="Example of error that will be returned">
+```json
+{
+  "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+      "UserCategory": "The UserCategory field is required."
+    }
+}
+```
+</Accordion>
+
+## Wallet transfers
+
+There are two rules that relate to wallet-to-wallet [Transfers](/api-reference/transfers/transfer-object) inside the Mangopay environment.
+
+### Rule: Payers can’t make transfers to other Payers
+
+Payers are not able to initiate a transfer from a wallet they own to a wallet owned by another Payer user. 
+
+However, Payers **are** allowed to initiate a transfer between two wallets they own, or to a wallet owned by an Owner.
+
+### Rule: Payers can’t receive transfers from Owners
+
+Payers are not able to receive a transfer from an Owner user. This, combined with the previous rule, means that Payers are not allowed to receive transfers from any other user. 
+
+Payers are only allowed to transfer funds between two wallets they own.
+
+In API terms this means that if the Transfer's `AuthorId` specifies a Payer, then that same user must be specified as the `Owner` of the wallets referenced in both the `DebitedWalletId` and `CreditedWalletId`.
+
+## Payouts
+
+### Rule: Payers can’t make payouts
+
+Payers are not allowed to request a payout from a Mangopay wallet to an external bank account. 
+
+This restriction also applies to other actors, such as Owner users or platforms themselves, requesting payouts to [Bank Accounts](/api-reference/bank-accounts/bank-account-object) where a Payer is identified as the owner by the `UserId`.
+
+### Exception: Payouts identified as refunds
+
+For some payment methods, notably direct [bank wire pay-ins](/api-reference/bank-wire-payins/create-bank-wire-payin) and bank wire [pay-ins to virtual IBANs](/api-reference/banking-aliases/view-payin-banking-alias), a payout is commonly used as a solution to refund a pay-in. For these two payment methods, platforms can continue using payouts to refund pay-ins so long as they specify the initial pay-in in the payout.
+
+To do this, platforms must use the `PaymentRef` parameter on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, setting the `ReasonType` to `PAYIN_REFUND` and sending the `Id` of the initial pay-in as the `ReferenceId`.
+
+If the pay-in refund is not specified, the payout will be rejected. This feature must be used for both Payers and Owners.
+
+## User verification
+
+There are two rules relating to user verification processes.
+
+### Payers can’t request KYC verification or be verified
+
+Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)) or have KYC verified status (that is, a Payer can't have the `KYCLevel` value `REGULAR`).
+
+### Payers can’t declare UBOs
+
+Payers are not able to declare beneficial owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object), which forms part of the KYC verification process for Legal Businesses.
