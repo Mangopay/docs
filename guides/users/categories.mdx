@@ -51,7 +51,7 @@ To create a Payer, you need to provide the following information:
             <td class="table-content">Natural user</td>
             <td class="table-content">
                 - First name
-                -  Last name
+                - Last name
                 - Email
             </td>
         </tr>
@@ -101,6 +101,7 @@ Owners can do everything Payers can. The following table summarizes the actions 
                 - Make payments into their wallet (and be refunded)
                 - Transfer money to an Owner’s wallet
                 - Receive transfers to their wallet from another user
+                - Request KYC verification
             </td>
             <td class="table-content">Request a payout to their bank account **unless they have been verified**. Find out more about [Verification](/guides/users/verification).</td>
         </tr>
@@ -173,21 +174,19 @@ The relevant T&Cs for your users are provided when your platform signs the contr
 
 In the API, whether a user is a Payer or an Owner is governed by the `UserCategory` parameter, which is available on both the natural and legal user objects and required for all users.  
 
-<Card title="Endpoints" href="/api-reference/users/natural-user-object">The Natural User object</Card>  
+<Card title="Endpoints" href="/api-reference/users/natural-user-object">
+The Natural User object
+</Card>  
 
-<Card title="Endpoints" href="/api-reference/users/legal-user-object">The Legal User object</Card>  
+<Card title="Endpoints" href="/api-reference/users/legal-user-object">
+The Legal User object
+</Card>  
 
 The `UserCategory` parameter has the following values:  
-- PAYER - User who can only make pay-ins to their wallet and transfers to other wallets.  
-- OWNER - User who can do everything a Payer can, plus receive transfers to their wallet. To request payouts, an Owner user’s `KYCLevel` must be `REGULAR`. For more information, see the <a href="/guides/users/verification">Verification</a> section.  
+- `PAYER` – User who can only make pay-ins to their wallets and transfers to other wallets.  
+- `OWNER` – User who can also receive transfers to their wallets. Owners are able to request [KYC verification](/guides/users/verification), which if successful gives them the `KYCLevel` of `REGULAR` and the ability to request payouts.
 
 The required information for Owners (outlined above) is required if `UserCategory` is `OWNER`. These parameters are returned `null` if the category is `PAYER`, even if they are sent.  
-
-<Note>  
-**Note - Users created before `UserCategory`** 
-  
-Users created before May 2022, when `UserCategory` was introduced, have the value `UNKNOWN`. If you have Unknown users, they must be modified to either Payer or Owner by sending the `UserCategory` (along with the required parameters if Owner).  
-</Note>  
 
 ### Changing a Payer to an Owner
 
@@ -213,11 +212,11 @@ Update the user object with the collected information, setting `UserCategory` to
 <CodeGroup>  
 ```json REST
 {
-  "Birthday":“1463496101”,
-  "Nationality":“GB”,
-  "CountryOfResidence":“FR”,
-  "TermsAndConditionsAccepted":true,
-  "UserCategory":”OWNER”
+    "UserCategory": "OWNER",
+    "TermsAndConditionsAccepted": true,
+    "Birthday": 652117514,
+    "Nationality": "FR",
+    "CountryOfResidence": "FR"
 }
 ```  
 
