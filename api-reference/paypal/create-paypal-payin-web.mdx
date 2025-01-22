@@ -1,0 +1,188 @@
+---
+title: '[Deprecated] Create a PayPal PayIn'  
+api: 'POST /v2.01/{ClientId}/payins/paypal/web'  
+---
+
+import PaypalBuyerAccountEmailResponse from '/snippets/p-response/PaypalBuyerAccountEmailResponse.mdx';
+import ShippingAddressResponse from '/snippets/p-response/ShippingAddressResponse.mdx';
+import Culture2Response from '/snippets/p-response/Culture2Response.mdx';
+import StatementDescriptorResponse from '/snippets/p-response/StatementDescriptorResponse.mdx';
+import RedirectURLResponse from '/snippets/p-response/RedirectURLResponse.mdx';
+import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
+import ExecutionTypeResponse from '/snippets/p-response/ExecutionTypeResponse.mdx';
+import PaymentType8Response from '/snippets/p-response/PaymentType8Response.mdx';
+import DebitedWalletIdResponse from '/snippets/p-response/DebitedWalletIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
+import TypeResponse from '/snippets/p-response/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/p-response/Status2Response.mdx';
+import Fees6Response from '/snippets/p-response/Fees6Response.mdx';
+import CreditedFunds6Response from '/snippets/p-response/CreditedFunds6Response.mdx';
+import DebitedFunds8Response from '/snippets/p-response/DebitedFunds8Response.mdx';
+import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.mdx';
+import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import TagResponse from '/snippets/p-response/TagResponse.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+
+import ShippingAddress from '/snippets/p-body/ShippingAddress.mdx';
+import Culture2 from '/snippets/p-body/Culture2.mdx';
+import StatementDescriptor from '/snippets/p-body/StatementDescriptor.mdx';
+import ReturnURL from '/snippets/p-body/ReturnURL.mdx';
+import CreditedWalletId from '/snippets/p-body/CreditedWalletId.mdx';
+import Fees12 from '/snippets/p-body/Fees12.mdx';
+import DebitedFunds13 from '/snippets/p-body/DebitedFunds13.mdx';
+import AuthorId from '/snippets/p-body/AuthorId.mdx';
+import Tag from '/snippets/p-body/Tag.mdx';
+  
+import RestCreatePaypalPayinWeb from '/snippets/code/rest-create-paypal-payin-web.mdx';
+
+<Warning>
+**Caution – Deprecated legacy integration**
+
+This endpoint is the legacy integration of PayPal with Mangopay. If you are integrating PayPal for the first time, use the new [POST Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin) endpoint.
+
+Existing legacy integrations continue to be supported, but any integration enhancements are only developed on the new endpoint. 
+
+Platforms are strongly encouraged to move to the new integration to benefit from additional features, including:
+- [Recurring payment flows](/guides/payment-methods/paypal#recurring-payments)
+- Support for [tracking information](/guides/payment-methods/paypal#tracking-information) to sync evidence of shipped goods
+- Additional API payload data such as shipping preference, platform references, and PayPal user information
+</Warning>
+
+### Body parameters  
+
+<Tag />  
+
+<AuthorId />  
+
+<DebitedFunds13 />  
+
+<Fees12 />  
+
+<CreditedWalletId />  
+
+<ReturnURL />  
+
+<Culture2 />
+
+<ShippingAddress />  
+
+<StatementDescriptor />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200">  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<DebitedFunds8Response />  
+
+<CreditedFunds6Response />  
+
+<Fees6Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<DebitedWalletIdResponse />  
+
+<PaymentType8Response />  
+
+<ExecutionTypeResponse />  
+
+<RedirectURLResponse />  
+
+<ReturnURLResponse />  
+
+<Culture2Response />  
+
+<ShippingAddressResponse />
+
+<StatementDescriptorResponse />  
+
+<PaypalBuyerAccountEmailResponse />  
+
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>  
+
+```json 200 - Created  
+{
+    "Id": "payin_m_01JJ6ZR0EG3WEFX06DWD672816",
+    "Tag": "Example of deprecated PayPal pay-in",
+    "CreationDate": 1737544865,
+    "AuthorId": "user_m_01JJ6ZQESERHQ3PYWZY5QFS1Z1",
+    "CreditedUserId": "user_m_01JJ6ZQESERHQ3PYWZY5QFS1Z1",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1980
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1980
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01JJ25YQA60D8FVZYEBMXG733F",
+    "DebitedWalletId": null,
+    "PaymentType": "PAYPAL",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://www.paypal.com/checkoutnow?token=1WB42231AB437123G",
+    "ReturnURL": "https://example.com?transactionId=payin_m_01JJ6ZR0EG3WEFX06DWD672816",
+    "Culture": "EN",
+    "ShippingAddress": {
+        "RecipientName": "Alex Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-france",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "PaypalBuyerAccountEmail": null,
+    "StatementDescriptor": null
+}
+```  
+
+</ResponseExample>  
+
+<RequestExample>  
+    <RestCreatePaypalPayinWeb />
+</RequestExample>
