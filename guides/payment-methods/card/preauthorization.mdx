@@ -60,29 +60,31 @@ Mangopay’s 7-day preauthorization works as follows:
 -   Secure the funds with the Create a Preauthorization endpoint
 -   Capture the funds (partially or all at once) with the Card Preauthorized PayIn
 
-<a href="/guides/payment-methods/card/preauthorization/how-to" target="_blank">How to process a 7-day preauthorization &rarr;</a>
+<a href="/guides/payment-methods/card/preauthorization/how-to" target="_blank">How to process a 7-day preauthorization</a> **&rarr;**
 
 ### Multiple partial captures
 
 The multi-capture functionality allows you to make several partial captures of preauthorized funds.
 
 <Note>
-    **Note** Multi-capture is only possible with CB, Visa, and Mastercard
-    payment methods.
+**Note – Card brand availability** 
+
+Multi-capture is only possible with CB, Visa, and Mastercard card brands (`CB_VISA_MASTERCARD` card type).
 </Note>
 
-Let’s take the example of a marketplace where buyers tend to have articles from multiple vendors in their baskets.
+Let's take the example of a user purchasing several items from different sellers in the same basket:
 
--   Customers will make one single payment for all these articles (preauthorization)
--   However, from the platform standpoint, you will make one partial capture (preauthorized pay-in) per vendor when the order is validated or shipped. If the order is not fulfilled, the remaining funds can be released.
+- The paying user makes one single payment for all these articles (preauthorization)
+- Your platform can then make one partial capture (preauthorized pay-in) per seller when the order is validated or shipped. If the order is not fulfilled, the remaining funds can be released.
 
 Transferring the funds to the right seller and handling potential refunds becomes a lot easier this way.
 
 <Warning>
-    **Caution - Idempotency key required for multi-capture** Unless accompanied
-    by an idempotency key, two pay-ins are considered as duplicate if they are
-    made: Within 24 hours For the same amount and currency With the same
-    `CardId`
+**Caution - Idempotency key required for multi-capture** 
+
+Unless accompanied by an idempotency key, two pay-ins are considered as duplicate if they are made: 
+- Within 24 hours 
+- For the same amount and currency With the same `CardId`
 </Warning>
 
 ## Related resources  
