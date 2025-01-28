@@ -6,8 +6,6 @@ sidebarTitle: Overview
 ---
   
 import Chargeback from '/snippets/glossary/chargeback.mdx';
-import Issuer from '/snippets/glossary/issuer.mdx';
-import Wallet from '/snippets/glossary/wallet.mdx';
 import WorkingDay from '/snippets/glossary/working-day.mdx';
 
 import LogoSepa from '/snippets/logos/logo-sepa.mdx';
@@ -119,7 +117,7 @@ Once the mandate’s `Status` is `SUBMITTED`, you can request the first pay-in u
 <Step title="Mangopay processes the pay-in">
 Due to the nature of direct debits, payments take a few days to clear – see [processing times](#pay-in-processing-times) below.
 
-The pay-in’s `Status` changes to `SUCCEEDED` when the funds arrive on the wallet.
+The wallet is credited when the pay-in's `Status` changes to `SUCCEEDED`.
 
 You can be notified of this by setting up a <a href="/webhooks">webhook</a> for the `PAYIN_NORMAL_SUCCEEDED` event type. 
 
@@ -138,7 +136,7 @@ You can be notified if this happens by setting up webhooks for <a href="/webhook
 
 When a direct debit pay-in is created, the API returns a `ChargeDate`. The charge date is used to provide advance notice to the user of the future charge, and is set at midnight (00:00) on the given day.
 
-The payment does not succeed until it is confirmed by the issuer, at which point the pay-in `Status` changes to `SUCCEEDED`. The user's account is usually debited the following day.
+When the issuer confirms the scheduled payment, the pay-in `Status` changes to `SUCCEEDED` and the wallet is credited. The user's account is usually debited the following day, but it depends on their bank. 
 
 ### Timings
 
@@ -173,12 +171,6 @@ The following table describes the timings relative to the pay-in's `ChargeDate` 
             <td class="table-content">D+1</td>
             <td class="table-content">D+1</td>
             <td class="table-content">D+1</td>
-        </tr>
-        <tr>
-            <th class="header">Account debited</th>
-            <td class="table-content">D+2</td>
-            <td class="table-content">D+2</td>
-            <td class="table-content">D+2</td>
         </tr>
         <tr>
             <th class="header">Total business days</th>
@@ -234,14 +226,8 @@ The following table provides an example in terms of weekdays:
             <td class="table-content">Tue</td>
         </tr>
         <tr>
-            <th class="header">Account debited</th>
-            <td class="table-content">Wed</td>
-            <td class="table-content">Wed</td>
-            <td class="table-content">Wed</td>
-        </tr>
-        <tr>
             <th class="header">Total business days</th>
-            <td class="table-content">4</td>
+            <td class="table-content">3</td>
             <td class="table-content">6</td>
             <td class="table-content">5</td>
         </tr>

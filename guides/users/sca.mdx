@@ -72,14 +72,22 @@ Alternatively, you can use +33611111111 and the passcode 702100 to simulate a su
 This section describes how to handle the SCA redirection when required by an SCA scenario.
 
 <Steps>
+<Step title="Call an endpoint that triggers SCA">
+Your platform needs to redirect the user for SCA authentication when you take one of the following actions and call the relevant endpoint: 
+- Create an Owner user by calling [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) and setting `UserCategory` to `OWNER`
+- Transition an existing Payer to Owner by calling [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [POST Categorize a Legal User](/api-reference/users/categorize-legal-user) and setting `UserCategory` to `OWNER`
+- Obtain a new SCA redirection link by calling [POST Activate a User](/api-reference/users/activate-user), if a previous authentication attempt was unsuccessful or the session timed out
+- Modify the SCA contact details of an already enrolled Owner user by sending new `PhoneNumber` and `Email` to [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) or `LegalRepresentative.PhoneNumber` and `LegalRepresentative.Email` to [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+
+See the dedicated [enrollment guide](/guides/users/sca/enrollment) for details about SCA scenarios during user registration.
+</Step>
 <Step title="Retrieve the SCA RedirectUrl">
 
-In the API response from an endpoint triggering an [SCA scenario](/guides/users/sca/enrollment#sca-scenarios), the `PendingUserAction` object contains a `RedirectUrl` value. For example:
+In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value. For example:
 
 ```json
 {
 ...
-	"UserStatus": "PENDING_USER_ACTION",
 	"PendingUserAction": {
 		"RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
     },
@@ -100,8 +108,12 @@ https<span>://</span>sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191
 </table> 
 
 </Step>
-<Step title="Add your returnUrl before redirection">
-Before redirecting the user on this URL, you must add your `returnUrl` as a query parameter, being sure to percent-encode any non-ASCII characters in your URL.
+<Step title="Add your returnUrl and redirect the user">
+Define a `returnUrl` to which the user will be returned after they authenticate on the Mangopay-hosted page, regardless of the outcome. 
+
+Append your URL to the `RedirectUrl` response value as a query parameter, being sure to percent-encode any non-ASCII characters. 
+
+Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value and your added `returnUrl`.
 
 For example, if your `returnUrl` is <span>https:</span>//example.com, you should redirect the user on:
 
@@ -135,14 +147,16 @@ For the OTP authentication method, this means requesting and submitting a code v
 
 The session of the `RedirectUrl` is valid for 5 minutes. If the user does not submit a successful SMS OTP before this time, the session can no longer be used and they are returned on your return URL.
 
-If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint **POST Obtain an SCA session**.
+If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint [POST Activate a User](/api-reference/users/activate-user).
 </Note>
 </Step>
-<Step title="Handle the returnUrl parameters">
+<Step title="Retrieve the returnUrl query parameters">
 
-When the user submits a successful OTP, they are redirected to your `returnUrl`.
+Once the user completes authentication (successfully or not) they are redirected to your `returnUrl`.
 
-Mangopay adds two query parameters to your `returnUrl`. For example:
+On redirection, Mangopay adds two query parameters to your `returnUrl`: `controlStatus` and `actionStatus`. 
+
+For example:
 
 <table>
 <tbody>
@@ -154,51 +168,20 @@ Mangopay adds two query parameters to your `returnUrl`. For example:
 </tbody>
 </table> 
 
-The first relates to the SCA control that was done:
-  
-<ResponseField
-  name="controlStatus"
-  type="string"
->
-**Values:** `VALIDATED`, `FAILED` 
+</Step>
+<Step title="Check the status of the user and the action">
 
-The status of the SCA control:
-
+The `controlStatus` parameter indicates the values of the control: 
 - `VALIDATED` - The control was successful.
 - `FAILED` - The control was unsuccessful and cannot be reused.
-</ResponseField>
 
-The second query parameter relates to the action that was being requested for the user:
+If the `controlStatus` is **not** `VALIDATED`, call the [POST Activate a User](/api-reference/users/activate-user) to obtain a new SCA `RedirectUrl` and retry the authentication session. 
 
-<ResponseField
-  name="actionStatus"
-  type="string"
->
-**Values:** `SUCCEEDED`, `FAILED` 
-
-The status of the action being controlled:
-
+The `actionStatus` parameter indicates the status of the action being controlled: 
 - `SUCCEEDED` - The action was successful.
-- `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown. You should check the API resource using a GET call to determine the final outcome.
-</ResponseField>
-</Step>
-<Step title="Check the status of the user and action">
-You should check the API resource(s) involved in the SCA session to determine the final outcome of the user and the action attempted.
+- `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown.
 
-In the case of Owner registration, both can be determined with the same call:
-
-<Card title="GET View a User (SCA)" href="/api-reference/users/view-user-sca">
-See the details of a Natural or Legal user 
-</Card>
-
-If `UserCategory` is `OWNER` and `UserStatus` is `ACTIVE`, then the SCA session was successful. 
-
-If the `UserStatus` is `PENDING_USER_ACTION`, then call the activation endpoint to obtain a new `RedirectUrl` and retry the session.
-
-<Card title="POST Obtain an SCA session" href="/api-reference/users/activate-user">
-Obtain a new SCA redirection link to authenticate a user
-</Card>
-
+If the `actionStatus` is **not** `SUCCEEDED`, call the [GET View a User](/api-reference/users/view-user) to check the `UserStatus` of the user. If it is still `PENDING_USER_ACTION`, then call the [POST Activate a User](/api-reference/users/activate-user) to retry the authentication. 
 </Step>
 </Steps>
 

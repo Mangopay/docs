@@ -25,6 +25,7 @@ import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import StatementDescriptorResponse_Refunds from '/snippets/p-response/StatementDescriptorResponse_Refunds.mdx';
 
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 import PhpViewRefund from '/snippets/code/php-view-refund.mdx';
 import NodeViewRefund from '/snippets/code/node-view-refund.mdx';
 import RubyViewARefund from '/snippets/code/ruby-view-a-refund.mdx';
@@ -45,7 +46,9 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200" defaultOpen>  
 
 <IdResponse />  
 
@@ -91,48 +94,160 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 </Accordion></AccordionGroup>  
 
-<ResponseExample>  
+<ResponseExample>
 
-```json 200
+```json Pay-in refund
 {
-    "Id":"151981490",
-    "Tag":null,
-    "CreationDate":1663749078,
-    "AuthorId":"142036728",
-    "CreditedUserId":null,
-    "DebitedFunds":{
-        "Currency":"EUR",
-        "Amount":1500
+    "Id": "refund_m_01JJ23MDDHCXX1GYVKDPYNJKJ8",
+    "Tag": "Example with fees refunded",
+    "CreationDate": 1730373612,
+    "AuthorId": "user_m_01JJ23MPT0Y79AFQA637ZK81CF",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 500
     },
-    "CreditedFunds":{
-        "Currency":"EUR",
-        "Amount":1500
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 550
     },
-    "Fees":{
-        "Currency":"EUR",
-        "Amount":0
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": -50
     },
-    "Status":"SUCCEEDED",
-    "ResultCode":"000000",
-    "ResultMessage":"Success",
-    "ExecutionDate":1663749078,
-    "Type":"PAYIN",
-    "Nature":"REFUND",
-    "InitialTransactionId":"151981274",
-    "InitialTransactionType":"PAYOUT",
-    "InitialTransactionNature":"REGULAR",
-    "DebitedWalletId":null,
-    "CreditedWalletId":"145389978",
-    "RefundReason":{
-        "RefundReasonMessage":"OTHER",
-        "RefundReasonType":"OTHER"
-    }
-}  
- ```  
-
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1730373612,
+    "Type": "PAYOUT",
+    "Nature": "REFUND",
+    "InitialTransactionId": "payin_m_01JJ23NT128Y1V1B5B16VKMQ92",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR",
+    "DebitedWalletId": "wlt_m_01JJ23NKD34XA6G4N70ZFKFH5W",
+    "CreditedWalletId": null,
+    "RefundReason": {
+        "RefundReasonMessage": null,
+        "RefundReasonType": "INITIALIZED_BY_CLIENT"
+    },
+    "StatementDescriptor": null
+}
+```
+```json Transfer refund
+{
+    "Id": "refund_m_01JJ24GYE8X6MMSR26F0A2VRR9",
+    "Tag": "Example with fees taken",
+    "CreationDate": 1737386006,
+    "AuthorId": "user_m_01JJ24H7HV1H38GRCCY4Q8ZR85",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 2000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1900
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1737386006,
+    "Type": "TRANSFER",
+    "Nature": "REFUND",
+    "InitialTransactionId": "xfer_m_01JJ24NTCVFSPH5TK453Y623HF",
+    "InitialTransactionType": "TRANSFER",
+    "InitialTransactionNature": "REGULAR",
+    "DebitedWalletId": "wlt_m_01JJ24P7QXT0W0F917DXNQF49S",
+    "CreditedWalletId": "wlt_m_01JJ24PH51DAJR2H63BDCHSN84",
+    "RefundReason": {
+        "RefundReasonMessage": null,
+        "RefundReasonType": "OTHER"
+    },
+    "StatementDescriptor": null
+}
+```
+```json Payout return
+{
+    "Id": "refund_m_01JJ22Z1JGMFEHB5P4B5DZ8CCQ",
+    "Tag": null,
+    "CreationDate": 1734628083,
+    "AuthorId": "user_m_01JJ22ZEP6JQQ5KMBPHBGYFQBG",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 12000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 12000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1734628084,
+    "Type": "PAYIN",
+    "Nature": "REFUND",
+    "InitialTransactionId": "po_m_01JJ2303Q94M2SNSFEX4M3W3N0",
+    "InitialTransactionType": "PAYOUT",
+    "InitialTransactionNature": "REGULAR",
+    "DebitedWalletId": null,
+    "CreditedWalletId": "wlt_m_01JJ230JF16SKNVFR2FRPHEZWZ",
+    "RefundReason": {
+        "RefundReasonMessage": "AC04",
+        "RefundReasonType": "BANKACCOUNT_HAS_BEEN_CLOSED"
+    },
+    "StatementDescriptor": null
+}
+```
+```json Repudiation return
+{
+    "Id": "refund_m_01JJ22PR01NMY4M8HXB3AW6KG7",
+    "Tag": null,
+    "CreationDate": 1737367609,
+    "AuthorId": "user_m_01JJ22Q2A0NXNK26B67BD1MP4R",
+    "CreditedUserId": "your-mangopay-client-id",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 13000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 13000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1737367609,
+    "Type": "PAYIN",
+    "Nature": "REFUND",
+    "InitialTransactionId": "repud_m_01JJ22HPJ8Y0E4YW7D9XR96WZY",
+    "InitialTransactionType": "PAYOUT",
+    "InitialTransactionNature": "REPUDIATION",
+    "DebitedWalletId": null,
+    "CreditedWalletId": "CREDIT_EUR",
+    "RefundReason": {
+        "RefundReasonMessage": null,
+        "RefundReasonType": "OTHER"
+    },
+    "StatementDescriptor": null
+}
+```
 </ResponseExample>  
 
 <RequestExample>  
+    <RestGetNoBody />
     <PhpViewRefund />
     <NodeViewRefund />
     <RubyViewARefund />
