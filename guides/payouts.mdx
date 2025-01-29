@@ -19,7 +19,7 @@ How Mangopay sends a payout is determined by:
 
 ##### 1. The user’s bank account and its type  
 
-Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see prerequisites below).  
+Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see [bank accounts](/#bank-accounts) prerequisites below).  
 
 The country of registration of a bank account is not linked to its currency. For example, a EUR payout to an account registered in the US requires a US-type account. A CAD payout to an account registered in Italy requires an IBAN-type account.  
 
@@ -206,7 +206,19 @@ A [Refund](/api-reference/refunds/refund-object) object cannot be created to rei
 
 In these cases, a payout must be used instead.
 
-For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request. To do so, use `PaymentRef` body parameter when you call the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint:
+### Registering the bank account
+
+When you register the user's bank account, you should use the data returned on the pay-in as far as possible (and depending on the [type of bank account](/#bank-accounts) you need to create). You can obtain data via a GET call on the pay-in.
+
+On [GET View a PayIn (Bank Wire)](/api-reference/bank-wire-payins/view-payin-bank-wire), 
+
+
+
+
+
+### Requesting the payout
+
+For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request. To do so, use the `PaymentRef` body parameter when you call the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint:
 
 1. Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
 2. Provide the `Id` of the initial pay-in as the `ReferenceId` value
@@ -216,7 +228,6 @@ Note the following conditions and possibilities:
 - The `ReferenceId` value must be the `Id` of a pay-in that was successful (it's `Status` is `SUCCEEDED`)
 - The `Fees` value can't be negative, meaning that you can't reimburse any fees taken on the initial bank wire pay-in
 - You can create multiple payouts that reference the same pay-in `Id`
-- The payout or payouts can exceed the amount of the initial transaction up to 115%
 
 If a payout containing a `PAYIN_REFUND` reference is returned, it follows the same process as other payouts.
 
