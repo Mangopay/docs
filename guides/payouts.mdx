@@ -19,7 +19,7 @@ How Mangopay sends a payout is determined by:
 
 ##### 1. The user’s bank account and its type  
 
-Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see prerequisites below).  
+Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see [bank accounts](/#bank-accounts) prerequisites below).  
 
 The country of registration of a bank account is not linked to its currency. For example, a EUR payout to an account registered in the US requires a US-type account. A CAD payout to an account registered in Italy requires an IBAN-type account.  
 
@@ -198,18 +198,49 @@ When activated, cost-bearing uses the OUR configuration of <a href="/guides/glos
 
 Please note that this setting can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>. 
 
-## Payout refunds  
+## Refunds using payouts
 
-Successful payouts can be rejected by the acquiring bank (if the bank account is closed, or if it’s a savings account for instance), and this even if the payout `Status` is `SUCCEEDED`. In this case, Mangopay generates a Payout Refund request so that the funds can be returned to the wallet.  
+A [Refund](/api-reference/refunds/refund-object) object cannot be created to reimburse the initial pay-in on two [payment methods](/guides/payment-methods): 
+- [Bank wire pay-in](/api-reference/bank-wire-payins/bank-wire-payin-object)
+- [Pay-in to virtual IBAN](/api-reference/banking-aliases/external-instruction-bank-wire-payin-object)
 
-We recommend you keep track of these refunds by setting up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a>:  
+In these cases, a payout must be used instead.
+
+For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request. To do so, use the `PaymentRef` body parameter when you call the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint:
+
+1. Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
+2. Provide the `Id` of the initial pay-in as the `ReferenceId` value
+
+Note the following conditions and possibilities: 
+
+- The `ReferenceId` value must be the `Id` of a pay-in that was successful (it's `Status` is `SUCCEEDED`)
+- The `Fees` value can't be negative, meaning that you can't reimburse any fees taken on the initial bank wire pay-in
+- You can create multiple payouts that reference the same pay-in `Id`
+
+If a payout containing a `PAYIN_REFUND` reference is returned, it follows the same process as other payouts.
+
+<Note>
+**Note – Refunds using payouts via the Dashboard**
+
+The Mangopay Dashboard allows you to initiate refunds using payouts for bank wire and virtual IBAN pay-ins. To do so, use the ___Refund___ button on the pay-in details screen.
+</Note>
+
+## Payout returns  
+
+Successful payouts (i.e. with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
+
+In this scenario, Mangopay creates a Refund object for the payout so that the funds can be returned to the wallet.
+
+Set up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a> to be notified of this:  
 - PAYOUT_REFUND_CREATED  
 - PAYOUT_REFUND_SUCCEEDED  
 - PAYOUT_REFUND_FAILED  
 
-Additional information regarding the Payout Refund can be found in the `RefundReason` object returned by the API.  
+You can use the [GET View a Refund endpoint](/api-reference/refunds/view-refund) to see details of the payout return.
 
-Possible `RefundReasonType` are:  
+Additional information regarding the return can be found in the `RefundReason` object returned by the API.  
+
+Possible `RefundReasonType` are:
 - BANKACCOUNT_INCORRECT  
 - BANKACCOUNT_HAS_BEEN_CLOSED  
 - OWNER_DOT_NOT_MATCH_BANKACCOUNT  
