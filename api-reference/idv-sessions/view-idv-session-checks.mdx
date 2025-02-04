@@ -1,0 +1,262 @@
+---
+title: 'View Checks for an IDV Session'
+api: 'GET /v2.01/{ClientId}/identity-verifications/{IdvSessionId}/checks'
+description: 'Obtain verified user data and results of each check performed'
+---
+
+import SessionIdResponse from '/snippets/p-response/SessionIdResponse.mdx';
+import Status14Response from '/snippets/p-response/Status14Response.mdx';
+import CreationDate3Response from '/snippets/p-response/CreationDate3Response.mdx';
+import LastUpdate1Response from '/snippets/p-response/LastUpdate1Response.mdx';
+import ChecksResponse from '/snippets/p-response/ChecksResponse.mdx';
+
+import IdvSessionId from '/snippets/p-path/IdvSessionId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Path parameters
+
+<IdvSessionId />
+
+### Responses
+
+<AccordionGroup>
+
+<Accordion title="200">
+
+<SessionIdResponse />
+
+<Status14Response />
+
+<CreationDate3Response />
+
+<LastUpdate1Response />
+
+<ChecksResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>
+```json Legal - VALIDATED
+{
+    "SessionId": "idnver_01JH2ZK1MKAMG5H2Q20M5K6020",
+    "Status": "VALIDATED",
+    "CreationDate": 1736340768,
+    "LastUpdate": 1736341038,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JH2ZQEX65TJ7NMANSPYB5JXR",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "CreationDate": 1736340913,
+            "LastUpdate": 1736340913,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "Top Consulting"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JH2ZV6ZQDBT0VS1YKKPZC6GJ",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "CreationDate": 1736341036,
+            "LastUpdate": 1736341036,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "665452800"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_NATIONALITY",
+                    "Value": "FR"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_RESIDENCY",
+                    "Value": "FR"
+                },
+                {
+                    "Type": "DOCUMENT_TYPE",
+                    "Value": "DRIVERS_LICENSE"
+                },
+                {
+                    "Type": "DOCUMENT_NUMBER",
+                    "Value": "12AB12345"
+                },
+                {
+                    "Type": "DOCUMENT_EXPIRATION_DATE_UNIX",
+                    "Value": "2046902400"
+                }
+            ]
+        }
+    ]
+}
+```
+```json Legal - REFUSED
+{
+    "SessionId": "idnver_01JH35XNHDE7XPSN7PQ9M5E0TZ",
+    "Status": "REFUSED",
+    "CreationDate": 1736347407,
+    "LastUpdate": 1736347810,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JH35ZCE1HTMMFZ2V99YE8MC1",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "REFUSED",
+            "CreationDate": 1736347464,
+            "LastUpdate": 1736347464,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "Top Consulting"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": null
+                },
+                {
+                    "Type": "REFUSAL_REASON",
+                    "Value": "DOCUMENT_NOT_ACCEPTED"
+                },
+                {
+                    "Type": "REFUSAL_DESCRIPTION",
+                    "Value": "Document has been refused by the provider"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JH369WK0BMYXCBHFR0924FPB",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "REFUSED",
+            "CreationDate": 1736347808,
+            "LastUpdate": 1736347808,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "668649600"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_NATIONALITY",
+                    "Value": "France"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_RESIDENCY",
+                    "Value": "FR"
+                },
+                {
+                    "Type": "DOCUMENT_TYPE",
+                    "Value": "RESIDENCE_PERMIT"
+                },
+                {
+                    "Type": "DOCUMENT_NUMBER",
+                    "Value": "ABCDE0ABZ"
+                },
+                {
+                    "Type": "DOCUMENT_EXPIRATION_DATE_UNIX",
+                    "Value": "1926374400"
+                },
+                {
+                    "Type": "REFUSAL_REASON",
+                    "Value": "DOCUMENT_NOT_ACCEPTED"
+                },
+                {
+                    "Type": "REFUSAL_REASON",
+                    "Value": "DOCUMENT_NOT_ACCEPTED"
+                },
+                {
+                    "Type": "REFUSAL_DESCRIPTION",
+                    "Value": "Document IDV has been refused by the provider"
+                }
+            ]
+        }
+    ]
+}
+```
+```json Natural - VALIDATED
+{
+    "SessionId": "idnver_01JH3AP2HK21YC3FKMAM9YENWK",
+    "Status": "VALIDATED",
+    "CreationDate": 1736352401,
+    "LastUpdate": 1736352491,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JH3ARQVQG24JJ7KAPFBP3N22",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "CreationDate": 1736352489,
+            "LastUpdate": 1736352489,
+            "Data": [
+                {
+                    "Type": "FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "BIRTHDATE",
+                    "Value": "665452800"
+                },
+                {
+                    "Type": "NATIONALITY",
+                    "Value": "FR"
+                },
+                {
+                    "Type": "RESIDENCY",
+                    "Value": "FR"
+                },
+                {
+                    "Type": "DOCUMENT_TYPE",
+                    "Value": "DRIVERS_LICENSE"
+                },
+                {
+                    "Type": "DOCUMENT_NUMBER",
+                    "Value": "12AB12345"
+                },
+                {
+                    "Type": "DOCUMENT_EXPIRATION_DATE_UNIX",
+                    "Value": "2046902400"
+                }
+            ]
+        }
+    ]
+}
+```
+```json PENDING
+{
+    "SessionId": "idnver_01JH7GQYF8CQXZNJ9EAEV75GNV",
+    "Status": "PENDING",
+    "CreationDate": 1736492972,
+    "LastUpdate": 1736492973,
+    "Checks": []
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>
