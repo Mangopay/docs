@@ -1,0 +1,700 @@
+---
+openapi: 3.0.1
+info:
+  title: Users
+  version: "2.1"
+paths:
+  /v2.1/{ClientId}/users/natural:
+    post:
+      tags:
+        - Users
+        - Natural Users
+      parameters:
+        - $ref: "#/components/parameters/ClientId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - Payer:
+                  summary: Payer test summary
+                  $ref: "#/components/schemas/CreateNaturalUserPayerRequest"
+                - Owner:
+                  summary: Owner test summary
+                  $ref: "#/components/schemas/CreateNaturalUserOwnerRequest"
+            examples:
+              Payer:
+                $ref: "#/components/examples/CreateNaturalUserPayerRequest"
+              Owner:
+                $ref: "#/components/examples/CreateNaturalUserOwnerRequest"
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateNaturalUserResponse"
+              examples:
+                Payer:
+                  $ref: "#/components/examples/CreateNaturalUserPayerResponse"
+                Owner:
+                  $ref: "#/components/examples/CreateNaturalUserOwnerResponse"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/40XError"
+              examples:
+                Restricted Nationality:
+                  value:
+                    {
+                      "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+                      "Type": "param_error",
+                      "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
+                      "Date": 1676551649.0,
+                      "errors":
+                        { "Nationality": "The Nationality used is blocked" },
+                    }
+                Invalid email:
+                  value:
+                    {
+                      "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+                      "Type": "param_error",
+                      "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+                      "Date": 1690291065.0,
+                      "errors":
+                        {
+                          "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'.",
+                        },
+                    }
+                Owners must accept T&Cs:
+                  value:
+                    {
+                      "Message": "User must accept the terms and conditions before account creation or modification.",
+                      "Type": "user_hasnt_accepted_terms_and_conditions",
+                      "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
+                      "Date": 1730810728,
+                      "errors": null,
+                    }
+  # /v2.1/{ClientId}/users/natural/{id}:
+  #   put:
+  #     tags:
+  #       - Users
+  #       - Natural Users
+  #     parameters:
+  #       - $ref: "#/components/parameters/ClientId"
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserNaturalPutDto"
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserNaturalDto"
+  #       "400":
+  #         description: Bad Request
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  #       "404":
+  #         description: Not Found
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  # /v2.1/{ClientId}/users/legal:
+  #   post:
+  #     tags:
+  #       - Users
+  #       - Legal Users
+  #     parameters:
+  #       - $ref: "#/components/parameters/ClientId"
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserLegalPostDto"
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserLegalDto"
+  #       "400":
+  #         description: Bad Request
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  # /v2.1/{ClientId}/users/legal/{id}:
+  #   put:
+  #     tags:
+  #       - Users
+  #       - Legal Users
+  #     parameters:
+  #       - $ref: "#/components/parameters/ClientId"
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserLegalPutDto"
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Mangopay.PublicContracts.DTO.Core.Users.Version201.UserLegalDto"
+  #       "400":
+  #         description: Bad Request
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  #       "404":
+  #         description: Not Found
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  # /v2.1/{ClientId}/users/{externalId}:
+  #   get:
+  #     tags:
+  #       - Users
+  #     parameters:
+  #       - $ref: "#/components/parameters/ClientId"
+  #       - name: externalId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Mangopay.PublicControllers.Features.Users.Common.GetGenericUser.GetGenericUserResponse"
+  #       "404":
+  #         description: Not Found
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+  /v2.01/{ClientId}/users:
+    get:
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/ClientId"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListUsersResponseObject"
+components:
+  parameters:
+    ClientId:
+      name: ClientId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    40XError:
+      type: object
+      properties:
+        Message:
+          type: string
+          description: The description of the error.
+        Type:
+          type: string
+          description: The type of error.
+        Id:
+          type: string
+          description: The unique identifier of the error. This information may be requested by our Support team when investigating an issue.
+        Date:
+          type: integer
+          format: float
+          description: The date and time at which the error occurred.
+        errors:
+          type: object
+          nullable: true
+          description: The list of issues that triggered the HTTP error.
+    CreateNaturalUserPayerRequest:
+      type: object
+      description: Payer
+      properties:
+        UserCategory:
+          $ref: "#/components/schemas/UserCategory"
+        TermsAndConditionsAccepted:
+          $ref: "#/components/schemas/TermsAndConditionsAccepted"
+        FirstName:
+          $ref: "#/components/schemas/FirstName"
+        LastName:
+          $ref: "#/components/schemas/LastName"
+        Email:
+          $ref: "#/components/schemas/Email"
+        Address:
+          $ref: "#/components/schemas/Address_Request"
+        Tag:
+          $ref: "#/components/schemas/Tag"
+      required:
+        - UserCategory
+        - TermsAndConditionsAccepted
+        - FirstName
+        - LastName
+        - Email
+    CreateNaturalUserOwnerRequest:
+      type: object
+      description: Owner
+      properties:
+        UserCategory:
+          $ref: "#/components/schemas/UserCategory"
+        TermsAndConditionsAccepted:
+          $ref: "#/components/schemas/TermsAndConditionsAccepted"
+        FirstName:
+          $ref: "#/components/schemas/FirstName"
+        LastName:
+          $ref: "#/components/schemas/LastName"
+        Email:
+          $ref: "#/components/schemas/Email"
+        Birthday:
+          $ref: "#/components/schemas/Birthday"
+        Nationality:
+          $ref: "#/components/schemas/Nationality"
+        CountryOfResidence:
+          $ref: "#/components/schemas/CountryOfResidence"
+        Address:
+          $ref: "#/components/schemas/Address_Request"
+        Occupation:
+          $ref: "#/components/schemas/Occupation"
+        IncomeRange:
+          $ref: "#/components/schemas/IncomeRange"
+        Tag:
+          $ref: "#/components/schemas/Tag"
+      required:
+        - UserCategory
+        - TermsAndConditionsAccepted
+        - FirstName
+        - LastName
+        - Email
+        - Birthday
+        - Nationality
+        - CountryOfResidence
+    CreateNaturalUserResponse:
+      type: object
+      properties:
+        Address:
+          $ref: "#/components/schemas/Address_Response"
+        FirstName:
+          $ref: "#/components/schemas/FirstName"
+        LastName:
+          $ref: "#/components/schemas/LastName"
+        Birthday:
+          $ref: "#/components/schemas/Birthday_Response"
+        Nationality:
+          $ref: "#/components/schemas/Nationality_Response"
+        CountryOfResidence:
+          $ref: "#/components/schemas/CountryOfResidence_Response"
+        Occupation:
+          $ref: "#/components/schemas/Occupation_Response"
+        IncomeRange:
+          $ref: "#/components/schemas/IncomeRange_Response"
+        Tag:
+          $ref: "#/components/schemas/Tag"
+        Email:
+          $ref: "#/components/schemas/Email"
+        TermsAndConditionsAccepted:
+          $ref: "#/components/schemas/TermsAndConditionsAccepted"
+        UserCategory:
+          $ref: "#/components/schemas/UserCategory"
+    ListUsersResponseObject:
+      type: object
+      properties:
+        Id:
+          $ref: "#/components/schemas/Id"
+        Tag:
+          $ref: "#/components/schemas/Tag"
+        CreationDate:
+          $ref: "#/components/schemas/CreationDate"
+        PersonType:
+          $ref: "#/components/schemas/PersonType"
+        Email:
+          $ref: "#/components/schemas/Email"
+        PhoneNumber:
+          type: string
+          nullable: true
+          description: |
+            Format: International telephone numbering plan E.164 (+ then country code then the number) or local format
+
+            The phone number of the Natural User or the declared legal representative of the Legal User.
+        PhoneNumberCountry:
+          $ref: "#/components/schemas/PhoneNumberCountry"
+        KYCLevel:
+          $ref: "#/components/schemas/KYCLevel"
+        TermsAndConditionsAccepted:
+          $ref: "#/components/schemas/TermsAndConditionsAccepted"
+        TermsAndConditionsAcceptedDate:
+          $ref: "#/components/schemas/TermsAndConditionsAcceptedDate"
+        UserCategory:
+          $ref: "#/components/schemas/UserCategory"
+        UserStatus:
+          $ref: "#/components/schemas/UserStatus"
+    Id:
+      type: string
+      description: The unique identifier of the object.
+      nullable: false
+    UserStatus:
+      type: string
+      enum: [ACTIVE, CLOSED]
+      description: |
+        Internal use only. This field can only be used and updated by Mangopay teams.
+      nullable: false
+    UserCategory:
+      type: string
+      enum: [PAYER, OWNER]
+      description: |
+        The category of the user:
+        - PAYER – User who can only make pay-ins to their wallet and transfers to other wallets.
+        - OWNER – User who can also receive transfers to their wallet and request KYC verification to enable payouts.
+    TermsAndConditionsAcceptedDate:
+      type: string
+      format: timestamp
+      nullable: true
+      description: |
+        The date and time at which the `TermsAndConditionsAccepted` value was set to true.
+    TermsAndConditionsAccepted:
+      type: boolean
+      description: |
+        Whether the user has accepted Mangopay's terms and conditions (as defined by your contract) – see the [T&Cs guide](/guides/users/terms) for details.
+
+        Must be `true` if `UserCategory` is `PAYER`.
+    KYCLevel:
+      type: string
+      enum: [LIGHT, REGULAR]
+      description: |
+        The verification status of the user set by Mangopay:
+        - `LIGHT` – Not KYC verified, assigned by default to all users.
+        - `REGULAR` – KYC verified, meaning the user has successfully completed the verification process and had the necessary documents and data validated by Mangopay. A user must have `UserCategory` value `OWNER` to submit verification documents for validation. Once a user's `KYCLevel` is `REGULAR` they can request payouts.
+    PhoneNumberCountry:
+      type: string
+      nullable: true
+      description: |
+        Format: Two-letter country code (ISO 3166-1 alpha-2 format).
+
+        The country code of the `PhoneNumber`, required to render the value in the E.164 standard if the `PhoneNumber` is in local format.
+    Tag:
+      type: string
+      nullable: true
+      maxLength: 255
+      minLength: 0
+      description: |
+        Custom data that you can add to this object.
+    CreationDate:
+      type: integer
+      format: timestamp
+      description: |
+        The date and time at which the object was created.
+    PersonType:
+      type: string
+      description: |
+        The type of the user:
+        - `NATURAL` – Natural users are individuals (natural persons).
+        - `LEGAL` – Legal users are legal entities (legal persons) like companies, non-profits, and sole proprietors.
+
+        The `PersonType` is defined by the endpoint used to create the user and can't be modified.
+    Email:
+      type: string
+      format: "Email"
+      description: |
+        Format: A valid email address
+
+        The email address of the user.
+    FirstName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      description: |
+        The first name of the individual.
+    LastName:
+      type: string
+      minLength: 1
+      maxLength: 100
+      description: |
+        The last name of the individual.
+    Address_Request:
+      type: object
+      properties:
+        AddressLine1:
+          $ref: "#/components/schemas/AddressLine1"
+        AddressLine2:
+          $ref: "#/components/schemas/AddressLine2"
+        City:
+          $ref: "#/components/schemas/City"
+        Region:
+          $ref: "#/components/schemas/Region"
+        PostalCode:
+          $ref: "#/components/schemas/PostalCode"
+        Country:
+          $ref: "#/components/schemas/Country"
+      required:
+        - AddressLine1
+        - City
+        - Country
+    Address_Response:
+      type: object
+      properties:
+        AddressLine1:
+          $ref: "#/components/schemas/AddressLine1"
+        AddressLine2:
+          $ref: "#/components/schemas/AddressLine2"
+        City:
+          $ref: "#/components/schemas/City"
+        Region:
+          $ref: "#/components/schemas/Region"
+        PostalCode:
+          $ref: "#/components/schemas/PostalCode"
+        Country:
+          $ref: "#/components/schemas/Country"
+    AddressLine1:
+      type: string
+      maxLength: 255
+      description: The first line of the address.
+    AddressLine2:
+      type: string
+      maxLength: 255
+      description: The second line of the address.
+    City:
+      type: string
+      maxLength: 255
+      description: The city of the address.
+    Region:
+      type: string
+      maxLength: 255
+      description: |
+        The region of the address. Required if the `Country` is US, CA, or MX.
+    PostalCode:
+      type: string
+      description: |
+        Format: Alphanumeric, dashes, spaces
+
+        The postal code of the address.
+    Country:
+      type: string
+      description: |
+        Format: Two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) code
+
+        The country of the address.
+    Birthday:
+      type: integer
+      format: "timestamp"
+      description: |
+        The date of birth of the individual.
+
+        **Note:** This is a Unix timestamp in UTC. Ensure you convert your timezone to UTC to avoid midnight being interpreted as the day before.
+    Birthday_Response:
+      type: integer
+      format: "timestamp"
+      description: |
+        The date of birth of the individual.
+
+        **Note:** This is a Unix timestamp in UTC. Ensure you convert your timezone to UTC to avoid midnight being interpreted as the day before.
+
+        Returned `null` if `UserCategory` is `PAYER`.
+    Nationality:
+      type: string
+      description: |
+        Format: Two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) code
+
+        The nationality of the individual.
+    Nationality_Response:
+      type: string
+      description: |
+        Format: Two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) code
+
+        The nationality of the individual.
+
+        Returned `null` if `UserCategory` is `PAYER`.
+    CountryOfResidence:
+      type: string
+      description: |
+        Format: Two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) code
+
+        The country of residence of the individual.
+    CountryOfResidence_Response:
+      type: string
+      description: |
+        Format: Two-letter [ISO 3166-1 alpha-2](/api-reference/overview/data-formats) code
+
+        The country of residence of the individual.
+
+        Returned `null` if `UserCategory` is `PAYER`.
+    Occupation:
+      type: string
+      maxLength: 255
+      description: |
+        The occupation of the individual.
+    Occupation_Response:
+      type: string
+      maxLength: 255
+      description: |
+        The occupation of the individual.
+
+        Returned `null` if `UserCategory` is `PAYER`.
+    IncomeRange:
+      type: integer
+      nullable: true
+      description: |
+        The bracket indicating the income of the individual. The brackets are:
+          1: < 18K
+          2: 18K - 30K
+          3: 30K - 50K
+          4: 50K - 80K
+          5: 80K - 120K
+          6: > 120K
+    IncomeRange_Response:
+      type: integer
+      description: |
+        The bracket indicating the income of the individual. The brackets are:
+          1: < 18K
+          2: 18K - 30K
+          3: 30K - 50K
+          4: 50K - 80K
+          5: 80K - 120K
+          6: > 120K
+
+        Returned `null` if `UserCategory` is `PAYER`.
+  examples:
+    CreateNaturalUserOwnerRequest:
+      summary: OWNER
+      value:
+        {
+          "UserCategory": "OWNER",
+          "TermsAndConditionsAccepted": true,
+          "FirstName": "Alex",
+          "LastName": "Smith",
+          "Email": "alex.smith@example.com",
+          "Birthday": 652117514,
+          "Nationality": "FR",
+          "CountryOfResidence": "FR",
+          "Address":
+            {
+              "AddressLine1": "3 rue de la Cité",
+              "AddressLine2": "Appartement 7",
+              "City": "Paris",
+              "Region": "Ile-de-France",
+              "PostalCode": "75004",
+              "Country": "FR",
+            },
+          "Tag": "Created using Mangopay API Postman collection",
+        }
+    CreateNaturalUserPayerRequest:
+      summary: PAYER
+      value:
+        {
+          "UserCategory": "PAYER",
+          "TermsAndConditionsAccepted": false,
+          "FirstName": "Alex",
+          "LastName": "Smith",
+          "Email": "alex.smith@example.com",
+          "Address":
+            {
+              "AddressLine1": "3 rue de la Cité",
+              "AddressLine2": "Appartement 7",
+              "City": "Paris",
+              "Region": "Ile-de-France",
+              "PostalCode": "75004",
+              "Country": "FR",
+            },
+          "Tag": "Created using Mangopay API Postman collection",
+        }
+    CreateNaturalUserPayerResponse:
+      summary: PAYER
+      value:
+        {
+          "Address":
+            {
+              "AddressLine1": "3 rue de la Cité",
+              "AddressLine2": "Appartement 7",
+              "City": "Paris",
+              "Region": "Ile-de-France",
+              "PostalCode": "75004",
+              "Country": "FR",
+            },
+          "FirstName": "Alex",
+          "LastName": "Smith",
+          "Birthday": null,
+          "Nationality": null,
+          "CountryOfResidence": null,
+          "Occupation": null,
+          "IncomeRange": null,
+          "ProofOfIdentity": null,
+          "ProofOfAddress": null,
+          "Capacity": "NORMAL",
+          "Id": "user_m_01J87ZBSP8FCVDSCB8PGWQHZPF",
+          "Tag": "Created using Mangopay API Postman collection",
+          "CreationDate": 1670861869,
+          "PersonType": "NATURAL",
+          "Email": "alex.smith@example.com",
+          "KYCLevel": "LIGHT",
+          "TermsAndConditionsAccepted": false,
+          "TermsAndConditionsAcceptedDate": null,
+          "UserCategory": "PAYER",
+          "UserStatus": "ACTIVE",
+        }
+    CreateNaturalUserOwnerResponse:
+      summary: OWNER
+      value:
+        {
+          "Address":
+            {
+              "AddressLine1": "3 rue de la Cité",
+              "AddressLine2": "Appartement 7",
+              "City": "Paris",
+              "Region": "Ile-de-France",
+              "PostalCode": "75004",
+              "Country": "FR",
+            },
+          "FirstName": "Alex",
+          "LastName": "Smith",
+          "Birthday": 652117514,
+          "Nationality": "FR",
+          "CountryOfResidence": "FR",
+          "Occupation": null,
+          "IncomeRange": null,
+          "ProofOfIdentity": null,
+          "ProofOfAddress": null,
+          "Capacity": "NORMAL",
+          "Id": "user_m_01J87ZBSP8FCVDSCB8PGWQHZPF",
+          "Tag": "Created using Mangopay API Postman collection",
+          "CreationDate": 1670861869,
+          "PersonType": "NATURAL",
+          "Email": "alex.smith@example.com",
+          "KYCLevel": "LIGHT",
+          "TermsAndConditionsAccepted": true,
+          "TermsAndConditionsAcceptedDate": 1670862022,
+          "UserCategory": "PAYER",
+          "UserStatus": "ACTIVE",
+        }
