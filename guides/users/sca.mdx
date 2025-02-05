@@ -5,7 +5,7 @@ sidebarTitle: Introduction
 
 import Emi from '/snippets/glossary/emi.mdx';
 
-Mangopay is implementing **strong customer authentication** (SCA) on your platform's users to enhance security and to comply with European regulations (PSD2) as a regulated <Emi content="[EMI](/guides/glossary#electronic-money-institution-emi)" />. The same regulations are behind 3DS authentication applied to card payments or alternative requirements for other payment methods.
+Mangopay is implementing **strong customer authentication** (SCA) on your platform's users to enhance security and to comply with European regulations (PSD2) as a regulated [EMI](/guides/glossary#electronic-money-institution-emi). The same regulations are behind 3DS authentication applied to card payments or alternative requirements for other payment methods.
 
 SCA is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different categories (knowledge, possession, and inherence).
 
@@ -36,55 +36,55 @@ The dedicated enrollment guides linked below provide a step-by-step walkthrough 
 <table>
 <thead>
 <tr>
-<th class="header"></th>
-<th class="header">Action</th>
-<th class="header">Guide</th>
+  <th class="header"></th>
+  <th class="header">Action</th>
+  <th class="header">Guide</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="table-content">
-1
-</td>
-<td class="table-content">
-Enrollment of new Owners (Natural and Legal Soletraders) users using OTP authentication when you **register them for the first time** (at user creation)
-</td>
-<td class="table-content">
-[Register a Owner user for the first time](/guides/users/sca/enrollment#register-an-owner-for-the-first-time)
-</td>
+  <td class="table-content">
+  1
+  </td>
+  <td class="table-content">
+  Enrollment of new Owners (Natural and Legal Soletraders) users using OTP authentication when you **register them for the first time** (at user creation)
+  </td>
+  <td class="table-content">
+  [Register a Owner user for the first time](/guides/users/sca/enrollment#register-an-owner-for-the-first-time)
+  </td>
 </tr>
 <tr>
-<td class="table-content">
-2
-</td>
-<td class="table-content">
-Enrollment of Owners (Natural and Legal Soletraders) users using OTP authentication when they **transition from a Payer** (on categorization)
-</td>
-<td class="table-content">
-[Transition an existing Payer to Owner](/guides/users/sca/enrollment#transition-an-existing-payer-to-owner)
-</td>
+  <td class="table-content">
+  2
+  </td>
+  <td class="table-content">
+  Enrollment of Owners (Natural and Legal Soletraders) users using OTP authentication when they **transition from a Payer** (on categorization)
+  </td>
+  <td class="table-content">
+  [Transition an existing Payer to Owner](/guides/users/sca/enrollment#transition-an-existing-payer-to-owner)
+  </td>
 </tr>
 <tr>
+  <td class="table-content">
+  3
+  </td> 
 <td class="table-content">
-3
+  **Enrollment of all existing** Owners (Natural and Legal Soletraders) users in OTP authentication
 </td>
-<td class="table-content">
-**Enrollment of all existing** Owners (Natural and Legal Soletraders) users in OTP authentication
-</td>
-<td class="table-content">
-[Enroll an existing Owner](/guides/users/sca/enrollment#enroll-an-existing-owner)
-</td>
+  <td class="table-content">
+  [Enroll an existing Owner](/guides/users/sca/enrollment#enroll-an-existing-owner)
+  </td>
 </tr>
 <tr>
-<td class="table-content">
-4
-</td>
-<td class="table-content">
-Re-enrollment of Owners (Natural and Legal Soletraders) users when they change the phone number or email.
-</td>
-<td class="table-content">
-[Re-enroll a User](/guides/users/sca/enrollment#re-enroll-a-owner-user)
-</td>
+  <td class="table-content">
+  4
+  </td>
+  <td class="table-content">
+  Re-enrollment of Owners (Natural and Legal Soletraders) users when they change the phone number or email.
+  </td>
+  <td class="table-content">
+  [Re-enroll a User](/guides/users/sca/enrollment#re-enroll-a-owner-user)
+  </td>
 </tr>
 </tbody>
 </table> 
@@ -105,187 +105,183 @@ More details about Mangopay's planned features for [SCA-controlled actions](/#sc
 
 Mangopay is providing the following authentication factors.
 
+<table>
+<thead>
+<tr>
+  <th class="header">Availability</th>
+  <th class="header">Factor</th>
+  <th class="header">Description</th>
+  <th class="header">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="table-content">
+  Available
+  </td>
+  <td class="table-content">
+  Phone-based one-time passcode (OTP)
+  </td>
+  <td class="table-content">
+  The user provides and authenticates (that is, enrolls) their device and then, to authenticate an action, receives an SMS OTP and provides it to Mangopay.
+  </td>
+  <td class="table-content">
+  Possession
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Planned
+  </td>
+  <td class="table-content">
+  Personal identification number (PIN)
+  </td>
+  <td class="table-content">
+  The user defines a 6-digit PIN code and then, to authenticate an action, provides the PIN to Mangopay.
+  </td>
+  <td class="table-content">
+  Knowledge
+  </td>
+</tr>
+</tbody>
+</table>
 
+Mangopay is delivering SCA via a unique session on a hosted web page. The URL will be returned on the relevant API calls for enrolling factors or authenticating actions: in the response property `PendingUserAction.RedirectUrl` – see [SCA session](/guides/users/sca/session) for details.
 
-The regulations apply SCA to situations where a user accesses or initiates certain payment activities, or to other situations considered at-risk.
+The same system will be used for all authentication factors, both available and planned.
 
-For Mangopay, this means that the scope of SCA will be extended over time.
+### OTP 
 
-#### Current scope - Enrollment
-
-In the first instance, Mangopay's SCA feature implements the enrollment of the user, meaning they register device details and authenticate them. 
-
-- Registration as as Owner
-
-The user can be created as an Owner to transition to Owner from Payer: both cases require SCA.
-
-The enrollment is delivered in an [SCA session](#sca-session) that they can access via the `RedirectUrl` returned by the Mangopay API. This means your platform must redirect the user to a Mangopay-hosted experience before they can access Mangopay features as an Owner.
-
-See the dedicated [enrollment guide](/guides/users/sca/enrollment) for details about SCA scenarios during user registration.
-
-#### Future scope - Authentication
-
-In future, Mangopay's SCA feature will also be applied to:
-
-- Bank account registration
-- Wallet access
-- Transfer initiation
-
-When these actions are requested, the user would be required to authenticate.
-
-For platforms, authentication works in the same way as enrollment: you must redirect the user to a Mangopay-hosted SCA session before the requested action can be delivered.
-
-## SCA session
-
-Mangopay's SCA feature relies on Mangopay-hosted web page where the user can enroll or authenticate.
-
-To deliver this SCA session, Mangopay provides a unique URL in the `RedirectUrl` response parameter on relevant actions across its API. The `RedirectUrl` is returned as part of the `PendingUserAction` response object.
-
-### Authentication factors
-
-#### SMS one-time passcode (OTP)
-
-In a first instance, authentication is done via **one-time passcode (OTP)**. Other methods will be developed in future, all relying on the same `RedirectUrl`.
-
-In OTP authentication, the SCA session provides the user a screen where they can provide their phone number (if not already supplied by the platform), request an OTP by SMS, and submit it.
+In one-time passcode (OTP) authentication, the SCA session provides the Owner user a screen where they can provide (or confirm) their phone number, request an OTP by SMS, and submit it.
 
 <img src="/images/screenshot_sca_otp.png" />
 
-#### Testing SMS OTP
+The individual can enter the phone number to be used for SMS OTP during the SCA session. If your platform has already added it to the Natural User (`PhoneNumber`) or Legal User (`LegalRepresentative.PhoneNumber`) object, then the value is pre-populated in the SCA session. The individual is asked to confirm or modify the data before continuing.
 
-In Sandbox, you can test the SMS OTP by using a real phone number as the `PhoneNumber` field in the user object. 
+<Note>
+**Note – SCA session data doesn't update API**
 
-Alternatively, you can use +33611111111 and the passcode 702100 to simulate a successful flow.
+The phone number provided or confirmed by the user during the SCA session is not subsequently updated in the User API object.
 
-### How to redirect a user for SCA
+Changing the `PhoneNumber` or `LegalRepresentative.PhoneNumber` data in the API object triggers SCA re-enrollment.
+</Note>
 
-This section describes how to handle the SCA redirection when required by an SCA scenario.
+#### Testing
 
-<Steps>
-<Step title="Call an endpoint that triggers SCA">
-Your platform needs to redirect the user for SCA authentication when you take one of the following actions and call the relevant endpoint: 
-- Create an Owner user by calling [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) and setting `UserCategory` to `OWNER`
-- Transition an existing Payer to Owner by calling [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [POST Categorize a Legal User](/api-reference/users/categorize-legal-user) and setting `UserCategory` to `OWNER`
-- Obtain a new SCA redirection link by calling [POST Enroll a User](/api-reference/users/enroll-user), if a previous authentication attempt was unsuccessful or the session timed out
-- Modify the SCA contact details of an already enrolled Owner user by sending new `PhoneNumber` and `Email` to [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) or `LegalRepresentative.PhoneNumber` and `LegalRepresentative.Email` to [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+In Sandbox, you can test the SMS OTP by sending a real phone number in the user object. 
 
-See the dedicated [enrollment guide](/guides/users/sca/enrollment) for details about SCA scenarios during user registration.
-</Step>
-<Step title="Retrieve the SCA RedirectUrl">
+Alternatively, you can use `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow.
 
-In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value. For example:
+<Note>
+**Note – LastName must finish "Review"**
+
+To trigger SCA, you need ensure the `LastName` (or `LegalRepresentative.LastName`) value finishes with the word “Review”, as shown below.
+</Note>
 
 ```json
 {
 ...
-	"PendingUserAction": {
-		"RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
-    },
+	"LastName": "Smith Review"
 ...
 }
 ```
+### PIN
 
-The URL of the unique SCA session is:
+The PIN code factor is still in development, but it will be managed via the same hosted session and `RedirectUrl`.
+
+## SCA-controlled actions
+
+The regulations apply SCA to situations where a Owner user accesses or initiates certain payment activities, or to other situations considered at risk.
+
+For Mangopay, this means the following actions will be authenticated by SCA.
 
 <table>
+<thead>
+<tr>
+  <th class="header">Availability</th>
+  <th class="header">Action</th>
+  <th class="header">Description</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="table-content no-borders">
-https<span>://</span>sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191d21
+  <td class="table-content">
+  Available
+  </td>
+  <td class="table-content">
+  Creation of the user account (Owner category)
+  </td>
+  <td class="table-content">
+  When an Owner user is registered with Mangopay, they must provide and authenticate (enroll) their phone number. This applies to first-time registration, transition from the Payer category, and enrollment of existing Owner users.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Available
+  </td>
+  <td class="table-content">
+  Change of authentication credentials
+  </td>
+  <td class="table-content">
+  When an Owner user changes their phone number or email they must authenticate the new one.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Planned: Q1 2025
+  </td>
+  <td class="table-content">
+  Registration of a bank account
+  </td>
+  <td class="table-content">
+  When an Owner user registers a bank account, they must authenticate. 
+
+  Mangopay will be releasing a new version of the Bank Account object called **Recipients**. Recipients will allow validation of account details, supporting faster and more reliable local and international payouts.
+
+  SCA will only be applied to Recipients.
+  </td>
+</tr>
+<tr>
+<td class="table-content">
+Planned: Q2 2025
+</td>
+<td class="table-content">
+Transfer from one Owner user to another
+</td>
+<td class="table-content">
+Transfers from one Owner user to another are in scope of SCA. The conditions surrounding transfers are still being defined and Mangopay is developing features to support platforms' activity and a range of exemptions. Among those already defined:
+- Technical transfers initiated as part of specific workflows – a new transfer endpoint is being developed to support these
+- Exemptions allowed by the regulations, for example low-risk transactions, low-amount transactions less than €30
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Planned: Q3 2025
+</td>
+<td class="table-content">
+Access to wallet balance and transaction details
+</td>
+<td class="table-content">
+When an Owner user wishes to view their wallet balance or see past transactions crediting or debiting it, they may be required to authenticate. The conditions surrounding wallet access are still being defined but may include, for example, first-time access.
 </td>
 </tr>
 </tbody>
-</table> 
+</table>
 
-</Step>
-<Step title="Add your returnUrl and redirect the user">
-Define a `returnUrl` to which the user will be returned after they authenticate on the Mangopay-hosted page, regardless of the outcome. 
+SCA authentication will be delivered in the same way across all SCA-controlled actions: via a hosted web page returned in the response property `PendingUserAction.RedirectUrl` on the relevant API call. See [SCA session](/guides/users/sca/session) for details on how to redirect a user for SCA.
 
-Append your URL to the `RedirectUrl` response value as a query parameter, being sure to percent-encode any non-ASCII characters. 
-
-Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value and your added `returnUrl`.
-
-For example, if your `returnUrl` is <span>https:</span>//example.com, you should redirect the user on:
-
-<table>
-<tbody>
-<tr>
-<td class="table-content no-borders">
-<span>https:</span>//sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191d21&returnUrl=https%3A%2F%2Fexample.com
-</td>
-</tr>
-</tbody>
-</table> 
-
-<Warning>
-**Caution – Add your return URL before redirection**
-
-You must add your `returnUrl` before you redirect the user on the `RedirectUrl` value, otherwise the hosted web page cannot return them upon completion.
-
-The `returnUrl` parameter name is case-sensitive. 
-</Warning>
-
-Note that the concatenation of Mangopay's `RedirectUrl` and your encoded `returnUrl` must be less than 2,000 characters, which is the limit of most web browsers.
-</Step>
-<Step title="Let the user authenticate">
-Once on the `RedirectUrl`, the user can perform the necessary actions for SCA. 
-
-For the OTP authentication method, this means requesting and submitting a code via SMS. 
-
-<Note>
-**Note – Session timeout after 5 minutes**
-
-The session of the `RedirectUrl` is valid for 5 minutes. If the user does not submit a successful SMS OTP before this time, the session can no longer be used and they are returned on your return URL.
-
-If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint [POST Enroll a User](/api-reference/users/enroll-user).
-</Note>
-</Step>
-<Step title="Retrieve the returnUrl query parameters">
-
-Once the user completes authentication (successfully or not) they are redirected to your `returnUrl`.
-
-On redirection, Mangopay adds two query parameters to your `returnUrl`: `controlStatus` and `actionStatus`. 
-
-For example:
-
-<table>
-<tbody>
-<tr>
-<td class="table-content no-borders">
-<span>https:</span>//example.com/?controlStatus=VALIDATED&actionStatus=SUCCEEDED
-</td>
-</tr>
-</tbody>
-</table> 
-
-</Step>
-<Step title="Check the status of the user and the action">
-
-The `controlStatus` parameter indicates the values of the control: 
-- `VALIDATED` - The control was successful.
-- `FAILED` - The control was unsuccessful and cannot be reused.
-
-If the `controlStatus` is **not** `VALIDATED`, call the [POST Enroll a User](/api-reference/users/enroll-user) to obtain a new SCA `RedirectUrl` and retry the authentication session. 
-
-The `actionStatus` parameter indicates the status of the action being controlled: 
-- `SUCCEEDED` - The action was successful.
-- `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown.
-
-If the `actionStatus` is **not** `SUCCEEDED`, call the [GET View a User](/api-reference/users/view-user) to check the `UserStatus` of the user. If it is still `PENDING_USER_ACTION`, then call the [POST Enroll a User](/api-reference/users/enroll-user) to retry the authentication. 
-</Step>
-</Steps>
 
 ## Related resources
 
 <CardGroup cols={2}>
 <Card
-  title="Guide"
+  title="SCA session"
   href="/guides/users/sca/session"
 >
 Read more about redirecting users for an SCA session
 </Card>
 <Card
-  title="Guide"
+  title="Enrollment"
   href="/guides/users/sca/enrollment"
 >
 Read about enrollment scenarios in the user lifecycle
