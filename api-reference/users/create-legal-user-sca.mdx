@@ -1,7 +1,7 @@
 ---
 title: 'Create a Legal User (SCA)'  
 api: 'POST /v2.01/{ClientId}/sca/users/legal'  
-description: 'Register a Legal Payer or Owner'
+description: 'Register a Legal Payer or Owner (with SCA enrollment)'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -40,7 +40,13 @@ import Aml from '/snippets/glossary/aml.mdx';
 
 import RestCreateLegalUserSca from '/snippets/code/rest-create-legal-user-sca.mdx';
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+<Note>
+**Note – SCA triggered for Owners**
+
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to redirect the user on the returned `PendingUserAction.RedirectUrl` to enroll before their `UserStatus` can become `ACTIVE`.
+
+Read more about how to redirect them in the [SCA session](/guides/users/sca/session) guide.
+</Note>
 
 <Note>  
 **Note – Country-based restrictions apply to users** 

@@ -1,7 +1,7 @@
 ---
 title: 'Create a Natural User (SCA)'  
 api: 'POST /v2.01/{ClientId}/sca/users/natural'
-description: 'Register a Natural Payer or Owner'
+description: 'Register a Natural Payer (with SCA enrollment)'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -47,7 +47,13 @@ import Aml from '/snippets/glossary/aml.mdx';
 
 import RestCreateNaturalUserSca from '/snippets/code/rest-create-natural-user-sca.mdx';
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+<Note>
+**Note – SCA triggered for Owners**
+
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to redirect the user on the returned `PendingUserAction.RedirectUrl` to enroll before their `UserStatus` can become `ACTIVE`.
+
+Read more about how to redirect them in the [SCA session](/guides/users/sca/session) guide.
+</Note>
 
 <Note>  
 **Note – Country-based restrictions apply to users** 
