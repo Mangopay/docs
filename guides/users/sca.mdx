@@ -3,19 +3,109 @@ title: SCA on Owner users
 sidebarTitle: Introduction
 ---
 
-Mangopay is implementing **strong customer authentication** (SCA) to enhance security in its payments infrastructure for platform users. The feature also aims to comply with European regulations.
+import Emi from '/snippets/glossary/emi.mdx';
 
-SCA is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different classes.
+Mangopay is implementing **strong customer authentication** (SCA) on your platform's users to enhance security and to comply with European regulations (PSD2) as a regulated <Emi content="[EMI](/guides/glossary#electronic-money-institution-emi)" />. The same regulations are behind 3DS authentication applied to card payments or alternative requirements for other payment methods.
+
+SCA is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different categories (knowledge, possession, and inherence).
 
 ## Scope
 
-Mangopay's SCA feature only applies to users categorized as Owners. Users categorized as Payers are not affected.
+<Note>
+**Note – SCA applies to users Owner only**
 
-SCA requires the user to complete the authentication action with Mangopay directly.
+Mangopay's SCA feature will only apply to users categorized as Owner, because these users are subject to Mangopay's T&Cs and as such hold a **Mangopay account**.
 
-For Legal Users, the person authenticating must be the declared legal representative, in the first instance. In future, Mangopay intends to enable Legal Users to declared several authorized persons who are able to complete SCA on behalf of the entity.
+Users categorized as Payers will not be affected by Mangopay's SCA.
+</Note>
 
-### Actions
+SCA requires the Owner user to authenticate with Mangopay directly as they are the Mangopay account holder.
+
+For **Natural users**, enrollment of the **OTP factor** is available to integrate, requiring the individual's `PhoneNumber` and `Email`.
+
+For Legal users, enrollment of the **OTP factor** is available to integrate for **Soletraders**. The individual's phone number and email must be provided in `LegalRepresentative.PhoneNumber` and `LegalRepresentative.Email` and they must authenticate.  
+
+In future, Mangopay will provide features to allow the other types of Legal user (Business, Organization, Partnership) to designate additional **authorized individuals** who can complete SCA on behalf of the entity.
+
+## What your platform needs to do
+
+Your platform needs to integrate the new user endpoints to handle SCA in the following scenarios for Owner users.
+
+The dedicated enrollment guides linked below provide a step-by-step walkthrough of each case:
+
+<table>
+<thead>
+<tr>
+<th class="header"></th>
+<th class="header">Action</th>
+<th class="header">Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+1
+</td>
+<td class="table-content">
+Enrollment of new Owners (Natural and Legal Soletraders) users using OTP authentication when you **register them for the first time** (at user creation)
+</td>
+<td class="table-content">
+[Register a Owner user for the first time](/guides/users/sca/enrollment#register-an-owner-for-the-first-time)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+2
+</td>
+<td class="table-content">
+Enrollment of Owners (Natural and Legal Soletraders) users using OTP authentication when they **transition from a Payer** (on categorization)
+</td>
+<td class="table-content">
+[Transition an existing Payer to Owner](/guides/users/sca/enrollment#transition-an-existing-payer-to-owner)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+3
+</td>
+<td class="table-content">
+**Enrollment of all existing** Owners (Natural and Legal Soletraders) users in OTP authentication
+</td>
+<td class="table-content">
+[Enroll an existing Owner](/guides/users/sca/enrollment#enroll-an-existing-owner)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+4
+</td>
+<td class="table-content">
+Re-enrollment of Owners (Natural and Legal Soletraders) users when they change the phone number or email.
+</td>
+<td class="table-content">
+[Re-enroll a User](/guides/users/sca/enrollment#re-enroll-a-owner-user)
+</td>
+</tr>
+</tbody>
+</table> 
+
+In all cases, to enroll the user your platform must redirect the individual to a Mangopay-hosted webpage. The redirection URL for the SCA session is returned by the Mangopay API in the response property `PendingUserAction.RedirectUrl`. Before redirecting, you need to define, encode, and append a `returnUrl` to which the session returns the user afterwards (whatever the outcome). 
+
+See the [SCA session](/guides/users/sca/session) guide for details on this redirection process. Mangopay will use the same mechanism for all SCA-related features, both enrollment and authentication of planned features.
+
+<Check>
+**Best practice – Anticipate integration**
+
+Your platform will be required to complete additional integration during 2025 as Mangopay releases new SCA-related features.
+
+More details about Mangopay's planned features for [SCA-controlled actions](/#sca-controlled-actions) are listed in the table below.
+</Check>
+
+## Factors
+
+Mangopay is providing the following authentication factors.
+
+
 
 The regulations apply SCA to situations where a user accesses or initiates certain payment activities, or to other situations considered at-risk.
 
@@ -35,7 +125,7 @@ See the dedicated [enrollment guide](/guides/users/sca/enrollment) for details a
 
 #### Future scope - Authentication
 
-In future, Mangopay’s SCA feature will also be applied to:
+In future, Mangopay's SCA feature will also be applied to:
 
 - Bank account registration
 - Wallet access
@@ -190,8 +280,14 @@ If the `actionStatus` is **not** `SUCCEEDED`, call the [GET View a User](/api-re
 <CardGroup cols={2}>
 <Card
   title="Guide"
+  href="/guides/users/sca/session"
+>
+Read more about redirecting users for an SCA session
+</Card>
+<Card
+  title="Guide"
   href="/guides/users/sca/enrollment"
 >
-Learn about enrollment scenarios in the user lifecycle
+Read about enrollment scenarios in the user lifecycle
 </Card>
 </CardGroup>
