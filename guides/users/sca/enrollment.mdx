@@ -9,10 +9,10 @@ For SCA enrollment, Mangopay has developed new User endpoints to facilitate this
 
 These endpoints allow your platform to redirect the user for SCA when you:
 
-1. [Register an Owner](#) for the first time
-2. [Transition an existing Payer to Owner](#)
-3. [Enroll an existing Owner](#)
-4. [Re-enroll a user](#) if they change their credentials
+1. [Register an Owner for the first time](#register-an-owner-for-the-first-time)
+2. [Transition a Payer to Owner](#transition-a-payer-to-owner)
+3. [Enroll an existing Owner](#enroll-an-existing-owner)
+4. [Re-enroll an enrolled Owner](#re-enroll-an-enrolled-owner) if they change their credentials
 
 This page describes the enrollment scenario (providing and authenticating device details) and how it impacts the user lifecycle – see the [diagram below](#lifecycle-diagram) for an overview.
 
@@ -200,7 +200,7 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 </Step>
 </Steps>
 
-### Transition an existing Payer to Owner
+### Transition a Payer to Owner
 
 <Note>
 **Note – Flow for all existing Payer users**
@@ -297,9 +297,11 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 </Step>
 </Steps>
 
-### Re-enroll an Owner user
+### Re-enroll an enrolled Owner
 
-Re-enrollment is required when the `PhoneNumber`, `PhoneNumberCountry`, or `Email` are modified.
+Re-enrollment is required when the `PhoneNumber`, `PhoneNumberCountry`, or `Email` user properties are modified.
+
+
 
 <Steps>
 <Step title="Call the Mangopay API, triggering SCA">
@@ -354,7 +356,12 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 
 SCA is not applicable to Payers.
 
-However, the SCA endpoints can be used to register and update Payer users.
+However, the SCA endpoints can be used to register and update Payer users:
+
+- [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
 
 In this non-SCA scenario:
 - `UserCategory` is `PAYER`
@@ -366,23 +373,10 @@ Note that the same endpoints are used with Owners (but `UserCategory` is `OWNER`
 <Check>
 **Best practice – Integrate these endpoints to manage Payers**
 
-Payers are not subject to SCA. However, we strongly recommend that you implement the new SCA-enabled endpoints below to register new Payers and update existing ones, regardless of whether they are likely to become Owners in the future.
+Payers are not subject to SCA. However, we strongly recommend that you implement the new SCA-enabled endpoints above to register new Payers and update existing ones, regardless of whether they are likely to become Owners in the future.
 
 Mangopay intends to deprecate the legacy User endpoints, because they will have been made redundant by the new SCA-enabled versions.
 </Check>
-
-<Card title="POST Create a Natural User (SCA)" href="/api-reference/users/create-natural-user-sca">
-Register a Natural Payer or Owner
-</Card>
-<Card title="PUT Update a Natural User (SCA)" href="/api-reference/users/update-natural-user-sca">
-Modify details for a Natural Payer or Owner without changing category
-</Card>
-<Card title="POST Create a Legal User (SCA)" href="/api-reference/users/create-legal-user-sca">
-Register a Legal Payer or Owner
-</Card>
-<Card title="PUT Update a Legal User (SCA)" href="/api-reference/users/update-legal-user-sca">
-Modify details for a Legal Payer or Owner without changing category
-</Card>
 
 ## View and list users
 
@@ -413,9 +407,15 @@ The introduction of SCA to create an Owner user changes the lifecycle of a user 
 
 <CardGroup cols={2}>
 <Card
-  title="Guide"
+  title="SCA session"
+  href="/guides/users/sca/session"
+>
+Read more about redirecting users for an SCA session
+</Card>
+<Card
+  title="SCA introduction"
   href="/guides/users/sca"
 >
-Learn about SCA and redirecting users to SCA sessions
+Read more about SCA
 </Card>
 </CardGroup>
