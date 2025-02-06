@@ -51,23 +51,19 @@ import RestCreateNaturalUserScaOwner from '/snippets/code/rest-create-natural-us
 <Note>
 **Note – SCA triggered for Owners**
 
-If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to redirect the user on the returned `PendingUserAction.RedirectUrl` to enroll before their `UserStatus` can become `ACTIVE`.
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to use the returned `PendingUserAction.RedirectUrl` (and add an encoded `returnUrl` query parameter) to redirect the user so they can enroll.
 
 Read more about how to redirect them in the [SCA session](/guides/users/sca/session) guide.
 </Note>
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
+<Note>
+**Note – Country-based restrictions apply to users**
 
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Natural Users, the following parameters are concerned:  
-- `Nationality`  
-- `CountryOfResidence`  
-- `Country` of the `Address`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `Nationality`
+- `CountryOfResidence`
+- `Address.Country`
+</Note>
 
 ### Body parameters  
 

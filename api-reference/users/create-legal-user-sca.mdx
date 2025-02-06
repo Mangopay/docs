@@ -44,24 +44,20 @@ import RestCreateLegalUserScaPayer from '/snippets/code/rest-create-legal-user-s
 <Note>
 **Note – SCA triggered for Owners**
 
-If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to redirect the user on the returned `PendingUserAction.RedirectUrl` to enroll before their `UserStatus` can become `ACTIVE`.
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to use the returned `PendingUserAction.RedirectUrl` (and add an encoded `returnUrl` query parameter) to redirect the user so they can enroll.
 
 Read more about how to redirect them in the [SCA session](/guides/users/sca/session) guide.
 </Note>
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `Nationality` of the `LegalRepresentative`
-- `CountryOfResidence` of the `LegalRepresentative`
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentative.Nationality`
+- `LegalRepresentative.CountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Body parameters  
 

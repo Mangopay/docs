@@ -43,45 +43,33 @@ import RestUpdateLegalUserScaPayer from '/snippets/code/rest-update-legal-user-s
 <Warning>
 **Caution – Modification may trigger SCA re-enrollment**
 
-If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+If `UserCategory` is `OWNER`, modifying the following values changes `UserStatus` to `PENDING_USER_ACTION` and requires [re-enrollment in SCA](/guides/users/sca/enrollment#re-enroll-an-enrolled-owner) using the returned `PendingUserAction.RedirectUrl`:
 
 - `LegalRepresentative.Email`
 - `LegalRepresentative.PhoneNumber`
 - `LegalRepresentative.PhoneNumberCountry`
-
-In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated.
-
-For more details see the [SCA enrollment guide](/guides/users/sca/enrollment#re-enroll-an-enrolled-owner).
 </Warning>
 
 <Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-The impacted parameters are:  
-- `LegalRepresentative.FirstName`  
-- `LegalRepresentative.LastName`  
-- `LegalRepresentative.Birthday`  
-- `LegalRepresentative.Nationality`  
-- `LegalPersonType`  
-
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.LastName`
+- `LegalRepresentative.Birthday`
+- `LegalRepresentative.Nationality`
+- `LegalPersonType`
 </Warning>  
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `Nationality` of the `LegalRepresentative`
-- `CountryOfResidence` of the `LegalRepresentative`
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentative.Nationality`
+- `LegalRepresentative.CountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Body parameters  
 
