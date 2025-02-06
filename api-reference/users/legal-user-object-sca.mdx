@@ -1,3 +1,85 @@
 ---
 title: 'The Legal User object (SCA)'
 ---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import UserStatusScaResponse from '/snippets/p-response/UserStatusScaResponse.mdx';
+import UserCategoryResponse from '/snippets/p-response/UserCategoryResponse.mdx';
+import TermsAndConditionsAcceptedDateResponse from '/snippets/p-response/TermsAndConditionsAcceptedDateResponse.mdx';
+import TermsAndConditionsAcceptedResponse from '/snippets/p-response/TermsAndConditionsAcceptedResponse.mdx';
+import KYCLevelResponse from '/snippets/p-response/KYCLevelResponse.mdx';
+import Email1Response from '/snippets/p-response/Email1Response.mdx';
+import PersonTypeResponse from '/snippets/p-response/PersonTypeResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import CompanyNumberResponse from '/snippets/p-response/CompanyNumberResponse.mdx';
+import StatuteResponse from '/snippets/p-response/StatuteResponse.mdx';
+import ShareholderDeclarationResponse from '/snippets/p-response/ShareholderDeclarationResponse.mdx';
+import ProofOfRegistrationResponse from '/snippets/p-response/ProofOfRegistrationResponse.mdx';
+import LegalPersonTypeResponse from '/snippets/p-response/LegalPersonTypeResponse.mdx';
+import Name2Response from '/snippets/p-response/Name2Response.mdx';
+import LegalRepresentativeAddressResponse from '/snippets/p-response/LegalRepresentativeAddressResponse.mdx';
+import HeadquartersAddressResponse from '/snippets/p-response/HeadquartersAddressResponse.mdx';
+import LegalRepresentativeResponse from '/snippets/p-response/LegalRepresentativeResponse.mdx';
+
+<Info>
+Mangopay started communicating by email about [SCA on Owners](/guides/users/sca) during **February 2025**. Your platform will be required to complete the necessary integrations, with specific deadlines communicated during the year.
+
+For any questions, please contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Info>
+
+The Legal User object represents a legal entity (legal person) like a company, non-profit or sole proprietor (read more about user [types](/guides/users/types)). 
+
+Mangopay users have one of two [categories](/guides/users/categories), indicated by `UserCategory`: 
+- `PAYER` – User who can only make pay-ins to their wallets and transfers to other wallets.
+- `OWNER` – User who can also receive transfers to their wallets. Owners are able to request [KYC verification](/guides/users/verification), which if successful gives them the `KYCLevel` of `REGULAR` and the ability to request payouts.
+
+To enable `OWNER` users to enroll in SCA, Mangopay released new versions of the user objects and new endpoints.
+
+The changes to the Legal User object are:
+- New `UserStatus` value `PENDING_USER_ACTION` indicating that the user must enroll in SCA
+- New response parameter `PendingUserAction.RedirectUrl` containing the SCA session URL to which the individual must be redirected (after adding an encoded `returnUrl` query parameter)
+- New `LegalRepresentative` object to group parameters related to the declared legal representative. This object includes the new `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry`, which may be used to pre-populate the user's phone number in the SCA session
+
+### Attributes 
+
+<Name2Response />  
+
+<LegalPersonTypeResponse />  
+
+<LegalRepresentativeResponse />  
+
+<ProofOfRegistrationResponse />  
+
+<ShareholderDeclarationResponse />  
+
+<StatuteResponse />  
+
+<CompanyNumberResponse />  
+
+<PendingUserActionResponse />
+
+<HeadquartersAddressResponse />  
+
+<LegalRepresentativeAddressResponse />
+
+<IdResponse />  
+
+<Tag2Response />  
+
+<CreationDateResponse />  
+
+<PersonTypeResponse />  
+
+<Email1Response />  
+
+<KYCLevelResponse />  
+
+<TermsAndConditionsAcceptedResponse />  
+
+<TermsAndConditionsAcceptedDateResponse />  
+
+<UserCategoryResponse />  
+
+<UserStatusScaResponse />
