@@ -1,0 +1,126 @@
+---
+title: View the schema for a Recipient
+api: GET /v2.01/{{ClientId}}/recipients/schema
+---
+
+import PayoutMethodType from '/snippets/p-query/PayoutMethodType.mdx';
+import RecipientType from '/snippets/p-query/RecipientType.mdx';
+import Currency from '/snippets/p-query/Currency.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+import DisplayNameResponse from '/snippets/p-response/DisplayNameResponse.mdx';
+import CurrencyResponse_Recipient from '/snippets/p-response/CurrencyResponse_Recipient.mdx';
+import RecipientTypeResponse from '/snippets/p-response/RecipientTypeResponse.mdx';
+import PayoutMethodTypeResponse from '/snippets/p-response/PayoutMethodTypeResponse.mdx';
+import BusinessRecipientResponse from '/snippets/p-response/BusinessRecipientResponse.mdx';
+import InternationalBankTransferResponse from '/snippets/p-response/InternationalBankTransferResponse.mdx';
+
+### Query parameters  
+
+<PayoutMethodType />
+<RecipientType />
+<Currency />
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200">
+
+<DisplayNameResponse />
+<CurrencyResponse_Recipient />
+<RecipientTypeResponse />
+<PayoutMethodTypeResponse />
+<BusinessRecipientResponse />
+<InternationalBankTransferResponse />
+
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>
+```json EUR
+{
+    "DisplayName": {
+        "Required": true,
+        "MaxLength": 50,
+        "Pattern": "^(?!.*[&,'/]).{1,50}$"
+    },
+    "Currency": {
+        "AllowedValues": [
+            "EUR"
+        ],
+        "Required": true,
+        "MaxLength": 3,
+        "MinLength": 3,
+        "Pattern": "^[a-zA-Z]{3}$"
+    },
+    "RecipientType": {
+        "AllowedValues": [
+            "Business"
+        ],
+        "Required": true,
+        "Pattern": "^[a-zA-Z]+$"
+    },
+    "PayoutMethodType": {
+        "AllowedValues": [
+            "InternationalBankTransfer"
+        ],
+        "Required": true,
+        "Pattern": "^[a-zA-Z]+$"
+    },
+    "BusinessRecipient": {
+        "BusinessName": {
+            "Required": true,
+            "MaxLength": 255,
+            "Pattern": "^(?!.*[(),.:/]).{1,255}$"
+        },
+        "Address": {
+            "AddressLine1": {
+                "Required": true,
+                "MaxLength": 255,
+                "Pattern": "^(?!.*[()/]).{1,255}$"
+            },
+            "AddressLine2": {
+                "Required": false,
+                "MaxLength": 255,
+                "Pattern": "^(?!.*[()/]).{1,255}$"
+            },
+            "City": {
+                "Required": true,
+                "MaxLength": 80,
+                "Pattern": "^(?!.*[&,.:_']).{1,80}$"
+            },
+            "Country": {
+                "Required": true,
+                "MaxLength": 2,
+                "MinLength": 2,
+                "Pattern": "^[a-zA-Z]+$"
+            },
+            "Region": {
+                "Required": false,
+                "MaxLength": 50,
+                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$"
+            },
+            "PostalCode": {
+                "Required": true,
+                "MaxLength": 10,
+                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$"
+            }
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": {
+            "Required": true,
+            "MaxLength": 34,
+            "Pattern": "^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$"
+        }
+    }
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>
