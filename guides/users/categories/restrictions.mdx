@@ -39,22 +39,22 @@ API calls to the POST or PUT endpoints that don't contain `UserCategory` will re
 
 Payers are not allowed to receive transfers except when:
 
-1. the credited and debited wallets belong to the same owner
-2. the transfer is debited from user with a category: Platform.
+1. The credited and debited wallets belong to the same user (the Payer)
+2. The transfer is debited from a technical user, specified by Mangopay with the `UserCategory` value `PLATFORM`
 
-Otherwise a request to “Create a Transfer“ endpoint will result in a creation of a failed transfer with response code `002701`.
+Otherwise a request to [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint will result in a failed transfer with the result code `002701`.
 
-## Payouts can't be debited from wallets owners by Payers
+## Payouts can't be debited from wallets owned by Payers
 
-Payouts can't be debited from wallets owners by Payers except when `PaymentRef` parameter is provided on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint with `ReasonType` to `PAYIN_REFUND` and `Id` of the initial pay-in as the `ReferenceId`.
+Payouts can't be debited from wallets owned by Payers except when the `PaymentRef` parameter is provided on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, with the `ReasonType` set to `PAYIN_REFUND` and the `Id` of the initial pay-in as the `ReferenceId`. For more information, see [Refunds using payouts](/guides/payouts#refunds-using-payouts).
 
-Otherwise a request to “Create a Payout” endpoint will result in a creation of a failed payout with a response code `002701`.
+Otherwise a request to [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will result in a failed payout with the result code `002701`.
 
 ## KYC Documents and UBO declarations can't be submitted for Payers
 
-Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)). Otherwise, a request to "Submit a KYC Document" will result in creation of a rejected document (with Status property set to REFUSED) and a `KYC_FAILED` event will be issued.
+Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)). For Payers, a request to [PUT Submit a KYC Document](/api-reference/kyc-documents/submit-kyc-document) will result in the document `Status` being set to `REFUSED` and a `KYC_FAILED` event.
 
-Payers are not able to declare Ultimate Beneficial Owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object). Should such request be made to "Create a UBO Declaration" endpoint, it will return an error:
+Payers are not able to declare beneficial owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object). If the user is a Payer, the [POST Create a UBO Declaration](/api-reference/ubo-declarations/create-ubo-declaration) endpoint will return an error:
 
 <Accordion title="Example of error that will be returned">
 ```json
