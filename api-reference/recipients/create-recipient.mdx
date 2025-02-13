@@ -1,6 +1,7 @@
 ---
 title: Create a Recipient
-api: POST /v2.01/{ClientId}/users/{{UserId}}/recipients
+api: POST /v2.01/{ClientId}/users/{UserId}/recipients
+description: Register a bank account for local or international payouts
 ---
 
 import DisplayName_Recipient from '/snippets/p-body/DisplayName_Recipient.mdx';
@@ -25,6 +26,20 @@ import IndividualRecipient_RecipientResponse from '/snippets/p-response/Individu
 import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
 
+import UserId from '/snippets/p-path/UserId.mdx';
+
+<Warning>
+**Caution – Fetch schema and validate data before Creation**
+
+Before using this endpoint to register a Recipient for a user, for the given currency, payout method, and recipient type combination, always: 
+- Fetch the schema dynamically using [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema)
+- Check that the user's data is valid using [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data)
+</Warning>
+
+### Path parameters
+
+<UserId/>
+
 ### Body parameters
 
 <DisplayName_Recipient />
@@ -39,7 +54,7 @@ import PendingUserActionResponse from '/snippets/p-response/PendingUserActionRes
 <BusinessRecipient_Recipient />
 </Tab>
 </Tabs>
----
+<br/>
 <Tabs>
 <Tab title="InternationalBankTransfer">
 <InternationalBankTransfer_Recipient/>
@@ -52,7 +67,7 @@ import PendingUserActionResponse from '/snippets/p-response/PendingUserActionRes
 ### Responses
 
 <AccordionGroup>
-<Accordion title="200">
+<Accordion title="201">
 <IdResponse/>
 <Status_RecipientResponse/>
 <CreationDateResponse/>
@@ -68,7 +83,7 @@ import PendingUserActionResponse from '/snippets/p-response/PendingUserActionRes
 <BusinessRecipient_RecipientResponse />
 </Tab>
 </Tabs>
----
+<br/>
 <Tabs>
 <Tab title="InternationalBankTransfer">
 <InternationalBankTransfer_RecipientResponse/>
@@ -81,18 +96,49 @@ import PendingUserActionResponse from '/snippets/p-response/PendingUserActionRes
 </Accordion>
 </AccordionGroup>
 
-{/* <AccordionGroup>
-<Accordion title="400">
+<AccordionGroup>
+<Accordion title="400 - Validation errors">
+Example validation error: 
+```json
+{
+    "Id": "a1f3db88-9df5-49a8-b73c-d578ffff6e89",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1739182373,
+    "Errors": {
+        "IndividualRecipient.Address.Region": "INVALID_FORMAT",
+        "LocalBankTransfer.GBP.AccountNumber": "LENGTH_LESS_THAN_MIN"
+    }
+}
+```
+
+The following error values may be returned:
+- `REQUIRED` – Value is required but not present in the request.
+- `LENGTH_MORE_THAN_MAX` – String length is greater than required length.
+- `LENGTH_LESS_THAN_MIN` – String length is less than required length.
+- `INVALID_FORMAT` – Value doe not match expected pattern.
+- `NOT_IN_ALLOWED_VALUES` – Value is not a valid `PayoutMethodType`, `RecipientType`, or `Currency`.
+- `UNSUPPORTED_CURRENCY` – Currency is a valid ISO 4217 format but not yet supported for Recipients.
+- `CLIENT_NOT_FOUND` – `ClientId` making the request does not exist.
+- `USER_NOT_FOUND` – `UserId` for which the request is made does not exist.
+- `INVALID_SORT_CODE` – Sort code for this account is not valid.
+- `INVALID_ACCOUNT_NUMBER` – Account number is not valid.
+- `INVALID_IBAN` – IBAN is not valid.
+- `INVALID_BIC` – BIC is not valid. 
+- `UNSUPPORTED_IBAN` – IBAN is valid but not supported: 
+  - `LocalBankTransfer` – The IBAN country is not part of SEPA and the local currency is not EUR. 
+  - `InternationalBankTransfer` – The IBAN country is not GB or is not part of SEPA and local currency is not EUR.
+- `INVALID_ACCOUNT_NUMBER_AND_SORT_CODE_COMBINATION` – GB sort code and account number combination is not valid.
 </Accordion>
-</AccordionGroup> */}
+</AccordionGroup>
 
 <ResponseExample>
-```json PENDING 
+```json 201
 {
     "Id": "rec_01JKZNZGA921Q4RMT3B2D8MKQE",
     "Status": "PENDING",
     "CreationDate": 1739451253,
-    "DisplayName": "ExampleDisplayName123",
+    "DisplayName": "Alex Smith's EUR IBAN account",
     "PayoutMethodType": "InternationalBankTransfer",
     "RecipientType": "Individual",
     "Currency": "EUR",
@@ -122,7 +168,7 @@ import PendingUserActionResponse from '/snippets/p-response/PendingUserActionRes
 <RequestExample>
 ```json REST
 {
-    "DisplayName": "ExampleDisplayName123",
+    "DisplayName": "Alex Smith's EUR IBAN account",
     "Currency": "EUR",
     "RecipientType": "Individual",
     "PayoutMethodType": "InternationalBankTransfer",

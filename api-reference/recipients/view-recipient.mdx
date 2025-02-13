@@ -1,4 +1,86 @@
 ---
 title: View a Recipient
 api: POST /v2.01/{ClientId}/recipients/{RecipientId}
+description: Fetch a recipient based on its ID
 ---
+
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/InternationalBankTransfer_RecipientResponse.mdx';
+import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
+import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
+import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import RecipientId from '/snippets/p-path/RecipientId.mdx';
+
+### Path parameters
+
+<RecipientId/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200">
+<IdResponse/>
+<Status_RecipientResponse/>
+<CreationDateResponse/>
+<DisplayName_RecipientResponse />
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<Tabs>
+<Tab title="Individual">
+<IndividualRecipient_RecipientResponse />
+</Tab>
+<Tab title="Business">
+<BusinessRecipient_RecipientResponse />
+</Tab>
+</Tabs>
+<br/>
+<Tabs>
+<Tab title="InternationalBankTransfer">
+<InternationalBankTransfer_RecipientResponse/>
+</Tab>
+<Tab title="LocalBankTransfer">
+<LocalBankTransfer_RecipientResponse/>
+</Tab>
+</Tabs>
+<PendingUserActionResponse/>
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json ACTIVE
+{
+    "Id": "rec_01JKZNZGA921Q4RMT3B2D8MKQE",
+    "Status": "ACTIVE",
+    "CreationDate": 1739451253,
+    "DisplayName": "Alex Smith's EUR IBAN account",
+    "PayoutMethodType": "InternationalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "3 rue de la Cité",
+            "AddressLine2": "Appartement 7",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": "FR7630004000031234567890143",
+        "BIC": "BNPAFRPPXXX"
+    }
+}
+```
+</ResponseExample>
