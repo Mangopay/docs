@@ -133,7 +133,7 @@ The following error values may be returned:
 </AccordionGroup>
 
 <ResponseExample>
-```json 201
+```json 201 - EUR
 {
     "Id": "rec_01JKZNZGA921Q4RMT3B2D8MKQE",
     "Status": "PENDING",
@@ -163,10 +163,40 @@ The following error values may be returned:
     }
 }
 ```
+```json 201 - GBP
+{
+    "Id": "rec_01JMA9YCAK696C1E986P4RRAP2",
+    "Status": "PENDING",
+    "CreationDate": 1739807732,
+    "DisplayName": "Alex Smith's EUR IBAN account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "GBP",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "10 Kingsway",
+            "City": "London",
+            "PostalCode": "WC2B 6LH",
+            "Country": "GB"
+        }
+    },
+    "LocalBankTransfer": {
+        "GBP": {
+            "SortCode": "200000",
+            "AccountNumber": "55779911"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0195149f33447444aa9f3a8c787fcfa9"
+    }
+}
+```
 </ResponseExample>
 
 <RequestExample>
-```json REST
+```json REST - EUR
 {
     "DisplayName": "Alex Smith's EUR IBAN account",
     "Currency": "EUR",
@@ -186,6 +216,30 @@ The following error values may be returned:
     },
     "InternationalBankTransfer": {
         "IBAN": "FR7630004000031234567890143"
+    }
+}
+```
+```json REST - GBP
+{
+    "DisplayName": "Alex Smith's GBP account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "GBP",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "10 Kingsway",
+            "City": "London",
+            "PostalCode": "WC2B 6LH",
+            "Country": "GB"
+        }
+    },
+    "LocalBankTransfer": {
+        "GBP": {
+            "AccountNumber": "55779911",
+            "SortCode": "200000"
+        }
     }
 }
 ```
