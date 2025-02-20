@@ -1,0 +1,64 @@
+---
+title: 'API - Feb XX, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+mode: wide  
+# 'og:description': ''
+---
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+## User endpoints to enable SCA enrollment
+
+Mangopay is applying strong customer authentication (SCA) on the creation of Natural and Legal users with the `UserCategory` value `OWNER`. 
+
+SCA requires the Owner user to authenticate with Mangopay directly as they are the Mangopay account holder.
+
+For **Natural users**, enrollment of the **OTP factor** is available to integrate, requiring the individual's `PhoneNumber` and `Email`.
+
+For **Legal users**, enrollment of the **OTP factor** is available to integrate for **Soletraders**. The individual's phone number and email must be provided in `LegalRepresentative.PhoneNumber` and `LegalRepresentative.Email` and they must authenticate.
+
+In future, Mangopay will provide features to allow the other types of Legal user (Business, Organization, Partnership) to designate additional **authorized individuals** who can complete SCA on behalf of the entity.
+
+<Info>
+Mangopay started communicating by email about SCA on Owners during **February 2025**. Your platform will be required to complete the necessary integrations, with specific deadlines communicated during the year.
+
+For any questions, please contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Info>
+
+SCA is applicable to Owners in the following scenarios:
+
+1. Register an Owner for the first time
+2. Transition an existing Payer to Owner
+3. Enroll an existing Owner
+4. Re-enroll a User (if contact details change)
+
+In each case, your platform must redirect the individual to a Mangopay-hosted webpage. The redirection URL for the SCA session is returned by the Mangopay API in the response property `PendingUserAction.RedirectUrl`. Before redirecting, you need to define, encode, and apprend a `returnUrl` to which the session returns the user afterwards (whatever the outcome). 
+
+For guidance, see the new **Owner SCA** section:
+
+<Card title="Guide" href="/guides/users/sca">
+Owner SCA – Introduction, SCA session, enrollment
+</Card>
+
+## Endpoints
+
+<Card title="Create a Natural User (SCA)" href="href">
+Register a Natural Payer (with SCA enrollment)
+</Card>
+
+## Webhooks
+
+There are new webhook [event types](/webhooks/event-types) to be notified of Owner account SCA enrollment: 
+
+
+
+- `USER_ACCOUNT_VALIDATION_ASKED`
+    - The Owner User has triggered SCA enrollment or re-enrollment. Their access to Mangopay features is restricted until they enroll successfully.
+    - The User’s `UserStatus` has changed to `PENDING_USER_ACTION`.
+- `USER_ACCOUNT_ACTIVATED`
+    - The Owner User has been successfully enrolled in SCA. They can now access Mangopay features.
+    - The User’s `UserStatus` has changed from `PENDING_USER_ACTION` to `ACTIVE`.
+
+
+</div>
