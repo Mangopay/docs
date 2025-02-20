@@ -253,18 +253,24 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
       <td class="table-content">`DOCUMENT_MISSING`</td>
       <td class="table-content">The document is missing from the image or the file.</td>
       <td class="table-content">
-      Check that you upload the correct file and that it contains the accepted registration document. 
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
       
-      Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the registration proof in your case.
+      The file must be accessible and not password protected.
       </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The document is incomplete (e.g., some pages are missing).</td>
+      <td class="table-content">The document is incomplete or not sufficient on its own.</td>
       <td class="table-content">
-      Check that you include all pages of the accepted registration proof and that they upload successfully.
+      Ensure the document is dated and that all pages are present and in one of the supported languages (or along with a sworn translation).
       
-      In cases where the entity is legally represented by another entity, please also provide the extract of the representation entity. This allows Mangopay to identify the natural person who is the legal representative.
+      For most countries, declared legal representative should appear in the document.
+      
+      In some cases, an additional document may be requested, for example:
+      - Registration proof of the company president
+      - Appointment of a director
+      
+      Refer to the `RefusedReasonMessage` for more details.
       </td>
     </tr>
     <tr>
@@ -275,27 +281,38 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
     <tr>
       <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
-      <td class="table-content">Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the registration proof in your case.</td>
+      <td class="table-content">
+      Check the [Accepted local KYB documents](/guides/users/verification/requirements/kyb-local) to know which document is needed for the registration proof in your case.
+
+      Ensure the document uploaded is submitted as the correct [KYC Document](/api-reference/kyc-documents/kyc-document-object) `Type`.
+      </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The people appearing on the document do not include the declared legal representative.</td>
-      <td class="table-content">Check that the legal representative declared for the user is the correct person before submitting the accepted registration proof which lists them. A proxy may be possible in exceptional circumstances.</td>
+      <td class="table-content">The declarative data provided (in the User object) does not match the document uploaded.</td>
+      <td class="table-content">
+      Check that the User object has the correct:
+      - `LegalPersonType` for the [local structure](/guides/users/verification/requirements/kyb-local)
+      - Business information (registered legal name, headquarters address, company number)
+      - Legal representative details (first name, last name, date of birth)
+      
+      In most scenarios, the declared legal representative must appear on the registration proof document.
+      </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
-      <td class="table-content">The document is from more than 3 months ago.</td>
-      <td class="table-content">Submit a recent accepted registration proof which is not older than 3 months.</td>
+      <td class="table-content">The document is not valid or was issued more than 3 months ago.</td>
+      <td class="table-content">Check that the document was issued within the last 3 months. For some countries, the [requirements](/guides/users/verification/requirements/kyb-local) don't include the 3-month rule but the document has a validity period which it has passed and/or it must be the latest up-to-date version of the document.</td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_FALSIFIED`</td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document provided matches the [requirements](/guides/users/verification/requirements/kyb-local) and has not been altered by any means.</td>
     </tr>
     <tr>
       <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
       <td class="table-content">`UNDERAGE_PERSON`</td>
@@ -320,14 +337,22 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
       <td class="table-content">`DOCUMENT_MISSING`</td>
       <td class="table-content">The document is missing from the image or the file.</td>
       <td class="table-content">
-      Check that you upload the correct file and that it contains the accepted articles of association. 
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
       
-      Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the articles of association in your case.
+      The file must be accessible and not password protected.
       </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The document is incomplete, or the registered legal representative doesn’t seem to be one of the persons authorized to represent the entity.</td>
+      <td class="table-content">
+      Ensure the document is dated and that all pages are present and in one of the supported languages (or along with a sworn translation).
+      
+      In some cases, an additional document may be requested, for example:
+      - Appointment of a director
+      - Minutes of a resolution (e.g. in France, the procès-verbal d'assemblée générale)
+      
+      Refer to the `RefusedReasonMessage` for more details.
+      </td>
       <td class="table-content">Check that you include all pages of the articles of association and that they upload successfully.</td>
     </tr>
     <tr>
@@ -338,27 +363,35 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
     <tr>
       <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
-      <td class="table-content">Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the articles of association in your case.</td>
+      <td class="table-content">
+      Check the [Accepted local KYB documents](/guides/users/verification/requirements/kyb-local) to know which document is needed for the registration proof in your case.
+
+      Ensure the document uploaded is submitted as the correct [KYC Document](/api-reference/kyc-documents/kyc-document-object) `Type`.
+      </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The entity indicated on the document doesn’t correspond to the one registered, or the declared legal representative does not appear (if applicable).</td>
-      <td class="table-content">Check the information registered for the entity, and especially that registered legal representative is correct.</td>
+      <td class="table-content">The declarative data provided (in the User object) does not match the document uploaded.</td>
+      <td class="table-content">
+      Check that the User object has the correct:
+      - `LegalPersonType` for the [local structure](/guides/users/verification/requirements/kyb-local)
+      - Business information (registered legal name, headquarters address, company number)
+      </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
-      <td class="table-content">The document is not up to date or doesn’t reflect the current reality.</td>
+      <td class="table-content">The document is not the latest up-to-date version.</td>
       <td class="table-content">Submit the latest signed copy of the articles of association which is up to date, fully accurate, and includes any recent modifications.</td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_FALSIFIED`</td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document provided matches the [requirements](/guides/users/verification/requirements/kyb-local) and has not been altered by any means.</td>
     </tr>
     <tr>
       <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
       <td class="table-content">`UNDERAGE_PERSON`</td>
@@ -382,13 +415,19 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
     <tr>
       <td class="table-content">`DOCUMENT_MISSING`</td>
       <td class="table-content">The document is missing from the image or the file.</td>
-      <td class="table-content">Check that you upload the correct file and that it contains the <a href="/guides/users/verification/documents/types">Shareholder Declaration.</a></td>
+      <td class="table-content">
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
+      
+      The file must be accessible and not password protected.
+      </td>
     </tr>
     <tr>
       <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The date, name or signature is missing, or the document was left blank. There may also be information missing in the table regarding beneficial owners.</td>
+      <td class="table-content">The date, name or signature is missing, or the document was left blank. There may also be pages or information missing in the table regarding beneficial owners.</td>
       <td class="table-content">
-      Check your form to ensure it is complete. Check your understanding and calculation of who the <a href="/guides/glossary#beneficial-owner"><BeneficialOwner content="beneficial owners"/></a> are, especially in complex cases involving indirect ownership via holding companies.
+      Check your form to ensure all mandatory parts are complete, including the checkboxes.
+      
+      Check your understanding and calculation of who the <a href="/guides/glossary#beneficial-owner"><BeneficialOwner content="beneficial owners"/></a> are, especially in complex cases involving indirect ownership via holding companies.
       </td>
     </tr>
     <tr>
