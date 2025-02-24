@@ -14,36 +14,33 @@ $api->Config->ClientPassword = 'your-api-key';
 $api->Config->TemporaryFolder = 'tmp/';
 
 try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $cardId = 'card_m_01J420XC7KAW655XPP12SC28HS';
+    $walletId = 'wlt_m_01HQT6422EER2N7FPRXWTSDCSV';
+    $preauthId = 'preauth_m_01JH3CJ75WGC9FMST9RH7SKBSC';
 
-    $preauthorizationId = 'preauth_wt_a1f70323-115c-44b6-ae8d-2a3e36e3bb33199480485';
-    $cardPreAuthorization = $api->CardPreAuthorizations->Get($preauthorizationId);
+    $preauthPayIn = new \MangoPay\PayIn();
+    $preauthPayIn->AuthorId = $userId;
+    $preauthPayIn->CreditedWalletId = $walletId;
 
-    $payIn = new \MangoPay\PayIn();
+    $preauthPayIn->DebitedFunds = new Money();
+    $preauthPayIn->DebitedFunds->Amount = 1000;
+    $preauthPayIn->DebitedFunds->Currency = 'EUR';
 
-    $payIn->Tag = 'Created using Mangopay PHP SDK';
-    $payIn->CreditedWalletId = 'wlt_m_01J3D02K6ETV3BDP88C7PD2NDB148968396';
-    $payIn->PaymentType = 'CARD';
-    $payIn->AuthorId = 'user_m_01J2TZ261WZNDM0ZDRWGDYA4GN146476890';
+    $preauthPayIn->Fees = new Money();
+    $preauthPayIn->Fees->Amount = 0;
+    $preauthPayIn->Fees->Currency = 'EUR';
 
-    $payIn->DebitedFunds = new \MangoPay\Money();
-    $payIn->DebitedFunds->Amount = 1000;
-    $payIn->DebitedFunds->Currency = 'EUR';
+    $preauthPayIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsPreAuthorized();
+    $preauthPayIn->PaymentDetails->PreauthorizationId = $preauthId;
 
-    $payIn->Fees = new \MangoPay\Money();
-    $payIn->Fees->Amount = 10;
-    $payIn->Fees->Currency = 'EUR';
+    $preauthPayIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
+    $preauthPayIn->ExecutionDetails->SecureModeReturnURL = 'https://docs.mangopay.com/please-ignore';
+    $preauthPayIn->ExecutionDetails->Culture = 'FR';
 
-    $payIn->PaymentDetails = new \MangoPay\PayInPaymentDetailsPreAuthorized();
-    $payIn->PaymentDetails->PreauthorizationId = $cardPreAuthorization->Id;
+    $createPayIn = $api->PayIns->Create($preauthPayIn);
 
-    $payIn->ExecutionType = 'DIRECT';
-    $payIn->ExecutionDetails = new \MangoPay\PayInExecutionDetailsDirect();
-    $payIn->ExecutionDetails->SecureModeReturnURL = 'https://mangopay.com/docs/please-ignore';
-    $payIn->ExecutionDetails->Culture = 'EN';
-
-    $response = $api->PayIns->Create($payIn);
-
-    print_r($response);
+    print_r($createPayIn);
 } catch(MGPResponseException $e) {
     print_r($e);
 } catch(MGPException $e) {

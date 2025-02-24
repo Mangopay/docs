@@ -3,6 +3,7 @@ title: 'View a Payout and check mode applied'
 api: 'GET /v2.01/{ClientId}/payouts/bankwire/{PayOutId}'  
 ---
 
+import PaymentRefResponse from '/snippets/p-response/PaymentRefResponse.mdx';
 import EndToEndIdResponse from '/snippets/p-response/EndToEndIdResponse.mdx';
 import FallbackReasonResponse from '/snippets/p-response/FallbackReasonResponse.mdx';
 import ModeAppliedResponse from '/snippets/p-response/ModeAppliedResponse.mdx';
@@ -46,7 +47,9 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Standard: Succeeded">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -92,104 +95,17 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <FallbackReasonResponse />  
 
-<EndToEndIdResponse /></Accordion><Accordion title="200 - Standard: Succeeded 1 second after creation (GBP Faster Payment)">  
+<EndToEndIdResponse />
 
-<IdResponse />  
+<PaymentRefResponse />
 
-<Tag2Response />  
+</Accordion>
 
-<CreationDateResponse />  
-
-<AuthorId1Response />  
-
-<CreditedUserId1Response />  
-
-<DebitedFunds3Response />  
-
-<CreditedFunds3Response />  
-
-<Fees2Response />  
-
-<Status2Response />  
-
-<ResultCodeResponse />  
-
-<ResultMessageResponse />  
-
-<ExecutionDateResponse />  
-
-<TypeResponse />  
-
-<NatureResponse />  
-
-<CreditedWalletId1Response />  
-
-<DebitedWalletIdResponse />  
-
-<PaymentType2Response />  
-
-<BankAccountIdResponse />  
-
-<BankWireRefResponse />  
-
-<ModeRequestedResponse />  
-
-<ModeAppliedResponse />  
-
-<FallbackReasonResponse />  
-
-<EndToEndIdResponse /></Accordion><Accordion title="200 - Instant payment: Succeeded">  
-
-<IdResponse />  
-
-<Tag2Response />  
-
-<CreationDateResponse />  
-
-<AuthorId1Response />  
-
-<CreditedUserId1Response />  
-
-<DebitedFunds3Response />  
-
-<CreditedFunds3Response />  
-
-<Fees2Response />  
-
-<Status2Response />  
-
-<ResultCodeResponse />  
-
-<ResultMessageResponse />  
-
-<ExecutionDateResponse />  
-
-<TypeResponse />  
-
-<NatureResponse />  
-
-<CreditedWalletId1Response />  
-
-<DebitedWalletIdResponse />  
-
-<PaymentType2Response />  
-
-<BankAccountIdResponse />  
-
-<BankWireRefResponse />  
-
-<ModeRequestedResponse />  
-
-<ModeAppliedResponse />  
-
-<FallbackReasonResponse />  
-
-<EndToEndIdResponse /></Accordion></AccordionGroup>  
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - Standard: Succeeded  
-
+```json 200 - Standard
 {
     "Id": "po_m_01HQMZSGSQPPXC51TZHDAYFAJF",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -224,10 +140,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "FallbackReason": null,
     "EndToEndId": "2c2184396eef4e5da90ab48a2feeb51d"
 }  
- ```  
-
-```json 200 - Standard: Succeeded 1 second after creation (GBP Faster Payment)  
-
+ ```
+```json 200 - GBP FPS
 {
     "Id": "po_b_01HPM8PX3KJV245H409Q3XD0Z7",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -262,10 +176,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "FallbackReason": null,
     "EndToEndId": "58810b9cf8c745b2a45f17f5d06a151f"
 }  
- ```  
-
-```json 200 - Instant payment: Succeeded  
-
+```
+```json 200 - SCT Inst
 {
     "Id": "po_m_01HQMZZV376RRXYQGQAHZ4TN9K",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -295,13 +207,49 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "PaymentType": "BANK_WIRE",
     "BankAccountId": "204070675",
     "BankWireRef": "ExampleInvoice1234",
-    "ModeRequested": "INSTANT_PAYMENT",
+    "ModeRequested": "INSTANT_PAYMENT_ONLY",
     "ModeApplied": "INSTANT_PAYMENT",
     "FallbackReason": null,
     "EndToEndId": "e8052ae4729f4abe9355442020f411a9"
 }  
- ```  
-
+```
+```json 200 - RTGS
+{
+    "Id": "po_m_01JMCS9ED9YTYZBJ3CH0GEMEDS",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1739890932,
+    "AuthorId": "user_m_01JKWYDT94N91CW572D7QNNYRP",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1135
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1022
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 113
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1739890964,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "wlt_m_01JMAAKGM0VCBCQ5V4DB3EZPER",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "bankacc_m_01JMCS94W97ZM6XF5HR0KEVSGV",
+    "BankWireRef": "Example123",
+    "ModeRequested": "RTGS_PAYMENT",
+    "ModeApplied": "RTGS_PAYMENT",
+    "FallbackReason": null,
+    "EndToEndId": "a66784a74c7b4357bbe4f10abccbe411",
+    "PaymentRef": null
+}
+```
 </ResponseExample>  
 
 <RequestExample>  

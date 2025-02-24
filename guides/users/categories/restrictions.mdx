@@ -1,0 +1,69 @@
+---
+title: Restrictions on Payer users
+---
+
+Mangopay is updating its rules on the Payer category of users to enhance security for your platform and comply with regulatory requirements. These changes aim to provide a safer experience for all users.
+
+This page outlines the rules that are being enforced. It aims to provide a description of what's changing.
+
+The rules are based on Mangopay's user categories: Payer and Owner.
+
+All users – Natural and Legal (of all types) – must be categorized into one of two groups:
+
+- **Payer** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `PAYER`. The Payer category of user only requires basic information (e.g. name, email address). The Payer category is designed to register individuals or businesses making pay-ins on your platform using a Mangopay [payment method](/guides/payment-methods).
+- **Owner** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `OWNER`. The Owner category of user requires more detailed information (e.g. date of birth, country of residence), and requires the user to accept Mangopay [terms and conditions](/guides/users/terms). The Owner category is designed to register and identify individuals and businesses that are receiving funds from other users, and who can request [KYC verification](/guides/users/verification) and, once verified successfully, [payouts](/guides/payouts) to an external bank account.
+
+An Owner can do everything a Payer can do. Once a user is an Owner, they cannot revert back to the Payer category.
+
+## UserCategory parameter is mandatory on POST and PUT calls
+
+The `UserCategory` parameter is required on all API calls to create (POST) or update (PUT) a user. While Mangopay policy already requires categorization, the change is being enforced technically.
+
+API calls to the POST or PUT endpoints that don't contain `UserCategory` will return an error.
+
+<Accordion title="Example of error that will be returned">
+```json
+{
+  "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+      "UserCategory": "The UserCategory field is required."
+    }
+}
+```
+</Accordion>
+
+## Transfers can't be credited to wallets owned by Payers
+
+Payers are not allowed to receive transfers except when:
+
+1. The credited and debited wallets belong to the same user (the Payer)
+2. The transfer is debited from a technical user, specified by Mangopay with the `UserCategory` value `PLATFORM`
+
+Otherwise a request to [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint will result in a failed transfer with the result code `002701`.
+
+## Payouts can't be debited from wallets owned by Payers
+
+Payouts can't be debited from wallets owned by Payers except when the `PaymentRef` parameter is provided on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, with the `ReasonType` set to `PAYIN_REFUND` and the `Id` of the initial pay-in as the `ReferenceId`. For more information, see [Refunds using payouts](/guides/payouts#refunds-using-payouts).
+
+Otherwise a request to [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will result in a failed payout with the result code `002701`.
+
+## KYC Documents and UBO declarations can't be submitted for Payers
+
+Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)). For Payers, a request to [PUT Submit a KYC Document](/api-reference/kyc-documents/submit-kyc-document) will result in the document `Status` being set to `REFUSED` and a `KYC_FAILED` event.
+
+Payers are not able to declare beneficial owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object). If the user is a Payer, the [POST Create a UBO Declaration](/api-reference/ubo-declarations/create-ubo-declaration) endpoint will return an error:
+
+<Accordion title="Example of error that will be returned">
+```json
+{
+    "Message": "User belonging to category PAYER can't create UBO declarations",
+    "Type": "invalid_action",
+    "Id": "96ee403c-1a23-46c9-8b2e-1e56c7e80325#1672326575",
+    "Date": 1672326576.0,
+    "errors": null
+}
+```
+</Accordion>

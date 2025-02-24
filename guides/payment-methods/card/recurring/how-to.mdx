@@ -7,6 +7,8 @@ sidebarTitle: 'How to'
 import Sca from '/snippets/glossary/sca.mdx';
 import Issuer from '/snippets/glossary/issuer.mdx';
 
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
 import RestCreateRecurringPayinRegistration from '/snippets/code/rest-create-recurring-payin-registration.mdx';
 import PhpCreateRecurringPayinRegistration from '/snippets/code/php-create-recurring-payin-registration.mdx';
 import NodeCreateRecurringPayinRegistration from '/snippets/code/node-create-recurring-payin-registration.mdx';
@@ -74,10 +76,13 @@ For this guide, we'll define a fixed monthly amount but not provide an end date.
 
 In the response, you will need the `Id` of the Recurring PayIn Registration for the next steps.  
 
-```json API response
+<Accordion title="API response">
+```json
 {
-    "Id": "197964541",
+    "Id": "recpayinreg_m_01JJP2KS2A47A0P7S7CEBQPHT9",
     "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
     "CurrentState": {
         "PayinsLinked": 0,
         "CumulatedDebitedAmount": {
@@ -93,19 +98,19 @@ In the response, you will need the `Id` of the Recurring PayIn Registration for 
     "RecurringType": "CUSTOM",
     "TotalAmount": null,
     "CycleNumber": null,
-    "AuthorId": "197964023",
-    "CardId": "197964528",
-    "CreditedUserId": "197964030",
-    "CreditedWalletId": "197964034",
+    "AuthorId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CardId": "card_m_UsklnOoXBWyyqhsN",
+    "CreditedUserId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CreditedWalletId": "wlt_m_01JJ70WZ9JRAZ9GE0DA36Q84NQ",
     "Billing": {
         "FirstName": "Alex",
         "LastName": "Smith",
         "Address": {
-            "AddressLine1": "Rue de la Cité",
+            "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
@@ -113,11 +118,11 @@ In the response, you will need the `Id` of the Recurring PayIn Registration for 
         "FirstName": "Alex",
         "LastName": "Smith",
         "Address": {
-            "AddressLine1": "Rue de la Cité",
+            "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
@@ -132,13 +137,15 @@ In the response, you will need the `Id` of the Recurring PayIn Registration for 
     },
     "FirstTransactionFees": {
         "Currency": "EUR",
-        "Amount": 100
+        "Amount": 500
     },
     "NextTransactionDebitedFunds": null,
     "NextTransactionFees": null,
-    "Migration": false
+    "Migration": false,
+    "PaymentType": "CARD_DIRECT"
 }
-```  
+```
+</Accordion>
 
 ## 2. Process the first recurring payment (CIT)  
 
@@ -157,25 +164,26 @@ In our example, the first transaction amounts have been defined at the registrat
   <RubyCreateRecurringPayinCit />
   <PythonCreateRecurringPayinCit />
 </CodeGroup>  
-
-```json API response
+<br/>
+<Accordion title="API response">
+```json
 {
-    "Id": "197964698",
-    "Tag": null,
-    "CreationDate": 1689659591,
-    "AuthorId": "197964023",
-    "CreditedUserId": "197964030",
+    "Id": "payin_m_01JJP2PDQWD7S2W42RR6S21VZE",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1738055301,
+    "AuthorId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CreditedUserId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
     "DebitedFunds": {
         "Currency": "EUR",
         "Amount": 10000
     },
     "CreditedFunds": {
         "Currency": "EUR",
-        "Amount": 100
+        "Amount": 9500
     },
     "Fees": {
         "Currency": "EUR",
-        "Amount": 1000
+        "Amount": 500
     },
     "Status": "CREATED",
     "ResultCode": null,
@@ -183,20 +191,20 @@ In our example, the first transaction amounts have been defined at the registrat
     "ExecutionDate": null,
     "Type": "PAYIN",
     "Nature": "REGULAR",
-    "CreditedWalletId": "197964034",
+    "CreditedWalletId": "wlt_m_01JJ70WZ9JRAZ9GE0DA36Q84NQ",
     "DebitedWalletId": null,
     "PaymentType": "CARD",
     "ExecutionType": "DIRECT",
     "SecureMode": null,
-    "CardId": "197964665",
-    "SecureModeReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=197964698",
-    "SecureModeRedirectURL": "https://api.sandbox.mangopay.com:443/Redirect/ACSWithValidation?token=75977e88cf584269bb8b678409856ff2&mgpsecureid=75977e88cf584269bb8b678409856ff2",
+    "CardId": "card_m_UsklnOoXBWyyqhsN",
+    "SecureModeReturnURL": "https://example.com/?transactionId=payin_m_01JJP2PDQWD7S2W42RR6S21VZE",
+    "SecureModeRedirectURL": "https://api.sandbox.whenthen.co/payment-gateway/whenthen/threeDS/54b0c206-0a67-43d4-ace6-14a25697cf85/challenge?id=d7a9a1dd-80aa-4252-b2b4-221e1898d67f&url=aHR0cHM6Ly9hcGkuc2FuZGJveC53aGVudGhlbi5jby9wYXltZW50cy8zRFNlY3VyZS81NGIwYzIwNi0wYTY3LTQzZDQtYWNlNi0xNGEyNTY5N2NmODUvYzA1YTBhYzktNjBmZC00NDQyLWEzYzAtYjlmOTVlN2I1ODk5&amount=MzMzNDE&currency=RVVS",
     "SecureModeNeeded": true,
     "Culture": "EN",
     "SecurityInfo": {
         "AVSResult": "NO_CHECK"
     },
-    "StatementDescriptor": "POSTMAN",
+    "StatementDescriptor": "Example123",
     "BrowserInfo": {
         "AcceptHeader": "text/html, application/xhtml+xml, application/xml;q=0.9, /;q=0.8",
         "JavaEnabled": true,
@@ -208,7 +216,7 @@ In our example, the first transaction amounts have been defined at the registrat
         "UserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
         "JavascriptEnabled": true
     },
-    "IpAddress": "e743:fceb:4443:82b6:b289:bd0d:0f60:ec64",
+    "IpAddress": "3a55:f45c:d44e:ff6a:c63b:f2ec:3a31:eb3e",
     "Billing": {
         "FirstName": "Alex",
         "LastName": "Smith",
@@ -216,8 +224,8 @@ In our example, the first transaction amounts have been defined at the registrat
             "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
@@ -228,16 +236,26 @@ In our example, the first transaction amounts have been defined at the registrat
             "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
     "Requested3DSVersion": null,
     "Applied3DSVersion": "V2_1",
-    "RecurringPayinRegistrationId": "197964679"
-}
-```  
+    "RecurringPayinRegistrationId": "recpayinreg_m_01JJP2KS2A47A0P7S7CEBQPHT9",
+    "PreferredCardNetwork": "MASTERCARD",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "MASTERCARD",
+        "SubType": null
+    }
+}  
+```
+</Accordion>
 
 ### Redirect the user to 3DS protocol  
 
@@ -260,6 +278,88 @@ Create the recurring pay-in at the set interval with the dedicated endpoint. Not
   <RubyCreateRecurringPayinMit />
   <PythonCreateARecurringPayinMit />
 </CodeGroup>  
+<br/>
+<Accordion title="API response">
+```json 200
+{
+    "Id": "payin_m_01JJP59QGFVTMF9Y6YP0K3DXR0",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1738058031,
+    "AuthorId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CreditedUserId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 10000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 9500
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 500
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1738058032,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01JJ70WZ9JRAZ9GE0DA36Q84NQ",
+    "DebitedWalletId": null,
+    "PaymentType": "CARD",
+    "ExecutionType": "DIRECT",
+    "SecureMode": null,
+    "CardId": "card_m_UsklnOoXBWyyqhsN",
+    "SecureModeReturnURL": null,
+    "SecureModeRedirectURL": null,
+    "SecureModeNeeded": false,
+    "Culture": "EN",
+    "SecurityInfo": {
+        "AVSResult": "NO_CHECK"
+    },
+    "StatementDescriptor": "Example123",
+    "BrowserInfo": null,
+    "IpAddress": null,
+    "Billing": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "Shipping": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "Requested3DSVersion": null,
+    "Applied3DSVersion": "V2_1",
+    "RecurringPayinRegistrationId": "recpayinreg_m_01JJP2KS2A47A0P7S7CEBQPHT9",
+    "PreferredCardNetwork": "MASTERCARD",
+    "CardInfo": {
+        "BIN": "497010",
+        "IssuingBank": "LA BANQUE POSTALE",
+        "IssuerCountryCode": "MA",
+        "Type": "CREDIT",
+        "Brand": "MASTERCARD",
+        "SubType": null
+    }
+}
+```
+</Accordion>
 
 ## 4. Update the registration (if required)  
 
@@ -267,14 +367,16 @@ Some information regarding the recurring registration may be modified during the
 - `CardId` - Changing this will require a new CIT for SCA  
 - `Billing` and `Shipping`  
 
-Use the Update a Recurring PayIn Registration endpoint to modify these details.  
+Use the [PUT Update a Recurring PayIn Registration](/api-reference/recurring-payin-registrations/update-recurring-payin-registration) endpoint to modify these details.  
 
 ## 5. Handle re-authentication (when required)  
 
 At any moment during the recurrence, the issuer may request that the end user authenticates again. This also occurs when changing the `CardId` in the Recurring PayIn Registration (see Step 4).  
 
-Set up a hook notification for the following `EventType` to be notified when re-authentication is needed:  
-- RECURRING_REGISTRATION_AUTH_NEEDED  
+The need for re-authentication is indicated by the registration object's `Status` changing to `AUTHENTICATION_NEEDED`.
+
+You can be notified of this by setting up [webhook notifications](/webhooks) for the following [event type](/webhooks/event-types):
+- `RECURRING_REGISTRATION_AUTH_NEEDED`
 
 In this case, you need to guide the end user through authentication during a new CIT in the same way as Step 2.  
 
@@ -285,49 +387,53 @@ The `CurrentState` of the Recurring PayIn Registration provides key information 
 - Cumulated amounts of debited funds and fees  
 - Last pay-in made against the registration  
 
-Use View a Recurring PayIn Registration endpoint to get this information.
+Use the GET View a Recurring PayIn Registration endpoint to get this information.
 
 > [**GET** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-payin-registrations/view-recurring-payin-registration)
 
 <CodeGroup>
+    <RestGetNoBody />
     <PhpViewRecurringPayinRegistration />
     <NodeViewRecurringPayinRegistration />
     <RubyViewRecurringRegistration />
     <PythonViewRecurringPayinRegistration />
 </CodeGroup>
-
-```json API response - Example of recurrence in progress
+<br/>
+<Accordion title="API response">
+```json API response
 {
-    "Id": "197964541",
+    "Id": "recpayinreg_m_01JJP2KS2A47A0P7S7CEBQPHT9",
     "Status": "IN_PROGRESS",
+    "ResultCode": null,
+    "ResultMessage": null,
     "CurrentState": {
-        "PayinsLinked": 3,
+        "PayinsLinked": 2,
         "CumulatedDebitedAmount": {
             "Currency": "EUR",
-            "Amount": 3700
+            "Amount": 20000
         },
         "CumulatedFeesAmount": {
             "Currency": "EUR",
-            "Amount": 30
+            "Amount": 1000
         },
-        "LastPayinId": "198257644"
+        "LastPayinId": "payin_m_01JJP59QGFVTMF9Y6YP0K3DXR0"
     },
     "RecurringType": "CUSTOM",
     "TotalAmount": null,
     "CycleNumber": null,
-    "AuthorId": "197964023",
-    "CardId": "197964528",
-    "CreditedUserId": "197964030",
-    "CreditedWalletId": "197964034",
+    "AuthorId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CardId": "card_m_UsklnOoXBWyyqhsN",
+    "CreditedUserId": "user_m_01JHX34N3Y9BCQP7KR9QWWETDQ",
+    "CreditedWalletId": "wlt_m_01JJ70WZ9JRAZ9GE0DA36Q84NQ",
     "Billing": {
         "FirstName": "Alex",
         "LastName": "Smith",
         "Address": {
-            "AddressLine1": "Rue de la Cité",
+            "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
@@ -335,11 +441,11 @@ Use View a Recurring PayIn Registration endpoint to get this information.
         "FirstName": "Alex",
         "LastName": "Smith",
         "Address": {
-            "AddressLine1": "Rue de la Cité",
+            "AddressLine1": "6 rue de la Cité",
             "AddressLine2": "Appartement 3",
             "City": "Paris",
-            "Region": "Ile-de-France",
-            "PostalCode": "75004",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
             "Country": "FR"
         }
     },
@@ -354,13 +460,15 @@ Use View a Recurring PayIn Registration endpoint to get this information.
     },
     "FirstTransactionFees": {
         "Currency": "EUR",
-        "Amount": 100
+        "Amount": 500
     },
     "NextTransactionDebitedFunds": null,
     "NextTransactionFees": null,
-    "Migration": false
+    "Migration": false,
+    "PaymentType": "CARD_DIRECT"
 }
-```  
+```
+</Accordion>
 
 ## 7. End the recurring payments  
 
@@ -371,7 +479,11 @@ To end the recurring payments manually, use the Update a Recurring Registration 
 > [**PUT** /v2.01/&lcub;ClientId&rcub;/recurringpayinregistrations/&lcub;RecurringPayinRegistrationId&rcub;](/api-reference/recurring-payin-registrations/update-recurring-payin-registration)
 
 <CodeGroup>  
-  <RestUpdateRecurringPayinRegistration />
+  ```json REST
+  {
+      "Status": "ENDED"
+  }
+  ```
   <PhpUpdateRecurringPayinRegistration />
   <NodeUpdateRecurringPayinRegistration />
   <RubyUpdateRecurringRegistration />
@@ -380,15 +492,21 @@ To end the recurring payments manually, use the Update a Recurring Registration 
 
 When you do this, no more recurring pay-ins can be created based on the registration.  
 
-Set up a hook notification for the following `EventType` to be notified when a registration is ended by the end user:  
-- RECURRING_REGISTRATION_ENDED  
+Set up [webhook notifications](/webhooks) for the following [event type](/webhooks/event-types) to be notified when a registration is ended (for example, by the end user):
+- `RECURRING_REGISTRATION_ENDED`
 
 ## Related resources
 
 <CardGroup col={2}> 
-  <Card title="Guide" href="/guides/payment-methods/card/recurring">Learn more about recurring card payments</Card>  
+  <Card title="Guide" href="/guides/payment-methods/card/recurring">
+  Learn more about recurring card payments
+  </Card>  
 
-  <Card title="Endpoints" href="/api-reference/recurring-payin-registrations/recurring-payin-registration-object">The Recurring PayIn Registration object</Card>  
+  <Card title="Endpoints" href="/api-reference/recurring-payin-registrations/recurring-payin-registration-object">
+  The Recurring PayIn Registration object
+  </Card>  
 
-  <Card title="How to" href="/guides/payment-methods/card/direct/how-to">Learn how to process a card payment</Card>
+  <Card title="How to" href="/guides/payment-methods/card/direct/how-to">
+  Learn how to process a card payment
+  </Card>
 </CardGroup>

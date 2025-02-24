@@ -1,7 +1,7 @@
 ---
-title: 'Categorize a Natural User (SCA)'  
+title: 'Categorize a Natural User'  
 api: 'PUT /v2.01/{ClientId}/sca/users/natural/{UserId}/category'
-description: 'Transition a Natural Payer to Owner'
+description: 'Transition a Natural Payer to Owner and enroll them in SCA'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -29,44 +29,56 @@ import LastName1Response from '/snippets/p-response/LastName1Response.mdx';
 import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
 import Address3Response from '/snippets/p-response/Address3Response.mdx';
 
+import UserCategory2 from '/snippets/p-body/UserCategory2.mdx';
+import TermsAndConditionsAccepted1 from '/snippets/p-body/TermsAndConditionsAccepted1.mdx';
 import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
 import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
 import Email5 from '/snippets/p-body/Email5.mdx';
-import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
-import Occupation from '/snippets/p-body/Occupation.mdx';
-import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
-import Nationality from '/snippets/p-body/Nationality.mdx';
-import Birthday from '/snippets/p-body/Birthday.mdx';
+import CountryOfResidence1 from '/snippets/p-body/CountryOfResidence1.mdx';
+import Nationality3 from '/snippets/p-body/Nationality3.mdx';
+import Birthday3 from '/snippets/p-body/Birthday3.mdx';
 
 import RestCategorizeNaturalUser from '/snippets/code/rest-categorize-natural-user.mdx';
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+This endpoint allows you to transition a user whose `UserCategory` is `PAYER` into an `OWNER` by providing the required information and redirecting them on the `PendingUserAction.RedirectUrl` response value to complete SCA enrollment.
+
+Optionally, you can update the `Email` and provide or update the `PhoneNumber` and `PhoneNumberCountry` before SCA redirection.
+
+If the user's `UserCategory` is already `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
+
+[Read more about SCA redirection](/guides/users/sca/session) **&rarr;**
+
+<Note>
+**Note – Country-based restrictions apply to users**
+
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `Nationality`
+- `CountryOfResidence`
+</Note>
 
 ### Body parameters  
 
-<UserCategory />
+<UserCategory2 />
+
+<TermsAndConditionsAccepted1 />
 
 <Email5 />  
 
-<Birthday />  
+<Birthday3 />  
 
-<Nationality />  
+<Nationality3 />  
 
-<CountryOfResidence />  
+<CountryOfResidence1 />  
 
 <PhoneNumber />
 
 <PhoneNumberCountry />
 
-<Occupation />  
-
-<IncomeRange />
-
 ### Responses  
 
 <AccordionGroup>
 
-<Accordion title="200" defaultOpen>  
+<Accordion title="200">  
 
 <FirstName1Response />  
 
@@ -121,8 +133,8 @@ import RestCategorizeNaturalUser from '/snippets/code/rest-categorize-natural-us
 </AccordionGroup>
 
 <AccordionGroup>
-<Accordion>
-```Json 
+<Accordion title="400 - Endpoint not allowed if category already OWNER">
+```Json
 {
     "Message": "This endpoint is not allowed for User categorized as OWNER",
     "Type": "not_allowed_for_user_category_owner",
@@ -131,14 +143,16 @@ import RestCategorizeNaturalUser from '/snippets/code/rest-categorize-natural-us
     "errors": null
 }
 ```
+
+If the user's `UserCategory` is `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
 </Accordion>
 </AccordionGroup>
 
 <ResponseExample>  
 ```json 200 - Owner pending SCA
 {
-    "FirstName": "Ruby",
-    "LastName": "Reinger",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": 652117514,
     "Nationality": "FR",
     "CountryOfResidence": "FR",
@@ -147,14 +161,14 @@ import RestCategorizeNaturalUser from '/snippets/code/rest-categorize-natural-us
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "PhoneNumber": "+33611111111",
+    "PhoneNumber": "0611111111",
     "PhoneNumberCountry": "FR",
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "PendingUserAction": {
@@ -164,7 +178,7 @@ import RestCategorizeNaturalUser from '/snippets/code/rest-categorize-natural-us
     "Tag": "Created using Mangopay API Postman Collection",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": null,

@@ -25,73 +25,61 @@ import LegalRepresentativeAddressResponse from '/snippets/p-response/LegalRepres
 import HeadquartersAddressResponse from '/snippets/p-response/HeadquartersAddressResponse.mdx';
 import LegalRepresentativeResponse from '/snippets/p-response/LegalRepresentativeResponse.mdx';
 
-import Email1 from '/snippets/p-body/Email1.mdx';
+import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
+import Email7 from '/snippets/p-body/Email7.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import CompanyNumber from '/snippets/p-body/CompanyNumber.mdx';
-import LegalRepresentative from '/snippets/p-body/LegalRepresentative.mdx';
-import LegalPersonType from '/snippets/p-body/LegalPersonType.mdx';
-import Name2 from '/snippets/p-body/Name2.mdx';
+import LegalRepresentative1 from '/snippets/p-body/LegalRepresentative1.mdx';
+import LegalPersonType1 from '/snippets/p-body/LegalPersonType1.mdx';
+import Name4 from '/snippets/p-body/Name4.mdx';
 import LegalRepresentativeAddress from '/snippets/p-body/LegalRepresentativeAddress.mdx';
 import HeadquartersAddress from '/snippets/p-body/HeadquartersAddress.mdx';
 
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestUpdateLegalUserSca from '/snippets/code/rest-update-legal-user-sca.mdx';
-
-[Read more about SCA](/guides/users/sca) **&rarr;**
+import RestUpdateLegalUserScaOwner from '/snippets/code/rest-update-legal-user-sca-owner.mdx';
+import RestUpdateLegalUserScaPayer from '/snippets/code/rest-update-legal-user-sca-payer.mdx';
 
 <Warning>
 **Caution – Modification may trigger SCA re-enrollment**
 
-If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+If `UserCategory` is `OWNER`, modifying the following values changes `UserStatus` to `PENDING_USER_ACTION` and requires [re-enrollment in SCA](/guides/users/sca/enrollment#re-enroll-an-enrolled-owner) using the returned `PendingUserAction.RedirectUrl`:
 
 - `LegalRepresentative.Email`
 - `LegalRepresentative.PhoneNumber`
 - `LegalRepresentative.PhoneNumberCountry`
-
-In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated. 
-
-If the user's `UserCategory` is `PAYER`, modifying these parameters has no impact on `UserStatus`.
-
-For more details see the [SCA guides](/guides/users/sca/enrollment).
 </Warning>
 
-<Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+<Warning>
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-The impacted parameters are:  
-- `LegalRepresentative.FirstName`  
-- `LegalRepresentative.LastName`  
-- `LegalRepresentative.Birthday`  
-- `LegalRepresentative.Nationality`  
-- `LegalPersonType`  
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.LastName`
+- `LegalRepresentative.Birthday`
+- `LegalRepresentative.Nationality`
+- `LegalPersonType`
+</Warning>
 
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
-</Warning>  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `Nationality` of the `LegalRepresentative`
-- `CountryOfResidence` of the `LegalRepresentative`
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentative.Nationality`
+- `LegalRepresentative.CountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Body parameters  
 
-<Name2 />  
+<TermsAndConditionsAccepted />  
 
-<LegalPersonType />  
+<Name4 />  
 
-<LegalRepresentative />  
+<LegalPersonType1 />  
+
+<LegalRepresentative1 />  
 
 <CompanyNumber />  
 
@@ -101,9 +89,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <Tag3 />  
 
-<Email1 />  
-
-<TermsAndConditionsAccepted />  
+<Email7 />  
 
 ### Responses  
 
@@ -156,13 +142,13 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </AccordionGroup>  
 
 <ResponseExample>
-```json 200 - Payer
+```json REST - Payer
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": null,
         "Nationality": null,
@@ -185,18 +171,18 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "Country": null
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Updated using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -204,49 +190,47 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "UserStatus": "ACTIVE"
 }
 ```
-```json 200 - Owner pending SCA
+```json REST - Owner
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": 652117514,
         "Nationality": "FR",
         "CountryOfResidence": "FR",
-        "Email": "gunner.beier@example.com",
-        "PhoneNumber": "+33611111111",
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
         "PhoneNumberCountry": "FR"
     },
     "ProofOfRegistration": null,
     "ShareholderDeclaration": null,
     "Statute": null,
     "CompanyNumber": "123456789",
-    "PendingUserAction": {
-        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cef9efe7782881459b02bed1986c"
-    },
+    "PendingUserAction": null,
     "HeadquartersAddress": {
-        "AddressLine1": "18014 Jermain Grove",
-        "AddressLine2": "Harry Unions",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Updated using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": 1734344306,
@@ -257,5 +241,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestUpdateLegalUserSca />
+    <RestUpdateLegalUserScaPayer />
+    <RestUpdateLegalUserScaOwner />
 </RequestExample>

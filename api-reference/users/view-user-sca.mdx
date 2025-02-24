@@ -1,7 +1,7 @@
 ---
 title: 'View a User (SCA)'  
 api: 'GET /v2.01/{ClientId}/sca/users/{UserId}'  
-description: 'See user details including SCA data'
+description: 'Retrieve a Natural or Legal User'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -42,6 +42,14 @@ import Address3Response from '/snippets/p-response/Address3Response.mdx';
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 import UserId from '/snippets/p-path/UserId.mdx';
+
+<Note>
+**Note – `RedirectUrl` not available on this endpoint**
+
+The `RedirectUrl` is only returned on API calls that trigger SCA. 
+
+To obtain a new session link for an Owner, call the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint.
+</Note>
 
 [Read more about SCA](/guides/users/sca) **&rarr;**
 
@@ -167,11 +175,11 @@ import UserId from '/snippets/p-path/UserId.mdx';
     "PhoneNumber": null,
     "PhoneNumberCountry": null,
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
         "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "PendingUserAction": null,
@@ -179,7 +187,7 @@ import UserId from '/snippets/p-path/UserId.mdx';
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -200,24 +208,22 @@ import UserId from '/snippets/p-path/UserId.mdx';
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "PhoneNumber": "+33611111111",
+    "PhoneNumber": "0611111111",
     "PhoneNumberCountry": "FR",
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
         "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "PostalCode": "75004",
         "Country": "FR"
     },
-    "PendingUserAction": {
-        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193ceab0948799a9af9726fb852fb98"
-    },
+    "PendingUserAction": null,
     "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": null,
@@ -227,11 +233,11 @@ import UserId from '/snippets/p-path/UserId.mdx';
 ```
 ```json 200 - Legal Payer
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": null,
         "Nationality": null,
@@ -254,18 +260,18 @@ import UserId from '/snippets/p-path/UserId.mdx';
         "Country": null
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
         "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -275,47 +281,45 @@ import UserId from '/snippets/p-path/UserId.mdx';
 ```
 ```json 200 - Legal Owner pending SCA
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": 652117514,
         "Nationality": "FR",
         "CountryOfResidence": "FR",
-        "Email": "gunner.beier@example.com",
-        "PhoneNumber": "+33611111111",
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
         "PhoneNumberCountry": "FR"
     },
     "ProofOfRegistration": null,
     "ShareholderDeclaration": null,
     "Statute": null,
     "CompanyNumber": "123456789",
-    "PendingUserAction": {
-        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cef9efe7782881459b02bed1986c"
-    },
+    "PendingUserAction": null,
     "HeadquartersAddress": {
-        "AddressLine1": "18014 Jermain Grove",
-        "AddressLine2": "Harry Unions",
+        "AddressLine1": "100 Rue de Rivoli",
+        "AddressLine2": "Bâtiment B",
         "City": "Paris",
         "Region": "Ile-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
         "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": 1734344306,

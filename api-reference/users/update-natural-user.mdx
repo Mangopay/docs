@@ -24,57 +24,50 @@ import BirthdayResponse from '/snippets/p-response/BirthdayResponse.mdx';
 import LastName1Response from '/snippets/p-response/LastName1Response.mdx';
 import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
 import Address3Response from '/snippets/p-response/Address3Response.mdx';
+
 import UserCategory from '/snippets/p-body/UserCategory.mdx';
 import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
-import Email2 from '/snippets/p-body/Email2.mdx';
+import Email6 from '/snippets/p-body/Email6.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
 import Occupation from '/snippets/p-body/Occupation.mdx';
 import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
 import Nationality from '/snippets/p-body/Nationality.mdx';
 import Birthday from '/snippets/p-body/Birthday.mdx';
-import LastName1 from '/snippets/p-body/LastName1.mdx';
-import FirstName1 from '/snippets/p-body/FirstName1.mdx';
+import LastName5 from '/snippets/p-body/LastName5.mdx';
+import FirstName5 from '/snippets/p-body/FirstName5.mdx';
 import Address3 from '/snippets/p-body/Address3.mdx';
 import UserId from '/snippets/p-path/UserId.mdx';
+
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestUpdateNaturalUser from '/snippets/code/rest-update-natural-user.mdx';
+import RestUpdateNaturalUserPayer from '/snippets/code/rest-update-natural-user-payer.mdx';
+import RestUpdateNaturalUserOwner from '/snippets/code/rest-update-natural-user-owner.mdx';
 import PhpUpdateNaturalUser from '/snippets/code/php-update-natural-user.mdx';
 import NodeUpdateNaturalUser from '/snippets/code/node-update-natural-user.mdx';
 import RubyUpdateNaturalUser from '/snippets/code/ruby-update-natural-user.mdx';
 import JavaUpdateNaturalUser from '/snippets/code/java-update-natural-user.mdx';
 import PythonUpdateNaturalUser from '/snippets/code/python-update-natural-user.mdx';
 import NetUpdateNaturalUser from '/snippets/code/net-update-natural-user.mdx';
-  
-[Read more about the Natural User object →](/api-reference/users/natural-user-object)
 
-<Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+<Warning>
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-The impacted parameters are:  
-- `FirstName`  
-- `LastName`  
-- `Birthday`  
-- `Nationality`  
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `FirstName`
+- `LastName`
+- `Birthday`
+- `Nationality`
+</Warning>
 
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
-</Warning>  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Natural Users, the following parameters are concerned:  
-- `Nationality`  
-- `CountryOfResidence`  
-- `Country` of the `Address`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `Nationality`
+- `CountryOfResidence`
+- `Address.Country`
+</Note>
 
 ### Path parameters  
 
@@ -82,11 +75,15 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 ### Body parameters  
 
-<Address3 />  
+<UserCategory />  
 
-<FirstName1 />  
+<TermsAndConditionsAccepted />  
 
-<LastName1 />  
+<FirstName5 />  
+
+<LastName5 />  
+
+<Email6 />  
 
 <Birthday />  
 
@@ -94,17 +91,13 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <CountryOfResidence />  
 
+<Address3 />  
+
 <Occupation />  
 
 <IncomeRange />  
 
 <Tag3 />  
-
-<Email2 />  
-
-<TermsAndConditionsAccepted />  
-
-<UserCategory />  
 
 ### Responses  
 
@@ -197,19 +190,18 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </AccordionGroup>  
 
 <ResponseExample>  
-
-```json 200 - Payer  
+```json REST - Payer
 {
     "Address": {
-        "AddressLine1": "3 rue des Plantes",
+        "AddressLine1": "3 rue de la Cité",
         "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
-    "FirstName": "Hugo",
-    "LastName": "Garnier",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": null,
     "Nationality": null,
     "CountryOfResidence": null,
@@ -218,31 +210,32 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "Id": "user_m_01J87ZBSP8FCVDSCB8PGWQHZPF",
-    "Tag": "Created using MANGOPAY API Collection Postman",
-    "CreationDate": 1670861869,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX2YFX51HSR8R2HJ8ABSEFF",
+    "Tag": "New tag",
+    "CreationDate": 1737216704,
     "PersonType": "NATURAL",
-    "Email": "email@test.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
     "UserCategory": "PAYER",
     "UserStatus": "ACTIVE"
 }
- ```  
-
-```json 200 - Owner  
+```
+```json REST - Owner
 {
     "Address": {
-        "AddressLine1": "3 rue des Plantes",
+        "AddressLine1": "3 rue de la Cité",
         "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
-    "FirstName": "Sophia",
-    "LastName": "Garnier",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": 652117514,
     "Nationality": "FR",
     "CountryOfResidence": "FR",
@@ -251,24 +244,25 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "Id": "user_m_01J87ZBSP8FCVDSCB8PGWQHZPF",
-    "Tag": "Created using MANGOPAY API Collection Postman",
-    "CreationDate": 1670862022,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX332D775R1784M4SK4SFMS",
+    "Tag": "Created using Mangopay API Postman collection",
+    "CreationDate": 1737216854,
     "PersonType": "NATURAL",
-    "Email": "email@test.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
-    "TermsAndConditionsAcceptedDate": 1670862022,
+    "TermsAndConditionsAcceptedDate": 1737216854,
     "UserCategory": "OWNER",
     "UserStatus": "ACTIVE"
-}  
- ```  
-
-
+}
+```
 </ResponseExample>  
 
 <RequestExample> 
-    <RestUpdateNaturalUser />
+    <RestUpdateNaturalUserPayer />
+    <RestUpdateNaturalUserOwner />
     <PhpUpdateNaturalUser />
     <NodeUpdateNaturalUser />
     <RubyUpdateNaturalUser />

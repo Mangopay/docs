@@ -45,7 +45,8 @@ import LegalRepresentativeAddress from '/snippets/p-body/LegalRepresentativeAddr
 import HeadquartersAddress from '/snippets/p-body/HeadquartersAddress.mdx';
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateLegalUser from '/snippets/code/rest-create-legal-user.mdx';
+import RestCreateLegalUserPayer from '/snippets/code/rest-create-legal-user-payer.mdx';
+import RestCreateLegalUserOwner from '/snippets/code/rest-create-legal-user-owner.mdx';
 import PhpCreateLegalUser from '/snippets/code/php-create-legal-user.mdx';
 import NodeCreateLegalUser from '/snippets/code/node-create-legal-user.mdx';
 import RubyCreateLegalUser from '/snippets/code/ruby-create-legal-user.mdx';
@@ -53,31 +54,32 @@ import JavaCreateLegalUser from '/snippets/code/java-create-legal-user.mdx';
 import PythonCreateLegalUser from '/snippets/code/python-create-legal-user.mdx';
 import NetCreateLegalUser from '/snippets/code/net-create-legal-user.mdx';
 
-[Read more about the Legal User object →](/api-reference/users/legal-user-object)
+<Note>
+**Note – Country-based restrictions apply to users**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentativeNationality`
+- `LegalRepresentativeCountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `LegalRepresentativeNationality`  
-- `LegalRepresentativeCountryOfResidence`  
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
 
 ### Body parameters  
 
-<HeadquartersAddress />  
+<UserCategory /> 
 
-<LegalRepresentativeAddress />  
+<TermsAndConditionsAccepted />  
+
+<LegalPersonType />  
 
 <Name2 />  
 
-<LegalPersonType />  
+<Email1 />  
+
+<HeadquartersAddress />  
+
+<CompanyNumber />  
 
 <LegalRepresentativeFirstName />  
 
@@ -91,15 +93,9 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <LegalRepresentativeCountryOfResidence />  
 
-<CompanyNumber />  
+<LegalRepresentativeAddress />  
 
 <Tag3 />  
-
-<Email1 />  
-
-<TermsAndConditionsAccepted />  
-
-<UserCategory />  
 
 ### Responses  
 
@@ -191,7 +187,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <ResponseExample>  
 
-```json 200 - Payer
+```json REST - Payer
 {
     "HeadquartersAddress": {
         "AddressLine1": null,
@@ -202,17 +198,17 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "Country": null
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "34 rue des Entreprises",
-        "AddressLine2": "Appartement 14",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Name": "Best Business",
     "LegalPersonType": "BUSINESS",
-    "LegalRepresentativeFirstName": "Richard",
-    "LegalRepresentativeLastName": "Moulin",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
     "LegalRepresentativeEmail": null,
     "LegalRepresentativeBirthday": null,
     "LegalRepresentativeNationality": null,
@@ -222,42 +218,43 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Statute": null,
     "LegalRepresentativeProofOfIdentity": null,
     "CompanyNumber": null,
-    "Id": "158026537",
-    "Tag": "Created using MANGOPAY API Collection Postman",
-    "CreationDate": 1670863988,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX3QCQ38ZC0S52Y1TNGHGAN",
+    "Tag": "Created using Mangopay API Postman collection",
+    "CreationDate": 1737217520,
     "PersonType": "LEGAL",
-    "Email": "richard.moulin@email.com",
+    "Email": "best.business@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
     "UserCategory": "PAYER",
     "UserStatus": "ACTIVE"
-}  
- ```  
-
-```json 200 - Owner
+}
+```
+```json REST - Owner
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
         "AddressLine2": "Batiment B",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "12032 Wiza Way",
-        "AddressLine2": "Mitchell Drive",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Name": "Best Business",
     "LegalPersonType": "BUSINESS",
-    "LegalRepresentativeFirstName": "Cedrick",
-    "LegalRepresentativeLastName": "Dickinson",
-    "LegalRepresentativeEmail": "Agustin.Ullrich@yahoo.com",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
+    "LegalRepresentativeEmail": "alex.smith@example.com",
     "LegalRepresentativeBirthday": 652117514,
     "LegalRepresentativeNationality": "FR",
     "LegalRepresentativeCountryOfResidence": "FR",
@@ -266,24 +263,26 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Statute": null,
     "LegalRepresentativeProofOfIdentity": null,
     "CompanyNumber": "123456789",
-    "Id": "158026721",
-    "Tag": "Created using MANGOPAY API Collection Postman",
-    "CreationDate": 1670864174,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX3FQ7K0WB275T1BZ1SPZMF",
+    "Tag": "Created using Mangopay API Postman collection",
+    "CreationDate": 1737217268,
     "PersonType": "LEGAL",
-    "Email": "cortney_douglas@yahoo.com",
+    "Email": "best.business@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
-    "TermsAndConditionsAcceptedDate": 1670864174,
+    "TermsAndConditionsAcceptedDate": 1737217268,
     "UserCategory": "OWNER",
     "UserStatus": "ACTIVE"
-}  
- ```  
-
-
+}
+```
 
 </ResponseExample>  
 
-<RequestExample>  
+<RequestExample>
+    <RestCreateLegalUserPayer />
+    <RestCreateLegalUserOwner />
     <RestCreateLegalUser />
     <PhpCreateLegalUser />
     <NodeCreateLegalUser />

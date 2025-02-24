@@ -19,7 +19,7 @@ How Mangopay sends a payout is determined by:
 
 ##### 1. The user’s bank account and its type  
 
-Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see prerequisites below).  
+Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see [bank accounts](/#bank-accounts) prerequisites below).  
 
 The country of registration of a bank account is not linked to its currency. For example, a EUR payout to an account registered in the US requires a US-type account. A CAD payout to an account registered in Italy requires an IBAN-type account.  
 
@@ -29,13 +29,17 @@ Mangopay can send payouts in a wide range of currencies – see the <a href="/gu
 
 Receiving banks can be anywhere in the world. The currency of the payout combines with the account type to determine whether the bank wire is sent locally or internationally, which impacts processing times and costs.
 
-For more information, see the <a href="/guides/glossary#bank-wire">bank wire</a> glossary definition and <a href="https://mangopay.com/pricing">pricing</a> page. 
+For more information, see the <a href="/guides/glossary#bank-wire">bank wire</a> glossary definition.
 
 ##### 3. The mode requested by the platform (if EUR in SEPA)  
 
-If the payout is in EUR in the SEPA zone, platforms can choose to request an Instant Payout or not. There are two modes of payout:  
-- Standard - For all currencies and all bank account types, a request to send funds by the quickest route available (see processing times below).  
-- Instant payment - For EUR in SEPA (only), a request to send funds as an SEPA Instant Credit Transfer (in about 25 seconds, see instant payout below).  
+By default, the standard mode is used to make payout requests: 
+- **Standard** – Sent via the relevant route for the currency and destination account, which determine the [processing times and cutoffs](/guides/payouts#cutoffs-and-processing-times) that apply. If a request is received after the cutoff, it is processed the next working day.
+
+If the payout is in EUR in the SEPA zone, Mangopay offers two other modes which platforms can specify in their requests to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint: 
+- **Instant payment** – Sent via the SEPA Instant Credit Transfer scheme, meaning funds are processed within 25 seconds. There is a fallback mechanism that platforms can use to revert to standard mode in case of an issue or not. For more details, see the [instant payout](/guides/payouts/instant) guide.
+- **Real-time gross settlement (RTGS)** – Sent via the Eurozone’s RTGS scheme, T2, meaning funds are usually processed within 5 minutes. If the request is received after the applicable cutoff (16:15 CET), it is processed the next working day (from 07:00 CET). For more details, see [RTGS](#real-time-gross-settlement-rtgs) below.
+
 
 ## Basic flow  
 
@@ -105,7 +109,7 @@ For payments to GB accounts, the `OwnerName` must match either the `FirstName` a
 
 Due to <Aml content="AML" /> policy, we don’t accept the creation of bank accounts and payouts to some countries. Please refer to the <a href="/guides/users/country-restrictions">Country restrictions</a> article for more information.  
 
-#### Minimum amount  
+### Minimum amount  
 
 The payout minimum amount is €0.10 (or equivalent in other currencies) in both Production and Sandbox.
 
@@ -184,6 +188,8 @@ Cutoffs and processing times vary between currencies and target bank account typ
     </tbody>
 </table>
 
+Standard payouts are not processed on the [public holidays](/support/public-holidays#France) listed in France. 
+
 #### Faster Payments in the UK  
 
 For GBP payouts to GB bank accounts, Mangopay sends them automatically via the Faster Payments System (FPS).  
@@ -198,18 +204,57 @@ When activated, cost-bearing uses the OUR configuration of <a href="/guides/glos
 
 Please note that this setting can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>. 
 
-## Payout refunds  
+## Real-time gross settlement (RTGS)
 
-Successful payouts can be rejected by the acquiring bank (if the bank account is closed, or if it’s a savings account for instance), and this even if the payout `Status` is `SUCCEEDED`. In this case, Mangopay generates a Payout Refund request so that the funds can be returned to the wallet.  
+For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2).
 
-We recommend you keep track of these refunds by setting up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a>:  
+To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
+
+Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next weekday. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
+
+## Refunds using payouts
+
+A [Refund](/api-reference/refunds/refund-object) object cannot be created to reimburse the initial pay-in on two [payment methods](/guides/payment-methods): 
+- [Bank wire pay-in](/api-reference/bank-wire-payins/bank-wire-payin-object)
+- [Pay-in to virtual IBAN](/api-reference/banking-aliases/external-instruction-bank-wire-payin-object)
+
+In these cases, a payout must be used instead.
+
+For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request. To do so, use the `PaymentRef` body parameter when you call the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint:
+
+1. Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
+2. Provide the `Id` of the initial pay-in as the `ReferenceId` value
+
+Note the following conditions and possibilities: 
+
+- The `ReferenceId` value must be the `Id` of a pay-in that was successful (it's `Status` is `SUCCEEDED`)
+- The `Fees` value can't be negative, meaning that you can't reimburse any fees taken on the initial bank wire pay-in
+- You can create multiple payouts that reference the same pay-in `Id`
+
+If a payout containing a `PAYIN_REFUND` reference is returned, it follows the same process as other payouts.
+
+<Note>
+**Note – Refunds using payouts via the Dashboard**
+
+The Mangopay Dashboard allows you to initiate refunds using payouts for bank wire and virtual IBAN pay-ins. To do so, use the ***Refund*** button on the pay-in details screen.
+</Note>
+
+## Payout returns  
+
+Successful payouts (i.e. with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
+
+In this scenario, Mangopay creates a Refund object for the payout so that the funds can be returned to the wallet.
+
+Set up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a> to be notified of this:  
 - PAYOUT_REFUND_CREATED  
 - PAYOUT_REFUND_SUCCEEDED  
 - PAYOUT_REFUND_FAILED  
 
-Additional information regarding the Payout Refund can be found in the `RefundReason` object returned by the API.  
+You can use the [GET View a Refund endpoint](/api-reference/refunds/view-refund) to see details of the payout return.
 
-Possible `RefundReasonType` are:  
+Additional information regarding the return can be found in the `RefundReason` object returned by the API.  
+
+Possible `RefundReasonType` are:
 - BANKACCOUNT_INCORRECT  
 - BANKACCOUNT_HAS_BEEN_CLOSED  
 - OWNER_DOT_NOT_MATCH_BANKACCOUNT  

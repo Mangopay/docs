@@ -1,7 +1,7 @@
 ---
 title: 'Create a Legal User (SCA)'  
 api: 'POST /v2.01/{ClientId}/sca/users/legal'  
-description: 'Register a Legal Payer or Owner'
+description: 'Register a Legal Payer or Owner (with SCA enrollment)'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -38,23 +38,26 @@ import HeadquartersAddress from '/snippets/p-body/HeadquartersAddress.mdx';
 
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateLegalUserSca from '/snippets/code/rest-create-legal-user-sca.mdx';
+import RestCreateLegalUserScaOwner from '/snippets/code/rest-create-legal-user-sca-owner.mdx';
+import RestCreateLegalUserScaPayer from '/snippets/code/rest-create-legal-user-sca-payer.mdx';
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+<Note>
+**Note – SCA triggered for Owners**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to use the returned `PendingUserAction.RedirectUrl` (and add an encoded `returnUrl` query parameter) to redirect the user so they can enroll.
 
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `Nationality` of the `LegalRepresentative`
-- `CountryOfResidence` of the `LegalRepresentative`
-- `Country` of the `LegalRepresentativeAddress`  
+Read more about how to redirect them in the [SCA session](/guides/users/sca/session) guide.
+</Note>
 
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+<Note>
+**Note – Country-based restrictions apply to users**
+
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentative.Nationality`
+- `LegalRepresentative.CountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Body parameters  
 
@@ -156,20 +159,20 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </AccordionGroup>
 
 <ResponseExample>
-```json 200 - Payer
+```json REST - Payer
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": null,
         "Nationality": null,
         "CountryOfResidence": null,
-        "Email": null,
-        "PhoneNumber": null,
-        "PhoneNumberCountry": null
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
+        "PhoneNumberCountry": "FR"
     },
     "ProofOfRegistration": null,
     "ShareholderDeclaration": null,
@@ -185,18 +188,18 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "Country": null
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -204,19 +207,19 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "UserStatus": "ACTIVE"
 }
 ```
-```json 200 - Owner pending SCA
+```json REST - Owner
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": 652117514,
         "Nationality": "FR",
         "CountryOfResidence": "FR",
-        "Email": "gunner.beier@example.com",
-        "PhoneNumber": "+33611111111",
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
         "PhoneNumberCountry": "FR"
     },
     "ProofOfRegistration": null,
@@ -227,26 +230,26 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cef9efe7782881459b02bed1986c"
     },
     "HeadquartersAddress": {
-        "AddressLine1": "18014 Jermain Grove",
-        "AddressLine2": "Harry Unions",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": 1734344306,
@@ -257,5 +260,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestCreateLegalUserSca />
+    <RestCreateLegalUserScaPayer />
+    <RestCreateLegalUserScaOwner />
 </RequestExample>

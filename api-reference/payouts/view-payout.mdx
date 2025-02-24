@@ -3,6 +3,7 @@ title: 'View a Payout'
 api: 'GET /v2.01/{ClientId}/payouts/{PayoutId}'  
 ---
 
+import PaymentRefResponse from '/snippets/p-response/PaymentRefResponse.mdx';
 import BankWireRefResponse from '/snippets/p-response/BankWireRefResponse.mdx';
 import BankAccountIdResponse from '/snippets/p-response/BankAccountIdResponse.mdx';
 import PaymentType2Response from '/snippets/p-response/PaymentType2Response.mdx';
@@ -48,7 +49,9 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Standard: Succeeded">  
+<AccordionGroup>
+
+<Accordion title="200">
 
 <IdResponse />  
 
@@ -86,50 +89,17 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <BankAccountIdResponse />  
 
-<BankWireRefResponse /></Accordion><Accordion title="200 - Standard: Succeeded 1 second after creation (GBP Faster Payment)">  
+<BankWireRefResponse />
 
-<IdResponse />  
+<PaymentRefResponse />
 
-<TagResponse />  
+</Accordion>
 
-<CreationDateResponse />  
-
-<AuthorId1Response />  
-
-<CreditedUserId1Response />  
-
-<DebitedFunds3Response />  
-
-<CreditedFunds3Response />  
-
-<Fees2Response />  
-
-<Status2Response />  
-
-<ResultCodeResponse />  
-
-<ResultMessageResponse />  
-
-<ExecutionDateResponse />  
-
-<TypeResponse />  
-
-<NatureResponse />  
-
-<CreditedWalletId1Response />  
-
-<DebitedWalletIdResponse />  
-
-<PaymentType2Response />  
-
-<BankAccountIdResponse />  
-
-<BankWireRefResponse /></Accordion></AccordionGroup>  
+</AccordionGroup>  
 
 <ResponseExample>  
 
-```json 200 - Standard: Succeeded  
-
+```json 200
 {
     "Id": "po_m_01HQMZSGSQPPXC51TZHDAYFAJF",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -160,10 +130,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "BankAccountId": "204070675",
     "BankWireRef": "ExampleInvoice1234"
 }  
- ```  
-
-```json 200 - Standard: Succeeded 1 second after creation (GBP Faster Payment)  
-
+```
+```json 200 - GBP FPS
 {
     "Id": "po_b_01HPM8PX3KJV245H409Q3XD0Z7",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -183,8 +151,8 @@ For more information, see the <a href="/api-reference/overview/data-availability
         "Amount": 47
     },
     "Status": "SUCCEEDED",
-    "ResultCode": null,
-    "ResultMessage": null,
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
     "ExecutionDate": 1707929729,
     "Type": "PAYOUT",
     "Nature": "REGULAR",
@@ -194,8 +162,44 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "BankAccountId": "204073517",
     "BankWireRef": "Created using the Mangopay API Postman collection"
 }  
- ```  
-
+```
+```json 200 - PAYIN_REFUND
+{
+    "Id": "po_b_01JCR32EMBXRWNWRN5KVW2DXE1",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1731680352,
+    "AuthorId": "user_m_01JCQYJNHFPENP1SKTCBYER0F8",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 24581
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 24581
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "wlt_m_01J9KR4A7BH8KVE4PG6DTNS817",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G",
+    "BankWireRef": "Example123",
+    "EndToEndId": "2da75c747abf4fbd83d6fd746d63fad4",
+    "PaymentRef": {
+        "ReasonType": "PAYIN_REFUND",
+        "ReferenceId": "payin_m_01JCR21X56KVHF7F5TVGYNT9G7"
+    }
+}
+```
 </ResponseExample>  
 
 <RequestExample>  

@@ -28,25 +28,29 @@ import LegalPersonTypeResponse from '/snippets/p-response/LegalPersonTypeRespons
 import Name2Response from '/snippets/p-response/Name2Response.mdx';
 import LegalRepresentativeAddressResponse from '/snippets/p-response/LegalRepresentativeAddressResponse.mdx';
 import HeadquartersAddressResponse from '/snippets/p-response/HeadquartersAddressResponse.mdx';
+
 import UserCategory from '/snippets/p-body/UserCategory.mdx';
 import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
-import Email1 from '/snippets/p-body/Email1.mdx';
+import Email7 from '/snippets/p-body/Email7.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import CompanyNumber from '/snippets/p-body/CompanyNumber.mdx';
 import LegalRepresentativeCountryOfResidence from '/snippets/p-body/LegalRepresentativeCountryOfResidence.mdx';
 import LegalRepresentativeNationality from '/snippets/p-body/LegalRepresentativeNationality.mdx';
 import LegalRepresentativeBirthday from '/snippets/p-body/LegalRepresentativeBirthday.mdx';
 import LegalRepresentativeEmail from '/snippets/p-body/LegalRepresentativeEmail.mdx';
-import LegalRepresentativeLastName from '/snippets/p-body/LegalRepresentativeLastName.mdx';
-import LegalRepresentativeFirstName from '/snippets/p-body/LegalRepresentativeFirstName.mdx';
-import LegalPersonType from '/snippets/p-body/LegalPersonType.mdx';
-import Name2 from '/snippets/p-body/Name2.mdx';
+import LegalRepresentativeLastName1 from '/snippets/p-body/LegalRepresentativeLastName1.mdx';
+import LegalRepresentativeFirstName1 from '/snippets/p-body/LegalRepresentativeFirstName1.mdx';
+import LegalPersonType1 from '/snippets/p-body/LegalPersonType1.mdx';
+import Name4 from '/snippets/p-body/Name4.mdx';
 import LegalRepresentativeAddress from '/snippets/p-body/LegalRepresentativeAddress.mdx';
 import HeadquartersAddress from '/snippets/p-body/HeadquartersAddress.mdx';
+
 import UserId from '/snippets/p-path/UserId.mdx';
+
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateLegalUser from '/snippets/code/rest-create-legal-user.mdx';
+import RestUpdateLegalUserPayer from '/snippets/code/rest-update-legal-user-payer.mdx';
+import RestUpdateLegalUserOwner from '/snippets/code/rest-update-legal-user-owner.mdx';
 import PhpUpdateLegalUser from '/snippets/code/php-update-legal-user.mdx';
 import NodeUpdateLegalUser from '/snippets/code/node-update-legal-user.mdx';
 import RubyUpdateLegalUser from '/snippets/code/ruby-update-legal-user.mdx';
@@ -54,36 +58,26 @@ import JavaUpdateLegalUser from '/snippets/code/java-update-legal-user.mdx';
 import PythonUpdateLegalUser from '/snippets/code/python-update-legal-user.mdx';
 import NetUpdateLegalUser from '/snippets/code/net-update-legal-user.mdx';
 
-[Read more about the Legal User object →](/api-reference/users/legal-user-object)
+<Warning>
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-<Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.LastName`
+- `LegalRepresentative.Birthday`
+- `LegalRepresentative.Nationality`
+- `LegalPersonType`
+</Warning>
 
-The impacted parameters are:  
-- `LegalRepresentativeFirstName`  
-- `LegalRepresentativeLastName`  
-- `LegalRepresentativeBirthday`  
-- `LegalRepresentativeNationality`  
-- `LegalPersonType`  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
-</Warning>  
-
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `LegalRepresentativeNationality`  
-- `LegalRepresentativeCountryOfResidence`  
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentativeNationality`
+- `LegalRepresentativeCountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Path parameters  
 
@@ -91,17 +85,25 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 ### Body parameters  
 
+<UserCategory />  
+
+<TermsAndConditionsAccepted />  
+
+<LegalPersonType1 />  
+
+<Name4 />  
+
+<Email7 />  
+
 <HeadquartersAddress />  
+
+<CompanyNumber />  
 
 <LegalRepresentativeAddress />  
 
-<Name2 />  
+<LegalRepresentativeFirstName1 />  
 
-<LegalPersonType />  
-
-<LegalRepresentativeFirstName />  
-
-<LegalRepresentativeLastName />  
+<LegalRepresentativeLastName1 />  
 
 <LegalRepresentativeEmail />  
 
@@ -111,15 +113,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <LegalRepresentativeCountryOfResidence />  
 
-<CompanyNumber />  
-
 <Tag3 />  
-
-<Email1 />  
-
-<TermsAndConditionsAccepted />  
-
-<UserCategory />  
 
 ### Responses  
 
@@ -226,7 +220,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <ResponseExample>  
 
-```json 200 - Payer  
+```json REST - Payer  
 {
     "HeadquartersAddress": {
         "AddressLine1": null,
@@ -240,14 +234,14 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "AddressLine1": "34 rue des Entreprises",
         "AddressLine2": "Appartement 14",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
     "Name": "Best Business",
     "LegalPersonType": "BUSINESS",
-    "LegalRepresentativeFirstName": "Richard",
-    "LegalRepresentativeLastName": "Moulin",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
     "LegalRepresentativeEmail": null,
     "LegalRepresentativeBirthday": null,
     "LegalRepresentativeNationality": null,
@@ -257,11 +251,11 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Statute": null,
     "LegalRepresentativeProofOfIdentity": null,
     "CompanyNumber": null,
-    "Id": "158026537",
-    "Tag": "Created using MANGOPAY API Collection Postman",
+    "Id": "user_m_01JHX2YFX51HSR8R2HJ8ABSEFF",
+    "Tag": "New tag",
     "CreationDate": 1670863988,
     "PersonType": "LEGAL",
-    "Email": "richard.moulin@email.com",
+    "Email": "best.business@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -270,29 +264,29 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 }  
  ```  
 
-```json 200 - Owner  
+```json REST - Owner  
 {
     "HeadquartersAddress": {
         "AddressLine1": "34 rue des Entreprises",
         "AddressLine2": "Batiment B",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "12032 Wiza Way",
-        "AddressLine2": "Mitchell Drive",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Name": "Best Business",
     "LegalPersonType": "BUSINESS",
-    "LegalRepresentativeFirstName": "Cedrick",
-    "LegalRepresentativeLastName": "Dickinson",
-    "LegalRepresentativeEmail": "Agustin.Ullrich@yahoo.com",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
+    "LegalRepresentativeEmail": "alex.smith@example.com",
     "LegalRepresentativeBirthday": 652117514,
     "LegalRepresentativeNationality": "FR",
     "LegalRepresentativeCountryOfResidence": "FR",
@@ -301,11 +295,11 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Statute": null,
     "LegalRepresentativeProofOfIdentity": null,
     "CompanyNumber": "123456789",
-    "Id": "158026721",
+    "Id": "user_m_01JHX2YFX51HSR8R2HJ8ABSEFF",
     "Tag": "Created using MANGOPAY API Collection Postman",
     "CreationDate": 1670864174,
     "PersonType": "LEGAL",
-    "Email": "cortney_douglas@yahoo.com",
+    "Email": "best.business@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": 1670864174,
@@ -319,7 +313,8 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestCreateLegalUser />
+    <RestUpdateLegalUserPayer />
+    <RestUpdateLegalUserOwner />
     <PhpUpdateLegalUser />
     <NodeUpdateLegalUser />
     <RubyUpdateLegalUser />

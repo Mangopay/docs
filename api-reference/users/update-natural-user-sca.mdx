@@ -32,70 +32,57 @@ import Address3Response from '/snippets/p-response/Address3Response.mdx';
 import PhoneNumber from '/snippets/p-body/PhoneNumber.mdx';
 import PhoneNumberCountry from '/snippets/p-body/PhoneNumberCountry.mdx';
 import TermsAndConditionsAccepted from '/snippets/p-body/TermsAndConditionsAccepted.mdx';
-import Email5 from '/snippets/p-body/Email5.mdx';
+import Email8 from '/snippets/p-body/Email8.mdx';
 import Tag3 from '/snippets/p-body/Tag3.mdx';
 import IncomeRange from '/snippets/p-body/IncomeRange.mdx';
 import Occupation from '/snippets/p-body/Occupation.mdx';
 import CountryOfResidence from '/snippets/p-body/CountryOfResidence.mdx';
 import Nationality from '/snippets/p-body/Nationality.mdx';
 import Birthday from '/snippets/p-body/Birthday.mdx';
-import LastName1 from '/snippets/p-body/LastName1.mdx';
-import FirstName1 from '/snippets/p-body/FirstName1.mdx';
+import LastName5 from '/snippets/p-body/LastName5.mdx';
+import FirstName5 from '/snippets/p-body/FirstName5.mdx';
 import Address3 from '/snippets/p-body/Address3.mdx';
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestUpdateNaturalUserSca from '/snippets/code/rest-update-natural-user-sca.mdx';
-
-[Read more about SCA](/guides/users/sca) **&rarr;**
+import RestUpdateNaturalUserScaOwner from '/snippets/code/rest-update-natural-user-sca-owner.mdx';
+import RestUpdateNaturalUserScaPayer from '/snippets/code/rest-update-natural-user-sca-payer.mdx';
 
 <Warning>
 **Caution – Modification may trigger SCA re-enrollment**
 
-If the the user's `UserCategory` is `OWNER`, modifying the following values will require re-enrollment in SCA via the returned `PendingUserAction.RedirectUrl`:  
+If `UserCategory` is `OWNER`, modifying the following values changes `UserStatus` to `PENDING_USER_ACTION` and requires [re-enrollment in SCA](/guides/users/sca/enrollment#re-enroll-an-enrolled-owner) using the returned `PendingUserAction.RedirectUrl`:
 
 - `Email`
 - `PhoneNumber`
 - `PhoneNumberCountry`
-
-In this case, the user's `UserStatus` is `PENDING_USER_ACTION` until they have successfully authenticated. 
-
-If the user's `UserCategory` is `PAYER`, modifying these parameters has no impact on `UserStatus`.
-
-For more details see the [SCA guides](/guides/users/sca/enrollment).
 </Warning>
 
-<Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+<Warning>
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-The impacted parameters are:  
-- `FirstName`  
-- `LastName`  
-- `Birthday`  
-- `Nationality`  
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `FirstName`
+- `LastName`
+- `Birthday`
+- `Nationality`
+</Warning>
 
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
-</Warning>  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Natural Users, the following parameters are concerned:  
-- `Nationality`  
-- `CountryOfResidence`  
-- `Country` of the `Address`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `Nationality`
+- `CountryOfResidence`
+- `Address.Country`
+</Note>
 
 ### Body parameters  
 
-<FirstName1 />  
+<TermsAndConditionsAccepted />  
 
-<LastName1 />  
+<FirstName5 />  
+
+<LastName5 />  
 
 <Birthday />  
 
@@ -109,7 +96,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <Tag3 />  
 
-<Email5 />  
+<Email8 />  
 
 <PhoneNumber />
 
@@ -117,9 +104,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <Address3 />  
 
-<TermsAndConditionsAccepted />  
-
-<UserCategory /> 
 
 ### Responses 
 
@@ -181,10 +165,10 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 
 <ResponseExample>  
 
-```json 200 - Payer
+```json REST - Payer
 {
-    "FirstName": "Ruby",
-    "LastName": "Ringer",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": null,
     "Nationality": null,
     "CountryOfResidence": null,
@@ -196,19 +180,19 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "PhoneNumber": null,
     "PhoneNumberCountry": null,
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "PendingUserAction": null,
     "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
-    "Tag": "Updated using Mangopay API Collection Postman",
+    "Tag": "New tag",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -217,10 +201,10 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 }
 ```  
 
-```json 200 - Owner pending SCA
+```json REST - Owner
 {
-    "FirstName": "Ruby",
-    "LastName": "Ringer",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": 652117514,
     "Nationality": "FR",
     "CountryOfResidence": "FR",
@@ -229,24 +213,22 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "PhoneNumber": "+33611111111",
+    "PhoneNumber": "0611111111",
     "PhoneNumberCountry": "FR",
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
-    "PendingUserAction": {
-        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193ceab0948799a9af9726fb852fb98"
-    },
+    "PendingUserAction": null,
     "Id": "user_m_01JF7AP1M46TR0JH7WBGPWK7D7",
-    "Tag": "Updated using the Mangopay API Postman collection",
+    "Tag": "New tag",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": null,
@@ -258,5 +240,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestUpdateNaturalUserSca />
+<RestUpdateNaturalUserScaPayer />
+<RestUpdateNaturalUserScaOwner />
 </RequestExample>

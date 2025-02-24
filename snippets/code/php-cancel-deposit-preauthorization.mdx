@@ -1,0 +1,30 @@
+  ```php PHP
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $depositId = 'deposit_m_01JH5W6ZE4FZFYY583XGK1AJAT';
+
+    $cancel = new CancelDeposit();
+    $cancel->PaymentStatus = "CANCELED";
+    
+    $cancelDeposit = $api->Deposits->Cancel($depositId, $cancel);
+
+    print_r($cancelDeposit);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```

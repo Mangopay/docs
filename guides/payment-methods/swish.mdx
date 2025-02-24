@@ -57,6 +57,8 @@ On your app or website, the user selects Swish as the payment method
 </Step>
 <Step title="Payment initiation">
 You create the payment request by calling <a href="/api-reference/swish/create-swish-payin">POST Create a Swish PayIn</a>, specifying the `ReturnURL`.
+
+If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
 </Step>
 <Step title="Redirection">
 On a website, you redirect the user via the `RedirectURL` response value to a hosted payment page containing the QR code. Alternatively, you can integrate a PNG of the QR code into your payment page using the `QRCodeURL` value (which is Base64-encoded).
@@ -72,8 +74,9 @@ The payment session lasts for 3 minutes, at which point the pay-in fails automat
 </Note>
 </Step>
 <Step title="Return">
-After payment, the user is returned to the `ReturnURL` that you specified in the payment request.
-
+After payment, the user is returned on your specified `ReturnURL`:
+- To a website if `PaymentFlow` is `WEB` (default value)
+- To a mobile app if the `PaymentFlow` is `APP`
 </Step>
 <Step title="Outcome">
 The transaction is complete when the pay-in status changes from `CREATED` to `SUCCEEDED` or `FAILED`, indicating the outcome. 
