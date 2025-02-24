@@ -31,9 +31,9 @@ The hosted identity verification feature is in beta and available for [Natural](
 The user must also be an Owner to request a new verification session. To verify a user, you need to create a session. Each session contains multiple checks depending on the user type.
 </Note>
 
-## Endpoints and Webhook Overview
+## Endpoints
 
-The following endpoints let you initiate and manage identity verification sessions:
+The following endpoints let you initiate and manage IDV Session objects:
 <CardGroup cols={1}>
 <Card title="POST Create an IDV Session" href="/api-reference/idv-sessions/create-idv-session">
 Start an identity verification session and get a link for the hosted experience
@@ -46,91 +46,41 @@ Obtain verified user data and results of each check performed
 </Card>
 </CardGroup>
 
-You should also set up [webhooks](/guides/users/verification/hosted#webhooks) to be notified of key user events.
+## Webhooks
 
-{/* <table>
-    <tbody>
-        <tr>
-            <td class="table-content">[POST /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/identity-verifications](/guides/users/verification/hosted#post-create-a-hosted-identity-verification-session)</td>
-            <td class="table-content">Start an identity verification session and get a link for the hosted experience.</td>
-        </tr>
-        <tr>
-            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;](/guides/users/verification/hosted#get-view-an-identity-verification-session)</td>
-            <td class="table-content">Retrieve the overall status of an identity verification process. This endpoint provides a concise response suitable for periodic checks on a user's KYC status.</td>
-        </tr>
-        <tr>
-            <td class="table-content">[GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;/checks](/guides/users/verification/hosted#get-view-identity-verification-checks)</td>
-            <td class="table-content">Fetch verified information about the user, results from individual checks performed, failure reasons and the overall status. </td>
-        </tr>
-        <tr>
-            <td class="table-content">[Verification and KYC Status Events](/guides/users/verification/hosted#webhooks)</td>
-            <td class="table-content">Get real-time updates on the status of identity verification sessions and KYC status of users.</td>
-        </tr>
-    </tbody>
-</table> */}
+You can set up [webhook notifications](/webhooks) for the following event types:
 
-## Endpoints
+### IDV session
 
-### POST Create a hosted Identity Verification Session
+- **IDENTITY_VERIFICATION_VALIDATED** – The identity verification session was successful. 
+- **IDENTITY_VERIFICATION_FAILED** – The identity verification session was unsuccessful. You can retry the verification for the user.  
+- **IDENTITY_VERIFICATION_INCONCLUSIVE** – 
+- **IDENTITY_VERIFICATION_OUTDATED** – The identity verification session is no longer valid, likely due to expired documents used during the session.
 
-This endpoint allows you to initiate an identity verification session for a user and provides a redirection link to Mangopay's hosted experience. Each session contains multiple checks depending on the user type.
+The `ResourceId` of these webhooks corresponds to the `IdvSessionId`.
 
-> **POST /users/&lcub;UserId&rcub;/identity-verifications**
+### User KYC level
 
-``` json 
-{
-  "ReturnUrl": "https://your-return-url.com",
-  "Tag": "Custom data"
-}
-```
+These event types complement the existing ones relating to the user's KYC Level:
 
-<Accordion title="See parameter details">
-### Path parameters
-<UserId />
-### Body parameters
-<ReturnURL4 />
-<Tag3/>
+- **USER_KYC_REGULAR** – The user has been successfully verified by Mangopay.
+- **USER_KYC_LIGHT** – The user has not been verified by Mangopay and is therefore subject to product limitations.
 
-### Responses
-<AccordionGroup>
-<Accordion title="200 - Session created">
-  <IdResponse />
-  <Tag2Response />
-  <CreationDateResponse />
-  <HostedUrlResponse />
-  <Status13Response />
-  <ReturnURL3Response />
+## How it works
 
-</Accordion>
-<Accordion title="400 - User must have UserCategory value OWNER">
-```json 
-{
-  "Message": "This user must be categorised as an Owner with terms and conditions accepted to avail of these services.",
-  "Type": "invalid_action",
-  "Id": "0ecdeb35-c34b-489b-92ee-a1a5f9062ee5",
-  "Date": 1710955348.0,
-  "errors": null
-}
-```
-</Accordion>
-</AccordionGroup>
-</Accordion>
+<Steps>
+<Step title="Initiate the IDV Session">
+Call the [POST Create an IDV Session](/api-reference/idv-sessions/create-idv-session) endpoint to obtain a HostedUrl for the hosted KYC/B session.
 
-**API response**
-
-``` json 200 - Session created
-{
-  "Id": "32197520",
-  "Tag": "Custom data",
-  "CreationDate": 1710402969,
-  "HostedUrl": "https://example.com",
-  "Status": "PENDING",
-  "ReturnUrl": "https://your-return-url.com"
-}
-```
-
-In response, the API returns the `HostedUrl` to which you need to redirect the user to complete their identity verification.
-
+Define a `ReturnUrl` for the user to be returned to after their identity verification session. 
+</Step>
+<Step title="Redirect the user">
+In the API response, the `HostedUrl` contains the URL to which you need to redirect the user to complete their session. 
+</Step>
+<Step title="Let the user complete the session">
+On the URL, the user can submit the required data and complete a liveness check using their smartphone.
+</Step>
+<Step title="Handle the session outcome">
 The `Status` parameter indicates the progression of the verification session:
 
 - **VALIDATED** – The session was successful.
@@ -141,141 +91,16 @@ The `Status` parameter indicates the progression of the verification session:
 - **REVIEW** – The session is under manual review by Mangopay.
 - **ERROR** – The session was not completed because an error occurred.
 
-**HTTP errors**
+You should set up [webhooks](#webhooks) to be notified of the outcome.
+</Step>
+<Step title="See checks completed during a session">
+Call the GET View checks for an IDV Session to see the list of Checks carried out during the session, as well as the data points (`Type` and `Value`) of each check. 
 
-The user must have the `UserCategory` value `OWNER` to enable a verification request for them.
+Refer to the [verified data returned](#verified-data-returned) and [refusal reasons](#refusal-reasons) for more information. 
+</Step>
+</Steps>
 
-``` json 400 - User must have UserCategory value OWNER
-{
-  "Message": "This feature is only available for users categorised as Owner.",
-  "Type": "invalid_action",
-  "Id": "0ecdeb35-c34b-489b-92ee-a1a5f9062ee5",
-  "Date": 1710955348.0,
-  "errors": null
-}
-```
 
-### GET View an Identity Verification Session
-
-This endpoint lets you retrieve the details of an Identity Verification session using its `Id` as the `IdentityVerificationId` path parameter.
-
-> **GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;**
-
-``` json 
-// GET has no body parameters
-```
-
-<Accordion title="See parameter details">
-### Path parameters
-<ClientId />
-<IdentityVerificationId />
-
-### Responses
-    <Accordion title="200">
-        <IdResponse />
-        <Tag2Response />
-        <CreationDateResponse />
-        <HostedUrlResponse />
-        <Status13Response />
-        <ReturnURL3Response />
-
-    </Accordion>
-
-</Accordion>
-
-**API response**
-
-``` json 200
-{
-  "Id": "32197520",
-  "Tag": "Custom data",
-  "CreationDate": 1710402969,
-  "HostedUrl": "https://example.com",
-  "Status": "VALIDATED",
-  "ReturnUrl": "https://your-return-url.com"
-}
-```
-
-### GET View Identity Verification Checks
-
-This endpoint lets you retrieve verified information about the user, results from individual checks performed, failure reasons and the overall status of the session. 
-
-> **GET /v2.01/&lcub;ClientId&rcub;/identity-verifications/&lcub;IdentityVerificationId&rcub;/checks**
-
-``` json 
-// GET has no body parameters
-```
-
-<Accordion title="See parameter details">
-### Path parameters
-<ClientId />
-<IdentityVerificationId />
-
-### Responses
-    <Accordion title="200">
-      <SessionIdResponse />
-      <Status14Response />
-      <CreationDate3Response/>
-      <LastUpdate1Response />
-      <ChecksResponse />
-    </Accordion>
-    
-</Accordion>
-
-**API Response**
-
-```json 200
-{
-    "SessionId": "idnver_xxxxx",
-    "Status": "VALIDATED",
-    "CreationDate": "2023-06-03T15:20:30Z",
-    "LastUpdate": "2023-06-03T15:20:30Z",
-    "Checks": [
-        {
-            "CheckId": "idnchc_xxxxx",
-            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
-            "CheckStatus": "VALIDATED",
-            "CreationDate": "2023-06-03T15:20:30Z",
-            "LastUpdate": "2023-06-03T15:20:30Z",
-            "Data": [
-                {
-                    "Type": "FIRST_NAME",
-                    "Value": "John"
-                },
-                {
-                    "Type": "LAST_NAME",
-                    "Value": "Doe"
-                },
-            ]
-        },
-        {
-            "CheckId": "idnchc_xxxxx",
-            "Type": "BUSINESS_VERIFICATION",
-            "CheckStatus": "REJECTED",
-            "CreationDate": "2023-06-03T15:20:30Z",
-            "LastUpdate": "2023-06-03T15:20:30Z",
-            "Data": [
-                {
-                    "Type": "REFUSAL_REASON",
-                    "Value": "DOCUMENT_NOT_ACCEPTED"
-                },
-                {
-                    "Type": "REFUSAL_DESCRIPTION",
-                    "Value": "Business was not found in registry"
-                }
-            ]
-        },
-        {
-            "CheckId": "idnchc_xxxxx",
-            "Type": "PERSONS_SIGNIFICANT_CONTROL",
-            "CheckStatus": "VALIDATED",
-            "CreationDate": "2023-06-03T15:20:30Z",
-            "LastUpdate": "2023-06-03T15:20:30Z",
-            "Data": []
-        }
-    ]
-}
-```
 ### Verified data returned
 
 For more details on refusal reasons and descriptions, see the [Refusal reasons glossary](/guides/users/verification/hosted#refusal-reasons-glossary).
@@ -426,23 +251,3 @@ For more details on refusal reasons and descriptions, see the [Refusal reasons g
         </tr>
     </tbody>
 </table>
-
-## Webhooks
-
-You can set up [webhook notifications](/webhooks) for following event types relating to the identity verification session.
-
-### Identity Verification events
-
-- **IDENTITY_VERIFICATION_VALIDATED** – The identity verification session was successful. 
-- **IDENTITY_VERIFICATION_FAILED** – The identity verification session was unsuccessful. You can retry the verification for the user.  
-- **IDENTITY_VERIFICATION_INCONCLUSIVE** – 
-- **IDENTITY_VERIFICATION_OUTDATED** – The identity verification session is no longer valid, likely due to expired documents used during the session.
-
-The `ResourceId` of these webhooks corresponds to the `IdentityVerificationId`.
-
-### User KYC Level events
-
-These event types complement the existing ones relating to the user's KYC Level:
-
-- **USER_KYC_REGULAR** – The user has been successfully verified by Mangopay.
-- **USER_KYC_LIGHT** – The user has not been verified by Mangopay and is therefore subject to product limitations.
