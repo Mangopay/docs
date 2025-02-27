@@ -7,18 +7,31 @@ description: Integration guide for beta
 
 A Recipient represents a bank account belonging to the beneficiary of a payout. A recipient can be held by an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address. 
 
+Mangopay offers two payout methods: 
+- `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 
+- `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` of the payout. 
+
+You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
+
+Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. 
+
+For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. Registering the recipient requires the account's IBAN.
+
+However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code. 
+
+To know exactly which details are required to register the account, call the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema):
+- `AUD` – Account number, branch-state-branch (BSB) number
+- `CAD` – Account number, institution number, branch code, bank name
+- `EUR` – IBAN
+- `GBP` – Account number, sort code
+- `HKD` – Account number, BIC, branch code
+- `MXN` – CLABE, BIC
+- `SGD` – Account number, BIC
+- `USD` – Account number, ABA routing number
+
+For international payouts, the IBAN is required for all currencies. 
+
 Each recipient can be used for one combination of a payout method and currency, which together determine the account details required.
-
-Payout methods:
-- `InternationalBankTransfer` – A bank wire sent via SWIFT. For all currencies, the account identifier required is an IBAN.
-- `LocalBankTransfer` – A bank wire sent via domestic routes. The account details required for local payouts change depending on the `Currency` of the payout. For example:
-    - `GBP` – Account number and sort code
-    - `USD` – Account number and ABA routing number
-    - Etc.
-
-When the `PayoutMethodType` is `InternationalBankTransfer`, then an IBAN is required. When the `PayoutMethodType` is `LocalBankTransfer`, then local details are required for the given currency.
-
-For local accounts, the exact schema of the account details is available from the API, as well as an endpoint to check that the user's data is valid before registering the recipient. This increases the likelihood that payouts will be delivered without delay or hindrance.
 
 A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
 
@@ -26,7 +39,7 @@ A user's real bank account can therefore be registered more than once, for examp
 
 <Steps>
 <Step title="View available payout methods">
-Call the **GET View Payout Methods** endpoint to find out which payout methods are available to your platform in each currency. 
+Call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout methods are available to your platform in each currency and destination country.
 </Step>
 <Step title="Fetch the data schema">
 
@@ -48,12 +61,12 @@ You are strongly recommended to validate the recipient data before creating it. 
 </Check>
 </Step>
 <Step title="Create the recipient">
-
 Once validated, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint to register the account details.
 </Step>
 <Step title="Redirect the user for SCA">
+The user must complete [SCA](/guides/users/sca) to register their bank account. This means you need to redirect them to the Mangopay-hosted SCA session. For more details on this process, see the [SCA session](/guides/users/sca/session) guide.
 
-In the response, fetch the `PendingUserAction.RedirectUrl` value and add your encoded `returnUrl`. Then redirect the individual to complete SCA. 
+In the API response, retrieve the `PendingUserAction.RedirectUrl` value and add your encoded `returnUrl`. The redirect the user to the SCA session.
 </Step>
 <Step title="Verify the outcome">
 When the user is returned after the SCA session, check the status of the `controlStatus` and `actionStatus` query parameters. Call the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint to check its status. 
@@ -104,6 +117,11 @@ The following event types are available for [webhook notifications](/webhooks):
 
 
 ## Endpoints
+
+### View payout methods
+<Card title="GET View payout methods" href="/api-reference/recipients/view-payout-methods">
+See payout methods available to your platform by currency and country
+</Card>
 
 ### View recipient schemas and validate data
 <Card title="GET View the schema for a Recipient" href="/api-reference/recipients/view-recipient-schema">
