@@ -1,0 +1,72 @@
+---
+title: List Recipients for a User
+api: POST /v2.01/{ClientId}/users/{UserId}/recipients
+description: List recipients created for a UserId
+---
+
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Path parameters
+
+<UserId/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200">
+<ResponseField name="Recipients" type="array (objects)">
+The list of recipients created for the user.
+<Expandable>
+<IdResponse/>
+<DisplayName_RecipientResponse/>
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<Status_RecipientResponse/>
+</Expandable>
+</ResponseField>
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json 200
+{
+    "Recipients": 
+        [
+            {
+                "Id": "rec_01JKWYH8DV0Q0KAGRH4KF7AQZG",
+                "DisplayName": "Alex Smith's EUR IBAN account",
+                "PayoutMethodType": "InternationalBankTransfer",
+                "RecipientType": "Individual",
+                "Currency": "EUR",
+                "Status": "ACTIVE"
+            },
+            {
+                "Id": "rec_01JKZS1EE13SMA68BT74TMP9JF",
+                "DisplayName": "Alex Smith's USD local account",
+                "PayoutMethodType": "InternationalBankTransfer",
+                "RecipientType": "Individual",
+                "Currency": "USD",
+                "Status": "ACTIVE"
+            },
+            {
+                "Id": "rec_01JKZT06JNG1T3ZNRA0JAB8DJE",
+                "DisplayName": "Alex Smith's GBP local account",
+                "PayoutMethodType": "LocalBankTransfer",
+                "RecipientType": "Individual",
+                "Currency": "GBP",
+                "Status": "PENDING"
+            }
+        ]
+}
+```
+</ResponseExample>

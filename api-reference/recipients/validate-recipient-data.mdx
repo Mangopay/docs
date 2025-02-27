@@ -1,0 +1,158 @@
+---
+title: Validate data for a Recipient
+api: POST /v2.01/{ClientId}/users/{UserId}/recipients/validate
+description: Check that the user's Recipient data conforms to the expected schema
+---
+
+import DisplayName_Recipient from '/snippets/p-body/DisplayName_Recipient.mdx';
+import PayoutMethodType_Recipient from '/snippets/p-body/PayoutMethodType_Recipient.mdx';
+import RecipientType_Recipient from '/snippets/p-body/RecipientType_Recipient.mdx';
+import Currency_Recipient from '/snippets/p-body/Currency_Recipient.mdx';
+import IndividualRecipient_Recipient from '/snippets/p-body/IndividualRecipient_Recipient.mdx';
+import BusinessRecipient_Recipient from '/snippets/p-body/BusinessRecipient_Recipient.mdx';
+import InternationalBankTransfer_Recipient from '/snippets/p-body/InternationalBankTransfer_Recipient.mdx';
+import LocalBankTransfer_Recipient from '/snippets/p-body/LocalBankTransfer_Recipient.mdx';
+
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/InternationalBankTransfer_RecipientResponse.mdx';
+import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
+import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
+import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+
+### Path parameters
+
+<UserId/>
+
+### Body parameters
+
+<DisplayName_Recipient />
+<PayoutMethodType_Recipient/>
+<RecipientType_Recipient/>
+<Currency_Recipient/>
+<Tabs>
+<Tab title="Individual">
+<IndividualRecipient_Recipient />
+</Tab>
+<Tab title="Business">
+<BusinessRecipient_Recipient />
+</Tab>
+</Tabs>
+<br/>
+<Tabs>
+<Tab title="InternationalBankTransfer">
+<InternationalBankTransfer_Recipient/>
+</Tab>
+<Tab title="LocalBankTransfer">
+<LocalBankTransfer_Recipient/>
+</Tab>
+</Tabs>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200">
+*No response body – 200 HTTP code indicates the request is valid against the schema*
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400">
+Example 400 error: 
+```json
+{
+    "Id": "a1f3db88-9df5-49a8-b73c-d578ffff6e89",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1739182373,
+    "Errors": {
+        "IndividualRecipient.Address.Region": "INVALID_FORMAT",
+        "LocalBankTransfer.GBP.AccountNumber": "LENGTH_LESS_THAN_MIN"
+    }
+}
+```
+
+The following error values may be returned:
+- `REQUIRED` – Value is required but not present in the request.
+- `LENGTH_MORE_THAN_MAX` – String length is greater than required length.
+- `LENGTH_LESS_THAN_MIN` – String length is less than required length.
+- `INVALID_FORMAT` – Value doe not match expected pattern.
+- `NOT_IN_ALLOWED_VALUES` – Value is not a valid `PayoutMethodType`, `RecipientType`, or `Currency`.
+- `UNSUPPORTED_CURRENCY` – Currency is a valid ISO 4217 format but not yet supported for Recipients.
+- `CLIENT_NOT_FOUND` – `ClientId` making the request does not exist.
+- `USER_NOT_FOUND` – `UserId` for which the request is made does not exist.
+- `INVALID_SORT_CODE` – Sort code for this account is not valid.
+- `INVALID_ACCOUNT_NUMBER` – Account number is not valid.
+- `INVALID_IBAN` – IBAN is not valid.
+- `INVALID_BIC` – BIC is not valid. 
+- `UNSUPPORTED_IBAN` – IBAN is valid but not supported: 
+  - If `LocalBankTransfer`, the IBAN country is not part of SEPA and the local currency is not EUR. 
+  - If `InternationalBankTransfer`, the IBAN country is not GB or is not part of SEPA and local currency is not EUR.
+- `INVALID_ACCOUNT_NUMBER_AND_SORT_CODE_COMBINATION` – GB sort code and account number combination is not valid.
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json 200
+// No response body
+```
+</ResponseExample>
+
+<RequestExample>
+```json REST - EUR
+{
+    "DisplayName": "Alex Smith's EUR IBAN account",
+    "Currency": "EUR",
+    "RecipientType": "Individual",
+    "PayoutMethodType": "InternationalBankTransfer",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "3 rue de la Cité",
+            "AddressLine2": "Appartement 7",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": "FR7630004000031234567890143"
+    }
+}
+```
+```json REST - GBP
+{
+    "DisplayName": "Alex Smith's GBP account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "GBP",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "10 Kingsway",
+            "City": "London",
+            "PostalCode": "WC2B 6LH",
+            "Country": "GB"
+        }
+    },
+    "LocalBankTransfer": {
+        "GBP": {
+            "AccountNumber": "55779911",
+            "SortCode": "200000"
+        }
+    }
+}
+```
+</RequestExample>

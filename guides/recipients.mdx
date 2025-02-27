@@ -1,0 +1,150 @@
+---
+title: Recipients
+description: Integration guide for beta
+---
+
+## Introduction
+
+A Recipient represents a bank account belonging to the beneficiary of a payout. A recipient can be held by an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address. 
+
+Mangopay offers two payout methods: 
+- `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 
+- `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` of the payout. 
+
+You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
+
+Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. 
+
+For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. Registering the recipient requires the account's IBAN.
+
+However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code. 
+
+To know exactly which details are required to register the account, call the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema):
+- `AUD` – Account number, branch-state-branch (BSB) number
+- `CAD` – Account number, institution number, branch code, bank name
+- `EUR` – IBAN
+- `GBP` – Account number, sort code
+- `HKD` – Account number, BIC, branch code
+- `MXN` – CLABE, BIC
+- `SGD` – Account number, BIC
+- `USD` – Account number, ABA routing number
+
+For international payouts, the IBAN is required for all currencies. 
+
+Each recipient can be used for one combination of a payout method and currency, which together determine the account details required.
+
+A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
+
+## How to register a recipient
+
+<Steps>
+<Step title="View available payout methods">
+Call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout methods are available to your platform in each currency and destination country.
+</Step>
+<Step title="Fetch the data schema">
+
+Call the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema) endpoint to know the data required to create the recipient based on the country, currency, and payout method.
+<Check>
+**Best practice – Retrieve schema before requesting user data**
+
+The schema for a recipient may change, so you should integrate dynamic retrieval of all fields (account details, holder data, etc) before presenting them to the user.
+</Check>
+</Step>
+<Step title="Validate the user's recipient data">
+Check that the user's data is as expected by submitting it to the [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) endpoint.
+
+A 200 response indicates that the data is valid against the schema. If one or more data field does not conform to the schema, then a 400 error is returned listing the errors.
+<Check>
+**Best practice – Validate data before creation**
+
+You are strongly recommended to validate the recipient data before creating it. This helps avoid payouts being rejected and optimizes deliverability.
+</Check>
+</Step>
+<Step title="Create the recipient">
+Once validated, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint to register the account details.
+</Step>
+<Step title="Redirect the user for SCA">
+The user must complete [SCA](/guides/users/sca) to register their bank account. This means you need to redirect them to the Mangopay-hosted SCA session. For more details on this process, see the [SCA session](/guides/users/sca/session) guide.
+
+In the API response, retrieve the `PendingUserAction.RedirectUrl` value and add your encoded `returnUrl`. The redirect the user to the SCA session.
+</Step>
+<Step title="Verify the outcome">
+When the user is returned after the SCA session, check the status of the `controlStatus` and `actionStatus` query parameters. Call the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint to check its status. 
+
+The Recipient `Status` is `PENDING` until the user authenticates successfully, at which point it changes to `ACTIVE`. 
+
+Set up a webhook for the `RECIPIENT_ACTIVE` event type to be notified of this.
+
+If SCA is not successfully completed, the status changes to `CANCELLED`. To retry SCA, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
+</Step>
+</Steps>
+
+## How to initiate a payout
+
+When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by calling the [POST Create a Payout](/api-reference/recipients/create-recipient) endpoint and entering the `Id` of the Recipient as the `BankAccountId`. 
+
+Payouts can only be requested against a Recipient that is `ACTIVE`. 
+
+If you attempt a payout to a Recipient that is `PENDING` or `CANCELLED`, the Recipient ID is not considered valid and a 400 error is returned:
+
+```json
+{
+    "Id": "0602decd-c7e4-4870-a103-1ac242b23467#1739868259",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1739868260,
+    "errors": {
+        "BankAccountId": "The value rec_01JM1X5ZF868NYBZDF9MCB6VWE is not valid"
+    }
+}
+```
+
+If you attempt a payout to a Recipient that is `DEACTIVATED`, the payout is created with `FAILED` status and the `ResultCode` [121006](/errors/codes/121006) (The associated bank account is not active).
+
+## Status and webhooks
+
+The `Status` of the Recipient can have the following values.
+
+- `PENDING` – When a Recipient is first created, it has the `PENDING` status. The user must complete SCA before the recipient can become `ACTIVE` and be used.
+- `CANCELLED` – If SCA is not successful, the Recipient status changes to `CANCELLED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
+- `ACTIVE` – SCA was successful and the Recipient was created successfully. Payouts can only be requested to a Recipient that is `ACTIVE`.
+- `DEACTIVATED` – The recipient has been permanently disabled and can no longer be used for payouts. You can deactivate a Recipient using the [PUT Deactivate a Recipient](/api-reference/recipients/deactivate-recipient) endpoint.
+
+The following event types are available for [webhook notifications](/webhooks):
+- `RECIPIENT_ACTIVE`
+- `RECIPIENT_CANCELED`
+- `RECIPIENT_DEACTIVATED`
+
+
+## Endpoints
+
+### View payout methods
+<Card title="GET View payout methods" href="/api-reference/recipients/view-payout-methods">
+See payout methods available to your platform by currency and country
+</Card>
+
+### View recipient schemas and validate data
+<Card title="GET View the schema for a Recipient" href="/api-reference/recipients/view-recipient-schema">
+Fetch the data requirements for a given currency, payout method type, and recipient type
+</Card>
+<Card title="POST Validate data for a Recipient" href="/api-reference/recipients/validate-recipient-data">
+Check that the user's Recipient data conforms to the expected schema
+</Card>
+
+### Create recipients
+<Card title="POST Create a Recipient" href="/api-reference/recipients/create-recipient">
+Register a bank account for local or international payouts
+</Card>
+
+### View and list recipients
+<Card title="GET View a Recipient" href="/api-reference/recipients/view-recipient">
+Fetch a recipient based on its ID
+</Card>
+<Card title="GET List Recipients for a user" href="/api-reference/recipients/list-recipients-user">
+List recipients created for a UserId
+</Card>
+
+### Deactivate recipients
+<Card title="PUT Deactivate a Recipient" href="/api-reference/recipients/deactivate-recipient">
+Permanently disable a Recipient
+</Card>

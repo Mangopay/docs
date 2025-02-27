@@ -1,0 +1,122 @@
+---
+title: View a Recipient
+api: POST /v2.01/{ClientId}/recipients/{RecipientId}
+description: Fetch a recipient based on its ID
+---
+
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/InternationalBankTransfer_RecipientResponse.mdx';
+import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
+import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
+import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import RecipientId from '/snippets/p-path/RecipientId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Path parameters
+
+<RecipientId/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200">
+<IdResponse/>
+<Status_RecipientResponse/>
+<CreationDateResponse/>
+<DisplayName_RecipientResponse />
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<Tabs>
+<Tab title="Individual">
+<IndividualRecipient_RecipientResponse />
+</Tab>
+<Tab title="Business">
+<BusinessRecipient_RecipientResponse />
+</Tab>
+</Tabs>
+<br/>
+<Tabs>
+<Tab title="InternationalBankTransfer">
+<InternationalBankTransfer_RecipientResponse/>
+</Tab>
+<Tab title="LocalBankTransfer">
+<LocalBankTransfer_RecipientResponse/>
+</Tab>
+</Tabs>
+<PendingUserActionResponse/>
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json ACTIVE - EUR
+{
+    "Id": "rec_01JKZNZGA921Q4RMT3B2D8MKQE",
+    "Status": "ACTIVE",
+    "CreationDate": 1739451253,
+    "DisplayName": "Alex Smith's EUR IBAN account",
+    "PayoutMethodType": "InternationalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "3 rue de la Cité",
+            "AddressLine2": "Appartement 7",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": "FR7630004000031234567890143",
+        "BIC": "BNPAFRPPXXX"
+    }
+}
+```
+```json ACTIVE - GBP
+{
+    "Id": "rec_01JMA9YCAK696C1E986P4RRAP2",
+    "Status": "PENDING",
+    "CreationDate": 1739807732,
+    "DisplayName": "Alex Smith's EUR IBAN account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "GBP",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "10 Kingsway",
+            "City": "London",
+            "PostalCode": "WC2B 6LH",
+            "Country": "GB"
+        }
+    },
+    "LocalBankTransfer": {
+        "GBP": {
+            "SortCode": "200000",
+            "AccountNumber": "55779911"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0195149f33447444aa9f3a8c787fcfa9"
+    }
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>
