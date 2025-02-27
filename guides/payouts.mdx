@@ -33,9 +33,13 @@ For more information, see the <a href="/guides/glossary#bank-wire">bank wire</a>
 
 ##### 3. The mode requested by the platform (if EUR in SEPA)  
 
-If the payout is in EUR in the SEPA zone, platforms can choose to request an Instant Payout or not. There are two modes of payout:  
-- Standard - For all currencies and all bank account types, a request to send funds by the quickest route available (see processing times below).  
-- Instant payment - For EUR in SEPA (only), a request to send funds as an SEPA Instant Credit Transfer (in about 25 seconds, see instant payout below).  
+By default, the standard mode is used to make payout requests: 
+- **Standard** – Sent via the relevant route for the currency and destination account, which determine the [processing times and cutoffs](/guides/payouts#cutoffs-and-processing-times) that apply. If a request is received after the cutoff, it is processed the next working day.
+
+If the payout is in EUR in the SEPA zone, Mangopay offers two other modes which platforms can specify in their requests to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint: 
+- **Instant payment** – Sent via the SEPA Instant Credit Transfer scheme, meaning funds are processed within 25 seconds. There is a fallback mechanism that platforms can use to revert to standard mode in case of an issue or not. For more details, see the [instant payout](/guides/payouts/instant) guide.
+- **Real-time gross settlement (RTGS)** – Sent via the Eurozone’s RTGS scheme, T2, meaning funds are usually processed within 5 minutes. If the request is received after the applicable cutoff (16:15 CET), it is processed the next working day (from 07:00 CET). For more details, see [RTGS](#real-time-gross-settlement-rtgs) below.
+
 
 ## Basic flow  
 
@@ -105,13 +109,9 @@ For payments to GB accounts, the `OwnerName` must match either the `FirstName` a
 
 Due to <Aml content="AML" /> policy, we don’t accept the creation of bank accounts and payouts to some countries. Please refer to the <a href="/guides/users/country-restrictions">Country restrictions</a> article for more information.  
 
-#### Minimum amount  
+### Minimum amount  
 
-The payout minimum amount is €0.10 (or equivalent in other currencies) in both Production and Sandbox.
-
-It is not possible to make a payout inferior to €0.10 unless it is a payout made to empty a wallet. In other words, you can only make a €0.05 payout if the wallet balance is also €0.05.  
-
-Note that the minimum amount might differ depending on the platform's contract with Mangopay.  
+Mangopay does not impose a minimum amount on payouts. The minimum amount possible is dictated by the rules of the underlying scheme used to send the payout. For example, the SEPA Credit Transfer (SCT) scheme accepts a minimum amount of EUR 0.01, and the Faster Payments System (FPS) in the UK allows GBP 0.01. Other schemes may impose different minimum amounts.
 
 ## Standard payout processing  
 
@@ -184,6 +184,8 @@ Cutoffs and processing times vary between currencies and target bank account typ
     </tbody>
 </table>
 
+Standard payouts are not processed on the [public holidays](/support/public-holidays#France) listed in France. 
+
 #### Faster Payments in the UK  
 
 For GBP payouts to GB bank accounts, Mangopay sends them automatically via the Faster Payments System (FPS).  
@@ -197,6 +199,14 @@ For USD payouts sent internationally (that is, not to US-type bank accounts), Ma
 When activated, cost-bearing uses the OUR configuration of <a href="/guides/glossary#international-bank-wires">SWIFT international bank wires</a> instead of the SHA option used as standard for international payouts. The fees borne by the platform are recuperated by Mangopay during the usual billing cycle.
 
 Please note that this setting can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>. 
+
+## Real-time gross settlement (RTGS)
+
+For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2).
+
+To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
+
+Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next weekday. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
 
 ## Refunds using payouts
 
