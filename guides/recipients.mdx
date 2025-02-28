@@ -35,6 +35,16 @@ Each recipient can be used for one combination of a payout method and currency, 
 
 A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
 
+<Note>
+**Note – Registering a Recipient requires SCA**
+
+To register a bank account as a Recipient, the user must authenticate directly with Mangopay via SCA. This means the user must be have the `UserCategory` `OWNER` and be [enrolled in SCA](/guides/users/sca) beforehand.
+
+During the Recipient registration, you need to redirect the user to a Mangopay-hosted webpage to complete an [SCA session](/guides/users/sca/session) (Step 5 below).
+
+SCA is not applied to Mangopay's legacy [Bank Account](/api-reference/bank-accounts/bank-account-object) feature.
+</Note>
+
 ## How to register a recipient
 
 <Steps>
@@ -51,9 +61,9 @@ The schema for a recipient may change, so you should integrate dynamic retrieval
 </Check>
 </Step>
 <Step title="Validate the user's recipient data">
-Check that the user's data is as expected by submitting it to the [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) endpoint.
+Check that the user's data is valid by submitting it to the [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) endpoint.
 
-A 200 response indicates that the data is valid against the schema. If one or more data field does not conform to the schema, then a 400 error is returned listing the errors.
+A 200 response indicates that the format is correct against the schema and that the data is valid. If one or more data field does not conform to the schema, then a 400 error is returned listing the errors.
 <Check>
 **Best practice – Validate data before creation**
 
@@ -128,7 +138,7 @@ See payout methods available to your platform by currency and country
 Fetch the data requirements for a given currency, payout method type, and recipient type
 </Card>
 <Card title="POST Validate data for a Recipient" href="/api-reference/recipients/validate-recipient-data">
-Check that the user's Recipient data conforms to the expected schema
+Check that the user's Recipient data is valid before creation
 </Card>
 
 ### Create recipients
