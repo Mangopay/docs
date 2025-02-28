@@ -446,6 +446,28 @@ To configure the card payment method, specify `card` as the `type` of the `payme
                 **REQUIRED**</td>
             <td class="table-content">To handle 3DS redirects for card payments, use this attribute to request and return a pay-in.</td>
         </tr>
+        <tr>
+            <td class="table-content">`options.enableSaveCard`</td>
+            <td class="table-content">Boolean</td>
+            <td class="table-content">        If set to `true`, a "Save Card" checkbox will appear in the UI. When
+        checked, `SaveCard: true` will be returned in the `CreatePaymentData`
+        object, and you can forward this flag to your backend for further
+        handling.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`options.savedCards`</td>
+            <td class="table-content">Array of `SavedCard`</td>
+            <td class="table-content">A list of cards previously saved by the user. If provided, a button will
+        appear within the card number input field that opens a dropdown of saved
+        cards to select from.</td>
+        </tr>
+        <tr>
+            <td class="table-content">`options.onDeactivateSavedCard`</td>
+            <td class="table-content">Function</td>
+            <td class="table-content">A callback that is triggered when the user chooses to deactivate a saved
+        card. Receives an object containing `{ cardId: string }`. You can use
+        this ID to inform your backend which card should be deactivated.</td>
+        </tr>
     </tbody>
 </table>
 
@@ -462,6 +484,27 @@ export interface CreatePaymentData {
   Currency: string;
   PreferredCardNetwork?: 'VISA' | 'MASTERCARD' | 'CB' | 'MAESTRO';
   ProfilingAttemptReference: string;
+  SaveCard: boolean;
+}
+
+export interface SavedCard {
+    Id: string;
+    ExpirationDate: string;
+    CreationDate: number;
+    Alias: string;
+    Tag?: string;
+    CardProvider: CardBrand;
+    CardType: string;
+    Country: string;
+    Product: string;
+    BankCode: string;
+    Active: boolean;
+    Currency: string;
+    Validity: string;
+    UserId: string;
+    CardHolderName: string;
+    Fingerprint: string;
+    PreferredCardNetwork?: CardBrand;
 }
 
 const options = {
@@ -474,6 +517,30 @@ const options = {
     paymentMethods: [
         {
             type: 'card',
+            enableSaveCard: true,  // show the “Save Card” checkbox
+            savedCards: [
+                {
+                    Id: '12345',
+                    ExpirationDate: '1026',
+                    CreationDate: 1692817000,
+                    Alias: 'XXXX XXXX XXXX 1234',
+                    CardProvider: 'MASTERCARD',
+                    CardType: 'CB_VISA_MASTERCARD',
+                    Country: 'FR',
+                    Product: 'Debit',
+                    BankCode: '01234',
+                    Active: true,
+                    Currency: 'EUR',
+                    Validity: 'VALID',
+                    UserId: '67890',
+                    CardHolderName: 'John Doe',
+                    Fingerprint: 'fing3rpr1nt'
+                }
+            ],
+            onDeactivateSavedCard: function({ cardId }) {
+                // 1. implement server-side call to deactivate the card with this cardId
+                // 2. handle any UI updates after a successful deactivation
+            },
             onCreateCardRegistration: function (cardType: 'CB_VISA_MASTERCARD' | 'AMEX' | 'MAESTRO') {
                 // 1. implement server-side call to create a card registration.
                 // 2. return the card registration.
