@@ -20,7 +20,7 @@ When an HTTP error occurs, an error report is returned with the following inform
         <tr>
             <td class="table-content">`Type`</td>
             <td class="table-content">string</td>
-            <td class="table-content">The type of the error (e.g., param_error, resource_not_found, etc.)</td>
+            <td class="table-content">The type of the error (e.g., `param_error`, `ressource_not_found`, etc.)</td>
         </tr>
         <tr>
             <td class="table-content">`Id`</td>
@@ -29,23 +29,72 @@ When an HTTP error occurs, an error report is returned with the following inform
         </tr>
         <tr>
             <td class="table-content">`Date`</td>
-            <td class="table-content">timestamp</td>
+            <td class="table-content">Unix timestamp</td>
             <td class="table-content">The date and time at which the error occurred.</td>
         </tr>
         <tr>
-            <td class="table-content">`errors`</td>
-            <td class="table-content">array</td>
+            <td class="table-content">`Errors`</td>
+            <td class="table-content">object</td>
             <td class="table-content">The list of issues that triggered the HTTP error.</td>
         </tr>
     </tbody>
 </table>
 
-```json Error report example (JSON)
+### Example HTTP errors
+The following examples show the HTTP error report. Further examples are given in the responses to a given endpoint where relevant and valuable.
+
+```json 400 Bad Request
 {
-    "Message":"A resource has already been created with this Idempotency Key",
-    "Type":"idempotent_creation_conflict",
-    "Id":"13c824a3-06b9-465f-90a7-3d7262d35b66#1658230707",
-    "Date":1658230708.0,
-    "errors":null
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "5e83fbe8-7345-4778-8437-4aa6464b3337",
+    "Date": 1740581497.0,
+    "errors": {
+        "CreditedWalletId": "The CreditedWalletId field is required."
+    }
+}
+```
+
+```json 400 Bad Request
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "59fd66e0-c84e-4a24-abaa-a22f8c1ac230#1740580804",
+    "Date": 1740580805,
+    "errors": {
+        "IBAN": "The value is not a valid IBAN"
+    }
+}
+```
+
+```json 403 Forbidden
+{
+    "Message": "This endpoint is not available for your account",
+    "Type": "forbidden_ressource",
+    "Id": "18afb259-3ce8-4985-916c-8f308e776fcc",
+    "Date": 1740580883,
+    "errors": null
+}
+```
+
+```json 404 Not Found
+{
+    "Message": "The ressource does not exist",
+    "Type": "ressource_not_found",
+    "Id": "9b3d2584-77ba-4723-aa43-6aceba34c8dc#1740580881",
+    "Date": 1740580882,
+    "errors": {
+        "RessourceNotFound": "Cannot found the ressource PayIn with the id=123456789"
+    }
+}
+```
+
+```json 409 Conflict
+{
+    "Message": "A resource has already been created with this Idempotency Key",
+    "Type": "idempotent_creation_conflict",
+    "Id": "3a61d663-eefa-41dc-9665-bce3a88d8eda#1740581343",
+    "Date": 1740581344,
+    "errors": null
 }
 ```
