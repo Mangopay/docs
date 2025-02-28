@@ -29,7 +29,7 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
 
 <AccordionGroup>
 
-<Accordion title="200">
+<Accordion title="200" defaultOpen>
 
 <DisplayNameResponse_Recipient_Schema />
 <CurrencyResponse_Recipient_Schema />
@@ -57,7 +57,7 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
 </AccordionGroup>
 
 <ResponseExample>
-```json 200
+```json International
 {
     "DisplayName": {
         "Required": true,
@@ -132,6 +132,99 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
             "Required": true,
             "MaxLength": 34,
             "Pattern": "^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$"
+        }
+    }
+}
+```
+```json USD local
+{
+    "DisplayName": {
+        "Required": true,
+        "MaxLength": 50,
+        "Pattern": "^(?!.*[&,'/]).{1,50}$"
+    },
+    "Currency": {
+        "AllowedValues": [
+            "USD"
+        ],
+        "Required": true,
+        "MaxLength": 3,
+        "MinLength": 3,
+        "Pattern": "^[a-zA-Z]{3}$"
+    },
+    "RecipientType": {
+        "AllowedValues": [
+            "Individual"
+        ],
+        "Required": true,
+        "Pattern": "^[a-zA-Z]+$"
+    },
+    "PayoutMethodType": {
+        "AllowedValues": [
+            "LocalBankTransfer"
+        ],
+        "Required": true,
+        "Pattern": "^[a-zA-Z]+$"
+    },
+    "IndividualRecipient": {
+        "FirstName": {
+            "Required": true,
+            "MaxLength": 255,
+            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$"
+        },
+        "LastName": {
+            "Required": true,
+            "MaxLength": 255,
+            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$"
+        },
+        "Address": {
+            "AddressLine1": {
+                "Required": true,
+                "MaxLength": 255,
+                "Pattern": "^(?!.*[()/]).{1,255}$"
+            },
+            "AddressLine2": {
+                "Required": false,
+                "MaxLength": 255,
+                "Pattern": "^(?!.*[()/]).{1,255}$"
+            },
+            "City": {
+                "Required": true,
+                "MaxLength": 80,
+                "Pattern": "^(?!.*[&,.:_']).{1,80}$"
+            },
+            "Country": {
+                "Required": true,
+                "MaxLength": 2,
+                "MinLength": 2,
+                "Pattern": "^[a-zA-Z]+$"
+            },
+            "Region": {
+                "Required": true,
+                "MaxLength": 50,
+                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$"
+            },
+            "PostalCode": {
+                "Required": true,
+                "MaxLength": 10,
+                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$"
+            }
+        }
+    },
+        "LocalBankTransfer": {
+        "USD": {
+            "AccountNumber": {
+                "Required": true,
+                "MaxLength": 12,
+                "MinLength": 8,
+                "Pattern": "^[0-9a-zA-Z]{8,12}$"
+            },
+            "ABA": {
+                "Required": true,
+                "MaxLength": 9,
+                "MinLength": 9,
+                "Pattern": "^\\d{9}$"
+            }
         }
     }
 }
