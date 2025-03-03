@@ -378,7 +378,7 @@ Once all the legal users (the stores) are validated, we will activate the cashou
 
 Please regularly check that your vendors are all correctly registered on Mangopay. To do so, please go on the dashboard \> Mirakl section and vendor tab and check that the vendor's status is “success”. This will mean that the vendor, its wallet and bank account are correctly registered. 
 
-### **1. Control KYC validation** 
+### **2. Control KYC validation** 
 
 Please regularly check that your vendors are all KYC validated. 
 
@@ -390,10 +390,9 @@ Please pay particular attention to:
 
 • Vendor recently edited 
 
-| ℹ️ Note \- Simulating KYC validations in Sandbox In the Dashboard, you can simulate KYC document validation from Mangopay. [Read more](https://mangopay.com/docs/tutorials/submit-kyc-document#simulate-the-response-from-mangopay-in-sandbox) |
+| ℹ️ Note \- In the Sandbox Dashboard, you can simulate KYC document validation from Mangopay. [Read more](https://mangopay.com/docs/tutorials/submit-kyc-document#simulate-the-response-from-mangopay-in-sandbox) |
 | :---- |
 
-**KYC Status Feature on Vendor Accounts** 
 
 When the feature is activated, a KYC status will appear on vendor account pages. The following are the possible statuses : 
 
@@ -409,11 +408,11 @@ When the feature is activated, a KYC status will appear on vendor account pages.
 If KYC status is in ‘created’ for too long, check the size and format of the document. It might not be correctly processed as out of our standards.   
 The maximum size per page is about 7MB). The following formats are accepted for the documents : .pdf, .jpeg, .jpg, .gif and .png. The minimum size is 1KB (32 KB for ID proof).
 
-###  **CONTROL PAYMENT**
-
-\_\_\_\_\_\_\_\_\_ 
+### **3. Control payment**
 
 After each billing cycle, please check on your Mangopay dashboard that all invoices are completed. To do so, please go on the dashboard \> Mirakl \> section and Invoices tab and check that all invoices are in “complete” status. If not, check the cashout details. 
+
+/// CHANGE REQUIRED /// 
 
 Be aware that we don’t transfer **manual invoices** to the operator. We don’t charge the operator for manual credits. On the flip side, those amounts are taken into account on each billing cycle for the vendor. In other words, the amount transferred to the vendor includes: manual credits \- manual invoices. It is therefore important that you: 
 
@@ -421,13 +420,17 @@ Be aware that we don’t transfer **manual invoices** to the operator. We don’
 
 • Transfer back manual invoices amount to your bank account after billing cycle
 
-#   
 
-# **Extra step for full automation**   ***In order to have a fully automated process for your payment workflow, we advise you to work on two subjects:***   **AUTOMATISE DAILY BANKWIRE TRANSFER TO Mangopay**  ***if Mangopay is not in charge of funds capture***   **PSD2 changes oblige the marketplace to send us their total daily revenue at D \+ 1\.**  **Total daily revenue: In order to do so, we advise the marketplace to get in touch with their bank and their PSP. They should be able to provide them with a file containing total daily revenue.**   **Transfer automation: Your bank should be able to provide you with automated payment initiation features. This is a new requirement of the PSD2.** 
+## **Extra step for full automation**   
 
-MANAGE REFUNDS  
-*if Mangopay is not in charge of funds capture*   
-\_\_\_\_\_\_\_\_\_
+In order to have a fully automated process for your payment workflow, we advise you to automate transfers to Mangopay and refund management.
+
+### **Automate daily transfers to Mangopay (if Mangopay is not in charge of funds capture)**
+
+**PSD2 changes oblige the marketplace to send us their total daily revenue at D \+ 1\.**  • • • • **Total daily revenue:**  In order to do so, we advise the marketplace to get in touch with their bank and their PSP. They should be able to provide them with a file containing total daily revenue.
+• **Transfer automation:** Your bank should be able to provide you with automated payment initiation features. This is a new requirement of the PSD2. 
+
+### ** Manage refunds (if Mangopay is not in charge of funds capture)**
 
 *Total transaction revenue is sent every day to Mangopay, However, refunds are debited directly from your acquisition bank account or another refund-dedicated bank account.*
 
@@ -462,9 +465,11 @@ To sum up, here are our advices:
 
 ● The **amount of the bank transfer** done every day to your Mangopay technical e-wallet: revenus – refunds \+ manual credits
 
-MANAGE MANUAL CREDITS AND INVOICES 
+### ** Manage manual credits and invoices**
 
-\_\_\_\_\_\_\_\_\_ 
+///// CHANGE REQUIRED
+
+
 
 Mirakl allows operators the creation of manual invoices and credit notes for vendors. These actions directly modify the seller's balance in Mirakl : 
 
@@ -489,31 +494,22 @@ to the amounts of manual invoices and amounts of manual credits since the start 
 
 ● Management of a manual credit note: When a manual credit note is created on the Mirakl side, the amount thereof does not come from any acquisition and must therefore be provided by the operator. It is then up to the operator to supply the technical wallet with the amount of the manual credit note so that the connector can pay the seller directly.
 
-GROUPED PAYOUTS FOR COMMISSIONS & VAT
+### ** Groupes payouts for commissions and VAT
 
-\_\_\_\_\_\_\_\_\_ 
-
-The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative. 
+The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative upon request. 
 
 By default the connector will execute a payout every time a commission is transferred into the commissions wallet and  every time a VAT is transferred into the VAT wallet. Once this feature is activated, only one payout is made at the end of the billing cycle that will be the total of all the commissions and all the VAT received in the period. Please note, this feature will payout the totals on the commission wallets and the VAT wallet across all currencies and the payout will be processed approximately 24h after the last transfer. 
 
 The notifications on the Mirakl tab in the Mangopay dashboard will change. In the CASHOUTS tab for each payment that is grouped, a payout will still be visible with the correct total, but it will also have a “0” noted with the ‘Payout Status’ as ‘GROUP\_ADDED’ or ‘GROUP\_PENDING’. This means this sum is not paid out but will be part of a grouped payout. 
 
-![][image4]
-
 After the payout the notification for a relevant payout will show ‘Group Payout : *the ID of the grouped cashout*’. 
 
-![][image5]
+Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
 
-Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference, in the above example 88907824, can be used to identify the transfer on the Mangopay dashboard.
+### **Subscribe to connector webhooks**
 
-# **Customize your internal workflows** 
 
-# **SUBSCRIBE TO CONNECTOR WEBHOOKS**
-
-\_\_\_\_\_\_\_\_\_ 
-
-Based on your platform’s needs, you can also leverage hooks specific to your Mangopay \<\> Mirakl connector events. Get in touch with your CSM in order to set up the Webhooks needed.
+Based on your platform’s needs, you can also leverage hooks specific to the Mangopay-Mirakl connector events. Get in touch with your CSM in order to set up the Webhooks needed.
 
 **Events**
 
