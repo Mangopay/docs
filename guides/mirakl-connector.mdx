@@ -79,6 +79,14 @@ This document specifies how the “Mangopay \< \> Mirakl connector” works and 
 **7\.** Updates the status of the invoice to paid *Mirakl API IV07* 
 
 ___
+#### Payout settings
+
+| **Setting**              | **Description** |
+|--------------------------|---------------------------------------------|
+| **Commission payment**   | Determines if the connector handles the payment of commissions to the operator. |
+| **Manual invoice payment** | Determines if the connector handles the payment of manual invoices to the operator. |
+| **Grouped payment**      | Determines if payouts to operators are made for each automatic invoice or for each billing cycle. |
+
 #### What amount do we transfer to the vendor?
 
 We only take in account automatic invoices in paid status on Mirakl side. They are generated at the end of each billing cycle. To pay the vendor, we use the field : 
@@ -101,6 +109,18 @@ ___
 | **Payment of Operator Commissions is enabled**  | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax) + total_other_invoices_incl_tax` | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax)` |
 | **Payment of Operator Commissions is not enabled** | `total_amount_incl_taxes + total_other_invoices_incl_tax` | `total_amount_incl_taxes = commissions on orders + subscriptions - total refund’s commissions` |
 
+___
+### Grouped payouts for commissions and VAT
+
+The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative upon request. 
+
+By default the connector will execute a payout every time a commission is transferred into the commissions wallet and  every time a VAT is transferred into the VAT wallet. Once this feature is activated, only one payout is made at the end of the billing cycle that will be the total of all the commissions and all the VAT received in the period. Please note, this feature will payout the totals on the commission wallets and the VAT wallet across all currencies and the payout will be processed approximately 24h after the last transfer. 
+
+The notifications on the Mirakl tab in the Mangopay dashboard will change. In the CASHOUTS tab for each payment that is grouped, a payout will still be visible with the correct total, but it will also have a “0” noted with the ‘Payout Status’ as ‘GROUP\_ADDED’ or ‘GROUP\_PENDING’. This means this sum is not paid out but will be part of a grouped payout. 
+
+After the payout the notification for a relevant payout will show ‘Group Payout : *the ID of the grouped cashout*’. 
+
+Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
 
 ___
 #### Payout Retries
@@ -486,20 +506,7 @@ to the amounts of manual invoices and amounts of manual credits since the start 
 
 ● Management of a manual credit note: When a manual credit note is created on the Mirakl side, the amount thereof does not come from any acquisition and must therefore be provided by the operator. It is then up to the operator to supply the technical wallet with the amount of the manual credit note so that the connector can pay the seller directly.
 
-### ** Groupes payouts for commissions and VAT
-
-The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative upon request. 
-
-By default the connector will execute a payout every time a commission is transferred into the commissions wallet and  every time a VAT is transferred into the VAT wallet. Once this feature is activated, only one payout is made at the end of the billing cycle that will be the total of all the commissions and all the VAT received in the period. Please note, this feature will payout the totals on the commission wallets and the VAT wallet across all currencies and the payout will be processed approximately 24h after the last transfer. 
-
-The notifications on the Mirakl tab in the Mangopay dashboard will change. In the CASHOUTS tab for each payment that is grouped, a payout will still be visible with the correct total, but it will also have a “0” noted with the ‘Payout Status’ as ‘GROUP\_ADDED’ or ‘GROUP\_PENDING’. This means this sum is not paid out but will be part of a grouped payout. 
-
-After the payout the notification for a relevant payout will show ‘Group Payout : *the ID of the grouped cashout*’. 
-
-Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
-
 ### **Subscribe to connector webhooks**
-
 
 Based on your platform’s needs, you can also leverage hooks specific to the Mangopay-Mirakl connector events. Get in touch with your CSM in order to set up the Webhooks needed.
 
