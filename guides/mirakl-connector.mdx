@@ -1,6 +1,4 @@
-# **Mangopay - Mirakl Connector** 
-
-This document specifies how the “Mangopay \< \> Mirakl connector” works and its implementation. This document is subject to change. It will be the base for your integration.
+This document specifies how the Mangopay Mirakl connector works and its implementation. This document is subject to change. It will be the base for your integration.
 
 ## **Index** 
 
@@ -38,10 +36,6 @@ This document specifies how the “Mangopay \< \> Mirakl connector” works and 
 | VENDOR | A store/shop on Mirakl’s side and a legal user on Mangopay’s side. |
 
 ## **Main features**
-
-*The goal of this product is to allow the restitution of the vendors and the marketplace’s profits at the end of a billing cycle.* 
-
-*In order to do so, the connector will get the billing information on Mirakl and then generate a payment order in Mangopay’s environment.* 
 
 ### **Vendor Synchronisation** 
 
@@ -89,7 +83,9 @@ ___
 
 #### What amount do we transfer to the vendor?
 
-We only take in account automatic invoices in paid status on Mirakl side. They are generated at the end of each billing cycle. To pay the vendor, we use the field : 
+The connector imports invoices generated at the end of each billing cycle. 
+
+To pay the vendor, we use the field : 
 
 **amount\_transferred \= Order to pay (Order \- refund \- operator commissions \- remitted taxes) \- total other invoices (incl tax) \+ total other credits (incl tax)** 
 
@@ -121,6 +117,18 @@ The notifications on the Mirakl tab in the Mangopay dashboard will change. In th
 After the payout the notification for a relevant payout will show ‘Group Payout : *the ID of the grouped cashout*’. 
 
 Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
+
+___
+### Payment Confirmation Behavior in Mirakl  
+
+When the Payment Confirmation Feature is **Activated**:  
+- Invoices are initially issued with a **PENDING** status.  
+- Our connector updates the status to **PAID** on behalf of the platform.  
+- This applies to both **manual invoices and credit notes**.  
+
+When the Payment Confirmation Feature is **Deactivated**:  
+- At the end of the billing cycle, **Mirakl sets invoices to PAID**, and we receive them as such.  
+- **Manual invoices and credit notes** also switch from **PENDING** to **PAID** at the end of the cycle, and we process them accordingly.  
 
 ___
 #### Payout Retries
