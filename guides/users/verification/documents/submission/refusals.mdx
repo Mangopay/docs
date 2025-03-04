@@ -6,7 +6,7 @@ sidebarTitle: "Refusals"
 
 import BeneficialOwner from '/snippets/glossary/beneficial-owner.mdx';
 
-If Mangopay doesn’t validate a document, you may be able to obtain more information about the reason why with the <a href="/api-reference/kyc-documents/view-kyc-document">GET View a KYC Document</a> endpoint.
+If Mangopay doesn't validate a document, you may be able to obtain more information about the reason why with the <a href="/api-reference/kyc-documents/view-kyc-document">GET View a KYC Document</a> endpoint.
 
 Two returned parameters may prove useful:  
 - `Flags` - One or several codes which give more information about the **identity proof** document type. See the <a href="#flags-list">flags list</a> below for more information.
@@ -25,7 +25,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
 5. DOCUMENT_INCOMPLETE  
 6. DOCUMENT_DO_NOT_MATCH_USER_DATA  
 7. UNDERAGE_PERSON  
-</Note>  
+</Note>
 
 ## Flags list
 
@@ -42,12 +42,12 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
             <td class="table-content">
                 The document is suspected to be fraudulent, which means:
                 - The user will be blocked until reception of a valid identity proof (document with better visual quality or a different accepted identity proof)
-                - Mangopay’s team will check all related transactions
+                - Mangopay's team will check all related transactions
             </td>
         </tr>
         <tr>
             <td class="table-content">009001</td>
-            <td class="table-content">The fonts analyzed don’t match those expected for the kind of identity proof submitted (e.g. for a French national identity card).</td>
+            <td class="table-content">The fonts analyzed don't match those expected for the kind of identity proof submitted (e.g. for a French national identity card).</td>
         </tr>
         <tr>
             <td class="table-content">009002</td>
@@ -119,7 +119,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
         </tr>
         <tr>
             <td class="table-content">009019</td>
-            <td class="table-content">Mangopay doesn’t support this kind of document.</td>
+            <td class="table-content">Mangopay doesn't support this kind of document.</td>
         </tr>
         <tr>
             <td class="table-content">009020</td>
@@ -132,7 +132,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
         <tr>
             <td class="table-content">009022</td>
             <td class="table-content">
-                The first name on the identity document doesn’t match the declared information in:
+                The first name on the identity document doesn't match the declared information in:
                 - The `FirstName` parameter for a natural user.
                 - The `LegalRepresentativeFirstName` parameter for a legal user.
             </td>
@@ -143,7 +143,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
                 The last name on the identity document doesn't match the declared information in:
                 - The `LastName` parameter for a natural user.
                 - The `LegalRepresentativeLastName` parameter for a legal user.
-                Note that for French identity documents, Mangopay supports the spouse name, widow’s name, or alias name as declared `LastName` (or `LegalRepresentativeLastName`).
+                Note that for French identity documents, Mangopay supports the spouse name, widow's name, or alias name as declared `LastName` (or `LegalRepresentativeLastName`).
             </td>
         </tr>
         <tr>
@@ -161,7 +161,7 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
         <tr>
             <td class="table-content">009100</td>
             <td class="table-content">
-                A match couldn’t be made with the relevant flag, but you can find out more about the issue by reviewing the `RefusedReasonType` and `RefusedReasonMessage` values.\
+                A match couldn't be made with a relevant flag, but you can find out more about the issue by reviewing the `RefusedReasonType` and `RefusedReasonMessage` values.
 
                 Please contact the Support team <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> if you require further details.
             </td>
@@ -171,9 +171,9 @@ Because a refused document can have multiple flags, `RefusedReasonType` values a
 
 ## Refused reason types  
 
-The tables below describe each `RefusedReasonType` as it relates to the document type, along with recommendations for resubmitting the document.
+The tables below describe each `RefusedReasonType` as it relates to the document type, along with recommendations for resubmitting the document. The labels used in the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a> are given alongside.
 
-Ensure you also check the `RefusedReasonMessage` parameter for personalized information from Mangopay’s teams.
+Ensure you also check the `RefusedReasonMessage` parameter for personalized information from Mangopay's teams, which is also shown in the Dashboard.
 
 ### Identity proof
 
@@ -187,7 +187,11 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
   </thead>
   <tbody>
     <tr>
-      <td class="table-content">`DOCUMENT_MISSING`</td>
+      <td class="table-content">
+      API: `DOCUMENT_MISSING`
+      
+      Dashboard: `MISSING`
+      </td>
       <td class="table-content">The document is missing from the image or the file.	</td>
       <td class="table-content">
       Check that you upload the correct file and that it contains the identity proof. 
@@ -196,42 +200,74 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
       </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
+      <td class="table-content">
+      API: `DOCUMENT_INCOMPLETE`
+      
+      Dashboard: `INCOMPLETE`
+      </td>
       <td class="table-content">The document is incomplete, for example the back of the identity card is missing.</td>
       <td class="table-content">Check that you upload the correct file and that it contains both sides of the identity proof (if applicable).</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_UNREADABLE`</td>
-      <td class="table-content">The document provided is not clear enough.</td>
+      <td class="table-content">
+      API: `DOCUMENT_UNREADABLE`
+      
+      Dashboard: `UNREADABLE`
+      </td>
+      <td class="table-content">The document is not clear enough.</td>
       <td class="table-content">Check the clarity and readability of your file before re-submitting the identity proof.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_NOT_ACCEPTED`
+      
+      Dashboard: `NOT ACCEPTED`
+      </td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
       <td class="table-content">Check the <a href="/guides/users/verification/requirements/id-accepted">Accepted ID documents</a> know which document is accepted for the identity proof in your case.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The individual indicated on the document doesn’t correspond to the one registered.</td>
+      <td class="table-content">
+      API:&nbsp;`DOCUMENT_DO_NOT_MATCH_USER_DATA`
+      
+      Dashboard: `DATA MISMATCH`
+      </td>
+      <td class="table-content">The individual indicated on the document doesn't correspond to the one registered.</td>
       <td class="table-content">Check that you upload the correct file and that it contains the identity proof of the user.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_HAS_EXPIRED`
+      
+      Dashboard: `EXPIRED`
+      </td>
       <td class="table-content">The document has passed its expiry date; it is no longer valid.</td>
       <td class="table-content">Submit an in-date accepted identity proof.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_FALSIFIED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_FALSIFIED`
+      
+      Dashboard: `FALSIFIED`
+      </td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document is in line with the [requirements](/guides/users/verification/requirements/kyb-local) and [ID best practices](/guides/users/verification/documents/submission/id-best-practices) and has not been altered by any means.</td>
     </tr>
     <tr>
-      <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">
+      API: `SPECIFIC_CASE`
+      
+      Dashboard: `SPECIFIC`
+      </td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
-      <td class="table-content">`UNDERAGE_PERSON`</td>
+      <td class="table-content">
+      API: `UNDERAGE_PERSON`
+      
+      Dashboard: `UNDERAGE`
+      </td>
       <td class="table-content">The individual indicated on the document is under 18.</td>
       <td class="table-content">Mangopay users must be 18 years old or older.</td>
     </tr>
@@ -250,55 +286,108 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
   </thead>
   <tbody>
     <tr>
-      <td class="table-content">`DOCUMENT_MISSING`</td>
+      <td class="table-content">
+      API: `DOCUMENT_MISSING`
+      
+      Dashboard: `MISSING`
+      </td>
       <td class="table-content">The document is missing from the image or the file.</td>
       <td class="table-content">
-      Check that you upload the correct file and that it contains the accepted registration document. 
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
       
-      Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the registration proof in your case.
+      The file must be accessible and not password protected.
       </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The document is incomplete (e.g., some pages are missing).</td>
       <td class="table-content">
-      Check that you include all pages of the accepted registration proof and that they upload successfully.
+      API: `DOCUMENT_INCOMPLETE`
       
-      In cases where the entity is legally represented by another entity, please also provide the extract of the representation entity. This allows Mangopay to identify the natural person who is the legal representative.
+      Dashboard: `INCOMPLETE`
+      </td>
+      <td class="table-content">The document is incomplete or not sufficient on its own.</td>
+      <td class="table-content">
+      Ensure the document is dated and that all pages are present and in one of the supported languages (or along with a sworn translation).
+      
+      For most countries, declared legal representative should appear in the document.
+      
+      In some cases, an additional document may be requested, for example:
+      - Registration proof of the company president
+      - Appointment of a director
+      
+      Refer to the `RefusedReasonMessage` for more details.
       </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_UNREADABLE`</td>
-      <td class="table-content">The document provided is not clear enough.</td>
+      <td class="table-content">
+      API: `DOCUMENT_UNREADABLE`
+      
+      Dashboard: `UNREADABLE`
+      </td>
+      <td class="table-content">The document is not clear enough.</td>
       <td class="table-content">Check the clarity and readability of your file before re-submitting a clear and up-to-date accepted registration proof.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_NOT_ACCEPTED`
+      
+      Dashboard: `NOT ACCEPTED`
+      </td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
-      <td class="table-content">Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the registration proof in your case.</td>
+      <td class="table-content">
+      Check the [Accepted local KYB documents](/guides/users/verification/requirements/kyb-local) to know which document is needed for the registration proof in your case.
+
+      Ensure the document uploaded is submitted as the correct [KYC Document](/api-reference/kyc-documents/kyc-document-object) `Type`.
+      </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The people appearing on the document do not include the declared legal representative.</td>
-      <td class="table-content">Check that the legal representative declared for the user is the correct person before submitting the accepted registration proof which lists them. A proxy may be possible in exceptional circumstances.</td>
+      <td class="table-content">
+      API:&nbsp;`DOCUMENT_DO_NOT_MATCH_USER_DATA`
+      
+      Dashboard: `DATA MISMATCH`
+      </td>
+      <td class="table-content">The declarative data provided (in the User object) does not match the document uploaded.</td>
+      <td class="table-content">
+      Check that the User object has the correct:
+      - `LegalPersonType` for the [local structure](/guides/users/verification/requirements/kyb-local)
+      - Business information (registered legal name, headquarters address, company number)
+      - Legal representative details (first name, last name, date of birth)
+      
+      In most scenarios, the declared legal representative must appear on the registration proof document.
+      </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
-      <td class="table-content">The document is from more than 3 months ago.</td>
-      <td class="table-content">Submit a recent accepted registration proof which is not older than 3 months.</td>
+      <td class="table-content">
+      API: `DOCUMENT_HAS_EXPIRED`
+      
+      Dashboard: `EXPIRED`
+      </td>
+      <td class="table-content">The document is not valid or was issued more than 3 months ago.</td>
+      <td class="table-content">Check that the document was issued within the last 3 months. For some countries, the [requirements](/guides/users/verification/requirements/kyb-local) don't include the 3-month rule but the document has a validity period which it has passed and/or it must be the latest up-to-date version of the document.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_FALSIFIED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_FALSIFIED`
+      
+      Dashboard: `FALSIFIED`
+      </td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document is in line with the [requirements](/guides/users/verification/requirements/kyb-local) and [submission guidelines](/guides/users/verification/documents/submission) and has not been altered by any means.</td>
     </tr>
     <tr>
-      <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">
+      API: `SPECIFIC_CASE`
+      
+      Dashboard: `SPECIFIC`
+      </td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
-      <td class="table-content">`UNDERAGE_PERSON`</td>
+      <td class="table-content">
+      API: `UNDERAGE_PERSON`
+      
+      Dashboard: `UNDERAGE`
+      </td>
       <td class="table-content">Not applicable.</td>
       <td class="table-content">-</td>
     </tr>
@@ -317,51 +406,103 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
   </thead>
   <tbody>
     <tr>
-      <td class="table-content">`DOCUMENT_MISSING`</td>
+      <td class="table-content">
+      API: `DOCUMENT_MISSING`
+      
+      Dashboard: `MISSING`
+      </td>
       <td class="table-content">The document is missing from the image or the file.</td>
       <td class="table-content">
-      Check that you upload the correct file and that it contains the accepted articles of association. 
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
       
-      Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the articles of association in your case.
+      The file must be accessible and not password protected.
       </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The document is incomplete, or the registered legal representative doesn’t seem to be one of the persons authorized to represent the entity.</td>
-      <td class="table-content">Check that you include all pages of the articles of association and that they upload successfully.</td>
+      <td class="table-content">
+      API: `DOCUMENT_INCOMPLETE`
+      
+      Dashboard: `INCOMPLETE`
+      </td>
+      <td class="table-content">The document is incomplete or not sufficient on its own.</td>
+      <td class="table-content">
+      Ensure the document is dated and that all pages are present and in one of the supported languages (or along with a sworn translation).
+      
+      In some cases, an additional document may be requested, for example:
+      - Appointment of a director
+      - Minutes of a resolution (e.g. in France, the procès-verbal d'assemblée générale)
+      
+      Refer to the `RefusedReasonMessage` for more details.
+      </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_UNREADABLE`</td>
-      <td class="table-content">The document provided is not clear enough.</td>
+      <td class="table-content">
+      API: `DOCUMENT_UNREADABLE`
+      
+      Dashboard: `UNREADABLE`
+      </td>
+      <td class="table-content">The document is not clear enough.</td>
       <td class="table-content">Check the clarity and readability of your file before re-submitting clear and up-to-date accepted articles of association.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_NOT_ACCEPTED`
+      
+      Dashboard: `NOT ACCEPTED`
+      </td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
-      <td class="table-content">Check the <a href="/guides/users/verification/requirements/kyb-local">Accepted local KYB documents</a> to know which document is needed for the articles of association in your case.</td>
+      <td class="table-content">
+      Check the [Accepted local KYB documents](/guides/users/verification/requirements/kyb-local) to know which document is needed for the registration proof in your case.
+
+      Ensure the document uploaded is submitted as the correct [KYC Document](/api-reference/kyc-documents/kyc-document-object) `Type`.
+      </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The entity indicated on the document doesn’t correspond to the one registered, or the declared legal representative does not appear (if applicable).</td>
-      <td class="table-content">Check the information registered for the entity, and especially that registered legal representative is correct.</td>
+      <td class="table-content">
+      API:&nbsp;`DOCUMENT_DO_NOT_MATCH_USER_DATA`
+      
+      Dashboard: `DATA MISMATCH`
+      </td>
+      <td class="table-content">The declarative data provided (in the User object) does not match the document uploaded.</td>
+      <td class="table-content">
+      Check that the User object has the correct:
+      - `LegalPersonType` for the [local structure](/guides/users/verification/requirements/kyb-local)
+      - Business information (registered legal name, headquarters address, company number)
+      </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
-      <td class="table-content">The document is not up to date or doesn’t reflect the current reality.</td>
+      <td class="table-content">
+      API: `DOCUMENT_HAS_EXPIRED`
+      
+      Dashboard: `EXPIRED`
+      </td>
+      <td class="table-content">The document is not the latest up-to-date version.</td>
       <td class="table-content">Submit the latest signed copy of the articles of association which is up to date, fully accurate, and includes any recent modifications.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_FALSIFIED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_FALSIFIED`
+      
+      Dashboard: `FALSIFIED`
+      </td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document is in line with the [requirements](/guides/users/verification/requirements/kyb-local) and [submission guidelines](/guides/users/verification/documents/submission) and has not been altered by any means.</td>
     </tr>
     <tr>
-      <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">
+      API: `SPECIFIC_CASE`
+      
+      Dashboard: `SPECIFIC`
+      </td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
-      <td class="table-content">`UNDERAGE_PERSON`</td>
+      <td class="table-content">
+      API: `UNDERAGE_PERSON`
+      
+      Dashboard: `UNDERAGE`
+      </td>
       <td class="table-content">Not applicable.</td>
       <td class="table-content">-</td>
     </tr>
@@ -380,49 +521,91 @@ Ensure you also check the `RefusedReasonMessage` parameter for personalized info
   </thead>
   <tbody>
     <tr>
-      <td class="table-content">`DOCUMENT_MISSING`</td>
-      <td class="table-content">The document is missing from the image or the file.</td>
-      <td class="table-content">Check that you upload the correct file and that it contains the <a href="/guides/users/verification/documents/types">Shareholder Declaration.</a></td>
-    </tr>
-    <tr>
-      <td class="table-content">`DOCUMENT_INCOMPLETE`</td>
-      <td class="table-content">The date, name or signature is missing, or the document was left blank. There may also be information missing in the table regarding beneficial owners.</td>
       <td class="table-content">
-      Check your form to ensure it is complete. Check your understanding and calculation of who the <a href="/guides/glossary#beneficial-owner"><BeneficialOwner content="beneficial owners"/></a> are, especially in complex cases involving indirect ownership via holding companies.
+      API: `DOCUMENT_MISSING`
+      
+      Dashboard: `MISSING`
+      </td>
+      <td class="table-content">The document is missing from the image or the file.</td>
+      <td class="table-content">
+      Check that the uploaded file is in one of the accepted formats (PDF, JPEG, JPG, PNG) and complies with size requirements (min. 1KB; max. about 7MB (10MB when Base64 encoded)). 
+      
+      The file must be accessible and not password protected.
       </td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_UNREADABLE`</td>
-      <td class="table-content">The document provided is not clear enough.</td>
+      <td class="table-content">
+      API: `DOCUMENT_INCOMPLETE`
+      
+      Dashboard: `INCOMPLETE`
+      </td>
+      <td class="table-content">The date, name or signature is missing, or the document was left blank. There may also be pages or information missing in the table regarding beneficial owners.</td>
+      <td class="table-content">
+      Check your form to ensure all mandatory parts are complete, including the checkboxes.
+      
+      Check your understanding and calculation of who the <a href="/guides/glossary#beneficial-owner"><BeneficialOwner content="beneficial owners"/></a> are, especially in complex cases involving indirect ownership via holding companies.
+      </td>
+    </tr>
+    <tr>
+      <td class="table-content">
+      API: `DOCUMENT_UNREADABLE`
+      
+      Dashboard: `UNREADABLE`
+      </td>
+      <td class="table-content">The document is not clear enough.</td>
       <td class="table-content">Check the clarity and readability of your file before re-submitting the Shareholder Declaration.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_NOT_ACCEPTED`
+      
+      Dashboard: `NOT ACCEPTED`
+      </td>
       <td class="table-content">The document is not accepted; it doesn't fit the verification requirements outlined by us.</td>
-      <td class="table-content">Check the <a href="/guides/users/verification/requirements">Requirements overview</a> to know if the Shareholder Declaration is needed in your case.</td>
+      <td class="table-content">Check that the document is the latest version of the [Mangopay Shareholder Declaration](/guides/users/verification/documents/types) form or, if requested, an official extract of the beneficial owners registry in the relevant jurisdiction.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_DO_NOT_MATCH_USER_DATA`</td>
-      <td class="table-content">The entity indicated on the document doesn’t correspond to the one registered, or the information is not consistent with the articles of association (if applicable).</td>
-      <td class="table-content">Check the consistency of the information registered for the entity, in the articles of association, and in the Shareholder Declaration.</td>
+      <td class="table-content">
+      API:&nbsp;`DOCUMENT_DO_NOT_MATCH_USER_DATA`
+      
+      Dashboard: `DATA MISMATCH`
+      </td>
+      <td class="table-content">The entity indicated on the document doesn't correspond to the one registered, or the information related to the beneficial owners is not consistent with other provided documents and/or data sources.</td>
+      <td class="table-content">Check the consistency of the information registered for the entity.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_HAS_EXPIRED`</td>
-      <td class="table-content">Not applicable.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">
+      API: `DOCUMENT_HAS_EXPIRED`
+      
+      Dashboard: `EXPIRED`
+      </td>
+      <td class="table-content">The document is outdated and its information is not up to date.</td>
+      <td class="table-content">Check the consistency of the information and ensure you provide a recent and up-to-date document.</td>
     </tr>
     <tr>
-      <td class="table-content">`DOCUMENT_FALSIFIED`</td>
+      <td class="table-content">
+      API: `DOCUMENT_FALSIFIED`
+      
+      Dashboard: `FALSIFIED`
+      </td>
       <td class="table-content">The document seems to be fraudulent or contains inconsistent information.</td>
-      <td class="table-content">-</td>
+      <td class="table-content">Check that the document is in line with the [requirements](/guides/users/verification/requirements/kyb-local) and [submission guidelines](/guides/users/verification/documents/submission) and has not been altered by any means.</td>
     </tr>
     <tr>
-      <td class="table-content">`SPECIFIC_CASE`</td>
-      <td class="table-content">Specific issue.</td>
-      <td class="table-content">Please refer to the `RefusedReasonMessage` for more information about the issue from Mangopay's teams.</td>
+      <td class="table-content">
+      API: `SPECIFIC_CASE`
+      
+      Dashboard: `SPECIFIC`
+      </td>
+      <td class="table-content">Specific or multiple issues.</td>
+      <td class="table-content">Refer to the `RefusedReasonMessage` for details.</td>
     </tr>
     <tr>
-      <td class="table-content">`UNDERAGE_PERSON`</td>
+      <td class="table-content">
+      API: `UNDERAGE_PERSON`
+      
+      Dashboard: `UNDERAGE`
+      </td>
       <td class="table-content">Not applicable.</td>
       <td class="table-content">-</td>
     </tr>
