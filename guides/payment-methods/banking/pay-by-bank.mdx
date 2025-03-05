@@ -49,8 +49,8 @@ Pay by Bank relies on open banking, which allows third-party providers to access
 
 ## How it works
 
-### 1. User chooses payment method
-
+<Steps titleSize="h3">
+<Step title="User chooses payment method">
 On your app or website, the user selects Pay by Bank as the payment method. 
 
 Optionally you can present the user with the list of banks for their `Country`. If you provide the `BankName` in your API request, the user doesn't have to choose it on the hosted page.
@@ -58,9 +58,8 @@ Optionally you can present the user with the list of banks for their `Country`. 
 You can also invite the user to select the `Scheme` they wish to use, otherwise the instant one is used by default (if supported by the bank). See below for more about [banks and schemes](/#schemes).
 
 In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user's `IBAN` and `BIC` up front. Otherwise, these details enable the account to be preselected.
-
-### 2. Payment initiation
-
+</Step>
+<Step title="Payment initiation">
 You initiate the payment request by calling [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin), specifying the `ReturnURL` to which the user will be returned after payment (whatever the outcome).
 
 If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
@@ -72,9 +71,8 @@ You should also provide the `BankName`, `IBAN`, `BIC`, and `Scheme` if you obtai
 
 The currency of the pay-in request must correspond to the currency of the account the user selects, otherwise the user is returned an error and the pay-in fails.
 </Warning>
-
-### 3. Redirection
-
+</Step>
+<Step title="Redirection">
 You redirect the user to the hosted page via the `RedirectURL` in the API response. 
 
 On the hosted page, the user initiates the payment by: 
@@ -88,15 +86,14 @@ On the hosted page, the user initiates the payment by:
 
 The Pay by Bank session lasts for 9 minutes, at which point the pay-in fails automatically if no action has been taken by the user.
 </Note> 
-
-### 4. Return
+</Step>
+<Step title="Return">
 After payment, the user is returned on your specified `ReturnURL`:
 
 - To a website if `PaymentFlow` is `WEB` (default value)
 - To a mobile app if the `PaymentFlow` is `APP`
-
-### 5. Outcome
-
+</Step>
+<Step title="Outcome">
 If the payment was initiated successfully by the user, then the response parameter `ProcessingStatus` is returned with its only value `PENDING_SUCCEEDED` and the `Status` is `CREATED`.
 
 `ProcessingStatus` is **only** returned if the payment initiation was successful, and it triggers a [webhook](/webhooks) for the dedicated [event type](/webhooks/event-types): 
@@ -114,6 +111,8 @@ Depending on the `Scheme` that is used, it can take up to 72 hours for the pay-i
 If the pay-in fails, it's Status changes to FAILED, triggering the webhook: 
 
 - `PAYIN_NORMAL_FAILED`
+</Step>
+</Steps>
 
 ## Schemes
 
@@ -141,11 +140,11 @@ If your API call specifies the instant scheme but the bank doesn't support it, t
 See the list of supported schemes per bank
 </Card>
 
-### Refunds
+## Refunds
 
 Pay by Bank relies on bank wire schemes which have no native refund functionality. However, you can refund pay-ins by using payouts and specifying the initial transaction ID. See [Refunds using payouts](/guides/payouts#refunds-using-payouts) for details.
 
-### Related resources
+## Related resources
 
 <CardGroup col={2}>
 <Card title="Testing" href="/testing/payment-methods#pay-by-bank">
