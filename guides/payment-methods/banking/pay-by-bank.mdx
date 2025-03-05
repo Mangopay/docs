@@ -53,17 +53,17 @@ Pay by Bank relies on open banking, which allows third-party providers to access
 
 On your app or website, the user selects Pay by Bank as the payment method. 
 
-Optionally you can present the user with the list of banks for their `Country`. If you provide the `BankName` in your API request, the user doesn’t have to choose it on the hosted page.
+Optionally you can present the user with the list of banks for their `Country`. If you provide the `BankName` in your API request, the user doesn't have to choose it on the hosted page.
 
 You can also invite the user to select the `Scheme` they wish to use, otherwise the instant one is used by default (if supported by the bank). See below for more about [banks and schemes](/#schemes).
 
-In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user’s `IBAN` and `BIC` up front. Otherwise, these details enable the account to be preselected.
+In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user's `IBAN` and `BIC` up front. Otherwise, these details enable the account to be preselected.
 
 ### 2. Payment initiation
 
 You initiate the payment request by calling [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin), specifying the `ReturnURL` to which the user will be returned after payment (whatever the outcome).
 
-If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
+If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
 
 You should also provide the `BankName`, `IBAN`, `BIC`, and `Scheme` if you obtained them from the user.
 
@@ -75,7 +75,7 @@ The currency of the pay-in request must correspond to the currency of the accoun
 
 ### 3. Redirection
 
-You redirect the user to the hosted page via the `RedirectURL` in the API response. 
+You redirect the user to the hosted page via the `RedirectURL` in the API response. 
 
 On the hosted page, the user initiates the payment by: 
 
@@ -90,10 +90,10 @@ The Pay by Bank session lasts for 9 minutes, at which point the pay-in fails aut
 </Note> 
 
 ### 4. Return
-After payment, the user is returned on your specified `ReturnURL`:
+After payment, the user is returned on your specified `ReturnURL`:
 
-- To a website if `PaymentFlow` is `WEB` (default value)
-- To a mobile app if the `PaymentFlow` is `APP`
+- To a website if `PaymentFlow` is `WEB` (default value)
+- To a mobile app if the `PaymentFlow` is `APP`
 
 ### 5. Outcome
 
@@ -103,7 +103,7 @@ If the payment was initiated successfully by the user, then the response paramet
 
 - `PAYIN_NORMAL_PROCESSING_STATUS_PENDING_SUCCEEDED`
 
-When the bank wire from the user’s account is received on Mangopay’s account, the pay-in’s  `Status` changes from `CREATED` to `SUCCEEDED`, triggering the webhook: 
+When the bank wire from the user's account is received on Mangopay's account, the pay-in's  `Status` changes from `CREATED` to `SUCCEEDED`, triggering the webhook: 
 
 - `PAYIN_NORMAL_SUCCEEDED`
 
@@ -111,7 +111,7 @@ Depending on the `Scheme` that is used, it can take up to 72 hours for the pay-i
 
 `ProcessingStatus` only has one value, `PENDING_SUCCEEDED`, which is temporarily returned until the final outcome is known. If it is not returned, then the payment was not initiated successfully by the user. 
 
-If the pay-in fails, it’s Status changes to FAILED, triggering the webhook: 
+If the pay-in fails, it's Status changes to FAILED, triggering the webhook: 
 
 - `PAYIN_NORMAL_FAILED`
 
@@ -135,7 +135,7 @@ The [Supported banks and schemes](/guides/payment-methods/banking/pay-by-bank/su
 
 By default (with the exception of Denmark) the local instant payment scheme is used for the payment if it is supported by the bank, otherwise the non-local scheme is used. If `Country` is `DK` then there is no default and the `Scheme` must be specified. 
 
-If your API call specifies the instant scheme but the bank doesn’t support it, then the non-instant scheme is used. However, the API returns the value that you sent, even after the funds arrive on Mangopay’s account and the `Status` becomes `SUCCEEDED`.
+If your API call specifies the instant scheme but the bank doesn't support it, then the non-instant scheme is used. However, the API returns the value that you sent, even after the funds arrive on Mangopay's account and the `Status` becomes `SUCCEEDED`.
 
 <Card title="Supported banks and schemes" href="/guides/payment-methods/banking/pay-by-bank/supported-banks">
 See the list of supported schemes per bank
