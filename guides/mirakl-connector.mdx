@@ -73,7 +73,12 @@ This document specifies how the Mangopay Mirakl connector works and its implemen
 **7\.** Updates the status of the invoice to paid *Mirakl API IV07* 
 
 ___
+| ⚠️ The connector is in charge of transfers and payout execution. Manual payouts to sellers from the Mangopay dashboard should not be done. Doing so runs the risk of desynchronizing the connector and paying out in double to sellers. |
+| :---- |
+___
 #### Payout settings
+
+The following settings are available in the connector to define how payouts are handled.
 
 | **Setting**              | **Description** |
 |--------------------------|---------------------------------------------|
@@ -81,6 +86,7 @@ ___
 | **Manual invoice payment** | Determines if the connector handles the payment of manual invoices to the operator. |
 | **Grouped payment**      | Determines if payouts to operators are made for each automatic invoice or for each billing cycle. |
 
+___
 #### What amount do we transfer to the vendor?
 
 The connector imports invoices generated at the end of each billing cycle. 
@@ -100,13 +106,15 @@ It includes:
 ___
 #### What amount do we transfer to the marketplace?
 
+The amounts transfered to the marketplace depend on the connector settings.
+
 |  | **Manual Invoice Payment enabled** | **Manual Invoice Payment disabled:** |
 |-------------------------------------|----------------------------------------|----------------------------------------|
 | **Payment of Operator Commissions is enabled**  | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax) + total_other_invoices_incl_tax` | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax)` |
 | **Payment of Operator Commissions is not enabled** | `total_amount_incl_taxes + total_other_invoices_incl_tax` | `total_amount_incl_taxes = commissions on orders + subscriptions - total refund’s commissions` |
 
 ___
-### Grouped payouts for commissions and VAT
+#### Grouped payouts for commissions and VAT
 
 The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative upon request. 
 
@@ -119,7 +127,22 @@ After the payout the notification for a relevant payout will show ‘Group Payou
 Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
 
 ___
-### Payment Confirmation Behavior in Mirakl  
+#### Manual credits and invoices
+
+Mirakl allows operators the creation of manual invoices and credit notes for vendors. These actions directly modify the seller’s balance in Mirakl:
+● Manual invoice: the seller’s balance in Mirakl is debited
+● Manual credit: the seller’s balance in Mirakl is credited
+
+Manual invoices and credits are taken into account in the calculation of the vendor automatic invoice by Mirakl at the end of the billing cycle. The total other invoices (incl tax) and total other credits (incl tax) amounts respectively correspond to the amounts of manual invoices and amounts of manual credits since the start of the payment cycle.
+
+Available settings:
+● **Payment of manual invoices enabled:** Mirakl and Mangopay take into account manual invoices and credit notes in vendor payments, and in operator payments.
+● **Payment of mmanual invoices disabled:** Mirakl and Mangopay take into account manual invoices and credit notes in vendor payments, but not in operator payments.
+
+___
+#### Payment Confirmation Behavior
+
+The connector can update the status of the Mirakl Invoice (*Mirakl API IV07*). 
 
 When the Payment Confirmation Feature is **Activated**:  
 - Invoices are initially issued with a **PENDING** status.  
@@ -148,8 +171,6 @@ Our connector handles remitted taxes. To know the exact amount, we use the follo
 
 Since VAT remitted taxes are collected on behalf of the states they will not be transferred to the vendor e-wallet but the VAT e-wallet. And then payout to your VAT BankAccount. This BankAccount can be identical to the commission BankAccount.
 
-| ⚠️ No manual actions should be taken from the Mangopay Dashboard. The connector is in charge of transfers and payout execution. Manual payouts to sellers from the Mangopay dashboard should not be done. Doing so runs the risk of desynchronizing the connector and paying out in double to sellers. |
-| :---- |
 
 ## **Mirakl set-up** 
 
@@ -450,7 +471,7 @@ In order to have a fully automated process for your payment workflow, we advise 
 **PSD2 changes oblige the marketplace to send us their total daily revenue at D \+ 1\.**  • • • • **Total daily revenue:**  In order to do so, we advise the marketplace to get in touch with their bank and their PSP. They should be able to provide them with a file containing total daily revenue.
 • **Transfer automation:** Your bank should be able to provide you with automated payment initiation features. This is a new requirement of the PSD2. 
 
-### ** Manage refunds (if Mangopay is not in charge of funds capture)**
+### **Manage refunds (if Mangopay is not in charge of funds capture)**
 
 *Total transaction revenue is sent every day to Mangopay, However, refunds are debited directly from your acquisition bank account or another refund-dedicated bank account.*
 
@@ -485,34 +506,11 @@ To sum up, here are our advices:
 
 ● The **amount of the bank transfer** done every day to your Mangopay technical e-wallet: revenus – refunds \+ manual credits
 
-### ** Manage manual credits and invoices**
-
-///// CHANGE REQUIRED
-
-
-
-Mirakl allows operators the creation of manual invoices and credit notes for vendors. These actions directly modify the seller's balance in Mirakl : 
-
-● Manual invoice: the seller's balance in Mirakl is debited 
-
-● Manual credit: the seller's balance in Mirakl is credited 
-
-Manual invoices and credits are taken into account in the calculation of the vendor automatic invoice by Mirakl at the end of the billing cycle. The connector only takes into account automatic invoices from Mirakl, hence manual invoices and credit notes are not taken into account when they are issued. 
-
-As noted previously, when importing an automatic invoice from a seller into the connector, the following amounts are transferred to the different actors: 
-
-● To the seller: Amount\_transferred \= Order to pay (Order \- refund \- operator commissions) \- total other invoices (incl tax) \+ total other credits (incl tax) 
-
-● To the operator: Total incl. taxes \= commissions on order \+ subscriptions \- total refund's commission 
-
-The total other invoices (incl tax) and total other credits (incl tax) amounts respectively correspond  
-to the amounts of manual invoices and amounts of manual credits since the start of the payment cycle. Mirakl and Mangopay therefore take into account manual invoices and credit notes in vendor payments, but not in operator payments. 
-
-**1\. How to manage manual invoices and credits operationally on a daily basis?** 
-
-● Managing a manual invoice: When a manual invoice is created on the Mirakl side, the amount thereof will be deducted from what is owed to the seller for its sales. Thus, since all vendor sales are available on the technical wallet, the amount of the manual invoice will remain on the cantonment wallet. It is then up to the operator to make a manual PayOut of the amount of the invoice in his bank account from the Mangopay dashboard. 
+### **Manage manual credits and invoices
 
 ● Management of a manual credit note: When a manual credit note is created on the Mirakl side, the amount thereof does not come from any acquisition and must therefore be provided by the operator. It is then up to the operator to supply the technical wallet with the amount of the manual credit note so that the connector can pay the seller directly.
+
+● Managing a manual invoice ***(This section only applied when the payment of Manual invoices is disabled)***: When a manual invoice is created on the Mirakl side, the amount thereof will be deducted from what is owed to the seller for its sales. Thus, since all vendor sales are available on the technical wallet, the amount of the manual invoice will remain on the technical wallet. It is then up to the operator to make a manual PayOut of the amount of the invoice in his bank account from the Mangopay dashboard.
 
 ### **Subscribe to connector webhooks**
 
