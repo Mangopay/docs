@@ -114,7 +114,7 @@ If the pay-in fails, it's Status changes to FAILED, triggering the webhook:
 </Step>
 </Steps>
 
-## Schemes
+## Banks and schemes
 
 Once redirected on the `RedirectUrl` to the Pay by Bank hosted experience, the user selects their bank (unless sent in `BankName`) and chooses the account to be debited. 
 
@@ -130,15 +130,70 @@ Whether you leave the `Scheme` choice to the user (recommended) or not, you shou
 Furthermore, it is possible for a bank to charge the user additional fees (separately) for an instant scheme, but this will become less common as markets adapt.
 </Note>
 
-The [Supported banks and schemes](/guides/payment-methods/banking/pay-by-bank/supported-banks) page lists the `BankName` values available per `Country`, the `Scheme` values supported per bank, and the default value.
-
 By default (with the exception of Denmark) the local instant payment scheme is used for the payment if it is supported by the bank, otherwise the non-local scheme is used. If `Country` is `DK` then there is no default and the `Scheme` must be specified. 
 
 If your API call specifies the instant scheme but the bank doesn't support it, then the non-instant scheme is used. However, the API returns the value that you sent, even after the funds arrive on Mangopay's account and the `Status` becomes `SUCCEEDED`.
 
-<Card title="Supported banks and schemes" href="/guides/payment-methods/banking/pay-by-bank/supported-banks">
-See the list of supported schemes per bank
-</Card>
+### Supported schemes
+
+The following `Scheme` values are available depending on the `Country`:
+
+<table>
+<thead>
+<tr><th class="header-compact">Country</th><th class="header-compact">Supported `Scheme` values</th><th class="header-compact">Default value (if supported by the bank)</th></tr>
+</thead>
+<tbody>
+<tr><td>`AT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`DE`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`DK`</td><td>`DANISH_DOMESTIC_CREDIT_TRANSFER`, `INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS`, `INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG`</td><td>No default - must be specified</td></tr>
+<tr><td>`EE`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`ES`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`FI`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`FR`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`GB`</td><td>`FASTER_PAYMENTS`</td><td>`FASTER_PAYMENTS`</td></tr>
+<tr><td>`IE`</td><td>`SEPA_CREDIT_TRANSFER`</td><td>`SEPA_CREDIT_TRANSFER`</td></tr>
+<tr><td>`IT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`LT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`NL`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`NO`</td><td>`NORWEGIAN_DOMESTIC_CREDIT_TRANSFER`, `INSTANT_NORWEGIAN_DOMESTIC_CREDIT_TRANSFER_STRAKS`</td><td>`INSTANT_NORWEGIAN_DOMESTIC_CREDIT_TRANSFER_STRAKS`</td></tr>
+<tr><td>`PL`</td><td>`SEPA_CREDIT_TRANSFER`, `INSTANT_POLISH_DOMESTIC_CREDIT_TRANSFER`, `POLISH_DOMESTIC_CREDIT_TRANSFER`</td><td>`INSTANT_POLISH_DOMESTIC_CREDIT_TRANSFER`</td></tr>
+<tr><td>`PT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+</tbody>
+</table>
+
+### Supported banks
+
+The list of banks supported in each country is available in the CSV lists below. Each list contains:
+- `Country`
+- Bank (display name)
+- `BankName` value (e.g. `at-easybank-ob`)
+- `Scheme` values supported by the bank
+
+For testing data, see [Payment methods - Testing](/testing/payment-methods#pay-by-bank)
+
+<CardGroup cols={1}>
+<Card title="All countries" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/00_all_countries_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+</CardGroup>
+<CardGroup cols={4}>
+<Card title="AT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/AT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="DE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/DE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="DK" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/DK_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="EE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/EE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="ES" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/ES_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="FI" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/FI_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="FR" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/FR_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="GB" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/GB_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="IE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/IE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="IT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/IT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="LT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/LT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="NL" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/NL_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="NO" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/NO_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="PL" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/PL_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="PT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/PT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+</CardGroup>
+
+
+
 
 ## Refunds
 
