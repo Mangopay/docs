@@ -1,0 +1,507 @@
+This document specifies how the Mangopay Mirakl connector works and its implementation. This document is subject to change. It will be the base for your integration.
+
+## Contents
+
+**1.** [Definitions](/#definitions)
+
+**2.** [Main features](/#main-features)
+
+**3.** [Mirakl setup](/#mirakl-setup)
+
+**4.** [Mangopay setup](/#mangopay-setup)
+
+**5.** [Connector configuration](/#connector-configuration)
+
+**6.** [Activation](/#activation)
+
+**7.** [Connector daily use](/#connector-daily-use)
+
+**8.** [Extra steps for full automation](/#extra-steps-for-full-automation)
+
+## Definitions
+
+| Term | Description | 
+| :---- | :---- |
+| BILLING CYCLE | Frequency by which Invoices are generated. The redistribution of funds will be done at the end of each billing cycle defined in Mirakl. Mirakl will calculate the amount to transfer to the operator and the vendor. |
+| COMMISSION E-WALLET | The wallet used to cash-out the commissions back to the marketplace operator.  |
+| E-COMMERCE PSP  | PSP in charge of funds acquisition. Could be Mangopay or 3rd party. |
+| E-WALLET  | Digital wallet on which electronic money is stored. |
+| MARKETPLACE / OPERATOR | Online platform where products and services are exchanged by third parties. Transactions are processed by the platform. (You)  |
+| MIRAKL | A tool enabling marketplaces to manage vendors' offers and orders.  |
+| PAYOUT | A fund movement from one Mangopay e-wallet to a bank account. This operation is used to redistribute funds to the vendor and marketplace operator. |
+| REMITTED / WITHHOLD TAXES | Taxes that should be collected by the operator on behalf of the state. |
+| TECHNICAL E-WALLET  | The wallet used by the marketplace operator. |
+| TRANSFER | A fund movement from one Mangopay e-wallet to another.  |
+| VAT E-WALLET | The wallet used to cash-out the VAT collected on behalf of the state back to the marketplace operator.  |
+| VENDOR | A store/shop on Mirakl's side and a legal user on Mangopay's side. |
+
+## Main features
+
+### Vendor synchronisation
+
+Every hour the connector:
+
+**1.** Gets all new/updated vendor information on Mirakl. *Mirakl API S20*
+
+**2.** Creates/updates those vendors in Mangopay's environment. 
+
+**3.** Creates/updates the vendors' bank account and wallet in the Mangopay environment 
+
+**4.** Gets all new/updated vendors' KYC documents on Mirakl. *Mirakl API S30 and S31*   
+
+**5.** Creates and submits those KYC documents and UBOs to Mangopay. 
+
+*If one of the actions is not in 'success', all subsequent actions are blocked.*
+
+
+### Funds dispatch and payouts
+
+**Every day the connector:** 
+
+**1.** Gets all new invoices in paid or pending status on Mirakl *Mirakl API IV01* 
+
+**2.** Verifies the invoices and sends a transfer order from the technical e-wallet to the vendor e-wallet. If the invoice has remitted/withhold taxes it sends a transfer order from the technical e-wallet to the VAT e-wallet.
+
+**3.** Sends a payout order from the vendor e-wallet to his bank account.
+
+**4.** Sends a transfer order from the technical e-wallet to the commission e-wallet.
+
+**5.** Sends a payout order from the commission e-wallet to the marketplace commission bank account. 
+
+**6.** Sends a payout order from the VAT e-wallet to the marketplace VAT bank account.
+
+**7.** Updates the status of the invoice to paid *Mirakl API IV07* 
+
+<Warning>
+**Caution – No manual transfers and payouts from Mangopay Dashboard**
+
+The connector is in charge of transfers and payout execution. Manual payouts to sellers from the Mangopay dashboard should not be done. Doing so runs the risk of desynchronizing the connector and paying out in double to sellers.
+</Warning>
+
+___
+#### Payout settings
+
+The following settings are available in the connector to define how payouts are handled.
+
+| Setting | Description |
+|:-|:-|
+| **Commission&nbsp;payment** | Determines if the connector handles the payment of commissions to the operator. |
+| **Manual&nbsp;invoice&nbsp;payment** | Determines if the connector handles the payment of manual invoices to the operator. |
+| **Grouped&nbsp;payment** | Determines if payouts to operators are made for each automatic invoice or for each billing cycle. |
+
+___
+#### What amount do we transfer to the vendor?
+
+The connector imports invoices generated at the end of each billing cycle. 
+
+To pay the vendor, we use the field:
+
+**amount_transferred = Order to pay (Order - refund - operator commissions - remitted taxes) - total other invoices (incl tax) + total other credits (incl tax)** 
+
+It includes: 
+
+- “Order to pay (Order - refund - operator commissions - remitted taxes)” the sales revenue owed to the vendor net of commissions, refunds and remitted taxes.
+- “Other invoices” owed to the marketplace for services (manual invoices): paid advertisement on the site, chargeback. These amounts are deducted to the amount transferred to the vendor at the end of each invoicing cycle. 
+- “Other credits” owed to the vendors (manual credits). These amounts are added to the amount transferred to the vendor at the end of each invoicing cycle. 
+
+___
+#### What amount do we transfer to the marketplace?
+
+The amounts transferred to the marketplace depend on the connector settings.
+
+|  | Manual Invoice Payment enabled | Manual Invoice Payment disabled |
+|-------------------------------------|----------------------------------------|----------------------------------------|
+| **Payment of Operator Commissions is enabled**  | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax) + total_other_invoices_incl_tax` | `total_amount_incl_taxes - (total_commissions_incl_taxes - total_refund_commissions_incl_tax)` |
+| **Payment of Operator Commissions is not enabled** | `total_amount_incl_taxes + total_other_invoices_incl_tax` | `total_amount_incl_taxes = commissions on orders + subscriptions - total refund's commissions` |
+
+___
+#### Grouped payouts for commissions and VAT
+
+The connector provides the option to group all commission transfers over a billing cycle into a single payout. This feature needs to be activated with your Mangopay account representative upon request. 
+
+By default the connector will execute a payout every time a commission is transferred into the commissions wallet and  every time a VAT is transferred into the VAT wallet. Once this feature is activated, only one payout is made at the end of the billing cycle that will be the total of all the commissions and all the VAT received in the period. Please note, this feature will payout the totals on the commission wallets and the VAT wallet across all currencies and the payout will be processed approximately 24h after the last transfer. 
+
+The notifications on the Mirakl tab in the Mangopay dashboard will change. In the CASHOUTS tab for each payment that is grouped, a payout will still be visible with the correct total, but it will also have a “0” noted with the 'Payout Status' as 'GROUP_ADDED' or 'GROUP_PENDING'. This means this sum is not paid out but will be part of a grouped payout. 
+
+After the payout the notification for a relevant payout will show 'Group Payout : *the ID of the grouped cashout*'. 
+
+Please note, the grouped cashout will not figure in the list of cashouts in the Mirakl tab, however the reference can be used to identify the transfer on the Mangopay dashboard.
+
+___
+#### Manual credits and invoices
+
+Mirakl allows operators the creation of manual invoices and credit notes for vendors. These actions directly modify the seller's balance in Mirakl:
+
+- Manual invoice: the seller's balance in Mirakl is debited
+- Manual credit: the seller's balance in Mirakl is credited
+
+Manual invoices and credits are taken into account in the calculation of the vendor automatic invoice by Mirakl at the end of the billing cycle. The total other invoices (incl tax) and total other credits (incl tax) amounts respectively correspond to the amounts of manual invoices and amounts of manual credits since the start of the payment cycle.
+
+Available settings:
+
+- **Payment of manual invoices enabled:** Mirakl and Mangopay take into account manual invoices and credit notes in vendor payments, and in operator payments.
+- **Payment of manual invoices disabled:** Mirakl and Mangopay take into account manual invoices and credit notes in vendor payments, but not in operator payments.
+
+___
+#### Payment confirmation behavior
+
+The connector can update the status of the Mirakl Invoice (*Mirakl API IV07*). 
+
+When the Payment Confirmation Feature is **Activated**:  
+- Invoices are initially issued with a **PENDING** status.  
+- Our connector updates the status to **PAID** on behalf of the platform.  
+- This applies to both **manual invoices and credit notes**.  
+
+When the Payment Confirmation Feature is **Deactivated**:  
+- At the end of the billing cycle, **Mirakl sets invoices to PAID**, and we receive them as such.  
+- **Manual invoices and credit notes** also switch from **PENDING** to **PAID** at the end of the cycle, and we process them accordingly.  
+
+___
+#### Payout retries
+
+Every hour, the connector checks that the conditions are met to process pending transfers and payouts (e.g. Vendors have a bank account). 
+
+Every 12 hours, the connector retries transfers and payouts where the Status is ”FAILED”. 
+
+___
+#### Compliance with European regulation VAT e-commerce package
+
+Since July 2021, B2C marketplaces must collect VAT from their sellers on behalf of the state. If you need to comply with this regulation, you should set up your taxes management with Mirakl help.
+
+Our connector handles remitted taxes. To know the exact amount, we use the following fields:
+
+**total_operator_remitted_taxes + total_refund_operator_remitted_taxes**
+
+Since VAT remitted taxes are collected on behalf of the states they will not be transferred to the vendor e-wallet but the VAT e-wallet. And then payout to your VAT BankAccount. This BankAccount can be identical to the commission BankAccount.
+
+
+## Mirakl setup 
+
+**Restriction:** 
+
+- We only deal with IBAN, GB, US and Canadian bank accounts for sellers 
+- If you have an issue with the above restriction. please contact us. 
+
+In order to use the connector, the marketplace must have a live Mirakl account: sandbox and prod. 
+
+Mirakl will be the primary source of information to execute all payments to the vendor. It is therefore necessary that all stored information, especially the one relative to payments, is correctly updated and stored. 
+
+*The following two steps can be done manually on the Mirakl back office or automatically by uploading a configuration file from the very opening of your Mirakl instance. Please contact your Mangopay account manager in order to receive this configuration file.* 
+
+### 1. Activate the KYC Status Feature
+
+The KYC status feature needs to be activated by Mirakl support. We recommend activating the KYC status feature before synching Vendors.
+
+### 2. Add KYC Documents 
+
+As a compliant PSP, Mangopay requires verifying the end beneficiary's identity. In order to do so, we will ask for extra documents that you don't have by default on Mirakl. For more information, see [document types](/guides/users/verification/documents/types).
+
+Depending on the country and legal type, the marketplace must add the following documents for every store:
+
+- Identity proof: ID card of manager 
+- Articles of association 
+- Shareholder declaration
+- Registration proof
+- Ultimate beneficial owner (UBO) declaration 
+
+In order to do so please go to your Mirakl Dashboard (***Settings*** > ***Stores*** > ***Documents***).
+
+**Enter the following parameter:** 
+
+| Label  | Code  *You must respect this exact spelling* | Description |
+| :---- | :---- | :---- |
+| GENERAL MANAGER ID CARD  | `IDENTITY_PROOF`  | General Manager ID card |
+| ARTICLES OF ASSOCIATION  | `ARTICLES_OF_ASSOCIATION` | Certified articles of association (Statute) - formal memorandum stated by the entrepreneurs, in which the following information is  mentioned: business name, activity, registered address, shareholding… |
+| SHAREHOLDER  DECLARATION | `SHAREHOLDER_DECLARATION` | Send information referring to the shareholder declaration |
+| REGISTRATION PROOF  | `REGISTRATION_PROOF`  | Extract from the Company Register issued within the last three months. In the case of an organization or soletrader, this can be a proof of registration from the official authority. |
+| UBO DECLARATION  | Inputted as custom fields  | This declaration takes the form of a series of declarative fields with regards to the effective beneficiaries of the funds paid out |
+
+Once you have created those documents in settings, you must collect all those documents from the stores and upload them on the stores profile either via the Mirakl API S32, or via the Mirakl dashboard.
+
+<Warning>
+**Caution - Maximum Document Size** 
+
+If KYC status is in 'created' for too long, check the size and format of the document. It might not be correctly processed as out of our standards.   
+The maximum size per page is about 7MB. The following formats are accepted for the documents : .pdf, .jpeg, .jpg, .gif and .png. The minimum size is 1KB (32 KB for ID proof).
+</Warning>
+
+<Check>
+**Best practice – Adding multiple documents of the same type**
+
+You can add multiple documents of the same type, using a suffix. For example, instead of `IDENTITY_PROOF`, you can use `IDENTITY_PROOF_1`, `IDENTITY_PROOF_2`, `IDENTITY_PROOF_3`.
+</Check>
+
+### 3. Add Shop Custom Fields
+
+
+As for KYC documents, you have to add custom fields fields for stores. Go to your Mirakl Dashboard (***Settings*** > ***Stores*** > ***Custom Fields***).
+
+**Enter the following parameter:**
+
+| Code  | Label  | Description  | Type  | Restriction |
+| :---- | :---- | :---- | :---- | :---- |
+| `legalrep-firstname`  | First name of the legal  representative | The legal representative of the company must be known in order to comply with European regulation. | STRING  | 255  characters max  REQUIRED |
+| `legalrep-lastname`  | Last name of the legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his last name. | STRING  | 255  characters max REQUIRED |
+| `legalrepaddress-addressline1` | Address line 1 of the Legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | STRING  | 255 character max  REQUIRED |
+| `legalrepaddress-addressline2` | Address line 2 of the legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | STRING  | 255 character max  REQUIRED |
+| `legalrepaddress-city` | City Legal  Representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | STRING  | 255  character mal  REQUIRED |
+| `legalrepaddress-region` | Legal  Representative  Region | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | STRING  | 255 character max REQUIRED FOR US, CA OR MX |
+| `legalrepaddress-postalcode` | Postal code of  legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | STRING  | 255  character max  REQUIRED |
+| `legalerepaddress-country` | Country of the  legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his address. | LIST  | ISO 3166-1 alpha-2 format is expected REQUIRED |
+| `legalrep-birthday`  | Legal  Representative  Birthday | The legal representative of the company must be known in order to comply with European regulation. Please enter his birthday. | DATE  | Be careful to set UTC timezone  to avoid 00h becoming 23h (and hence interpreted as the day before) REQUIRED |
+| `legalrep-email`  | Legal  Representative  Email | The legal representative of the company must be known in order to comply with European regulation. Please enter his email. | STRING  | The person's email address (not more than 12 consecutive numbers) - must be a valid email  |
+| `legalrep-nationality` | Nationality of  legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his nationality. | LIST  | ISO 3166-1 alpha-2 format is expected  REQUIRED |
+| `legalrep-countryof residence` | Country of  residence of  Legal  representative | The legal representative of the company must be known in order to comply with European regulation. Please enter his country of residence. | LIST  | ISO 3166-1 alpha-2 format is expected  REQUIRED |
+| `mgp-t-and-c` | Terms & Conditions | Mangopay's Terms & Conditions  | BOOL | REQUIRED |
+| `legal-user` | Legal type |  | LIST | BUSINESS, ORGANIZATION, SOLETRADER, PARTNERSHIP REQUIRED |
+| `registered-company-name` | Registered Legal Name |  | STRING | NOT REQUIRED  *Note – If this field is not used or not set as required, the connector will use Mirakl's Professional checkbox and “Company Name” field.* |
+| `companynumber` | Registered Business Number | Please fill in with the official [company number](/guides/users/verification/company-number) - must be without spaces | STRING | NOT REQUIRED  *Note – If this field is not used or not set as required, the connector will use Mirakl's Professional checkbox and “Business Registration Number” field.* |
+| `not-applicable` | Vendor subject to UBO declaration | As part of AML and CTF laws, all registered businesses with UBOs need to be verified during the KYC process. Please select Yes to declare registered UBOs (Only if the Enterprise Legal is BUSINESS) | BOOL | REQUIRED |
+| `ubo-2` `ubo-3` `ubo-4` | Second/Third/Fourth  Ultimate Beneficial Owner to declare | If so, please select Yes | BOOL | NOT REQUIRED |
+| `ubo-1-first-name` `ubo-2-first-name` `ubo-3-first-name` `ubo-4-first-name` | Ultimate Beneficial Owner first name |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-last-name` `ubo-2-last-name` `ubo-3-last-name` `ubo-4-last-name` | Ultimate Beneficial Owner last name |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-line1` `ubo-2-address-line1` `ubo-3-address-line1` `ubo-4-address-line1` | Ultimate Beneficial Owner address line 1 |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-line2` `ubo-2-address-line1` `ubo-3-address-line1` `ubo-4-address-line1` | Ultimate Beneficial Owner address line 2 |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-postal-code` `ubo-2-address-postal-code` `ubo-3-address-postal-code` `ubo-4-address-postal-code` | Ultimate Beneficial Owner postal code |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-city` `ubo-2-address-city` `ubo-3-address-city` `ubo-4-address-city` | Ultimate Beneficial Owner city |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-region` `ubo-2-address-region` `ubo-3-address-region` `ubo-4-address-region` | Ultimate Beneficial Owner region |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-address-country` `ubo-2-address-country` `ubo-3-address-country` `ubo-4-address-country` | Ultimate Beneficial Owner country |  | LIST | ISO 3166-1 alpha-2 format is expected  NOT REQUIRED |
+| `ubo-1-nationality` `ubo-2-nationality` `ubo-3-nationality` `ubo-4-nationality` | Ultimate Beneficial Owner nationality |  | LIST | ISO 3166-1 alpha-2 format is expected  NOT REQUIRED |
+| `ubo-1-birthday` `ubo-2-birthday` `ubo-3-birthday` `ubo-4-birthday` | Ultimate Beneficial Owner date of birth |  | DATE  | Be careful to set UTC timezone  to avoid 00h becoming 23h (and hence interpreted as the day before) NOT REQUIRED |
+| `ubo-1-birthplace-city` `ubo-2-birthplace-city` `ubo-3-birthplace-city` `ubo-4-birthplace-city` | Ultimate Beneficial Owner city of birth |  | STRING | 255  character max  NOT REQUIRED |
+| `ubo-1-birthplace-country` `ubo-2-birthplace-country` `ubo-3-birthplace-country` `ubo-4-birthplace-country` | Ultimate Beneficial Owner country of birth |  | LIST | ISO 3166-1 alpha-2 format is expected  NOT REQUIRED |
+
+Once you have created those fields in settings, you must collect all the information fields and enter them on the stores profiles either via the Mirakl API S20, or via the Mirakl Dashboard. 
+
+### 4. Identify the company type and name
+
+When creating a Mirakl store it is important to correctly identify the business type and legal name (`legal-user` and `registered-company-name`). 
+
+A selector field 'Legal Type' offers the four business type options : 
+
+- Business 
+- Organization 
+- Soletrader 
+- Partnership
+
+One of these must be selected to proceed. Note, BUSINESS is noted by default. 
+
+Similarly, the precise legal name is also required, to be noted in the field 'Registered Legal Name'. 
+
+Together this information allows the payouts to be compliant with relevant compliance requirements.
+
+### 5. Verify existing information
+
+We strongly advise you to verify the information on Mirakl stores, especially the banking details.
+
+### 6. Remitted taxes management (withhold)
+
+If you need to comply with the new “VAT E-commerce package” european regulations, please configure your Mirakl instance accordingly. Your Mirakl account manager can help.
+
+## Mangopay setup
+
+In order to use the connector, you must have a live Mangopay account: sandbox and production. Please use the <a href="https://hub.mangopay.com/">Mangopay Dashboard</a> in order to do all the setup.
+
+### 1. Create a platform technical user
+
+This is a user in your name that will be used to receive the daily marketplace's revenue. It will also be used during the payment of your commissions at the end of the payment cycle. You can do this through the Mangopay dashboard, on the user tab. 
+
+### 2. Create the technical e-wallet
+
+This e-wallet holds your revenue. The funds will be held there until the next billing cycle. 
+
+If Mangopay does not do your acquisition you should also create a virtual account (IBAN). Therefore, you will be able to wire your daily marketplace's revenue to this e-wallet.
+
+You should create one wallet per currency used for billing. You can do this directly on your technical user wallet section on the dashboard. 
+
+### 3. Create a commission e-wallet
+
+This is the e-wallet that will be used to pay your commission. This is only a pivot e-wallet and funds will not be placed there. You should create one wallet per currency used for invoicing. You can do this directly on your technical user wallet section on the dashboard. 
+
+### 4. Create VAT e-wallet
+
+This is the e-wallet that will be used to pay out the VAT collected on behalf of the state. This is only a pivot e-wallet and funds will not be placed there. You should create one wallet per currency used for invoicing. You can do this directly on your technical user wallet section on the dashboard. 
+
+The VAT E-Wallet creation is mandatory even if you don't need to comply with the “VAT E-commerce package” european regulations.
+
+### 5. Register a bank account for your commission
+
+Please register the bank account you want to receive the commissions funds on. You can do this directly on your technical user bank account section on the dashboard.
+
+### 6. Register a bank account for your VAT
+
+Please register the bank account you want to receive the VAT on. You can do this directly on your technical user bank account section on the dashboard.
+
+### Add hooks (optional)
+
+Hooks enable Mangopay to send notification back to the connector. This allows us to update the transaction status. 
+We recommend you to add hooks. Thanks to hooks, transfers and payouts status are updated faster. 
+
+Hooks you can add:
+- Transfers
+  - `TRANSFER_NORMAL_CREATED`  
+  - `TRANSFER_NORMAL_SUCCEEDED`  
+  - `TRANSFER_NORMAL_FAILED`
+- Payout
+  - `PAYOUT_NORMAL_CREATED`  
+  - `PAYOUT_NORMAL_SUCCEEDED`  
+  - `PAYOUT_NORMAL_FAILED`
+
+You can do so on the Dashboard or via API.
+
+**Sandbox URL:**
+https://sandbox-mirakl.mangopay.com/hook 
+
+**Production URL:**
+https://mirakl.mangopay.com/hook 
+
+## Connector configuration
+
+*The setup of the connector is done by Mangopay team. In order to configure your account, we need:* 
+
+### 1. Create a Mirakl Operator User
+
+- Add to your Mirakl instance this user: mirakl-setup@mangopay.com
+- Give the following rights to the user:
+  - Technical Administration  
+  - API Access  
+  - Accounting and finance  
+  - Store account management
+
+### 2. Send Mirakl Information 
+
+- Mirakl URL 
+- Mirakl API operator key. *Please note that we only accept the operator key and not the front API key. While making the key verify that you provide access to stores and invoicing/accounting data (a technical administration role associated with the operator key is needed).* 
+
+### 3. Send Mangopay Information
+
+- Mangopay ClientId
+- Mangopay API Key 
+- Marketplace technical user ID 
+- Marketplace technical wallet ID 
+- Marketplace commission wallet ID
+- Marketplace VAT wallet ID 
+- Marketplace commission bank account ID
+- Marketplace VAT bank account ID (*If you don't need to comply with the VAT e-commerce package, you can indicate the same marketplace commission bank account ID*)
+- Answer to if you want to group payouts or not (*Instead of having multiple payouts for VAT and multiple payouts for commissions, we group all commissions payouts in one and same for VAT*)
+
+**All this information will be sent through a secured procedure defined with your account manager.**
+
+## Activation
+
+*Once we have all of this information, we will set up your application. By default, the application will be in vendor import mode only. In other words, we will import all the vendors but we won't process any payment. We do this to enable failed payments.* 
+
+After the user imports, it might take a few days for our Compliance team to validate all the vendors and their KYC documents. Please regularly check that your vendors are all KYC validated on the Mirakl Dashboard. 
+
+To do so on the Dashboard > User and check the KYC status. 
+
+Once all the legal users (the stores) are validated, we will activate the cashout mode. Please give a start date for the invoice payment, so that we don't process all your historic invoices. 
+
+## Connector daily use 
+
+*To facilitate up the daily use of the connector, we have built dedicated pages on the Mangopay Dashboard.*
+
+### 1. Control vendor import
+
+Please regularly check that your vendors are all correctly registered on Mangopay. To do so, please go on the Dashboard > Mirakl section and vendor tab and check that the vendor's status is “success”. This will mean that the vendor, its wallet and bank account are correctly registered. 
+
+### 2. Control KYC validation
+
+Please regularly check that your vendors are all KYC validated. 
+
+To do so, please go to the Mirakl dashboard > stores pages and check that the vendor's status is “Open”. 
+
+Please pay particular attention to: 
+
+- New vendors 
+- Vendor recently edited 
+
+<Note>
+**Note – Simulate KYC document validation in Sandbox**
+
+In the Dashboard in Sandbox, you can simulate KYC document validation from Mangopay (<a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a> > ***Legacy Dashboard*** > ***Sandbox operations*** > ***Process a KYC document***).
+</Note>
+
+When the feature is activated, a KYC status will appear on vendor account pages. The following are the possible statuses:
+
+| Status | Description |
+| :---- | :---- |
+| Awaiting KYC data  | Once the feature is activated, this is the **default status** for all existing stores.  the seller has not yet provided their KYC data for seller with legal type “BUSINESS” :  he has not indicated the Ultimate Beneficial Owners  |
+| Awaiting KYC verification  | the seller has submitted KYC data to Mangopay the seller has submitted UBO data to Mangopay  the seller is not 'KYC validated' on Mangopay  at least one submitted document is in 'Validation Asked', and none are in 'Refused'  |
+| KYC failed | KYC data are not compliant, at least one document has the status 'Refused'  If legal type BUSINESS : UBO data are incomplete or refused If KYC data has been provided, the KYC failure reason will appear on the "Store details" page via a banner. Inside the banner a list will appear with all received KYC documents and their status.|
+| KYC passed | KYC data are approved  UBO data are approved (if legal type : BUSINESS) the store account has been verified |
+
+### 3. Control payment
+
+After each billing cycle, please check on your Mangopay dashboard that all invoices are completed. To do so, please go on the dashboard > Mirakl > section and Invoices tab and check that all invoices are in “complete” status. If not, check the cashout details. 
+
+## Extra steps for full automation 
+
+In order to have a fully automated process for your payment workflow, we advise you to automate transfers to Mangopay and refund management.
+
+### Automate daily transfers to Mangopay (if Mangopay is not in charge of funds capture)
+
+**PSD2 obliges the marketplace to send us their total daily revenue at D + 1.**  
+
+- **Total daily revenue:**  In order to do so, we advise the marketplace to get in touch with their bank and their PSP. They should be able to provide them with a file containing total daily revenue.
+- **Transfer automation:** Your bank should be able to provide you with automated payment initiation features. This is a requirement of the PSD2. 
+
+### Manage refunds (if Mangopay is not in charge of funds capture)
+
+*Total transaction revenue is sent every day to Mangopay, However, refunds are debited directly from your acquisition bank account or another refund-dedicated bank account.*
+
+There are two possible scenarios:
+
+**1. The refund is created before the initial transaction funds are sent to Mangopay** 
+
+The funds are still in your acquisition bank account and therefore, you don't need to send us the funds related to this transaction. Indeed, the vendor doesn't need to be paid for this transaction. In the Mirakl invoice, there will be a credit of the initial funds due to the sale but also a debit of the refunded amount. 
+
+For example, let's say a vendor has a sale for a total price of 100 EUR. The same day, a 40 EUR refund is created. Therefore, the vendor's balance will be impacted by 100 - 40 = +60 EUR. This is the amount you need to send to Mangopay. 
+
+**2. The refund is created after the initial transaction funds are sent to Mangopay** 
+
+**a. *The funds are still on your Mangopay technical e-wallet***  
+Let's take an example: a vendor did a sale for a total price of 100 EUR several days ago. Their balance was credited of +100 EUR and 100 EUR were sent to your Mangopay technical e-wallet. 
+
+A few days later, a 40 EUR refund is created and the balance will therefore be debited of -40 EUR. At the end of the billing cycle, the vendor will receive 100 - 40 = 60 EUR. 
+
+However, the technical wallet will still have a 40 EUR surplus. To balance out the technical e-wallet, you can subtract 40 EUR to the next bank transfer you send to this e-wallet. Broadly speaking, you can transfer funds from the acquisition account to the technical wallet such that the level of the rolling reserve is restored. 
+
+**b. *The funds have been transferred to the vendor*** 
+
+Let's take an example: a vendor did a sale for a total price of 100 EUR in the previous billing cycle. Their balance was credited of +100 EUR and 100 EUR are sent to your Mangopay technical e-wallet. At the end of the billing cycle, an invoice has been issued and the 100 EUR has been transferred to the vendor. 
+
+In the following billing cycle, a 40 EUR refund is created, this will be debited from the acquisition account. The vendor balance will then be debited of -40 EUR. At the end of this billing cycle, the vendor will not receive a payout and their balance will still be - 40 EUR. 
+
+To balance out the technical e-wallet, you can subtract 40 EUR to the next bank transfer you send to this e-wallet. For example, the next cycle the vendor will make a sale of 100 EUR, but the technical E- wallet will only be credited 60 EUR. The vendor balance will then increase by 100 EUR to be 60 EUR. At the end of this billing cycle, the vendor will receive a payout of 60 EUR. 
+
+In summary, we advise:
+- **Keep a rolling reserve** on your acquisition bank account or on the dedicated bank account used to make refunds 
+- The **amount of the bank transfer** done every day to your Mangopay technical e-wallet: revenues – refunds + manual credits
+
+### Manage manual credits and invoices
+
+- Management of a manual credit note: When a manual credit note is created on the Mirakl side, the amount thereof does not come from any acquisition and must therefore be provided by the operator. It is then up to the operator to supply the technical wallet with the amount of the manual credit note so that the connector can pay the seller directly.
+- Managing a manual invoice ***(This section only applied when the payment of Manual invoices is disabled)***: When a manual invoice is created on the Mirakl side, the amount thereof will be deducted from what is owed to the seller for its sales. Thus, since all vendor sales are available on the technical wallet, the amount of the manual invoice will remain on the technical wallet. It is then up to the operator to make a manual PayOut of the amount of the invoice in his bank account from the Mangopay dashboard.
+
+### Subscribe to connector webhooks
+
+Based on your platform's needs, you can also leverage hooks specific to the Mangopay-Mirakl connector events. Get in touch with your CSM in order to set up the webhooks needed.
+
+**Events**
+
+| Event | MiraklId | ResourceId |
+| :---- | :---- | :---- |
+| ShopCreated | ShopId (Mirakl) | UserId (Mangopay) |
+| ShopModified | ShopId (Mirakl) | UserId (Mangopay) |
+| WalletCreated | ShopId (Mirakl) | WalletId (Mangopay) |
+| BankAccountCreated | ShopId (Mirakl) | BankAccountId (Mangopay) |
+| KycUploaded | ShopId (Mirakl) | KycId (Mangopay) |
+| InvoiceUploaded | ShopId (Mirakl) | InvoiceId (Mirakl) |
+| InvoiceTransferFailed | ShopId (Mirakl) | InvoiceId (Mirakl) |
+| InvoicePayoutFailed | ShopId (Mirakl) | InvoiceId (Mirakl) |
+| InvoicePayoutPaid | ShopId (Mirakl) | InvoiceId (Mirakl) |
+
+Example: https://webhook.site?Event=ShopCreated\&MiraklId=2073\&ResourceId=137142445
+
+
