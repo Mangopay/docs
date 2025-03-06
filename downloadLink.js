@@ -1,3 +1,4 @@
+var scriptDownloadLink = document.createElement("script");
 function downloadFile(url, filename) {
   const link = document.createElement("a");
   link.href = url;
@@ -18,3 +19,4 @@ downloadLinks.forEach((link) => {
     downloadFile(url, filename);
   });
 });
+document.head.appendChild(scriptDownloadLink);
