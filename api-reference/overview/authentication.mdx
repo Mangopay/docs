@@ -36,13 +36,29 @@ To generate your authentication token, call the endpoint below using Basic Acces
 
 #### A. Combine your `ClientId` and API key into a string separated by a colon  
 
-> `ClientId`:`ApiKey`  
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+`ClientId`:`ApiKey`
+</td>
+</tr>
+</tbody>
+</table> 
 
 #### B. Encode the string in Base64  
 
 Once encoded, the string looks something like this:  
 
-> RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu  
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu
+</td>
+</tr>
+</tbody>
+</table> 
 
 #### C. Call the OAuth token endpoint
 
@@ -52,30 +68,39 @@ Use the encoded string, preceded by “Basic” and a space, as your Authorizati
     <tbody>
         <tr>
             <th class="header">Endpoint</th>
-            <td class="table-content">POST   `/v2.01/oauth/token` </td>
+            <td class="table-content">POST `/v2.01/oauth/token`</td>
         </tr>
         <tr>
             <th class="header">Authorization</th>
-            <td class="table-content">Basic RXhhbXBsZU...J1aVBqbVFu  </td>
+            <td class="table-content">Basic&nbsp;RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu</td>
         </tr>
         <tr>
             <th class="header">Content-Type</th>
             <td class="table-content">application/x-www-form-urlencoded</td>
         </tr>
         <tr>
-            <th class="header">Request body</th>
+            <th class="header">Request&nbsp;body</th>
             <td class="table-content">grant_type=client_credentials</td>
         </tr>
     </tbody>
 </table>
 
-```json API response
+{/* ```bash Request example
+curl --request POST \
+  --url https://api.sandbox.mangopay.com/v2.01/oauth/token \
+  --header 'Authorization: Basic RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'grant_type=client_credentials'
+``` */}
+
+```json Response example
 {
     "access_token": "094696b3724d4aa5a182eac360dcd537",
     "token_type": "bearer",
     "expires_in": 1199
 }
 ```
+
 <table>
     <thead>
         <tr>
@@ -128,7 +153,7 @@ Base your integration dynamically on the `expires_in` and do not hard-code the d
 
 ### 3. Generate a new token before expiry  
 
-Shortly before your token expires (we recommend 30 seconds), generate a new one with the OAuth token endpoint as described in [step 1C](#c-call-the-oauth-token-endpoint) above.
+Shortly before your token expires (we recommend 30 seconds), generate a new one with the OAuth token endpoint as described in [Step 1C](#c-call-the-oauth-token-endpoint) above.
 
 ## HTTP errors
 
