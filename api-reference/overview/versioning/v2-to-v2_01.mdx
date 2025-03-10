@@ -1,0 +1,486 @@
+---
+title: Moving to v2.01 from v2
+---
+
+Mangopay will be decommissioning `v2` of all API endpoints on **June 30, 2025**. 
+
+Mangopay released version `v2.01` of its API to introduce a new **address** format across relevant endpoints.
+
+This page aims to support you in moving from `v2` to `v2.01`.
+
+<Check>
+**Best practice – Use Mangopay SDKs**
+
+Integrating with via Mangopay's [server-side SDKs](/sdks), and ensuring that you update to the latest SDK version whenever possible, ensures that you will stay up to date in your integration.
+</Check>
+
+## Change version number
+
+To change the version number, change `v2` to `v2.01` in the URL path that you are calling.
+
+<Note>
+**Note – Version number the only difference apart from address format**
+
+With the exception of the address format change below, the version number is the only change in terms of request or response payload between v2 and v2.01.
+
+For all endpoints not mentioned below on this page, the only difference is the change from `v2` to `v2.01` in the endpoint URL.
+</Note>
+
+## Handle address format
+
+In v2, addresses were strings. In v2.01, addresses are objects. 
+
+For example, the `Address` of the Natural User object:
+
+<CodeGroup>
+```json v2
+{
+  …
+  "Address": "6 rue de la Cité, Appartement 3, Paris, île-de-France, 75003, FR"
+  …
+}
+```
+```json v2.01
+{
+  …
+  "Address": {
+    "AddressLine1": "6 rue de la Cité",
+    "AddressLine2": "Appartement 3",
+    "City": "Paris",
+    "Region": "île-de-France",
+    "PostalCode": "75003",
+    "Country": "FR"
+  }
+  …
+}
+```
+</CodeGroup>
+
+This change applies to the following address properties of the following resources:
+
+- `Address` of the [Natural User](/api-reference/users/natural-user-object-sca) object
+- `LegalRepresentativeAddress` and `HeadquartersAddress` of the [Legal User](/api-reference/users/legal-user-object-sca) object
+- `OwnerAddress` of the [Bank Account](/api-reference/bank-accounts/bank-account-object) object (all types)
+
+The schema of the address object is the same in all cases:
+
+<table>
+<thead>
+<tr>
+<th class="header">Attribute</th>
+<th class="header">Type</th>
+<th class="header">Format</th>
+<th class="header">Usability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`AddressLine1`</td><td class="table-content">string</td><td class="table-content">Max length: 1–255 characters</td><td class="table-content">Required</td>
+</tr>
+<tr>
+<td class="table-content">`AddressLine2`</td><td class="table-content">string</td><td class="table-content">Max length: 1–255 characters</td><td class="table-content">Optional</td>
+</tr>
+<tr>
+<td class="table-content">`City`</td><td class="table-content">string</td><td class="table-content">Max length: 1–255 characters</td><td class="table-content">Required</td>
+</tr>
+<tr>
+<td class="table-content">`Region`</td><td class="table-content">string</td><td class="table-content">Max length: 1–255 characters</td><td class="table-content">Required if Country is MX, CA or US</td>
+</tr>
+<tr>
+<td class="table-content">`PostalCode`</td><td class="table-content">string</td><td class="table-content">Max length: 1–50 characters; only alphanumeric characters, dashes, and spaces</td><td class="table-content">Required</td>
+</tr>
+<tr>
+<td class="table-content">`Country`</td><td class="table-content">string</td><td class="table-content">Two-letter country code (ISO 3166-1 alpha-2 format)</td><td class="table-content">Required</td>
+</tr>
+</tbody>
+</table>
+
+<Warning>
+**Caution – v2 address data not available on v2.01**
+
+If the address string was sent by your platform in the v2 endpoint, it is not returned in the v2.01 objects.
+
+For users, you can retrieve and update the data. For bank accounts, you can retrieve and re-register the data.
+</Warning>
+
+### Users
+
+<Note>
+**Note – SCA introduced for OWNER**
+
+In February 2025, Mangopay introduced new endpoints for user registration to enable [enrollment in SCA](/guides/users/sca) for users whose `UserCategory` is `OWNER`.
+
+We recommend you use the new endpoints for creation and modification of users. The legacy endpoints are listed below for informative purposes and to allow you to separate integration steps.
+
+You may wish to complete both integrations at the same time.
+</Note>
+
+#### Compare response objects
+
+<Accordion title="Natural User v2 and v2.01 (before SCA and with SCA)">
+<CodeGroup>
+```json v2 {2}
+{
+    "Address": "6 rue de la Cité, Appartement 3, Paris, île-de-France, 75003, FR",
+    "FirstName": "Alex",
+    "LastName": "Smith",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JK5MJ4Q0DM6YSH7BGKBE5CDY",
+    "Tag": "Natural User v2 example",
+    "CreationDate": 1738577351,
+    "PersonType": "NATURAL",
+    "Email": "alex.smith@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+```json v2.01 – Non-SCA {2-9}
+{
+    "Address": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "FirstName": "Alex",
+    "LastName": "Smith",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JK5MJ4Q0DM6YSH7BGKBE5CDY",
+    "Tag": "Natural User v2.01 example on non-SCA endpoint",
+    "CreationDate": 1738577351,
+    "PersonType": "NATURAL",
+    "Email": "alex.smith@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+```json v2.01 – SCA-enabled {22}
+{
+    "FirstName": "Alex",
+    "LastName": "Smith",
+    "Birthday": null,
+    "Nationality": null,
+    "CountryOfResidence": null,
+    "Occupation": null,
+    "IncomeRange": null,
+    "ProofOfIdentity": null,
+    "ProofOfAddress": null,
+    "Capacity": "NORMAL",
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Address": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "PendingUserAction": null,
+    "Id": "user_m_01JK5MJ4Q0DM6YSH7BGKBE5CDY",
+    "Tag": "Natural User v2.01 example on SCA endpoint",
+    "CreationDate": 1738577351,
+    "PersonType": "NATURAL",
+    "Email": "alex.smith@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+</CodeGroup>
+</Accordion>
+<Accordion title="Legal User v2 and v2.01 (before SCA and with SCA)">
+<CodeGroup>
+```json v2 {2-3}
+{
+    "HeadquartersAddress": "34 rue des Entreprises, Batiment B, Paris, Île-de-France, 75001, FR",
+    "LegalRepresentativeAddress": "6 rue de la Cité, Appartement 3, Paris, île-de-France, 75003, FR",
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
+    "LegalRepresentativeEmail": null,
+    "LegalRepresentativeBirthday": null,
+    "LegalRepresentativeNationality": null,
+    "LegalRepresentativeCountryOfResidence": null,
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "LegalRepresentativeProofOfIdentity": null,
+    "CompanyNumber": null,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX3FQ7K0WB275T1BZ1SPZMF",
+    "Tag": "Legal User v2 example",
+    "CreationDate": 1737217268,
+    "PersonType": "LEGAL",
+    "Email": "best.business@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+```json v2.01 – Non-SCA {2-17}
+{
+    "HeadquartersAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "Name": "Best Business",
+    "LegalPersonType": "BUSINESS",
+    "LegalRepresentativeFirstName": "Alex",
+    "LegalRepresentativeLastName": "Smith",
+    "LegalRepresentativeEmail": null,
+    "LegalRepresentativeBirthday": null,
+    "LegalRepresentativeNationality": null,
+    "LegalRepresentativeCountryOfResidence": null,
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "LegalRepresentativeProofOfIdentity": null,
+    "CompanyNumber": null,
+    "PhoneNumber": null,
+    "PhoneNumberCountry": null,
+    "Id": "user_m_01JHX3FQ7K0WB275T1BZ1SPZMF",
+    "Tag": "Legal User v2.01 example",
+    "CreationDate": 1737217268,
+    "PersonType": "LEGAL",
+    "Email": "best.business@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+```json v2.01 – SCA-enabled {4-14,19}
+{
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
+    "LegalRepresentative": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "ProofOfIdentity": null,
+        "Birthday": null,
+        "Nationality": null,
+        "CountryOfResidence": null,
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
+        "PhoneNumberCountry": "FR"
+    },
+    "ProofOfRegistration": null,
+    "ShareholderDeclaration": null,
+    "Statute": null,
+    "CompanyNumber": null,
+    "PendingUserAction": null,
+    "HeadquartersAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "LegalRepresentativeAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "Id": "user_m_01JHX3FQ7K0WB275T1BZ1SPZMF",
+    "Tag": "Legal User v2.01 example with SCA",
+    "CreationDate": 1737217268,
+    "PersonType": "LEGAL",
+    "Email": "best.business@example.com",
+    "KYCLevel": "LIGHT",
+    "TermsAndConditionsAccepted": false,
+    "TermsAndConditionsAcceptedDate": null,
+    "UserCategory": "PAYER",
+    "UserStatus": "ACTIVE"
+}
+```
+</CodeGroup>
+</Accordion>
+
+The sections below describe the impact of moving from v2 to v2.01 in the case of user registration.
+
+<Note>
+**Note – GET List users has no address**
+
+The [GET List Users](/api-reference/users/list-users) endpoint only returns key data about the user, and this doesn't include any address fields. 
+
+However, you may still be using v2 of this endpoint to retrieve data – in this case you still need to change the version number in the URL path.
+</Note>
+
+#### Register users
+
+To create users with the `v2.01` endpoints, your platform must send a JSON object:
+
+- For the `Address` on [POST Create a Natural User](/api-reference/users/create-natural-user)
+- For the `LegalRepresentativeAddress` and `HeadquartersAddress` on [POST Create a Legal User](/api-reference/users/create-legal-user)
+
+If you do not send the address to Mangopay, because only the `HeadquartersAddress` is required for the `OWNER` category, then you only need to change the version number in the URL.
+
+#### Migrate address data
+
+If you retrieve user data using  `v2` of [GET View User](/api-reference/users/view-user), then the `Address`, `LegalRepresentativeAddress`, and `HeadquartersAddress` are formatted as a string.
+
+On the v2.01 of the same endpoint, the data in these fields is not available and must be migrated. 
+
+To migrate existing user address data, your platform must: 
+
+1. Retrieve the relevant address string using `v2` of [GET View User](/api-reference/users/view-user)
+2. Structure the data into the new schema
+3. Send the structured object using `v2.01` of [PUT Update a Natural User](/api-reference/users/update-natural-user) or [PUT Update a Legal User](/api-reference/users/update-legal-user)
+
+### Bank accounts
+
+#### Compare response objects
+
+The difference applies to all types of bank account. IBAN and GB are given below as examples:
+
+<Accordion title="IBAN bank account v2 and v2.01">
+<CodeGroup>
+```json v2 {2}
+{
+    "OwnerAddress": "6 rue de la Cité, Appartement 3, Paris, île-de-France, 75003, FR",
+    "IBAN": "FR7630004000031234567890143",
+    "BIC": "BNPAFRPPXXX",
+    "UserId": "user_m_01JKWYDT94N91CW572D7QNNYRP",
+    "OwnerName": "Alex Smith",
+    "Type": "IBAN",
+    "Id": "bankacc_m_01JMCS94W97ZM6XF5HR0KEVSGV",
+    "Tag": "IBAN Bank Account v2",
+    "CreationDate": 1739890922,
+    "Active": true
+}
+```
+```json v2.01 {2-9}
+{
+    "OwnerAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "IBAN": "FR7630004000031234567890143",
+    "BIC": "BNPAFRPPXXX",
+    "UserId": "user_m_01JKWYDT94N91CW572D7QNNYRP",
+    "OwnerName": "Alex Smith",
+    "Type": "IBAN",
+    "Id": "bankacc_m_01JMCS94W97ZM6XF5HR0KEVSGV",
+    "Tag": "IBAN Bank Account v2.01",
+    "CreationDate": 1739890922,
+    "Active": true
+}
+```
+</CodeGroup>
+</Accordion>
+
+<Accordion title="GB bank account v2 and v2.01">
+<CodeGroup>
+```json v2 {2}
+{
+    "OwnerAddress": "6 rue de la Cité, Appartement 3, Paris, île-de-France, 75003, FR",
+    "AccountNumber": "55779911",
+    "SortCode": "200000",
+    "UserId": "user_m_01JKWYDT94N91CW572D7QNNYRP",
+    "OwnerName": "Alex Smith",
+    "Type": "GB",
+    "Id": "bankacc_m_01JMCS94W97ZM6XF5HR0KEVSGV",
+    "Tag": "GB Bank Account v2",
+    "CreationDate": 1739890922,
+    "Active": true
+}
+```
+```json v2.01 {2-9}
+{
+    "OwnerAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "City": null,
+        "Region": null,
+        "PostalCode": null,
+        "Country": null
+    },
+    "AccountNumber": "55779911",
+    "SortCode": "200000",
+    "UserId": "user_m_01JKWYDT94N91CW572D7QNNYRP",
+    "OwnerName": "Alex Smith",
+    "Type": "GB",
+    "Id": "bankacc_m_01JMCS94W97ZM6XF5HR0KEVSGV",
+    "Tag": "GB Bank Account v2",
+    "CreationDate": 1739890922,
+    "Active": true
+}
+```
+</CodeGroup>
+</Accordion>
+
+#### Register a bank account
+
+To create bank accounts with the `v2.01` endpoints, your platform must send a JSON object for `OwnerAddress` on:
+
+- [POST Create an IBAN Bank Account](/api-reference/bank-accounts/create-iban-bank-account)
+- [POST Create a GB Bank Account](/api-reference/bank-accounts/create-gb-bank-account)
+- [POST Create a US Bank Account](//api-reference/bank-accounts/create-us-bank-account)
+- [POST Create a CA Bank Account](//api-reference/bank-accounts/create-ca-bank-account)
+- [POST Create a OTHER Bank Account](//api-reference/bank-accounts/create-other-bank-account)
+
+### Re-register a bank account
+
+Bank accounts created on v2 cannot be used on v2.01. You also cannot update the object with the new data, because there is no PUT method for bank accounts. Therefore, you need to re-register the bank account.
+
+1. Retrieve the bank account object and its `OwnerAddress` string using `v2` of [GET View a Bank Account](/api-reference/bank-accounts/view-bank-account)
+2. Structure the `OwnerAddress` into an object
+3. Send the new bank account object to structured object using `v2.01` of the creation endpoint, e.g. [POST Create an IBAN Bank Account](/api-reference/bank-accounts/create-iban-bank-account) or [POST Create a GB Bank Account](/api-reference/bank-accounts/create-gb-bank-account)
+
+### View bank account details
+
+When you use v2.01 of [GET View a Bank Account](/api-reference/bank-accounts/view-bank-account) or [GET List Bank Accounts for a User](/api-reference/bank-accounts/list-bank-accounts-user), your system needs to be able to handle the `OwnerAddress` response object.
