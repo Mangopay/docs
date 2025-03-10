@@ -2,17 +2,18 @@
 title: Moving to v2.01 from v2
 ---
 
-Mangopay will be decommissioning `v2` of all API endpoints on **June 30, 2025**. 
+Mangopay will be decommissioning `v2` of all API endpoints on **June 30, 2025**. This page aims to support you in moving from `v2` to `v2.01`.
 
-Mangopay released version `v2.01` of its API to introduce a new **address** format across relevant endpoints.
+Mangopay released version `v2.01` of its API to introduce a new **address** format across relevant endpoints, which may require some data migration.
 
-This page aims to support you in moving from `v2` to `v2.01`.
+<Warning>
+**Caution – v2 address data not available on v2.01**
 
-<Check>
-**Best practice – Use Mangopay SDKs**
+If the address string was sent by your platform in the v2 endpoint, it is not returned in the v2.01 objects. This means that you need to re-send the data for it to be available on v2.01. 
 
-Integrating with via Mangopay's [server-side SDKs](/sdks), and ensuring that you update to the latest SDK version whenever possible, ensures that you will stay up to date in your integration.
-</Check>
+As described below, for [users](#users) you can **retrieve and update** the object. For [bank accounts](#bank-accounts), you can **retrieve and re-create** the object.
+</Warning>
+
 
 ## Change version number
 
@@ -28,7 +29,7 @@ For all endpoints not mentioned below on this page, the only difference is the c
 
 ## Handle address format
 
-In v2, addresses were strings. In v2.01, addresses are objects. 
+In v2, addresses were strings. In v2.01, addresses are objects.
 
 For example, the `Address` of the Natural User object:
 
@@ -95,14 +96,6 @@ The schema of the address object is the same in all cases:
 </tbody>
 </table>
 
-<Warning>
-**Caution – v2 address data not available on v2.01**
-
-If the address string was sent by your platform in the v2 endpoint, it is not returned in the v2.01 objects.
-
-For users, you can retrieve and update the data. For bank accounts, you can retrieve and re-register the data.
-</Warning>
-
 ### Users
 
 <Note>
@@ -110,12 +103,12 @@ For users, you can retrieve and update the data. For bank accounts, you can retr
 
 In February 2025, Mangopay introduced new endpoints for user registration to enable [enrollment in SCA](/guides/users/sca) for users whose `UserCategory` is `OWNER`.
 
-We recommend you use the new endpoints for creation and modification of users. The legacy endpoints are listed below for informative purposes and to allow you to separate integration steps.
-
-You may wish to complete both integrations at the same time.
+All platforms are required to integrate the new set of user endpoints for both Payer and Owner categories. For Owners, the registration flow requires redirection to enroll the user in SCA.
 </Note>
 
 #### Compare response objects
+
+The following snippets show the structure of each object and highlights changes between them. For more details on the SCA objects, see the [Natural User](/api-reference/users/natural-user-object-sca) and [Legal User](/api-reference/users/legal-user-object-sca) objects.
 
 <Accordion title="Natural User v2 and v2.01 (before SCA and with SCA)">
 <CodeGroup>
@@ -358,26 +351,42 @@ However, you may still be using v2 of this endpoint to retrieve data – in this
 
 #### Register users
 
-To create users with the `v2.01` endpoints, your platform must send a JSON object:
+To create users with the `v2` POST endpoints, your platform sent a string as the relevant address property. 
 
-- For the `Address` on [POST Create a Natural User](/api-reference/users/create-natural-user)
-- For the `LegalRepresentativeAddress` and `HeadquartersAddress` on [POST Create a Legal User](/api-reference/users/create-legal-user)
+To create users with the `v2.01` endpoints, your platform must send a **JSON object**:
 
-If you do not send the address to Mangopay, because only the `HeadquartersAddress` is required for the `OWNER` category, then you only need to change the version number in the URL.
+- For the `Address` on [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- For the `LegalRepresentativeAddress` and `HeadquartersAddress` on [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+
+If `UserCategory` is `OWNER`, you also need to redirect the user so they can enroll their mobile phone in SCA. For more information, see [SCA on Owners](/guides/users/sca).
+
+Of the three address properties listed above, only the `HeadquartersAddress` is required for the `OWNER` category. It is possible therefore that for the `PAYER` category you are not sending any address data. In this case, you need to change the version number in the URL.
 
 #### Migrate address data
 
-If you retrieve user data using  `v2` of [GET View User](/api-reference/users/view-user), then the `Address`, `LegalRepresentativeAddress`, and `HeadquartersAddress` are formatted as a string.
+If you sent a string of data on a `v2` the `Address`, `LegalRepresentativeAddress`, or `HeadquartersAddress`, then that string is not available when you call [GET View User](/api-reference/users/view-user) and the corresponding object is `null`.
 
-On the v2.01 of the same endpoint, the data in these fields is not available and must be migrated. 
+This means that to maintain the data sent on `v2`, you need to migrate it manually to `v2.01`. 
 
 To migrate existing user address data, your platform must: 
 
 1. Retrieve the relevant address string using `v2` of [GET View User](/api-reference/users/view-user)
-2. Structure the data into the new schema
-3. Send the structured object using `v2.01` of [PUT Update a Natural User](/api-reference/users/update-natural-user) or [PUT Update a Legal User](/api-reference/users/update-legal-user)
+2. Structure the data into the new object schema
+3. Send the structured object using `v2.01` of [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) or [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
 
 ### Bank accounts
+
+<Note>
+**Note – Recipients being released with SCA**
+
+Registering a bank account is an action that requires authentication via SCA. In April 2025, Mangopay plans to release a new feature, Recipients, which will replace the legacy Bank Account object. 
+
+Registering a bank account as a Recipient will only be available for SCA-enrolled users, and will require the user to be redirected to the SCA session to authenticate.
+
+The Recipients feature also allows platforms to obtain the schema of the local or international bank account details and validate them before creation.
+</Note>
+
+Your platform can wait for Recipients to be generally available before migrating `v2` bank accounts to Recipients. In any case, you should retrieve any data that was sent to Mangopay for v2 `OwnerAddress` by retrieving it using [GET View a Bank Account](/api-reference/bank-accounts/view-bank-account) or [GET List Bank Accounts for a User](/api-reference/bank-accounts/list-bank-accounts-user).
 
 #### Compare response objects
 
@@ -464,6 +473,8 @@ The difference applies to all types of bank account. IBAN and GB are given below
 </Accordion>
 
 #### Register a bank account
+
+To create bank accounts with the `v2` POST endpoints, your platform sent a string as the relevant `OwnerAddress` property.
 
 To create bank accounts with the `v2.01` endpoints, your platform must send a JSON object for `OwnerAddress` on:
 
