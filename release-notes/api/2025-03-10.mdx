@@ -1,0 +1,26 @@
+---
+title: 'API - Mar 10, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+## Error 001405 to prevent direct debit refunds in first 7 days
+
+It is no longer possible to initiate a [pay-in refund](/api-reference/refunds/create-refund-payin) if the initial pay-in's `PaymentType` is `DIRECT_DEBIT` and its `CreationDate` was in the last 7 days. 
+
+If attempted, the refund fails with the `ResultCode`: 
+
+- **001405** – The initial transaction occured less than 7 days ago
+
+This error has been added because of the possibility of [late failures](/guides/payment-methods/banking/direct-debit#late-failures%2C-chargebacks-and-refunds) on direct debit pay-ins, which may occur on a successful pay-in.
+
+<div class="pill pill-orange">Changed</div>
+
+## Removed limit of 5 partial refunds for direct debit pay-ins
+
+Platforms can now initiate any number of [partial refunds](/api-reference/refunds/create-refund-payin) on the same direct debit pay-in.
+
+</div>
