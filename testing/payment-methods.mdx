@@ -118,27 +118,20 @@ The following card triggers a 3DS2 challenge flow, where <Sca content="SCA"/> is
 
 ### Direct debit
 
-#### Mandates
-
-When testing direct debit mandates, you can set a specific value for the `FirstName` parameter of the user who owns the bank account for the mandate.
-
-- `Successful` - Results in an active mandate. You must do a pay-in with this mandate for the status to be updated.
-- `Invalid` - For Bacs only, results in a failed mandate due to incorrect bank account information.
-- `Penniless` - Results in a failed pay-in due to lack of funds (with the <a href="/errors/codes/001830">001830</a>).
-- `Fickle` - Results in a successful pay-in which is disputed by the user and hence a dispute is created.
+For testing [direct debits](/guides/payment-methods/banking/direct-debit), you can use the following bank account data and mock values. Note that it is not possible to test direct debit email notifications in Sandbox.
 
 #### SEPA
 
-You can use the following details to set up an **IBAN Bank Account** for testing the **SEPA scheme**: 
+You can use the following details on [POST Create an IBAN Bank Account](/api-reference/bank-accounts/create-iban-bank-account) for testing the **SEPA scheme**: 
 
 <table>
     <tbody>
         <tr>
-            <th class="header">**`IBAN`**</th>
+            <th class="header">`IBAN`</th>
             <td class="table-content">FR7630004000031234567890143</td>
         </tr>
         <tr>
-            <th class="header">**`BIC`**</th>
+            <th class="header">`BIC`</th>
             <td class="table-content">BNPAFRPP</td>
         </tr>
     </tbody>
@@ -146,22 +139,36 @@ You can use the following details to set up an **IBAN Bank Account** for testing
 
 #### Bacs
 
-You can use the following details to set up a **GB Bank Account** for testing the **Bacs scheme**: 
+You can use the following details on [POST Create a GB Bank Account](/api-reference/bank-accounts/create-gb-bank-account) for testing the **Bacs scheme**:
 
 <table>
     <tbody>
         <tr>
-            <th class="header">**`AccountNumber`**</th>
+            <th class="header">`AccountNumber`</th>
             <td class="table-content">55779911</td>
         </tr>
         <tr>
-            <th class="header">**`SortCode`**</th>
+            <th class="header">`SortCode`</th>
             <td class="table-content">200000</td>
         </tr>
     </tbody>
 </table>
 
-Note that it is not possible to test direct debit email notifications in Sandbox.
+#### Mandates
+
+When testing direct debit mandates and pay-ins, you can set a specific value for the `FirstName` parameter of the [Natural User](/api-reference/users/natural-user-object-sca) who owns the bank account for the mandate.
+
+- `Successful` - Results in an active mandate. You must do a pay-in with this mandate for the status to be updated.
+- `Invalid` - For Bacs only, results in a failed mandate due to incorrect bank account information.
+- `Penniless` - Results in a failed pay-in due to lack of funds (with the <a href="/errors/codes/001830">001830</a>).
+- `Fickle` - Results in a successful pay-in which is disputed by the user and hence a dispute is created.
+
+#### Direct debit refunds
+
+It is not possible to initiate a refund for direct debit pay-ins within 7 days of the pay-in's `CreationDate` (to avoid a conflict with possible late failures).
+
+On [POST Create a Refund](/api-reference/refunds/create-refund-payin) you can set the `Tag` to the mock value `ignore_mindate` to ignore the minimum date restriction and test refunds within 7 days. Note that you can only create a refund if the pay-in `Status` is `SUCCEEDED`, which you can achieve with the `Successful` mock value above.
+
 
 ## Alternative payment methods (APMs)
 
