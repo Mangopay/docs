@@ -1,4 +1,110 @@
 ---
 title: FAQ on Mangopay's SCA feature
 ---
+We're implementing SCA (Strong Customer Authentication) via a hosted experience to enhance your users' security and regulatory compliance for your platform. Please integrate the new endpoints by the 1st of July.
+
+h1: Background information:
+
+To strengthen security and comply with EU regulations (Payment Services Directive), we are implementing Strong Customer Authentication (SCA). SCA ensures that user identity is verified for key actions such as user enrollment, recipient registration, transfers, and viewing wallet balances or transaction history.
+For businesses, organizations, and partnerships, SCA will be introduced separately, with implementation expected by Q3. However, all platforms must integrate the new user endpoints by July 1, 2025, regardless of user type.
+SCA enhances fraud prevention while maintaining a smooth user experience. Our approach aligns with the European Banking Authority's guidelines and incorporates exemptions permitted under PSD2.
+Failure to implement the required endpoints may lead to service suspension or termination due to non-compliance with API usage and contractual obligations.
+
+h1: I. General SCA Information and Requirements
+
+h2: What is SCA? 
+SCA for Strong Customer Authentication is a method used to guarantee a user's identity for specific actions, such as making payments, consulting account balance or updating account details (e.g. payment method). 
+
+It relies on the validation of at least  two independent authentication factors out of three  to verify a user's identity.
+- Knowledge factor
+- Inherence factor
+- Possesion factor.
+
+h2: Why SCA is so important?
+SCA is important for the following reasons: 
+- To enhance security measures: SCA with a multi-factor approach significantly reduces the risk of unauthorized access and fraud, by ensuring that only verified users can perform high risk actions.
+- To ensure regulatory compliance: SCA helps prevent potential fines from competent authorities (such as CSSF) and legal consequences associated with non-compliance
+- To foster customer trust: SCA enhances customer loyalty by making customers feel secure in their transactions, encouraging greater engagement with the service
+
+h2: Is SCA implementation compulsory for us?
+Yes, it is a regulatory obligation. As a Payment Service Provider, it’s our role to protect your users from credential attacks and account takeover by verifying their identities and ensuring their legitimacy.
+
+h2: What happens if we don’t integrate the new endpoints? What are the consequences for us?
+Implementation of SCA is mandatory. Failure to integrate the new endpoints may lead to the suspension or termination of our services, as outlined in our contractual documentation. 
+
+h2 Do we need to sign a contract amendment?
+No, you will not be required to sign any contract amendment; our existing contract remains in effect.
+
+h2: Why do some competitors not emphasize SCA?
+Under PSD2, protecting users from unauthorized access and data breaches is mandatory for all Payment Service Providers. While some competitors may only inform clients about SCA—leaving its implementation up to them—we offer a secure, hosted SCA solution that is designed to prevent fraud and simplify the process for you.
+
+h2: Will SCA be invoiced separately for us?
+We invite you to reach out to your account manager or to the support team to know more about SCA pricing.
+
+h1: II. Implementation and Technical Details
+
+h2:Will SCA be invoiced separately for us?
+We invite you to reach out to your account manager or to the support team to know more about SCA pricing.
+
+h2: Is there public documentation available for SCA?
+Yes, our public documentation on SCA is available at: https://docs.mangopay.com/guides/users/sca Additional useful resources include: [List of specific SCA documentation links].
+
+h2: If SCA is triggered by an action on our behalf, can it operate asynchronously?
+No, the SCA session will start immediately, and the user will have 10 minutes to complete the validation before the session expires. In the future, we may explore asynchronous options once our product is further developed.
+
+h2: Can we use our existing Strong Authentication methods to send SCA validation through the API?
+At this stage no, as applicable regulation requires Mangopay to perform SCA of users that have a Mangopay account.
+
+h1: III. User Information and Management
+
+h2:What should we say to our end users / customers asking why we enforce them to perform SCA?
+You can convey to your end users that their security is being strengthened through the implementation of Strong Customer Authentication (SCA) on your platform. This enhanced security measure provides additional protection against account takeovers resulting from phishing attempts, credential attacks, and personal data breaches. By adopting SCA, you are not only prioritizing their safety but also ensuring compliance with the latest regulatory standards. Assure your end users that you remain committed to delivering a secure and seamless experience.
+
+h2: Is the phone number mandatory for us? How will our customers handle existing information?
+Yes, providing a phone number is mandatory. Your users can conveniently update or supply their phone number through the Hosted Experience for SCA, which automatically directs them to the correct page without interrupting their experience.
+
+h2: If a KYB/KYC document is refused due to data mismatches, can we modify the data on behalf of our users, or do we need to contact them?
+Only modifications to phone number and email will require validation through SCA by the end user.
+
+h2: Will we block users if they use a phone number that is already associated with other accounts?
+No as our system is designed to efficiently manage phone number associations.
+
+h2: Which actions are restricted while SCA enrollment has not been completed?
+None. However, if an end user has not completed enrollment, we may take measures such as disowning, closing, or blocking that user’s account. You would be notified in advance.
+
+h2: If a user completes SCA enrollment and then creates a new recipient, will they need to undergo another SCA process?
+Yes, except if the recipient is the End-User itself and if the addition is made during the enrollment session.
+
+h2: If a user closes the pop-up or doesn’t receive it, can the OTP be resent?
+Yes. If the user refreshes the page, they will remain on the OTP verification screen. Our system is designed to prevent multiple OTPs from being sent automatically, ensuring that the process can be completed at the user’s convenience.
+
+h1: IV. Specific Actions and Workflows
+
+h2: What should we expect regarding SCA for transfer actions?
+Only transfers initiated directly by your end users will require an SCA authentication step. Automated transfers, workflows, and low‑risk transactions (e.g., those under €30) will not be impacted by SCA requirements, in accordance with regulatory allowances. For any specific cases or further details, please feel free to reach out to your account manager or our support team.
+
+h2: For automated workflows—such as wallet transfers, balance checks, or transaction history views that are not initiated by us—is SCA required for every transaction?
+No. For some specific actions that are not initiated by a user, our new transfer endpoint includes a “user_present” parameter. When set to false, SCA will not be triggered. This exemption similarly applies to automated wallet balance checks and transaction history views.
+
+h2: Can you list the specific actions that would require SCA?
+Certainly. SCA is triggered for certain high-risk events that require additional identity verification, including: [List of specific actions requiring SCA].
+
+h2: What happens if actions are performed on our behalf without direct user involvement?
+When actions are executed on behalf of our clients without direct user authentication, each case will be evaluated individually to determine the appropriate SCA process. It is essential that we understand the context and justification for such actions, as bypassing direct user consent could expose us to security risks. We remain committed to maintaining the highest standards of security and compliance.
+
+h2: When will SCA be triggered for our existing users, and how will it work?
+SCA will be triggered every time an existing user performs a SCA‑triggering action—such as recipient registration, transfers (when the “user_present” parameter is true), or viewing their wallet balance and transaction history. In addition, our clients can opt to enroll and add their authentication factor at any time, provided that your platform offers this option through the enrollment endpoint.
+
+h2: Can we delay enrollment when an Owner user is created on our behalf?
+Delaying enrollment in the traditional sense is not applicable since the “user_present” parameter is not available for user enrollment endpoints. However, if your workflow involves automatic user creation, you can request a specific exemption. In such cases, it is essential that your interface offers an option for your users to complete their SCA enrollment at the appropriate time.
+
+h1: V. Merchant Agreements and Legal Users
+
+h2: We have a Merchant Agreement; how will SCA impact us?
+For those operating under a Merchant Agreement, SCA will be integrated as part of our ongoing commitment to regulatory compliance. While implementing SCA is mandatory, we are dedicated to supporting you through the transition and ensuring a smooth experience. Detailed guidance on the specific impacts will be provided shortly.
+
+h2: When will SCA be available for legal users, and what integration is required?
+To support legal users, please begin integrating the sca/users/legal endpoints as detailed in our communication. Soletraders will be available immediately and we will turn on SCA for business users at a later stage and notify you once this feature is released. The new functionality will allow delegated or authorized users within a legal entity to perform SCA, rather than limiting this capability solely to the legal representative.
+
+
 
