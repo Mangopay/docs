@@ -212,8 +212,6 @@ Mangopay's <a href="https://www.postman.com/mgp-productstars/workspace/mangopay-
 
 The PIN code factor is still in development, but it will be managed via the same hosted session and `RedirectUrl`.
 
-
-
 ## Actions requiring SCA
 
 The regulations apply SCA to situations where a Owner user accesses or initiates certain payment activities, or to other situations considered at risk.
@@ -234,13 +232,10 @@ The table below lists the actions that will be authenticated by SCA. As indicate
 Available
 </td>
 <td class="table-content">
-Creation of the user account (Owner category)
+Enrollment of existing `OWNER` users
 </td>
 <td class="table-content">
-When an Owner user is registered with Mangopay, they must provide and authenticate (enroll) their phone number. This applies to:
-- First-time registration as an Owner
-- Transition from the Payer category
-- Enrollment of existing Owner users
+Existing users with the `UserCategory` `OWNER` must enroll in SCA.
 </td>
 </tr>
 <tr>
@@ -248,10 +243,32 @@ When an Owner user is registered with Mangopay, they must provide and authentica
 Available
 </td>
 <td class="table-content">
-Change of authentication credentials
+Creation of a new `OWNER` account
 </td>
 <td class="table-content">
-When an Owner user changes their phone number or email they must authenticate the new one.
+When a User with the `UserCategory` `OWNER` is newly created (first-time registration), the user must enroll in SCA.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Available
+</td>
+<td class="table-content">
+Transition of a User from `PAYER` to `OWNER`
+</td>
+<td class="table-content">
+When a `PAYER` user changes `UserCategory` to `OWNER`, the user must enroll in SCA.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Available
+</td>
+<td class="table-content">
+Change of SCA credentials
+</td>
+<td class="table-content">
+When an SCA-enrolled user changes their phone number or email they must re-enroll the new credentials.
 </td>
 </tr>
 <tr>
@@ -262,11 +279,11 @@ April&nbsp;2025
 Registration of a bank account
 </td>
 <td class="table-content">
-When an Owner user registers a bank account, they must authenticate. 
+When an `OWNER` user registers a bank account, they must authenticate. 
 
-Mangopay will be releasing a new version of the Bank Account object called **Recipients**. Recipients will allow validation of account details, supporting faster and more reliable local and international payouts.
+Mangopay is releasing a new version of the Bank Account object called **Recipients**. Recipients will allow validation of account details, supporting faster and more reliable local and international payouts.
 
-SCA will only be applied to Recipients.
+Registering a Recipient will require SCA.
 </td>
 </tr>
 <tr>
@@ -274,12 +291,14 @@ SCA will only be applied to Recipients.
 April&nbsp;2025
 </td>
 <td class="table-content">
-Transfer from one Owner user to another
+Transfer from one `OWNER` user to another
 </td>
 <td class="table-content">
-Transfers from one Owner user to another (between Mangopay account holders) are in scope of SCA. The conditions surrounding transfers are still being defined and Mangopay is developing features to support platforms' activity and a range of exemptions. Among those already defined:
+Transfers from one `OWNER` user to another (between Mangopay account holders) are in scope of SCA. The conditions surrounding transfers are still being defined and Mangopay is developing features to support platforms' activity and a range of exemptions. Among those already defined:
 - Technical transfers initiated as part of specific workflows – a new transfer endpoint is being developed to support these
 - Exemptions allowed by the regulations, for example low-risk transactions, low-amount transactions less than €30
+
+The new transfer endpoint will include a `UserPresent` parameter which, if set to `false`, will not trigger SCA. The use of the `UserPresent` parameter will be subject to workflow validation and implemented on a case-by-case basis.
 </td>
 </tr>
 <tr>
@@ -287,10 +306,21 @@ Transfers from one Owner user to another (between Mangopay account holders) are 
 April&nbsp;2025
 </td>
 <td class="table-content">
-View wallet balance and transaction history
+View wallet balance
 </td>
 <td class="table-content">
-When an Owner user wishes to view their wallet balance or see past transactions crediting or debiting it, they may be required to authenticate. The conditions surrounding wallet access are still being defined but may include, for example, first-time access.
+When an Owner user wishes to view their wallet balance, they may be required to authenticate. The conditions surrounding wallet access are still being defined but may include, for example, first-time access. The `UserPresent` feature will be used in a similar way as for transfers.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+April&nbsp;2025
+</td>
+<td class="table-content">
+View transaction history
+</td>
+<td class="table-content">
+When an Owner user wishes to see past transactions crediting or debiting their wallet, they may be required to authenticate. The conditions surrounding wallet access are still being defined, and the `UserPresent` feature will be used in a similar way as for transfers.
 </td>
 </tr>
 </tbody>
