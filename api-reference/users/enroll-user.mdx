@@ -12,12 +12,13 @@ import UserId from '/snippets/p-path/UserId.mdx';
 
 If `UserCategory` is `OWNER`, this endpoint allows you to enroll a user in SCA. Your platform needs to retrieve the returned `PendingUserAction.RedirectUrl`, add an encoded `returnUrl` query parameter for them to be returned to after the SCA session, and redirect the user.
 
-You can use this endpoint to:
-- Enroll Owners created without SCA enrollment
-- Retry an unsuccessful enrollment
-- Obtain a new session `RedirectUrl` if a previous one expired (after 10 minutes)
-
 [Read more about SCA redirection](/guides/users/sca/session) **&rarr;**
+
+You can use this endpoint to obtain a new session `RedirectUrl`. This is useful to: 
+- Enroll Owners created without SCA enrollment
+- Retry enrollment if a previous session was unsuccessful or expired (after 10 minutes)
+
+Calling this endpoint creates a new session regardless of whether there is one already in progress for the user. Calling this endpoint also doesn't change the user's `UserStatus`, even if the session expires or is unsuccessful.
 
 ### Path parameters
 
