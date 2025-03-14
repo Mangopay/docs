@@ -641,6 +641,65 @@ In your requests:
 - Ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`
 - Submit the `PreferredCardNetwork` value if it was received by `onCreatePayment`
 
+### Working with saved cards 
+
+When you enable the **Save Card** option, a **Save Card** checkbox appears on the payment form. If the user selects this checkbox, the `SaveCard` flag is set to `true` and passed to the `onCreatePayment` handler. You can then store the card details in your backend for future use.
+
+**Using Saved Cards for Future Payments**
+During future checkout sessions, previously saved cards should be included via the `savedCards` array in the card payment method configuration. When a saved card is selected, the SDK automatically uses it for the payment process.
+
+**Handling Card Removal**
+If a user decides to remove a saved card, the `onDeactivateSavedCard` callback is triggered. This allows you to remove or deactivate the card from your backend accordingly.
+
+```typescript TypeScript
+const options = {
+  amount: {
+    value: 1000,
+    currency: 'EUR'
+  },
+  paymentMethods: [
+    {
+      type: 'card',
+      enableSaveCard: true, // display the "Save Card" checkbox
+      savedCards: [
+        {
+          Id: '12345',
+          Alias: 'XXXX XXXX XXXX 1234',
+          ExpirationDate: '1026',
+          CardProvider: 'MASTERCARD',
+          Active: true,
+          UserId: '67890',
+          Validity: 'VALID'
+          // ...any other properties you need
+        }
+      ],
+      onDeactivateSavedCard: function({ cardId }) {
+        // 1. call your backend to remove or deactivate the card with this cardId
+        // 2. handle any UI updates necessary
+      },
+      onCreatePayment: function (event) {
+        /*
+          1. Check if event.SaveCard === true
+          2. If true:
+             - Store the newly created CardId in your backend so it can be
+               reused next time (by adding it to savedCards).
+          3. If false:
+             - Call your backend to deactivate the card in MangoPay API.
+             - Ensure the card is marked as inactive to prevent future use.
+          4. Create the pay-in on your backend with the CardId or payment details.
+        */
+      }
+    }
+  ]
+};
+
+// Vanilla JS
+const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
+
+// React.js
+<MangopayCheckout ref={sdkRef} options={options} />
+```
+
 ## Configuring Apple Pay  
 
 <Note>  
@@ -1508,61 +1567,6 @@ const customLanguage = {
 
 const options = {
   locale: customLanguage
-};
-
-// Vanilla JS
-const mangopaySdk = await CheckoutSdk.loadCheckoutSdk('#container', options);
-
-// React.js
-<MangopayCheckout ref={sdkRef} options={options} />
-```
-
-## Working with saved cards 
-
-When you enable saving a card, a Save Card checkbox appears on the payment form. If the user checks this box, the SaveCard flag will be set to true and passed to your onCreatePayment handler. You can then store the card details in your backend.
-
-During future checkout sessions, include the user’s previously saved cards via the savedCards array in the card payment method configuration. When a saved card is selected, the SDK uses it for the payment process. If the user decides to remove a saved card, the onDeactivateSavedCard callback is triggered, letting you remove or deactivate the card from your backend.
-
-```typescript TypeScript
-const options = {
-  amount: {
-    value: 1000,
-    currency: 'EUR'
-  },
-  paymentMethods: [
-    {
-      type: 'card',
-      enableSaveCard: true, // display the "Save Card" checkbox
-      savedCards: [
-        {
-          Id: '12345',
-          Alias: 'XXXX XXXX XXXX 1234',
-          ExpirationDate: '1026',
-          CardProvider: 'MASTERCARD',
-          Active: true,
-          UserId: '67890',
-          Validity: 'VALID'
-          // ...any other properties you need
-        }
-      ],
-      onDeactivateSavedCard: function({ cardId }) {
-        // 1. call your backend to remove or deactivate the card with this cardId
-        // 2. handle any UI updates necessary
-      },
-      onCreateCardRegistration: function (cardType) {
-        // 1. request a card registration from your backend
-        // 2. return the card registration object
-      },
-      onCreatePayment: function (event) {
-        /*
-          1. Check if event.SaveCard === true
-          2. If true, store the newly created CardId in your backend so it can be
-             reused next time (by adding it to savedCards).
-          3. Create the pay-in on your backend with the CardId or payment details
-        */
-      }
-    }
-  ]
 };
 
 // Vanilla JS
