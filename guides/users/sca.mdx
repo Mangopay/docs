@@ -216,7 +216,7 @@ The PIN code factor is still in development, but it will be managed via the same
 
 The regulations apply SCA to situations where a Owner user accesses or initiates certain payment activities, or to other situations considered at risk.
 
-The table below lists the actions that will be authenticated by SCA. As indicated, some are available to integrate. For others, the anticipated release date is given.
+The table below lists the actions that relate to enrollment of the user and those that will be authenticated by SCA. As indicated, some are available to integrate. For others, the anticipated release date is given.
 
 <table>
 <thead>
@@ -224,6 +224,7 @@ The table below lists the actions that will be authenticated by SCA. As indicate
 <th class="header">Availability</th>
 <th class="header">Action</th>
 <th class="header">Description</th>
+<th class="header">Possible exemptions</th>
 </tr>
 </thead>
 <tbody>
@@ -237,6 +238,9 @@ Enrollment of existing `OWNER` users
 <td class="table-content">
 Existing users with the `UserCategory` `OWNER` must enroll in SCA.
 </td>
+<td class="table-content">
+None – this is enrollment.
+</td>
 </tr>
 <tr>
 <td class="table-content">
@@ -247,6 +251,9 @@ Creation of a new `OWNER` account
 </td>
 <td class="table-content">
 When a User with the `UserCategory` `OWNER` is newly created (first-time registration), the user must enroll in SCA.
+</td>
+<td class="table-content">
+None – this is enrollment.
 </td>
 </tr>
 <tr>
@@ -259,16 +266,22 @@ Transition of a User from `PAYER` to `OWNER`
 <td class="table-content">
 When a `PAYER` user changes `UserCategory` to `OWNER`, the user must enroll in SCA.
 </td>
+<td class="table-content">
+None – this is enrollment.
+</td>
 </tr>
 <tr>
 <td class="table-content">
 Available
 </td>
 <td class="table-content">
-Change of SCA credentials
+Change of contact details
 </td>
 <td class="table-content">
-When an SCA-enrolled user changes their phone number or email they must re-enroll the new credentials.
+When an SCA-enrolled user changes their phone number or email they must re-enroll the new details.
+</td>
+<td class="table-content">
+None – this is re-enrollment.
 </td>
 </tr>
 <tr>
@@ -276,14 +289,17 @@ When an SCA-enrolled user changes their phone number or email they must re-enrol
 April&nbsp;2025
 </td>
 <td class="table-content">
-Registration of a bank account
+Registration of a Recipient (external bank or payment account)
 </td>
 <td class="table-content">
 When an `OWNER` user registers a bank account, they must authenticate. 
 
-Mangopay is releasing a new version of the Bank Account object called **Recipients**. Recipients will allow validation of account details, supporting faster and more reliable local and international payouts.
+Mangopay is releasing a new version of the Bank Account object called **Recipients**. Registering a Recipient will require SCA.
 
-Registering a Recipient will require SCA.
+As well as supporting SCA, Recipients will allow validation of account details, supporting faster and more reliable local and international payouts.
+</td>
+<td class="table-content">
+None. SCA on the Recipient registration means payout requests can be exempted as the bank account is considered a trusted beneficiary.
 </td>
 </tr>
 <tr>
@@ -294,11 +310,10 @@ April&nbsp;2025
 Transfer from one `OWNER` user to another
 </td>
 <td class="table-content">
-Transfers from one `OWNER` user to another (between Mangopay account holders) are in scope of SCA. The conditions surrounding transfers are still being defined and Mangopay is developing features to support platforms' activity and a range of exemptions. Among those already defined:
-- Technical transfers initiated as part of specific workflows – a new transfer endpoint is being developed to support these
-- Exemptions allowed by the regulations, for example low-risk transactions, low-amount transactions less than €30
-
-The new transfer endpoint will include a `UserPresent` parameter which, if set to `false`, will not trigger SCA. The use of the `UserPresent` parameter will be subject to workflow validation and implemented on a case-by-case basis.
+Transfers from one `OWNER` user to another (between Mangopay account holders) are in scope of SCA.
+</td>
+<td>
+The conditions surrounding transfers are still being defined. Mangopay is developing its Transfers functionality to allow for technical or automated transfers as part of specific workflows. For other transfers, platforms will be able to benefit from exemptions such as low-risk or low-amount transactions (less than €30).
 </td>
 </tr>
 <tr>
@@ -309,7 +324,10 @@ April&nbsp;2025
 View wallet balance
 </td>
 <td class="table-content">
-When an Owner user wishes to view their wallet balance, they may be required to authenticate. The conditions surrounding wallet access are still being defined but may include, for example, first-time access. The `UserPresent` feature will be used in a similar way as for transfers.
+When an Owner user wishes to view their wallet balance, they may be required to authenticate.
+</td>
+<td class="table-content">
+The conditions surrounding wallet access are still being defined. SCA is applicable on first-time access and if more than 180 days have passed since the last wallet consultation event.
 </td>
 </tr>
 <tr>
@@ -320,7 +338,10 @@ April&nbsp;2025
 View transaction history
 </td>
 <td class="table-content">
-When an Owner user wishes to see past transactions crediting or debiting their wallet, they may be required to authenticate. The conditions surrounding wallet access are still being defined, and the `UserPresent` feature will be used in a similar way as for transfers.
+When an Owner user wishes to see past transactions crediting or debiting their wallet, they may be required to authenticate.
+</td>
+<td class="table-content">
+The conditions surrounding transaction history are still being defined. SCA is applicable on first-time access, and if more than 180 days have passed since the last wallet consultation event (provided the transactions are not older than 90 days).
 </td>
 </tr>
 </tbody>
