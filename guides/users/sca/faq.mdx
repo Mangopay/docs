@@ -20,7 +20,7 @@ Yes. If the user refreshes the page, or closes and re-opens the same link, they 
 #### If a KYC/KYB document is refused due to data mismatch, can we modify the data on behalf of our users or do we need to contact them?
 Only modifications to phone number and email require validation through SCA by the end user. SCA has no impact on the existing KYC processes surrounding [documents](/guides/users/verification) or the [downgrade](/guides/users/verification/downgrade) mechanism.
 
-#### Can we delay enrollment if we register the user when they are not present on our website or app?
+#### Can we delay enrollment if we create the user when they are not present on our website or app?
 No. For some other actions, we plan to introduce a `UserPresent` API parameter to indicate whether the user is taking the action or not. For enrollment, however, this is not available. If your workflow involves automatic user creation, you may be able to request a specific exemption. In such cases, it is essential that your interface offers an option for your users to complete their SCA enrollment at the appropriate time.
 
 #### When will SCA be available for legal users, and what integration is required?
@@ -52,10 +52,10 @@ For wallets:
 Only transfers initiated directly by your end users will require SCA. Automated or programmed transfers for technical purposes in workflows will not be impacted by SCA requirements, in accordance with regulatory allowances. It will also be possible to exempt low-risk and low-amount transactions, again as per the possible regulatory exemptions.
 
 #### For SCA-applicable actions not taken by the user, but rather as part of automated workflows, will SCA be required?
-No, not for some specific actions that are not initiated by the user. Our new transfer endpoint will include a `UserPresent` parameter which, if set to `false`, will not trigger SCA. This mechanism can similarly be applied to automated wallet balance checks and transaction history views. Please note that it is essential that we understand the context and justification for such actions made without user presence, as bypassing direct user consent may incur security risks. Therefore the use of the `UserPresent` parameter will be subject to workflow validation and implemented on a case-by-case basis.
+No, not for some specific actions that are not initiated by the user. Our new transfer endpoint will include a `UserPresent` parameter which, if set to false, will not trigger SCA. This mechanism can similarly be applied to automated wallet balance checks and transaction history views. Please note that it is essential that we understand the context and justification for such actions made without user presence, as bypassing direct user consent may incur security risks. Therefore the use of the `UserPresent` parameter will be subject to workflow validation and implemented on a case-by-case basis.
 
 #### When will SCA be triggered for our existing users, and how will it work?
-SCA will be triggered every time an existing user performs a [SCA-triggering action](/guides/users/sca#actions-requiring-sca), such as registering a Recipient (bank account), initiating a transfer (if `UserPresent` is `true`), or viewing their wallet balance and transaction history. The dedicated [enrollment endpoint](/api-reference/users/enroll-user) allows you platform to conveniently introduce SCA enrollment for existing users in your existing user journey.
+SCA will be triggered every time an existing user performs a [SCA-triggering action](/guides/users/sca#actions-requiring-sca), such as registering a Recipient (bank account), initiating a transfer (if `UserPresent` is true), or viewing their wallet balance and transaction history. The dedicated [enrollment endpoint](/api-reference/users/enroll-user) allows your platform to conveniently introduce SCA enrollment for existing users in your existing user journey.
 
 #### Can we trigger SCA asynchronously if it's triggered by an action taken on behalf of the user? 
 No, the SCA session starts immediately when the action is triggered. The user has 10 minutes to complete the authentication on the hosted webpage before the session expires. In the future, we may explore asynchronous options once our product is further developed.
@@ -69,7 +69,7 @@ Yes, except it may be possible to use the same session if the bank account is in
 ## Commercial and contractual
 
 #### Is SCA implementation compulsory for us?
-Yes, it is a regulatory obligation imposed by the PSD2 directive with the purpose of protecting you and your users against fraud and abuse. As a payment service provider (PSP), it's our role to protect your users from attacks on their credentials and account takeovers by verifying their identities and ensuring the legitimacy of their actions.
+Yes, it is a regulatory obligation imposed by the PSD2 directive with the purpose of protecting you and your users against fraud and abuse. As a payment service provider (PSP), it's our role to protect your users from credential attacks and account takeovers by verifying their identities and ensuring the legitimacy of their actions.
 
 #### What happens if we don't integrate the new endpoints? What are the consequences for us?
 Implementation of SCA is mandatory. Failure to integrate the new endpoints exposes your users to fraud and abuse and would prevent us from providing payments services to them, as outlined in our terms and conditions.
