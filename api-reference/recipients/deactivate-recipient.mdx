@@ -13,8 +13,32 @@ import RecipientId from '/snippets/p-path/RecipientId.mdx';
 ### Responses
 
 <AccordionGroup>
-<Accordion title="200" defaultOpen>
-*200 HTTP code indicates the Recipient was deactivated successfully*
+<Accordion title="200">
+<IdResponse/>
+<Status_RecipientResponse/>
+<CreationDateResponse/>
+<DisplayName_RecipientResponse />
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<Tabs>
+<Tab title="Individual">
+<IndividualRecipient_RecipientResponse />
+</Tab>
+<Tab title="Business">
+<BusinessRecipient_RecipientResponse />
+</Tab>
+</Tabs>
+<br/>
+<Tabs>
+<Tab title="InternationalBankTransfer">
+<InternationalBankTransfer_RecipientResponse/>
+</Tab>
+<Tab title="LocalBankTransfer">
+<LocalBankTransfer_RecipientResponse/>
+</Tab>
+</Tabs>
+<PendingUserActionResponse/>
 </Accordion>
 </AccordionGroup>
 
@@ -34,7 +58,31 @@ import RecipientId from '/snippets/p-path/RecipientId.mdx';
 
 <ResponseExample>
 ```json 200
-{}
+{
+    "Id": "rec_01JKZNZGA921Q4RMT3B2D8MKQE",
+    "Status": "DEACTIVATED",
+    "CreationDate": 1739451253,
+    "DisplayName": "Alex Smith EUR IBAN account",
+    "PayoutMethodType": "InternationalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "3 rue de la Cité",
+            "AddressLine2": "Appartement 7",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75004",
+            "Country": "FR"
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": "FR7630004000031234567890143",
+        "BIC": "BNPAFRPPXXX"
+    }
+}
 ```
 </ResponseExample>
 
