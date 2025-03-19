@@ -15,6 +15,14 @@ import Platform from "/snippets/glossary/platform.mdx";
 
 3D Secure (3DS) is an authentication protocol for online card payments developed by major card networks. It reduces the risk of fraud by ensuring the card is used by its true holder through multi-factor authentication.
 
+<Note>
+**Note – Separate from SCA on Owners**
+
+This article discusses 3DS and how it addresses the SCA requirements during card pay-in flows.
+
+Mangopay's [SCA on Owners](/guides/users/sca) feature addresses the same regulatory requirements but on other actions.
+</Note>
+
 This protocol involves the following actors:
 
 -   **The cardholder** - The end user initiating the online payment by card.
@@ -26,7 +34,7 @@ This protocol involves the following actors:
 The 3DS2 protocol benefits all the actors of an online transaction. It contributes to:
 
 -   A safer, smoother online payment experience for the cardholder, resulting in less checkout abandonment.
--   Reduced risk of fraud and instances of false decline which strengthens the end user’s confidence in the platform. When SCA is applied, the platform may also benefit from a liability shift to the card issuer in case of a fraudulent transaction.
+-   Reduced risk of fraud and instances of false decline which strengthens the end user's confidence in the platform. When SCA is applied, the platform may also benefit from a liability shift to the card issuer in case of a fraudulent transaction.
 -   A better process to determine the legitimacy of the transaction for the issuer, which means higher approval rates and fewer fraudulent transactions.
 
 The second version (3DS2) facilitates strong customer authentication (SCA) to meet the regulatory technical standards of the European Union's revised Payments Services Directive (PSD2).
@@ -97,7 +105,7 @@ When the platform’s app or website starts processing the payment, the followin
     </Card>
 </CardGroup>
 
-SCA is triggered when:
+3DS is triggered when:
 
 -   The platform defines the `SecureMode` parameter of the pay-in to `FORCE`.
 -   Mangopay automatically switches the `SecureMode` parameter to `FORCE`. This may be because the transaction amount exceeds the platform’s <Mfa content="Maximum Frictionless Amount" /> or due to Mangopay's analysis of the fraud risk.
@@ -113,13 +121,21 @@ SCA is triggered when:
     still have SCA applied.
 </Warning>
 
-For more information about how to handle 3DS, see:
+For more information about how to handle 3DS redirection, see:
 
 <Card title="How to" href="/guides/payment-methods/card/direct/how-to">
     Learn how to process a card payment
 </Card>
 
-### SCA exemptions
+### SCA exemptions with 3DS
+
+<Note>
+**Note – Different from SCA on Owners**
+
+This section discusses with the SCA exemptions that may be requested to issuers during card authentication.
+
+While the regulatory grounding for exemptions is the same, the exemptions that may be available during [SCA on Owners](/guides/users/sca) are different.
+</Note>
 
 Acquirers may request exemptions to <Sca content="SCA" /> for some <Cit content="customer-initiated transactions" />. These exemptions are based on the transactional data collected thanks to 3DS2. Issuers can then either:
 
@@ -127,10 +143,9 @@ Acquirers may request exemptions to <Sca content="SCA" /> for some <Cit content=
 -   Allow a frictionless flow for the end user.
 
 <Note>
-    **Note - No exemption for recurring pay-ins (CIT)** 
-    
-    Strong customer
-    authentication is always applicable for CITs when making a recurring pay-in.
+**Note - No exemption for recurring pay-ins (CIT)** 
+
+Strong customer authentication is always applicable for CITs when making a recurring pay-in.
 </Note>
 
 Exemptions:
