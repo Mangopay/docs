@@ -55,6 +55,14 @@ You call the <a href="/api-reference/virtual-accounts/create-virtual-account">PO
 
 The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
+<Note>
+**Note – UK Confirmation of Payee (CoP)**
+
+For `GB` virtual accounts, it takes approximately 48 hours for the account to be fully recognized by all banks through the UK's Confirmation of Payee (CoP) scheme. 
+
+Once the virtual account is `ACTIVE` it can technically receive funds. Depending on the user's bank, during the first 48 hours they may be shown a CoP alert but be able to ignore it, or be prevented from proceeding with the wire transfer.
+</Note>
+
 <Check>
 **Best practice – Set up webhook for active accounts**
 
@@ -83,6 +91,8 @@ The payment flow is as follows:
       **Caution – Ensure account is `ACTIVE`**
       
       You must always ensure the account is `ACTIVE` before inviting a payment, otherwise the funds will be returned.
+
+      See also the note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts.
     </Warning>
   </Step>
   <Step title="You present the payment details to the user">
@@ -114,7 +124,7 @@ The payment flow is as follows:
 
 The `Status` of the Virtual Account can have the following values:  
 - `PENDING` – The account creation request is being processed and full account details may not yet be returned. Any funds sent to the account are returned (if account details exist). `PENDING` can transition to `ACTIVE` or `FAILED`.
-- `ACTIVE` – The account is active and can receive funds. `ACTIVE` can transition to `BLOCKED` or `CLOSED`.
+- `ACTIVE` – The account is active and can receive funds (see note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts). `ACTIVE` can transition to `BLOCKED` or `CLOSED`. 
 - `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. This temporary status may be used during processes relating to user verification or fraud screening. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
 - `CLOSED` – The account has been deactivated and is closed. Any funds sent to the account are returned. This is a final state.
 - `FAILED` – The account creation request failed or was rejected. This final state is rare. Any funds sent to the account are returned (if account details exist). Depending on when the failure occurred, the following fields may be `null`:
