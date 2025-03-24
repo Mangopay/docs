@@ -1,0 +1,33 @@
+---
+title: '206107'
+description: '<small>&#8249; [All error codes](/errors/codes#generic-transaction-errors)</small>'
+---
+  
+<table>
+<tbody>
+<tr>
+<th class="header"><strong>Error message</strong></th>
+<td class="table-content">Parallel session detected</td>
+</tr>
+<tr>
+<th class="header"><strong>Description</strong></th>
+<td class="table-content">The payment failed due to another session being open for the user.</td>
+</tr>
+<tr>
+<th class="header"><strong>Categories</strong></th>
+<td class="table-content">  
+<div class="label">Pay-in</div>
+</td>
+</tr>
+</tbody>
+</table>  
+
+#### Causes
+
+Another hosted session is detected for the same user and hasn't yet been completed.
+
+#### What to do
+
+Check for a duplicated transaction request for the same user. The payment session is ended when either of the following occur:
+- The `ProcessingStatus` property is returned with the value `PENDING_SUCCEEDED`, indicating a successful session. 
+- The `Status` changes to `FAILED`, indicating an unsuccessful one.
