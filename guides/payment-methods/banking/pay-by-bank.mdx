@@ -2,9 +2,20 @@
 title: Pay by Bank
 ---
 
-## About
-
-Pay by Bank relies on open banking, which allows third-party providers to access banking data and initiate transactions on behalf of customers (in line with applicable regulations). Your platform can allow users to pay directly from their bank account, via a range of bank wire transfer schemes.
+import Ec_009199 from '/snippets/errors/009199.mdx';
+import Ec_009499 from '/snippets/errors/009499.mdx';
+import Ec_009103 from '/snippets/errors/009103.mdx';
+import Ec_001031 from '/snippets/errors/001031.mdx';
+import Ec_001034 from '/snippets/errors/001034.mdx';
+import Ec_206101 from '/snippets/errors/206101.mdx';
+import Ec_206102 from '/snippets/errors/206102.mdx';
+import Ec_206103 from '/snippets/errors/206103.mdx';
+import Ec_206104 from '/snippets/errors/206104.mdx';
+import Ec_206105 from '/snippets/errors/206105.mdx';
+import Ec_206106 from '/snippets/errors/206106.mdx';
+import Ec_206107 from '/snippets/errors/206107.mdx';
+import Ec_206108 from '/snippets/errors/206108.mdx';
+import Ec_206109 from '/snippets/errors/206109.mdx';
 
 <table>
     <tbody>
@@ -47,7 +58,13 @@ Pay by Bank relies on open banking, which allows third-party providers to access
     </tbody>
 </table>
 
+## About
+
+Pay by Bank relies on open banking, which allows third-party providers to access banking data and initiate transactions on behalf of customers (in line with applicable regulations). Your platform can allow users to pay directly from their bank account, via a range of bank wire transfer schemes.
+
 ## How it works
+
+The Pay by Bank payment method allows you to redirect the user to their bank to initiate and authenticate the bank wire.
 
 <Steps titleSize="h3">
 <Step title="User chooses payment method">
@@ -100,15 +117,15 @@ If the payment was initiated successfully by the user, then the response paramet
 
 - `PAYIN_NORMAL_PROCESSING_STATUS_PENDING_SUCCEEDED`
 
-When the bank wire from the user's account is received on Mangopay's account, the pay-in's  `Status` changes from `CREATED` to `SUCCEEDED`, triggering the webhook: 
+`ProcessingStatus` only has one value, `PENDING_SUCCEEDED`, which is temporarily returned until the final outcome is known. If it is not returned, then the payment was not initiated successfully by the user. 
+
+When the bank wire from the user's account is received on Mangopay's account, the pay-in's  `Status` changes from `CREATED` to `SUCCEEDED` and the `ResultCode` changes to `000000`. This outcome triggers a webhook for the event type:
 
 - `PAYIN_NORMAL_SUCCEEDED`
 
 Depending on the `Scheme` that is used, it can take up to 72 hours for the pay-in to succeed.
 
-`ProcessingStatus` only has one value, `PENDING_SUCCEEDED`, which is temporarily returned until the final outcome is known. If it is not returned, then the payment was not initiated successfully by the user. 
-
-If the pay-in fails, it's Status changes to FAILED, triggering the webhook: 
+If the pay-in fails, it's `Status` changes to `FAILED` and a `ResultCode` and `ResultMessage` are returned giving the reason (see [Functional errors](#functional-errors) below). This outcome triggers a webhook for the event type:
 
 - `PAYIN_NORMAL_FAILED`
 </Step>
@@ -196,20 +213,36 @@ For testing data, see [Payment methods - Testing](/testing/payment-methods#pay-b
 
 Pay by Bank relies on bank wire schemes which have no native refund functionality. However, you can refund pay-ins by using payouts and specifying the initial transaction ID. See [Refunds using payouts](/guides/payouts#refunds-using-payouts) for details.
 
+## Functional errors
+
+If the Pay by Bank PayIn `Status` changes to `FAILED`, the following `ResultCode` errors may be returned.
+
+<Accordion title="Functional errors">
+
+<Ec_009199/>
+<Ec_009499/>
+<Ec_009103/>
+<Ec_001031/>
+<Ec_001034/>
+<Ec_206101/>
+<Ec_206102/>
+<Ec_206103/>
+<Ec_206104/>
+<Ec_206105/>
+<Ec_206106/>
+<Ec_206107/>
+<Ec_206108/>
+<Ec_206109/>
+
+</Accordion>
+
 ## Related resources
 
 <CardGroup col={2}>
 <Card title="Testing" href="/testing/payment-methods#pay-by-bank">
-
+See testing data
 </Card>
-
-<Card title="The Pay by Bank PayIn object" href="/api-reference/pay-by-bank/pay-by-bank-payin-object">
-
-</Card>
-<Card title="POST Create a Pay by Bank PayIn" href="/api-reference/pay-by-bank/create-pay-by-bank-payin">
-
-</Card>
-<Card title="GET View a Pay by Bank PayIn" href="/api-reference/pay-by-bank/view-payin-pay-by-bank">
-
+<Card title="Endpoints" href="/api-reference/pay-by-bank/pay-by-bank-payin-object">
+The Pay by Bank PayIn object
 </Card>
 </CardGroup>
