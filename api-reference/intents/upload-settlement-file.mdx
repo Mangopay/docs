@@ -1,0 +1,61 @@
+---
+title: Upload a settlement file
+api: POST /v2.01/{ClientId}/payins/intents/settlements 
+description: Send a Mangopay-format settlement file to Mangopay for a single currency
+---
+
+Use this endpoint to send Mangopay CSV settlement files in Mangopay’s defined template. 
+
+You need to send one file per currency, as soon as it becomes available.
+
+<Warning>
+**Caution – Follow template**
+
+You must follow the definition and [example provided here](/guides/payin-connector/mirakl).
+
+There are no requirements for the **file name:** you can name your file how you like.
+</Warning>
+
+<Note>
+**Note – Multipart/form-data Content-Type**
+
+This endpoint requires the multipart/form-data Content-Type.
+</Note>
+
+### Body parameters
+
+<ParamField body="file" type="file">
+The file to upload. The file must be in CSV format and conform to Mangopay's [format described here](/guides/payin-connector/mirakl).
+</ParamField>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - OK">
+
+This endpoint returns a JSON object containing details about the settlement (SettlementId, declared amount, settled amount, status, etc.)
+
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="415 - Unsupported Media Type">
+
+</Accordion>
+<Accordion title="500 - Internal Server Error">
+</Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```bash
+curl -X POST ".../v2.01/{ClientId}/payins/intents/settlements" \
+-H "Authorization: Bearer token" \
+-F "file=@/example/file-path.csv"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+// A JSON object containing SettlementId, declared amount, settled amount, status, etc.
+```
+</ResponseExample>
