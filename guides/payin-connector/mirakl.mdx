@@ -92,7 +92,7 @@ There are no requirements for the ***Label***, which is your custom display name
 <tr>
 <td class="table-content">`mgp-external-provider-name`</td>
 <td class="table-content">The name of the external provider processing the transaction.</td>
-<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/payin-connector/supported-providers)</td>
+<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/payin-connector/supported-providers).</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-processing-date`</td>
@@ -112,7 +112,7 @@ There are no requirements for the ***Label***, which is your custom display name
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
 <td class="table-content">The name of the payment method used to process the transaction.</td>
-<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/payin-connector/supported-payment-methods)</td>
+<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/payin-connector/supported-payment-methods).</td>
 </tr>
 </tbody>
 </table>
@@ -120,11 +120,11 @@ There are no requirements for the ***Label***, which is your custom display name
 <Check>
 **Best practice – Use list values not text strings**
 
-The data values sent in the custom fields must match the supported values:
-- The `mgp-external-provider-name` value must be one of the [supported external provider](/guides/payin-connector/supported-providers) values
-- The `mgp-external-provider-payment-method` value must be one of the [supported payment methods](/guides/payin-connector/supported-payment-methods)
+The data values sent in `mgp-external-provider-name` and `mgp-external-provider-payment-method` must match the supported enum values linked above.
 
-Therefore, it is better to use the Mirakl ***Single values list*** format with the specified values rather than free text. In the Mirakl API this format is `LIST` with `accepted_values`. 
+Therefore, it is better to use the Mirakl ***Single values list*** format with the specified values rather than free text. In the Mirakl API this format is `LIST` with `accepted_values`.
+
+Note that the payment method is not required by Mangopay, so if you make it required on Mirakl then all values must be in the supported values.
 </Check>
 
 ### 2. Integrate the custom Order fields into your Mirakl API calls
@@ -165,7 +165,7 @@ The following fields are required for correct processing by Mangopay's Pay-In Co
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
 <td class="table-content">No</td>
-<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this optional field can be left blank.</td>
+<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this field can be left blank (provided you created it as not required).</td>
 </tr>
 </tbody>
 </table>
@@ -248,9 +248,9 @@ The information provided below aims to prepare you as much as possible for your 
 We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as final developments are completed. and approach the launch.
 </Note>
 
-The Mangopay Pay-In Connector will needs settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
+The Mangopay Pay-In Connector will need settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
 
-For Mirakl Connector platforms, the payment intent declarations are created automatically, but the settlement data must be provided by the platform.
+For Mirakl Connector platforms, the payment intent declarations will be created automatically by the connector, but the settlement data must be provided by the platform.
 
 ### Process
 
