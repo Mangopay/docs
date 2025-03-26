@@ -85,37 +85,47 @@ There are no requirements for the ***Label***, which is your custom display name
 <tr>
 <th class="header">Code</th>
 <th class="header">Description</th>
-<th class="header">Type</th>
+<th class="header">Type (Mirakl Dashboard)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="table-content">`mgp-external-provider-name`</td>
 <td class="table-content">The name of the external provider processing the transaction.</td>
-<td class="table-content">Text (Max: 2000 char.)</td>
+<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/payin-connector/supported-providers)</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-processing-date`</td>
 <td class="table-content">The date at which the transaction was created.</td>
-<td class="table-content">ISO 8601 date time in UTC (YYYY-MM-DDTHH:MM:SSZ)</td>
+<td class="table-content">***Date (ISO 8601 format)***</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-provider-reference`</td>
 <td class="table-content">The unique identifier of the transaction at the provider level.</td>
-<td class="table-content">Text (Max: 2000 char.)</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-merchant-reference`</td>
 <td class="table-content">The unique identifier of the transaction at the merchant level.</td>
-<td class="table-content">Text (Max: 2000 char.)</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
 <td class="table-content">The name of the payment method used to process the transaction.</td>
-<td class="table-content">Text (Max: 2000 char.)</td>
+<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/payin-connector/supported-payment-methods)</td>
 </tr>
 </tbody>
 </table>
+
+<Check>
+**Best practice – Use list values not text strings**
+
+The data values sent in the custom fields must match the supported values:
+- The `mgp-external-provider-name` value must be one of the [supported external provider](/guides/payin-connector/supported-providers) values
+- The `mgp-external-provider-payment-method` value must be one of the [supported payment methods](/guides/payin-connector/supported-payment-methods)
+
+Therefore, it is better to use the Mirakl ***Single values list*** format with the specified values rather than free text. In the Mirakl API this format is `LIST` with `accepted_values`. 
+</Check>
 
 ### 2. Integrate the custom Order fields into your Mirakl API calls
 
@@ -185,8 +195,8 @@ You should start sending the custom fields on Orders as soon as possible, even b
     "order_additional_fields": [
         {
             "code": "mgp-external-provider-name",
-            "type": "STRING",
-            "value": "ExampleProvider"
+            "type": "LIST",
+            "value": "ADYEN"
         },
         {
             "code": "mgp-external-processing-date",
@@ -205,7 +215,7 @@ You should start sending the custom fields on Orders as soon as possible, even b
         },
         {
             "code": "mgp-external-provider-payment-method",
-            "type": "STRING",
+            "type": "LIST",
             "value": "VISA"
         }
     ]
@@ -235,7 +245,7 @@ The rest of this page provides information on the actions that your platform wil
 
 The information provided below aims to prepare you as much as possible for your integration of the **Pay-In Connector**.
 
-We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as we complete the final developments and approach the launch.
+We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as final developments are completed. and approach the launch.
 </Note>
 
 The Mangopay Pay-In Connector will needs settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
@@ -282,19 +292,19 @@ In case any data from your settlement could not be processed, you may need to re
 <Info>
 **Beta documentation subject to minor change**
 
-The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as we complete the final developments.
+The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as final developments are completed.
 </Info>
 
-Use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payin-connector/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payin-connector/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
 
-There are no requirements for the **file name**: you can name your file how you like.
+There are no requirements for the **file name** – you can name your file how you like.
 
 ### Specifications of the Mangopay-format settlement file
 
 <Info>
 **Beta documentation subject to minor change**
 
-The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as we complete the final developments.
+The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as final developments are completed.
 </Info>
 
 Columns per transaction included in the settlement file:
