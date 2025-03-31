@@ -2,7 +2,7 @@
 title: SCA session
 ---
 
-Mangopay's SCA feature relies on Mangopay-hosted web page where the individual can complete all necessary steps, whether that's enrolling contact details or authenticating actions.
+Mangopay's SCA feature relies on Mangopay-hosted web page where the individual can complete all necessary steps for all authentication factors, whether that's first-time SCA enrollment or authenticating actions.
 
 To deliver this SCA session, Mangopay provides a unique URL in the `RedirectUrl` response parameter on relevant actions across its API. The `RedirectUrl` is returned as part of the `PendingUserAction` response object.
 
@@ -14,10 +14,10 @@ The following diagram provides an overview of how the Mangopay-hosted SCA sessio
 
 ## How to redirect a user for SCA
 
-This section describes how to handle the SCA redirection when required by an SCA scenario.
+This section describes how to handle the SCA redirection when required by an SCA enrollment or authentication scenario.
 
-### 1. Call an endpoint that triggers SCA
-Your platform needs to redirect the user for SCA authentication when you take one of the following actions and call the relevant endpoint (see linked guides for details):
+### 1. Call an endpoint that triggers SCA redirection
+Your platform needs to redirect the user for an SCA session when your platform takes one of the following actions and calls the relevant endpoint (see linked guides for details):
 
 <table>
 <thead>
@@ -64,7 +64,9 @@ Your platform needs to redirect the user for SCA authentication when you take on
 
 ### 2. Retrieve the SCA RedirectUrl
 
-In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value. For example:
+In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value which you need for the next step.
+
+For example, in the API response:
 
 ```json
 {
@@ -88,15 +90,12 @@ https<span>://</span>sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191
 </tbody>
 </table> 
 
-
-### 3. Add your returnUrl and redirect the user
+### 3. Encode and add your returnUrl
 Define a `returnUrl` to which the user will be returned after they authenticate on the Mangopay-hosted page, regardless of the outcome. 
 
-Append your URL to the `RedirectUrl` response value as a query parameter, being sure to percent-encode any non-ASCII characters. 
+Append your URL to the `RedirectUrl` response value as the `returnUrl` query parameter, being sure to percent-encode any non-ASCII characters. 
 
-Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value and your added `returnUrl`.
-
-For example, if your `returnUrl` is <span>https:</span>//example.com, you need to redirect the user on:
+Continuing the previous example, if your `returnUrl` is <span>https:</span>//example.com, the full URL you will need to redirect the user on is:
 
 <table>
 <tbody>
@@ -118,24 +117,26 @@ The `returnUrl` parameter name is case-sensitive.
 
 Note that the concatenation of Mangopay's `RedirectUrl` and your encoded `returnUrl` must be less than 2,000 characters, which is the limit of most web browsers.
 
-### 4. Let the user authenticate
-Once on the `RedirectUrl`, the user can perform the necessary actions for SCA. 
+### 4. Redirect the user to the hosted webpage
 
-For the OTP authentication method, this means requesting and submitting a code via SMS. 
+Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value (including the unique token) and your added `returnUrl`.
+
+### 5. Let the user complete the session
+Once on the session URL, the user can perform the necessary actions for the SCA session. This includes enrollment or authentication, as well as all required authentication factors.
 
 <Note>
 **Note – Session timeout after 10 minutes**
 
-The session of the `RedirectUrl` is valid for 10 minutes. If the user does not submit a successful SMS OTP before this time, the session can no longer be used and they are returned on your return URL.
+The session of the `RedirectUrl` is valid for 10 minutes. If the user does not complete the necessary steps during this time, the session can no longer be used and they are returned on your return URL.
 
 If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint [POST Enroll a User in SCA](/api-reference/users/enroll-user).
 </Note>
 
-### 5. Retrieve the returnUrl query parameters
+### 6. Retrieve the returnUrl query parameters
 
 Once the user completes authentication (successfully or not) they are redirected to your `returnUrl`.
 
-On redirection, Mangopay adds two query parameters to your `returnUrl`: `controlStatus` and `actionStatus`. 
+On redirection, Mangopay adds two indicative query parameters to your `returnUrl`: `controlStatus` and `actionStatus`. 
 
 For example:
 
@@ -149,20 +150,62 @@ For example:
 </tbody>
 </table> 
 
+The `controlStatus` parameter indicates the outcome of the SCA session itself:
+- `VALIDATED` - The SCA session was successful.
+- `FAILED` - The SCA session was unsuccessful and cannot be reused.
 
-### 6. Check the status of the user and the action
-
-The `controlStatus` parameter indicates the values of the control: 
-- `VALIDATED` - The control was successful.
-- `FAILED` - The control was unsuccessful and cannot be reused.
-
-If the `controlStatus` is **not** `VALIDATED`, call the [POST Enroll a User in SCA](/api-reference/users/enroll-user) to obtain a new SCA `RedirectUrl` and retry the authentication session. 
-
-The `actionStatus` parameter indicates the status of the action being controlled: 
+The `actionStatus` parameter indicates the status of the action being controlled by the session (e.g. Recipient registration, transfer request): 
 - `SUCCEEDED` - The action was successful.
 - `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown.
 
-If the `actionStatus` is **not** `SUCCEEDED`, call the [GET View a User](/api-reference/users/view-user) to check the `UserStatus` of the user. If it is still `PENDING_USER_ACTION`, then call the [POST Enroll a User in SCA](/api-reference/users/enroll-user) to retry the authentication. 
+
+### 7. Confirm the session outcome and retry if required
+
+The query parameters appended to the `returnUrl` are indicative.
+
+You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the SCA session by calling the relevant endpoint of the Mangopay API:
+
+<table>
+<thead>
+<tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">SCA trigger</th>
+<td class="table-content">
+Enrollment in user endpoints
+</td>
+</tr>
+<tr>
+<th class="header">Status change</th>
+<td class="table-content">
+`UserStatus` of the Natural or Legal user (`UserId`) changed from `PENDING_USER_ACTION` to `ACTIVE`. In case of an unsuccessful SCA session, the `UserStatus` stays as `PENDING_USER_ACTION`. 
+
+**Note:** It is possible to change the status from `PENDING_USER_ACTION` to `ACTIVE` via the legacy PUT endpoint (including via the Mangopay Dashboard). If this happens, you need to retry using the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
+</td>
+</tr>
+<tr>
+<th class="header">Webhook event</th>
+<td class="table-content">
+`USER_ACCOUNT_ACTIVATED` (no webhook for unsuccessful enrollment)
+</td>
+</tr>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a User (SCA)](/api-reference/users/view-user-sca)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Enroll a User](/api-reference/users/enroll-user)
+</td>
+</tr>
+</tbody>
+</table>
+
 
 ## Related resources
 
