@@ -1,0 +1,63 @@
+---
+title: SCA on recipients (bank accounts)
+sidebarTitle: SCA on recipients
+---
+
+## Introduction
+
+Mangopay is releasing a new version of the Bank Account object called **Recipients**.  
+
+When a Mangopay Account holder (`OWNER`) registers an external bank or payment account, the account holder must authenticate using SCA.
+
+As well as supporting SCA, Recipients enable faster and more reliable local and international payouts.
+
+The Recipients feature will replace the legacy Bank Account endpoints, including their types. 
+
+In the Recipients feature, each local and international account will have a specified data schema which your platform will have to retrieve in advance of requesting the details from the user. Once you have the user's details, you will also be able to check that they are valid before creating the Recipient.
+
+In this way, the Recipients feature will help ensure that payouts are delivered effectively.
+
+The legacy Bank Account endpoints will be deprecated (in 2026). Existing bank accounts, will be usable with the new Recipients feature. This means that your platform will be able to continue using the `BankAccountId` of active accounts for payouts.
+
+## Recipient scopes
+
+### Payout
+
+By default, the Recipient is considered to be for use with payouts. This will be indicated by the `RecipientScope` parameter which will have the default value `PAYOUT`. 
+
+This kind of recipient can only be registered by an `OWNER` user and can be used for payouts. SCA is always required when the Recipient is created, so the API call will return `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage.
+
+Because the Recipient registration was authenticated with SCA, it can be considered a trusted beneficiary for future payouts. This allows the payout to be initiated without SCA, but the usual KYC verification requirements apply.
+
+### Pay-in
+
+A Recipient may be needed for a `PAYER` (or `OWNER`) in two specific pay-in scenarios that are out of scope of Mangopay's SCA feature:
+
+- Direct debit pay-ins (SEPA and Bacs)
+- Pay-in refunds that technically use payouts (specifying the `PAYIN_REFUND` reference of the initial pay-in, **read more**)
+
+This kind of recipient, with the `RecipientScope` value `PAYIN`, can be created for a user with the `UserCategory` `PAYER`, and does not require SCA.
+
+## Action required
+
+<Info>
+Integrating Recipients for new bank account registrations will be mandatory for all platforms. 
+
+For existing active bank accounts, platforms will not have to re-register the user's account: the `BankAccountId` will be usable with the Recipient feature and future payouts.
+
+**Possible exemptions on Recipients:**
+
+- None if `RecipientScope` is `PAYOUT`. SCA on Recipients enables your users to benefit from an SCA exemption when they request a payout, because the account can be considered a **trusted beneficiary**.
+- If `RecipientScope` is `PAYIN`, then SCA is not required. A payout targeting a `PAYIN` recipient will not be possible.
+</Info>
+
+<Info>
+**Action required**
+
+- Prepare for the public release of Recipients (Sandbox mid-April 2025). This will include endpoints for the following actions, as well as webhooks:
+  - Retrieving the data schema of the account, based on local or international formats
+  - Checking that the user's details are valid
+  - Creating the Recipient
+  - Deactivating a Recipient if no longer needed
+  - Listing Recipients for a user
+</Info>

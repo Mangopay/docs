@@ -1,10 +1,13 @@
 ---
-title: SCA session
+title: SCA session redirection
+sidebarTitle: Hosted session
 ---
 
-Mangopay's SCA feature relies on Mangopay-hosted web page where the individual can complete all necessary steps for all authentication factors, whether that's first-time SCA enrollment or authenticating actions.
+Mangopay's SCA feature relies on Mangopay-hosted webpage where the individual can complete all necessary steps for all authentication factors, whether that's first-time SCA enrollment or authenticating actions.
 
-To deliver this SCA session, Mangopay provides a unique URL in the `RedirectUrl` response parameter on relevant actions across its API. The `RedirectUrl` is returned as part of the `PendingUserAction` response object.
+To deliver this hosted SCA session, Mangopay provides a unique URL in the `RedirectUrl` response parameter on relevant actions across its API. The `RedirectUrl` is returned as part of the `PendingUserAction` response object.
+
+This guide describes how to redirect users for the SCA session. For more details about the factors, how they work, and the experience for users, see the [factors](/guides/sca/factors) guide.
 
 ## Overview of the flow
 The following diagram provides an overview of how the Mangopay-hosted SCA session works. See the [how-to guide](#how-to-redirect-a-user-for-sca) below for step-by-step guidance.
@@ -29,7 +32,7 @@ Your platform needs to redirect the user for an SCA session when your platform t
 <tbody>
 <tr>
 <td class="table-content">
-[Register a Owner user for the first time](/guides/users/sca/enrollment#register-an-owner-for-the-first-time)
+[Register a Owner user for the first time](/guides/sca/users#register-an-owner-for-the-first-time)
 </td>
 <td class="table-content">
 [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) if `UserCategory` is `OWNER`
@@ -37,7 +40,7 @@ Your platform needs to redirect the user for an SCA session when your platform t
 </tr>
 <tr>
 <td class="table-content">
-[Transition an existing Payer to Owner](/guides/users/sca/enrollment#transition-an-existing-payer-to-owner)
+[Transition an existing Payer to Owner](/guides/sca/users#transition-an-existing-payer-to-owner)
 </td>
 <td class="table-content">
 [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
@@ -45,7 +48,7 @@ Your platform needs to redirect the user for an SCA session when your platform t
 </tr>
 <tr>
 <td class="table-content">
-[Enroll an existing Owner](/guides/users/sca/enrollment#enroll-an-existing-owner)
+[Enroll an existing Owner](/guides/sca/users#enroll-an-existing-owner)
 </td>
 <td class="table-content">
 [POST Enroll a User in SCA](/api-reference/users/enroll-user)
@@ -53,7 +56,7 @@ Your platform needs to redirect the user for an SCA session when your platform t
 </tr>
 <tr>
 <td class="table-content">
-[Re-enroll a User](/guides/users/sca/enrollment#re-enroll-a-owner-user)
+[Re-enroll a User](/guides/sca/users#re-enroll-a-owner-user)
 </td>
 <td class="table-content">
 [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) if the `PhoneNumber`, `PhoneNumberCountry`, or `Email` are changed; or [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca) if the `LegalRepresentative.PhoneNumber`, `LegalRepresentative.PhoneNumberCountry`, or `LegalRepresentative.Email` are changed
@@ -212,7 +215,7 @@ Enrollment in user endpoints
 <CardGroup cols={2}>
 <Card
   title="Enrollment"
-  href="/guides/users/sca/enrollment"
+  href="/guides/sca/users"
 >
 Read about enrollment scenarios in the user lifecycle
 </Card>
