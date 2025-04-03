@@ -9,8 +9,8 @@ To deliver this SCA session, Mangopay provides a unique URL in the `RedirectUrl`
 ## Overview of the flow
 The following diagram provides an overview of how the Mangopay-hosted SCA session works. See the [how-to guide](#how-to-redirect-a-user-for-sca) below for step-by-step guidance.
 
-<img className="block dark:hidden" src="/images/diagram_sca_session_light.svg" width="100%"/>
-<img className="hidden dark:block" src="/images/diagram_sca_session_dark.svg" width="100%"/>
+<img className="block dark:hidden" src="/images/diagram_sca_redirection_webhook_light.svg" width="100%"/>
+<img className="hidden dark:block" src="/images/diagram_sca_redirection_webhook_dark.svg" width="100%"/>
 
 ## How to redirect a user for SCA
 
@@ -163,7 +163,9 @@ The `actionStatus` parameter indicates the status of the action being controlled
 
 The query parameters appended to the `returnUrl` are indicative.
 
-You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the SCA session by calling the relevant endpoint of the Mangopay API:
+You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the SCA session by calling the relevant endpoint of the Mangopay API. 
+
+Note that there is no webhook in the case of an unsuccessful enrollment in the user endpoints, but there will be in the case of recipient registration and for transfer initiation it is the existing `TRANSFER_NORMAL_FAILED`.
 
 <table>
 <thead>
@@ -180,9 +182,7 @@ Enrollment in user endpoints
 <tr>
 <th class="header">Status change</th>
 <td class="table-content">
-`UserStatus` of the Natural or Legal user (`UserId`) changed from `PENDING_USER_ACTION` to `ACTIVE`. In case of an unsuccessful SCA session, the `UserStatus` stays as `PENDING_USER_ACTION`. 
-
-**Note:** It is possible to change the status from `PENDING_USER_ACTION` to `ACTIVE` via the legacy PUT endpoint (including via the Mangopay Dashboard). If this happens, you need to retry using the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
+`UserStatus` of the Natural or Legal user (`UserId`) changed from `PENDING_USER_ACTION` to `ACTIVE`. In case of an unsuccessful SCA session, the `UserStatus` stays as `PENDING_USER_ACTION`.
 </td>
 </tr>
 <tr>
