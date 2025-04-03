@@ -1,0 +1,102 @@
+---
+title: SCA on transfers
+sidebarTitle: SCA on transfers
+---
+
+When a Mangopay Account holder (`OWNER`) transfers funds to another Mangopay Account holder, they must authenticate using SCA.
+
+This means that when an `OWNER` user initiates a transfer to a wallet held by another `OWNER` user, the first user must authenticate the request.
+
+## Declaring automated transfers
+
+Mangopay is introducing a new body parameter of the existing [POST Create a Transfer](/api-reference/transfers/create-transfer), `ScaContext`, which will have the values:
+
+- `USER_PRESENT` (default value) – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
+- `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. SCA is not required (unless the request is overridden by Mangopay).
+
+<Note>
+**Note – Implementation in agreement with Mangopay**
+
+It is essential that Mangopay understands the context and legal justification for Transfer actions made without the user's presence, as bypassing direct user consent may incur security risks and non-compliance with applicable regulations. 
+
+Therefore the use of the `USER_NOT_PRESENT` value will be subject to workflow validation and implemented on a case-by-case basis with the appropriate supporting documentation.
+</Note>
+
+If SCA is required for the transfer request, the API response will contain `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage.
+
+If SCA is required, the Transfer `Status` will remain `CREATED` until SCA is completed. If SCA was not successful, the `Status` will change to `FAILED` and there will be two new functional errors that may be returned in `ResultCode` and `ResultMessage`:
+
+<table>
+<thead>
+<tr>
+<th class="header">`ResultCode`</th>
+<th class="header">`ResultMessage`</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`007101`	
+</td>
+<td class="table-content">
+Transfer authentication failed. Please retry with a new request.	
+</td>
+<td class="table-content">
+The user reached the number of retries for one of the authentication factors, so the SCA session failed.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`007102`	
+</td>
+<td class="table-content">
+Transfer authentication expired. Please initiate a new request.
+</td>
+<td class="table-content">
+The user did not complete all steps required within 10 minutes, so the SCA session expired.
+</td>
+</tr>
+</tbody>
+</table>
+
+If either of these cases occurs: 
+
+- The user is returned to your specified `returnUrl` (in the same way as following a successful session)
+- You can retry the request by calling [POST Create a Transfer](/api-reference/transfers/create-transfer) again.
+
+## Webhooks
+
+The introduction of SCA makes reliance on the existing webhook event types for transfers essential. Whereas previously, a Transfer's `Status` would typically pass to `SUCCEEDED` quickly, with SCA it will remain in `CREATED` until the user completes SCA.
+
+You must ensure your integration relies on receiving the [webhooks](/webhooks) from Mangopay: 
+
+- `TRANSFER_NORMAL_CREATED`
+- `TRANSFER_NORMAL_FAILED`
+- `TRANSFER_NORMAL_SUCCEEDED`
+
+## Action required
+
+<Info>
+Integrating SCA redirection on transfers will be mandatory for all platforms. Implementation of `ScaContext` will be necessary for platforms needing to declare automated workflows.
+
+**Possible exemptions on transfer actions**
+
+The following exemptions may be applied by Mangopay:
+
+- For user-initiated transfers, Mangopay will apply the exemptions allowed by the regulations (such as low-risk or low-amount transfers, [read more](/guides/sca#exemptions-on-actions)). Platforms will not be able to specifically request exemptions.
+- For automated workflow transfers, SCA will not apply. Mangopay may override an automated transfer request (with `USER_NOT_PRESENT`) if it has reason to believe that the user is present and initiating the transfer.
+- A transfer debiting the wallet of a `PAYER` is considered a technical movement of funds and is out of scope of SCA.
+</Info>
+
+<Info>
+**Action required on transfers**
+
+- Analyze your platform's workflow to identify:
+  1. Transfers initiated by the user, which require the user to be present to authenticate
+  2. Transfers automated as part of your workflow, to which SCA will not apply
+- Ensure you have [implemented webhooks](/webhooks) for transfer event types:
+  - `TRANSFER_NORMAL_CREATED`
+  - `TRANSFER_NORMAL_FAILED`
+  - `TRANSFER_NORMAL_SUCCEEDED`
+</Info>
