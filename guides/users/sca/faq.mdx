@@ -83,9 +83,9 @@ Initially, existing users will not be restricted by the introduction of SCA.
 
 Existing users, who already have `ACTIVE` as their `UserStatus`, will not be restricted or transitioned to `PENDING_USER_ACTION` if you attempt to enroll them using [POST Enroll a User](/api-reference/users/enroll-user) and the SCA session is not successful.
 
-On Recipients, Transfers, and Account Access they will also not be restricted but the relevant action will not succeed.
+On Recipients, Transfers, and Account Access they will also not be restricted (their status remains `ACTIVE`), but the relevant action will not succeed. In this case, you need to retry the Recipient creation or Transfer to allow the user to complete SCA successfully.
 
-In future, Mangopay may be required by regulators to start introducing consequences on users if they haven’t enrolled in SCA, but this will be done with sufficient notice to platforms.
+In future, Mangopay may be required by regulators to start introducing consequences on users if they haven’t enrolled in SCA, but this will be done with sufficient notice to platforms. These consequences may include removing certain permissions, blocking the account, reverting the category to `PAYER`, or closing the account.
 
 #### If a user completes SCA enrollment and then registers a new Recipient (external account), will they need to authenticate again?
 Yes. It may be possible to use the same session if the external account is in the same name as the user.
