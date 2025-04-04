@@ -2,15 +2,34 @@
 title : 'Event types'
 ---
 
-This page lists the event types for which Mangopay can send webhook notifications.
+This page lists the event types for which Mangopay can send webhook notifications. 
 
-To listen to an event type on your chosen URL, set up a webhook <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a> (***Developers*** > ***Webhooks***) or using the [POST Create a Hook](/api-reference/webhooks/create-hook) endpoint.
+The event types are listed by feature for each `RessourceId` on which they occur. Alongside is the GET API call you can use to confirm the event is still valid and retrieve more details, as well as the related guide pages.
+
+To listen to an event type on your chosen URL, set up a webhook in the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a> (***Developers*** > ***Webhooks***) or using the [POST Create a Hook](/api-reference/webhooks/create-hook) endpoint.
 
 [Learn more about webhooks](/webhooks) **&rarr;**
 
 ## User management
 
 ### User regulatory status
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`UserId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a User's regulatory status](/api-reference/user-regulatory-status/view-user-regulatory-status)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guide</th>
+<td class="table-content">[Blocked users](/guides/users/blocked-users)</td>
+</tr>
+</table>
+
+
 
 <table>
 <tr>
@@ -22,14 +41,6 @@ To listen to an event type on your chosen URL, set up a webhook <a href="https:/
 <td class="table-content">
 The User has been blocked by Mangopay and can no longer make pay-ins or send or receive transfers.
 </td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId` (`Id` of the User)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a User's regulatory status](/api-reference/user-regulatory-status/view-user-regulatory-status)</td>
 </tr>
 </table>
   
@@ -44,14 +55,6 @@ The User has been blocked by Mangopay and can no longer make pay-ins or send or 
 The User has been unblocked by Mangopay and can now make pay-ins or send or receive transfers.  
 </td>
 </tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId` (`Id` of the User)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a User's regulatory status](/api-reference/user-regulatory-status/view-user-regulatory-status)</td>
-</tr>
 </table>
 
 <table>
@@ -64,14 +67,6 @@ The User has been unblocked by Mangopay and can now make pay-ins or send or rece
 <td class="table-content">
 The User has been blocked by Mangopay and can no longer make payouts or send or receive transfers.  
 </td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId` (`Id` of the User)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a User's regulatory status](/api-reference/user-regulatory-status/view-user-regulatory-status)</td>
 </tr>
 </table>
   
@@ -86,26 +81,30 @@ The User has been blocked by Mangopay and can no longer make payouts or send or 
 The User has been unblocked by Mangopay and can now make payouts or send or receive transfers.  
 </td>
 </tr>
+</table>
+
+### Mangopay SCA on Owners
+
+<table>
 <tr>
 <th class="header">Resource</th>
-<td class="table-content">`UserId` (`Id` of the User)</td>
+<td class="table-content">`UserId`</td>
 </tr>
 <tr>
 <th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a User's regulatory status](/api-reference/user-regulatory-status/view-user-regulatory-status)</td>
+<td class="table-content">[GET View a User (SCA)](/api-reference/users/view-user-sca)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[SCA](/guides/users/sca)</td>
 </tr>
 </table>
 
-### SCA on Owners
 
 <table>
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`USER_ACCOUNT_VALIDATION_ASKED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -123,10 +122,6 @@ The User's `UserStatus` has changed to `PENDING_USER_ACTION`. This event is only
 <td class="table-content">`USER_ACCOUNT_ACTIVATED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Owner User has been successfully enrolled in SCA. They can now access Mangopay features.
@@ -140,18 +135,31 @@ The User's `UserStatus` has changed from `PENDING_USER_ACTION` to `ACTIVE`. This
 
 <table>
 <tr>
+<th class="header">Resource</th>
+<td class="table-content">`UserId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a User (SCA)](/api-reference/users/view-user-sca)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[User KYC/KYB verification](/guides/users/verification)</td>
+</tr>
+</table>
+
+<table>
+<tr>
 <th class="header">Event type</th>
 <td class="table-content">`USER_KYC_LIGHT`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The User is not verified by Mangopay and is, therefore, subject to Anti-Money Laundering limits.  
+The User is not KYC/KYB verified by Mangopay and is therefore subject to KYC/KYB verification [limits](/guides/users/limits).
+
+The User's `KYCLevel` has changed from `REGULAR` to `LIGHT`.
 </td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId`</td>
 </tr>
 </table>
   
@@ -163,12 +171,10 @@ The User is not verified by Mangopay and is, therefore, subject to Anti-Money La
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The User has been verified by the Mangopay Compliance team.  
+The User has been KYC/KYB verified by Mangopay. 
+
+The User's `KYCLevel` has changed from `LIGHT` to `REGULAR`.
 </td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId`</td>
 </tr>
 </table>
 
@@ -176,12 +182,23 @@ The User has been verified by the Mangopay Compliance team.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`LEGAL_COMPANY_NUMBER_VALIDATION_FAILED`</td>
-</tr>
-<tr>
 <th class="header">Resource</th>
 <td class="table-content">`UserId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a User (SCA)](/api-reference/users/view-user-sca)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Company number](/guides/users/verification/company-number)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`LEGAL_COMPANY_NUMBER_VALIDATION_FAILED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -197,10 +214,6 @@ The format of the company number is not valid for the headquarters address count
 <td class="table-content">`LEGAL_COMPANY_NUMBER_VALIDATION_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">`UserId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The format of the company number is valid for the headquarters address country of the Business-type Legal User. The format is as expected for the country of registration but the veracity of the data has not yet been verified.  
@@ -212,68 +225,28 @@ The format of the company number is valid for the headquarters address country o
 
 <table>
 <tr>
+<th class="header">Resource</th>
+<td class="table-content">`KYCDocumentId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a KYC Document](/api-reference/kyc-documents/view-kyc-document)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Submitting KYC documents](/guides/users/verification/documents/submission)</td>
+</tr>
+</table>
+
+<table>
+<tr>
 <th class="header">Event type</th>
 <td class="table-content">`KYC_CREATED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">KYCDocumentId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
-The KYC Document has been created.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`KYC_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">KYCDocumentId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The KYC Document has been refused by the Mangopay Compliance team.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`KYC_OUTDATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">KYCDocumentId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The KYC Document is no longer valid. This is due to an amendment of the user’s identity.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`KYC_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">KYCDocumentId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The KYC Document has been validated by the Mangopay Compliance team.  
+The KYC Document has been created but not yet submitted for review.
 </td>
 </tr>
 </table>
@@ -284,13 +257,48 @@ The KYC Document has been validated by the Mangopay Compliance team.
 <td class="table-content">`KYC_VALIDATION_ASKED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">KYCDocumentId`</td>
+<th class="header">Description</th>
+<td class="table-content">
+The KYC Document has been submitted for validation and is being processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`KYC_SUCCEEDED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The KYC Document has been submitted for validation and is being processed.  
+The KYC Document has been validated by Mangopay.
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`KYC_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The KYC Document has been refused by Mangopay.
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`KYC_OUTDATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The KYC Document is no longer valid. This is due to an amendment of the user's identity or other key details as per the KYC/KYB verification [downgrade](/guides/users/verification/downgrade).  
 </td>
 </tr>
 </table>
@@ -300,68 +308,28 @@ The KYC Document has been submitted for validation and is being processed.
 
 <table>
 <tr>
+<th class="header">Resource</th>
+<td class="table-content">`UboDeclarationId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a UBO Declaration](/api-reference/ubo-declarations/view-ubo-declaration)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Beneficial owners](/guides/users/verification/beneficial-owners)</td>
+</tr>
+</table>
+
+<table>
+<tr>
 <th class="header">Event type</th>
 <td class="table-content">`UBO_DECLARATION_CREATED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">UboDeclarationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
-The UBO Declaration has been created.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`UBO_DECLARATION_INCOMPLETE`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">UboDeclarationId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The UBO Declaration is incomplete and additional information or documents may be required.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`UBO_DECLARATION_REFUSED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">UboDeclarationId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The UBO Declaration has been refused by the Mangopay Compliance team.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`UBO_DECLARATION_VALIDATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">UboDeclarationId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The UBO Declaration has been validated by the Mangopay Compliance team.  
+The UBO Declaration has been created but not yet submitted for review.
 </td>
 </tr>
 </table>
@@ -372,15 +340,53 @@ The UBO Declaration has been validated by the Mangopay Compliance team.
 <td class="table-content">`UBO_DECLARATION_VALIDATION_ASKED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">UboDeclarationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The UBO Declaration has been submitted for validation and is being processed.  
 </td>
 </tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`UBO_DECLARATION_VALIDATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The UBO Declaration has been validated by the Mangopay Compliance team.  
+</td>
+</tr>
+
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`UBO_DECLARATION_INCOMPLETE`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The UBO Declaration is incomplete and additional information or documents may be required.  
+</td>
+</tr>
+
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`UBO_DECLARATION_REFUSED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The UBO Declaration has been refused by Mangopay.
+</td>
+</tr>
+
 </table>
 
 ## Pay-ins
@@ -389,12 +395,23 @@ The UBO Declaration has been submitted for validation and is being processed.
   
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_NORMAL_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`PayInId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayInId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a PayIn (Direct Card)](/api-reference/direct-card-payins/view-payin-direct-card) for example – same endpoint for all payment methods, different response object</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[All payment methods](/guides/payment-methods)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_NORMAL_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -407,16 +424,12 @@ The PayIn transaction has been created but is not yet processed.
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`PAYIN_NORMAL_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PayInId`</td>
+<td class="table-content">`PAYIN_NORMAL_SUCCEEDED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The PayIn transaction has failed.  
+The PayIn transaction has been successfully processed.  
 </td>
 </tr>
 </table>
@@ -424,16 +437,12 @@ The PayIn transaction has failed.
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`PAYIN_NORMAL_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PayInId`</td>
+<td class="table-content">`PAYIN_NORMAL_FAILED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The PayIn transaction has been successfully processed.  
+The PayIn transaction has failed.  
 </td>
 </tr>
 </table>
@@ -444,12 +453,23 @@ The PayIn transaction has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`CARD_VALIDATION_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`CardValidationId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">CardValidationId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Card Validation](/api-reference/card-validations/view-card-validation)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Card validation without debit](/guides/payment-methods/card/validation)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`CARD_VALIDATION_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -465,10 +485,6 @@ The Card Validation object has been created and the card is pending validation.
 <td class="table-content">`CARD_VALIDATION_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">CardValidationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Card Validation has failed, setting the corresponding card as invalid.  
@@ -482,10 +498,6 @@ The Card Validation has failed, setting the corresponding card as invalid.
 <td class="table-content">`CARD_VALIDATION_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">CardValidationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Card Validation has succeeded, setting the corresponding card as valid.  
@@ -497,12 +509,36 @@ The Card Validation has succeeded, setting the corresponding card as valid.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`RECURRING_REGISTRATION_AUTH_NEEDED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`RecurringRegistrationId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RecurringRegistrationId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Recurring PayIn Registration](/api-reference/recurring-payin-registrations/view-recurring-payin-registration)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Recurring card payments](/guides/payment-methods/card/recurring)</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`RECURRING_REGISTRATION_CREATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Recurring Registration object has been successfully created.  
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`RECURRING_REGISTRATION_AUTH_NEEDED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -515,16 +551,12 @@ A pay-in against this recurring object requires authentication.
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`RECURRING_REGISTRATION_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">RecurringRegistrationId`</td>
+<td class="table-content">`RECURRING_REGISTRATION_IN_PROGRESS`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Recurring Registration object has been successfully created.  
+The Recurring Registration object is in a valid state. Pay-ins against this recurring registration are possible.  
 </td>
 </tr>
 </table>
@@ -535,30 +567,9 @@ The Recurring Registration object has been successfully created.
 <td class="table-content">`RECURRING_REGISTRATION_ENDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RecurringRegistrationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Recurring Registration object has been ended. It is no longer possible to make pay-ins against this recurring registration.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`RECURRING_REGISTRATION_IN_PROGRESS`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">RecurringRegistrationId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Recurring Registration object is in a valid state. Pay-ins against this recurring registration are possible.  
 </td>
 </tr>
 </table>
@@ -567,12 +578,23 @@ The Recurring Registration object is in a valid state. Pay-ins against this recu
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`PREAUTHORIZATION_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`PreauthorizationId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Preauthorization](/api-reference/preauthorizations/view-preauthorization)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[7-day preauthorization](/guides/payment-methods/card/preauthorization)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PREAUTHORIZATION_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -588,10 +610,6 @@ The Preauthorization object has been successfully created.
 <td class="table-content">`PREAUTHORIZATION_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The authorization of this Preauthorization has failed.  
@@ -603,10 +621,6 @@ The authorization of this Preauthorization has failed.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`PREAUTHORIZATION_PAYMENT_CANCELED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -622,10 +636,6 @@ The authorization of this Preauthorization has been canceled.
 <td class="table-content">`PREAUTHORIZATION_PAYMENT_EXPIRED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The authorization of this Preauthorization has expired.  
@@ -637,10 +647,6 @@ The authorization of this Preauthorization has expired.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`PREAUTHORIZATION_PAYMENT_VALIDATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -656,10 +662,6 @@ The Preauthorization has been successfully debited.
 <td class="table-content">`PREAUTHORIZATION_PAYMENT_WAITING`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Preauthorization object can now be debited.  
@@ -673,10 +675,6 @@ The Preauthorization object can now be debited.
 <td class="table-content">`PREAUTHORIZATION_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PreauthorizationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The authorization of this Preauthorization has been successful.  
@@ -688,12 +686,23 @@ The authorization of this Preauthorization has been successful.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`DEPOSIT_PREAUTHORIZATION_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`DepositId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Deposit Preauthorization](/api-reference/deposit-preauthorizations/view-deposit-preauthorization)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[30-day deposit preauthorization](/guides/payment-methods/card/deposit-preauthorization)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`DEPOSIT_PREAUTHORIZATION_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -709,10 +718,6 @@ The Deposit Preauthorization object has been successfully created.
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The authorization of the Deposit Preauthorization has failed.  
@@ -724,10 +729,6 @@ The authorization of the Deposit Preauthorization has failed.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCEL_REQUESTED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -743,10 +744,6 @@ The request to cancel the Deposit Preauthorization has been taken into account.
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_CANCELED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Deposit Preauthorization has been successfully canceled.  
@@ -758,10 +755,6 @@ The Deposit Preauthorization has been successfully canceled.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_EXPIRED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -777,10 +770,6 @@ The authorization of the Deposit Preauthorization has expired.
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The payment action against the Deposit Preauthorization has failed, whether capture without complement, capture prior to complement, no-show request, or complement. A retry may be possible.  
@@ -792,10 +781,6 @@ The payment action against the Deposit Preauthorization has failed, whether capt
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -811,10 +796,6 @@ The Deposit Preauthorization wasn’t debited and a no-show has been successfull
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_NO_SHOW_REQUESTED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Deposit Preauthorization wasn’t debited and a request for a no-show has been taken into account. A pay-in complement cannot yet be made.  
@@ -826,10 +807,6 @@ The Deposit Preauthorization wasn’t debited and a request for a no-show has be
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_TO_BE_COMPLETED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -845,10 +822,6 @@ The Deposit Preauthorization was successfully debited (a successful pay-in again
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_VALIDATED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Deposit Preauthorization has been successfully debited (a successful pay-in against the preauthorization has been made). No further pay-ins can be made.  
@@ -860,10 +833,6 @@ The Deposit Preauthorization has been successfully debited (a successful pay-in 
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DEPOSIT_PREAUTHORIZATION_PAYMENT_WAITING`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DepositId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -879,12 +848,23 @@ The authorization of the Deposit Preauthorization has been successful. It can no
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_NORMAL_PROCESSING_STATUS_PENDING_SUCCEEDED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`PayInId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayInId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a PayIn (Pay by Bank)](/api-reference/pay-by-bank/view-payin-pay-by-bank)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Pay by Bank](/guides/payment-methods/banking/pay-by-bank)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_NORMAL_PROCESSING_STATUS_PENDING_SUCCEEDED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -898,12 +878,23 @@ The Pay by Bank PayIn has been successfully initiated by the user. The funds hav
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`MANDATE_ACTIVATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`MandateId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">MandateId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Mandate](/api-reference/mandates/view-mandate)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Direct debit mandates](/guides/payment-methods/banking/direct-debit)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`MANDATE_ACTIVATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -922,11 +913,7 @@ The Mandate request has been successfully created and validated. A bank wire can
 <th class="header">Description</th>
 <td class="table-content">
 The Mandate has expired. It is no longer possible to make bank wire pay-ins against this mandate.  
-`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">MandateId</td>
+</td>
 </tr>
 </table>
   
@@ -934,10 +921,6 @@ The Mandate has expired. It is no longer possible to make bank wire pay-ins agai
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`MANDATE_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">MandateId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -953,10 +936,6 @@ The Mandate request has failed.
 <td class="table-content">`MANDATE_SUBMITTED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">MandateId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Mandate has been successfully validated, an email has been sent to the end user (if emails are configured).  
@@ -965,15 +944,28 @@ The Mandate has been successfully validated, an email has been sent to the end u
 </table>
 
 ## Transfers
-  
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`TransferId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Transfer](/api-reference/transfers/view-transfer)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content"></td>
+</tr>
+</table>
+
+
+
 <table>
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`TRANSFER_NORMAL_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">TransferId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -989,10 +981,6 @@ The Transfer has been created but is not yet processed.
 <td class="table-content">`TRANSFER_NORMAL_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">TransferId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Transfer could not be processed.  
@@ -1004,10 +992,6 @@ The Transfer could not be processed.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`TRANSFER_NORMAL_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">TransferId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1023,12 +1007,23 @@ The Transfer has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_REFUND_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`RefundId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Refunds - Pay-in](/guides/refunds#pay-in-refunds)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_REFUND_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1044,10 +1039,6 @@ The PayIn Refund transaction has been created but is not yet processed.
 <td class="table-content">`PAYIN_REFUND_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The PayIn Refund transaction could not be processed.  
@@ -1061,10 +1052,6 @@ The PayIn Refund transaction could not be processed.
 <td class="table-content">`PAYIN_REFUND_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The PayIn Refund transaction has been successfully processed.  
@@ -1076,12 +1063,23 @@ The PayIn Refund transaction has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_REFUND_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`RefundId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Refunds - Transfer](/guides/refunds#transfer-refunds)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_REFUND_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1097,10 +1095,6 @@ The Transfer Refund has been created but is not yet processed.
 <td class="table-content">`TRANSFER_REFUND_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Transfer Refund transaction could not be processed.  
@@ -1114,10 +1108,6 @@ The Transfer Refund transaction could not be processed.
 <td class="table-content">`TRANSFER_REFUND_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Transfer Refund transaction has been successfully processed.  
@@ -1129,17 +1119,28 @@ The Transfer Refund transaction has been successfully processed.
 
 <table>
 <tr>
+<th class="header">Resource</th>
+<td class="table-content">`RefundId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Payouts - Returns](/guides/payouts#payout-returns)</td>
+</tr>
+</table>
+
+<table>
+<tr>
 <th class="header">Event type</th>
 <td class="table-content">`PAYOUT_REFUND_CREATED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Payout Refund transaction has been created.  
+The payout return has been created.
 </td>
 </tr>
 </table>
@@ -1150,13 +1151,9 @@ The Payout Refund transaction has been created.
 <td class="table-content">`PAYOUT_REFUND_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Payout Refund transaction has failed.  
+The payout return has failed.
 </td>
 </tr>
 </table>
@@ -1167,13 +1164,9 @@ The Payout Refund transaction has failed.
 <td class="table-content">`PAYOUT_REFUND_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RefundId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Payout Refund transaction has been successfully processed.  
+The payout return has been successfully processed.
 </td>
 </tr>
 </table>
@@ -1184,35 +1177,16 @@ The Payout Refund transaction has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`DISPUTE_ACTION_REQUIRED`</td>
-</tr>
-<tr>
 <th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
+<td class="table-content">`DisputeId`</td>
 </tr>
 <tr>
-<th class="header">Description</th>
-<td class="table-content">
-The contestable Dispute requires further action. The platform is notified by Mangopay in a short period of time.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`DISPUTE_CLOSED`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Dispute](/api-reference/disputes/view-dispute)</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Dispute has been closed. It can either be WON or LOST by the platform.  
-</td>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Disputes](/guides/disputes)</td>
 </tr>
 </table>
   
@@ -1220,10 +1194,6 @@ The Dispute has been closed. It can either be WON or LOST by the platform.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DISPUTE_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1236,11 +1206,46 @@ The Dispute has been created. It can either be closed directly or reviewed by th
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`DISPUTE_FURTHER_ACTION_REQUIRED`</td>
+<td class="table-content">`DISPUTE_ACTION_REQUIRED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
+<th class="header">Description</th>
+<td class="table-content">
+The contestable Dispute requires further action. The platform is notified by Mangopay in a short period of time.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`DISPUTE_SUBMITTED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Dispute has been contested by the platform, either entirely or partially.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`DISPUTE_SENT_TO_BANK`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Dispute has been sent to the bank for review and approval following the Dispute Documents validation.  
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`DISPUTE_FURTHER_ACTION_REQUIRED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1253,33 +1258,12 @@ To settle the Dispute, additional documents are required.
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`DISPUTE_SENT_TO_BANK`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
+<td class="table-content">`DISPUTE_CLOSED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Dispute has been sent to the bank for review and approval following the Dispute Documents validation.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`DISPUTE_SUBMITTED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeId`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Dispute has been contested by the platform, either entirely or partially.  
+The Dispute has been closed. It can either be `WON` or `LOST` by the platform.  
 </td>
 </tr>
 </table>
@@ -1288,12 +1272,23 @@ The Dispute has been contested by the platform, either entirely or partially.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`DISPUTE_DOCUMENT_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`DisputeDocumentId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeDocumentId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Dispute Document](/api-reference/dispute-documents/view-dispute-document)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Disputes](/guides/disputes)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`DISPUTE_DOCUMENT_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1309,10 +1304,6 @@ The Dispute Document has been successfully added to the Dispute, either by the p
 <td class="table-content">`DISPUTE_DOCUMENT_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeDocumentId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Dispute Document has been refused by Mangopay’s team.  
@@ -1324,10 +1315,6 @@ The Dispute Document has been refused by Mangopay’s team.
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`DISPUTE_DOCUMENT_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeDocumentId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1343,10 +1330,6 @@ The Dispute Document has been validated by Mangopay’s team.
 <td class="table-content">`DISPUTE_DOCUMENT_VALIDATION_ASKED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">DisputeDocumentId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Dispute Document has been sent to Mangopay’s team for validation.  
@@ -1358,12 +1341,23 @@ The Dispute Document has been sent to Mangopay’s team for validation.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_REPUDIATION_CREATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`RepudiationId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RepudiationId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Repudiation](/api-reference/repudiations/view-repudiation)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Disputes](/guides/disputes)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_REPUDIATION_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1379,10 +1373,6 @@ A chargeback has been filed and has been created in Mangopay's environment (Repu
 <td class="table-content">`PAYIN_REPUDIATION_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RepudiationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 A chargeback has been filed but the transaction from the Repudiation Wallet back to the initial pay-in author has failed.  
@@ -1396,10 +1386,6 @@ A chargeback has been filed but the transaction from the Repudiation Wallet back
 <td class="table-content">`PAYIN_REPUDIATION_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">RepudiationId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 A chargeback has been filed and successfully sent back to the initial pay-in author.  
@@ -1408,15 +1394,26 @@ A chargeback has been filed and successfully sent back to the initial pay-in aut
 </table>
 
 ### Settlement transfers
-  
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`SettlementId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Settlement Transfer](/api-reference/dispute-settlement/view-settlement-transfer)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Disputes](/guides/disputes)</td>
+</tr>
+</table>
+
 <table>
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`TRANSFER_SETTLEMENT_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">SettlementId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1432,10 +1429,6 @@ The Settlement Transfer has been created but is not yet processed.
 <td class="table-content">`TRANSFER_SETTLEMENT_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">SettlementId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Settlement Transfer could not be processed.  
@@ -1449,10 +1442,6 @@ The Settlement Transfer could not be processed.
 <td class="table-content">`TRANSFER_SETTLEMENT_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">SettlementId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Settlement Transfer has been successfully processed.  
@@ -1463,15 +1452,26 @@ The Settlement Transfer has been successfully processed.
 ## Payouts
 
 ### Standard payouts
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`PayoutId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Payout](/api-reference/payouts/view-payout)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Payouts](/guides/payouts)</td>
+</tr>
+</table>
   
 <table>
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`PAYOUT_NORMAL_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1487,10 +1487,6 @@ The Payout transaction has been created but is not yet processed.
 <td class="table-content">`PAYOUT_NORMAL_FAILED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Payout transaction has failed.  
@@ -1504,10 +1500,6 @@ The Payout transaction has failed.
 <td class="table-content">`PAYOUT_NORMAL_SUCCEEDED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Payout transaction has been successfully processed.  
@@ -1519,12 +1511,23 @@ The Payout transaction has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`INSTANT_PAYOUT_FAILED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`PayoutId`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Instant payouts](/guides/payouts/instant)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`INSTANT_PAYOUT_FAILED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1540,10 +1543,6 @@ The Instant Payout transaction has failed.
 <td class="table-content">`INSTANT_PAYOUT_FALLBACKED`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
-</tr>
-<tr>
 <th class="header">Description</th>
 <td class="table-content">
 The Payout could not be processed instantly; it will be processed in 48 hours as a standard payout instead.  
@@ -1555,10 +1554,6 @@ The Payout could not be processed instantly; it will be processed in 48 hours as
 <tr>
 <th class="header">Event type</th>
 <td class="table-content">`INSTANT_PAYOUT_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">PayoutId`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
@@ -1574,12 +1569,23 @@ The Instant Payout transaction has been successfully processed.
 
 <table>
 <tr>
-<th class="header">Event type</th>
-<td class="table-content">`COUNTRY_AUTHORIZATION_UPDATED`</td>
+<th class="header">Resource</th>
+<td class="table-content">`CountryCode`</td>
 </tr>
 <tr>
-<th class="header">Resource</th>
-<td class="table-content">CountryCode`</td>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View authorizations for a country](/api-reference/country-authorizations/view-authorizations-country)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Country restrictions](/guides/users/country-restrictions)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`COUNTRY_AUTHORIZATION_UPDATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
