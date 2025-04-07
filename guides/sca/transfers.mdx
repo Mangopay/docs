@@ -9,20 +9,22 @@ This means that when an `OWNER` user initiates a transfer to a wallet held by an
 
 ## Declaring automated transfers
 
-Mangopay is introducing a new body parameter of the existing [POST Create a Transfer](/api-reference/transfers/create-transfer), `ScaContext`, which will have the values:
+Mangopay is introducing a **new body parameter** of the existing [POST Create a Transfer](/api-reference/transfers/create-transfer), `ScaContext`, which will have the values:
 
-- `USER_PRESENT` (default value) – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
+- `USER_PRESENT` – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
 - `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. SCA is not required (unless the request is overridden by Mangopay).
+
+Both values may result in the need for SCA redirection: the platform may include `USER_PRESENT` and be exempted, or include `USER_NOT_PRESENT` and have SCA imposed by Mangopay.
 
 <Note>
 **Note – Implementation in agreement with Mangopay**
 
 It is essential that Mangopay understands the context and legal justification for Transfer actions made without the user's presence, as bypassing direct user consent may incur security risks and non-compliance with applicable regulations. 
 
-Therefore the use of the `USER_NOT_PRESENT` value will be subject to workflow validation and implemented on a case-by-case basis with the appropriate supporting documentation.
+Therefore the use of the `USER_NOT_PRESENT` value will be subject to workflow validation and implemented on a case-by-case basis with the appropriate supporting documentation as evidence.
 </Note>
 
-If SCA is required for the transfer request, the API response will contain `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage within 10 minutes of the API response.
+If Mangopay determines that SCA is required for the transfer request, the API response will contain `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage within 10 minutes of the API response.
 
 If SCA is required, the Transfer `Status` will remain `CREATED` until SCA is completed. If SCA was not successful, the `Status` will change to `FAILED` and there will be two new functional errors that may be returned in `ResultCode` and `ResultMessage`:
 

@@ -14,7 +14,11 @@ Mangopay Account access can be considered as:
 
 SCA will impact actions on wallets held by `OWNER` users. SCA will be required on first-time access and if more than 180 days have passed since the last SCA authentication for account access.
 
-All the wallets held by a single user can be considered together under the Mangopay Account, meaning that SCA only has to be done once to access all of the user's wallets.
+<Note>
+**Note – Multiple wallets considered same account**
+
+All the wallets held by a single `OWNER` user are considered to be part of their Mangopay Account. This means that SCA only has to be done once to access any of the user’s wallets. 
+</Note>
 
 ## Endpoints impacted
 
@@ -32,15 +36,28 @@ For transactions, the following two endpoints (only) are in scope because they a
 
 The endpoints to list transactions or refunds based on other objects (such as for a mandate, card, dispute, etc.) will not be affected by SCA.
 
-On the 4 endpoints listed above (only), when SCA is required for the account access event once every 180 days, the individual will have to authenticate on the Mangopay-hosted webpage.
+### Declaring automated access
 
-When SCA is required, a call to any of the 4 endpoints above will return **only** the `PendingUserAction.RedirectUrl` for the user to authenticate. Once SCA is successful, subsequent calls to any of the above endpoints will return the wallet or transaction data for the next 180 days, until SCA is required again.
+On the 4 endpoints listed above (only), Mangopay is introducing a **new query parameter**, `ScaContext`, which will have the values:
+
+- `USER_PRESENT` – The user is initiating the access and is actively present. SCA is required but may be exempted if successful SCA for wallet access took place in the last 180 days. Platforms are not able to request specific exemptions.
+- `USER_NOT_PRESENT`– No user is present: the access is automated by the platform as part of their declared and authorized workflow. SCA is not required (unless the request is overridden by Mangopay).
+
+Both values may result in the need for SCA redirection: the platform may include `USER_PRESENT` and be exempted, or include `USER_NOT_PRESENT` and have SCA imposed by Mangopay.
 
 <Note>
-**Note – No functionality planned for declaring automated action** 
+**Note – Implementation in agreement with Mangopay**
 
-Unlike transfers, where platforms will be able to declare an action as being automated as part of a workflow, all calls to the 4 endpoints listed above will be considered as initiated by the user, and therefore be subject to SCA.
+It is essential that Mangopay understands the context and legal justification for Transfer actions made without the user's presence, as bypassing direct user consent may incur security risks and non-compliance with applicable regulations. 
+
+Therefore the use of the `USER_NOT_PRESENT` value will be subject to workflow validation and implemented on a case-by-case basis with the appropriate supporting documentation as evidence.
 </Note>
+
+When Mangopay determines that SCA is required, a call to any of the 4 endpoints above will return **only** the `PendingUserAction` object containing the `RedirectUrl` for the user to be able authenticate.
+
+Once SCA is successful, subsequent calls to any of the above endpoints will return the wallet or transaction data for the next 180 days, until SCA will be required again.
+
+When SCA can be exempted, because it has been less than 180 days since the last successful SCA for wallet access, then the wallet or transaction data will be returned.
 
 ## Action required
 
@@ -49,15 +66,15 @@ Integrating SCA redirection on account access will be mandatory for all platform
 
 **Possible exemptions on account access actions**
 
-The following exemptions may be applied by Mangopay:
-
-- SCA can be exempted for accessing wallet balances and listing transactions if the last SCA for these actions occurred less than 180 days ago. This means that SCA performed for a different action, such as registering a Recipient or initiating a transfer, cannot be used to exempt account access.
+- For user-initiated wallet access, the access request can be exempted if the last SCA for this action occurred less than 180 days ago. This means that SCA performed for a different action, such as registering a Recipient or initiating a transfer, **cannot** be used to exempt account access.
+- For automated wallet access, SCA will not apply. Mangopay may override an automated access request (with `USER_NOT_PRESENT`) if it has reason to believe that the user is present and initiating the access.
+- Accessing a wallet of a `PAYER` is considered a technical action and is out of scope of SCA.
 </Info>
 
 <Info>
 **Action required on wallets**
 
 - Analyze your platform's workflow to identify:
-  1. Transfers initiated by the user, which require the user to be present to authenticate
-  2. Transfers automated as part of your workflow, to which SCA will not apply
+    1. API calls to the 4 endpoints above that are initiated by the user, which require the user to authenticate
+    2. API calls to the endpoints above that can be declared as automated
 </Info>
