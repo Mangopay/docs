@@ -7,7 +7,7 @@ This FAQ is provided as a complement to the rest of this SCA documentation and o
 
 If your query is not addressed below or in the docs, please get in touch with our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
 
-#### Is the phone number mandatory for us? How should we handle Related&nbsp;guidesg phone number data?
+#### Is the phone number mandatory for us? How should we handle existing phone number data?
 A phone number is mandatory for SCA but in the API it is optional. Your users can conveniently provide their phone number when they are redirected to the Mangopay-hosted webpage to enroll in SCA. If you wish, you can provide it via the API to pre-populate the field in on the page ([read more](/guides/sca/factors#handling-phone-number-data)).
 
 #### If a user's phone number is associated with another account, will they be blocked or prevented from enrolling in SCA?
@@ -17,7 +17,7 @@ No. Our system is designed to efficiently manage phone number associations.
 Yes. If the user refreshes the page, or closes and re-opens the same link, they will remain on the OTP verification screen. The feature is designed to give users control over when they receive an OTP, ensuring that the process is transparent and efficient for them. 
 
 #### If a KYC/KYB document is refused due to data mismatch, can we modify the data on behalf of our users or do we need to contact them?
-Only modifications to phone number and email require validation through SCA by the end user. SCA has no impact on the Related&nbsp;guidesg KYC processes surrounding [documents](/guides/users/verification) or the [downgrade](/guides/users/verification/downgrade) mechanism.
+Only modifications to phone number and email require validation through SCA by the end user. SCA has no impact on the existing KYC processes surrounding [documents](/guides/users/verification) or the [downgrade](/guides/users/verification/downgrade) mechanism.
 
 #### Can we delay enrollment if we create the user when they are not present on our website or app?
 No, it is generally not possible to delay SCA enrollment when the `OWNER` is created (or categorized as such). In the user endpoints, there is no functionality similar to the `ScaContext` and `USER_NOT_PRESENT` value being added to transfers and wallet access, because there are no exemptions for account creation.
@@ -27,7 +27,7 @@ However, in certain cases we may grant an exemption to this situation if your wo
 #### When will SCA be available for legal users, and what integration is required?
 Please begin integrating the user-related endpoints for legal users. Soletraders, as individuals, are already able to use the SCA feature. For businesses and other types of Legal user, Mangopay is developing features to introduce SCA with as little friction as possible. This may include as allowing users to define authorized individuals who can complete SCA on behalf of the entity. The new functionality will allow designated authorized individuals within a legal entity to perform SCA, rather than limiting this capability solely to the declared legal representative.
 
-#### We already have SCA or MFA on our website or app. Can we use our Related&nbsp;guidesg feature and send validation to Mangopay through the API?
+#### We already have SCA or MFA on our website or app. Can we use our existing feature and send validation to Mangopay through the API?
 No. Applicable regulations require Mangopay to perform SCA directly with users that have a Mangopay account.
 
 #### What are the specific actions that require SCA?
@@ -61,12 +61,12 @@ For more details, see the [transfers](/guides/sca/transfers) guide.
 #### What happens if we perform actions on behalf of users, without their direct involvement? 
 When actions are executed on behalf of Mangopay account holders without direct user authentication, each case will be evaluated individually to determine the appropriate SCA process. It is essential that we understand the context and legal justification for such actions, as bypassing direct user consent could expose us to security risks. We remain committed to maintaining the highest standards of security and compliance.
 
-#### When will SCA be triggered for our Related&nbsp;guidesg users, and how will it work?
-For Related&nbsp;guidesg users, Mangopay's features allow your platform to enroll them at a convenient point in their journey using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint. 
+#### When will SCA be triggered for our existing users, and how will it work?
+For existing users, Mangopay's features allow your platform to enroll them at a convenient point in their journey using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint. 
 
 SCA will be applied when the user takes an action requiring SCA.
 
-For more details, see [Related&nbsp;guidesg user integration](/guides/sca/users#Related&nbsp;guidesg-user-integration).
+For more details, see [existing user integration](/guides/sca/users#existing-user-integration).
 
 #### Will the legacy user endpoints be maintained? How long for until deprecated?
 The legacy user endpoints will be deprecated in 2026. 
@@ -75,15 +75,15 @@ The legacy user endpoints will be deprecated in 2026.
 Yes, the bank account feature will also be deprecated in 2026. Mangopay is releasing a new Recipients feature which completely replaces bank accounts.
 
 #### Will we have to re-register bank accounts as Recipients? 
-No. You will be able to continue using Related&nbsp;guidesg bank accounts (`BankAccountId`) for payouts.
+No. You will be able to continue using existing bank accounts (`BankAccountId`) for payouts.
 
 #### Can we do SCA with the user later if it's triggered by an action initiated on their behalf?
 No, the SCA session starts immediately when the action is triggered. The user has 10 minutes to complete the authentication on the hosted webpage before the session expires. 
 
 #### Will users be restricted if a user is not enrolled in SCA?
-Initially, Related&nbsp;guidesg users will not be restricted by the introduction of SCA.
+Initially, existing users will not be restricted by the introduction of SCA.
 
-Related&nbsp;guidesg users, who already have `ACTIVE` as their `UserStatus`, will not be restricted or transitioned to `PENDING_USER_ACTION` if you attempt to enroll them using [POST Enroll a User](/api-reference/users/enroll-user) and the SCA session is not successful.
+existing users, who already have `ACTIVE` as their `UserStatus`, will not be restricted or transitioned to `PENDING_USER_ACTION` if you attempt to enroll them using [POST Enroll a User](/api-reference/users/enroll-user) and the SCA session is not successful.
 
 On Recipients, Transfers, and Account Access they will also not be restricted (their status remains `ACTIVE`), but the relevant action will not succeed. In this case, you need to retry the Recipient creation or Transfer to allow the user to complete SCA successfully.
 
@@ -102,7 +102,7 @@ Implementation of SCA is mandatory. Failure to integrate the new endpoints expos
 No. SCA is a regulatory requirement for Mangopay Account holders. We will require you to undertake the integrations outline in our documentation and by the dates communicated. If you have any concerns about the deadline or integration timelines, please contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
 
 #### Do we need to sign a contract amendment?
-No, you will not be required to sign any contract amendment – our Related&nbsp;guidesg contract remains in effect.
+No, you will not be required to sign any contract amendment – our existing contract remains in effect.
 
 #### We have a Merchant Agreement. How will SCA impact us?
 For platforms operating under a Merchant Agreement, SCA will be integrated as part of our ongoing commitment to regulatory compliance. While implementing SCA is mandatory, we are dedicated to supporting you through the transition and ensuring a smooth experience. Detailed guidance on the specific impacts will be provided shortly.
