@@ -1,26 +1,92 @@
 ---
-title: Enrollment in the user lifecycle
-sidebarTitle: Enrollment
+title: SCA on users
+sidebarTitle: SCA on users
 ---
 
-The introduction of SCA requires a user to enroll (that is, provide contact details and authenticate them) when the Mangopay account is created. The account is created when the user is assigned the `UserCategory` of `OWNER` and their `UserStatus` is `ACTIVE`. 
+## Introduction
 
-For SCA enrollment, Mangopay has developed new User endpoints to facilitate this process.
+When a Mangopay Account is created, the account holder must enroll in SCA. 
 
-These endpoints allow your platform to redirect the user for SCA when you:
+A Mangopay account is created when a Natural or Legal user is assigned the `UserCategory` of `OWNER`, because these users accept and are bound by Mangopay's T&Cs and are being provided with Mangopay payment and/or e-money services.
 
-1. [Register an Owner for the first time](#register-an-owner-for-the-first-time)
-2. [Transition a Payer to Owner](#transition-a-payer-to-owner)
-3. [Enroll an existing Owner](#enroll-an-existing-owner)
-4. [Re-enroll an enrolled Owner](#re-enroll-an-enrolled-owner) if they change their contact details
+To facilitate SCA enrollment in the User objects, Mangopay has released new endpoints. These endpoints create the same kind of resource as the legacy ones, but they return a `PendingUserAction.RedirectUrl` and apply a new `UserStatus` value. 
 
-This page describes the enrollment scenario (providing and authenticating device details) and how it impacts the user lifecycle – see the [diagram below](#lifecycle-diagram) for an overview.
+Your platform needs to use the `RedirectUrl` to redirect the individual to Mangopay's hosted-webpage so they can enroll. See [SCA session](/guides/sca/session) for more details on how to do this.
+
+### Natural user integration
+
+For **Natural users**, SCA redirection is fully available to integrate, using the individual's phone number and email. The `Email` is already required for Natural users. To simplify adoption, your users can provide their phone number during the SCA session – you don't have to send it via the API.
+
+### Legal user integration
+
+For **Legal users**, SCA redirection is fully available to integrate for **Soletraders**. The individual's email must be provided via the API, in the `LegalRepresentative.Email` property, but the phone number can be entered by the individual during the SCA session.
+
+For the other Legal user types (Business, Partnership, Organization), Mangopay is developing functionality to designate additional **authorized individuals** who can complete SCA on behalf of the entity.
+
+Until then, if `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`, then the SCA-enabled user endpoints do not return the SCA redirection link.
+
+<Note>
+**Note – Integration the new endpoints for all Legal User types**
+
+Your platform should still implement the new endpoints and SCA redirection logic if you only have Legal Users whose `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`.
+
+The legacy user endpoints will be deprecated in 2026.
+</Note>
+
+To simulate the `PendingUserAction.RedirectUrl` during your integration, set the `LegalPersonType` to `SOLETRADER` to get the `RedirectUrl` in the response.
+
+### Existing user integration
+
+Existing users will not be immediately restricted by the introduction of SCA ([see below](#restrictions-on-existing-users)).
+
+For existing users, SCA redirection will be triggered in the following scenarios:
+
+- For existing `PAYER` users, when you change their category to `OWNER` using [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user) (available now)
+- For existing `OWNER` users, when you:
+    - Enroll them proactively using [POST Enroll a User](/api-reference/users/enroll-user) (available now)
+    - Register a [Recipient](/guides/sca/recipients) (bank/payment account) for them (when SCA feature launched)
+    - Request a [user-initiated transfer](/guides/sca/transfers) for them to another `OWNER` (when SCA feature launched)
+    - Request to access their [wallet balance or transaction history](/api-reference/) (when SCA feature launched)
+
+Mangopay's SCA session allows the user to enroll or authenticate as required.
+
+Mangopay may be required to start introducing consequences on users if they haven’t enrolled in SCA, but this will be done with sufficient notice to platforms. These consequences may include removing certain permissions, blocking the account, reverting the category to `PAYER`, or closing the account.
+
+<Check>
+**Best practice – Set up enrollment reminders**
+
+In order to avoid any restrictions, you are strongly advised to invite users to enroll in Mangopay’s SCA before they take actions requiring authentication. For example, this could be via a monthly email reminder or in-app notification on your platform until they enroll. You can enroll them using the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
+</Check>
+
+In order to avoid any restrictions, you are strongly advised to invite users to enroll in Mangopay’s SCA before they take actions requiring authentication. For example, this could be via a monthly email reminder or in-app notification on your platform until they enroll. You can enroll them using the POST Enroll a User endpoint.
+
+### Integration action required on Users
+
+<Info>
+**Action required now:**
+
+For **new** Natural and Legal Users (of all types):
+
+- Integrate the new endpoints for user creation. [Read how](/guides/sca/users#register-an-owner-for-the-first-time) **&rarr;**
+- Integrate the new endpoints for changing a `PAYER` to an `OWNER`. [Read how](/guides/sca/users#transition-a-payer-to-owner) **&rarr;**
+- Integrate the new endpoints for re-enrollment of enrolled users. [Read how](/guides/sca/users#re-enroll-an-enrolled-owner) **&rarr;**
+
+The new endpoints must be integrated for `PAYER` users too, regardless of whether they are likely to be come `OWNER`.
+
+For **existing** users (Natural and Legal Soletrader):
+
+- Integrate SCA enrollment existing `OWNER` users at an appropriate moment in your user journey using the dedicated endpoint. [Read how](/guides/sca/users#enroll-an-existing-owner) **&rarr;**
+</Info>
+
+<Info>
+**Possible exemptions on Users:**
+
+- None, because these actions are enrollment or re-enrollment.
+</Info>
 
 ## User status
 
-In the new user endpoints for SCA, the need for a user to enroll in SCA is indicated by the response parameter `UserStatus`.
-
-SCA introduces a new possible value for the `UserStatus` response parameter for User objects that are assigned the `OWNER` category.
+The new user endpoints for SCA introduce a new possible value for the `UserStatus` response parameter.
 
 For users created prior to or without SCA, `UserStatus` has two possible values, which were the same for `PAYER` and `OWNER`.
 
@@ -74,7 +140,9 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
   `ACTIVE`
   </td>
   <td class="table-content">
-  The user account is active and can access Mangopay features.
+  The user account is active and can access Mangopay features, such as wallets and KYC/B verification.
+
+  Note that `ACTIVE` does not mean that the user is SCA-enrolled. This is because pre-SCA existing users have the `ACTIVE` value, and it is possible to change the `UserCategory` on the legacy endpoint (see caution below). 
   </td>
 </tr>
 <tr>
@@ -88,7 +156,41 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
 </tbody>
 </table>
 
-### Webhooks
+<Warning>
+**Caution – Changing category with legacy PUT**
+
+The `PENDING_USER_ACTION` status is only returned on the SCA-enabled endpoints, but it is possible to change the `UserCategory` using the legacy **PUT Update a Natural/Legal User**.
+
+If you do this (for example, in the Mangopay Dashboard), then you need to use the [POST Enroll a User](/api-reference/users/enroll-user) endpoint to enroll them as an existing `OWNER`.
+</Warning>
+
+When the user's `UserStatus` is `PENDING_USER_ACTION`, they are unable to access Mangopay features. For example, a call to [POST Create a Wallet](/api-reference/wallets/create-wallet) for this user returns an error:
+
+```json 400
+{
+    "Message": "This endpoint is not allowed for User with your current status",
+    "Type": "not_allowed_for_pending_user_action_status",
+    "Id": "57f871d3-f467-4360-ae74-6af4dac4fb02#1743583911",
+    "Date": 1743583912,
+    "errors": null
+}
+```
+
+### Restrictions on existing users
+
+<Note>
+**Note – Existing users not restricted**
+
+Initially, existing users will not be restricted by the introduction of SCA. 
+
+Existing users, who already have `ACTIVE` as their `UserStatus`, will not be restricted or transitioned to `PENDING_USER_ACTION` if you attempt to enroll them using [POST Enroll a User](/api-reference/users/enroll-user) and the SCA session is not successful.
+
+On Recipients, Transfers, and Account Access they will also not be restricted (their status remains `ACTIVE`), but the relevant action will not succeed. In this case, you need to retry the Recipient creation or Transfer to allow the user to complete SCA successfully.
+
+In future, Mangopay may be required by regulators to start introducing consequences on users if they haven't enrolled in SCA, but this will be done with sufficient notice to platforms. These consequences may include removing certain permissions, blocking the account, reverting the category to Payer, or closing the account.
+</Note>
+
+## Webhooks
 
 There are two new event types for which you can create [webhook notifications](/webhooks). In both cases the `RessourceId` of the notification received is the `UserId`.
 
@@ -100,21 +202,14 @@ There are two new event types for which you can create [webhook notifications](/
 
 The user account webhooks are not triggered for: 
 - Payers
-- Owners created with the non-SCA endpoints
+- Owners if they are created or categorized with the non-SCA endpoints
 </Note>
 
-## Enrollment actions triggering SCA
+## Enrollment in the user lifecycle
 
-The following scenarios describe how you can enroll your users in SCA to create their Owner user account.
+The following scenarios describe how you can enroll your users in SCA to create their Owner user account. For an overview, see the [diagram below]().
 
-In each case, the API call triggers SCA and returns the `PendingUserAction.RedirectUrl` redirection link. And in each case, the way you need to redirect the user and handle the outcome is the same. For more detailed guidance on this redirection process, see:
-
-<Card
-  title="SCA session"
-  href="/guides/users/sca/session"
->
-Read about how to redirect a user for an SCA session
-</Card>
+In each case, the API call triggers SCA and returns the `PendingUserAction.RedirectUrl` redirection link. And in each case, the way you need to redirect the user and handle the outcome is the same. For more detailed guidance on this redirection process, [SCA session]().
 
 #### Testing
 
@@ -122,9 +217,15 @@ In Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `F
 
 You can also test by using a real phone number to receive the SMS OTP.
 
+<Check>
+**Best practice – Explore using Postman collection**
+
+Mangopay's <a href="https://www.postman.com/mgp-productstars/workspace/mangopay-sandbox/collection/15344095-47c29023-1d0b-4f09-ae65-9054db181208?action=share&creator=26796652" target="_blank">Sandbox API Postman collection</a> contains the user SCA endpoints ready for you to test the solution. For help getting started with Mangopay's collection, see the [dedicated guide](/postman).
+</ Check>
+
 ### Register an Owner for the first time
 
-The following flow should be used to create new Owners and enroll them in SCA at the same time. Any users Owner created on the non-SCA endpoints will need to be enrolled separately (in [the flow described below](#)).
+The following flow should be used to create new Owners and enroll them in SCA at the same time. Any users Owner created on the non-SCA endpoints will need to be enrolled separately (in [the flow described below](#enroll-an-existing-owner)).
 
 <Steps>
 <Step title="Call the Mangopay API to provide user data and trigger SCA ">
@@ -175,10 +276,10 @@ In the API response:
 The `PENDING_USER_ACTION` status triggers a [webhook notification](/webhooks) for the `USER_ACCOUNT_VALIDATION_ASKED` event type – set up this [Hook](/api-reference/webhooks/create-hook) to be notified.
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/users/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
-After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/users/sca/session#5-retrieve-the-returnurl-query-parameters)).
+After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
 
 The Owner user is successfully SCA enrolled and their account created when the `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`. 
 
@@ -243,10 +344,10 @@ In the API response:
 The `PENDING_USER_ACTION` status triggers a [webhook notification](/webhooks) for the `USER_ACCOUNT_VALIDATION_ASKED` event type – set up this [Hook](/api-reference/webhooks/create-hook) to be notified.
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/users/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
-After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/users/sca/session#5-retrieve-the-returnurl-query-parameters)).
+After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
 
 The Owner user is successfully SCA enrolled and their account created when the `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`. 
 
@@ -258,7 +359,9 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 <Note>
 **Note – Flow for existing Owner users**
 
-You can use this flow to transition of Owner users created before the introduction of SCA, meaning any Owner user created on the non-SCA endpoint ([POST Create a Natural User](/api-reference/users/create-natural-user) or [POST Create a Legal User](/api-reference/users/create-legal-user)).
+You can use this flow to transition of Owner users created before the introduction of SCA, meaning any Owner user 
+- Created on the non-SCA endpoint ([POST Create a Natural User](/api-reference/users/create-natural-user) or [POST Create a Legal User](/api-reference/users/create-legal-user))
+- Categorized on the legacy **PUT Update a Natural/Legal User** endpoints (including via the Dashboard)
 </Note>
 
 <Steps>
@@ -272,10 +375,10 @@ On the enrollment endpoint, the API returns only the `PendingUserAction.Redirect
 The user's `UserStatus` still changes to `PENDING_USER_ACTION`, which triggers the a `USER_ACCOUNT_VALIDATION_ASKED` [webhook](/webhooks).
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/users/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
-After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/users/sca/session#5-retrieve-the-returnurl-query-parameters)).
+After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
 
 The Owner user is successfully SCA enrolled and their account created when the `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`. 
 
@@ -286,8 +389,6 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 ### Re-enroll an enrolled Owner
 
 Re-enrollment is required when the `PhoneNumber`, `PhoneNumberCountry`, or `Email` user properties are modified.
-
-
 
 <Steps>
 <Step title="Call the Mangopay API, triggering SCA">
@@ -327,10 +428,10 @@ Any PUT call that changes the `PhoneNumber` value triggers SCA, even if the user
 </Note>
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/users/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
-After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/users/sca/session#5-retrieve-the-returnurl-query-parameters)).
+After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
 
 The Owner user is successfully SCA enrolled and their account created when the `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`. 
 
@@ -338,11 +439,11 @@ Set up a [webhook notification](/webhooks) for the `USER_ACCOUNT_ACTIVATED` even
 </Step>
 </Steps>
 
-## SCA endpoints usable for Payers
+## Integrate new user endpoints for Payers
 
-SCA is not applicable to Payers.
+SCA is not applicable to `PAYER` users.
 
-However, the SCA endpoints can be used to register and update Payer users:
+However, the SCA endpoints must be integrated to register and update `PAYER` users:
 
 - [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
 - [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
@@ -354,15 +455,15 @@ In this non-SCA scenario:
 - `UserStatus` is `ACTIVE`
 - `PendingUserAction` is `null`
 
-Note that the same endpoints are used with Owners (but `UserCategory` is `OWNER`).
+These are the same endpoints that are used with Owners.
 
-<Check>
-**Best practice – Integrate these endpoints to manage Payers**
+<Note>
+**Note – Integrate new endpoints to manage Payers**
 
-Payers are not subject to SCA. However, we strongly recommend that you implement the new SCA-enabled endpoints above to register new Payers and update existing ones, regardless of whether they are likely to become Owners in the future.
+Payers are not subject to SCA. However, you must integrate the new SCA-enabled endpoints above to register new Payers and update existing ones, regardless of whether they are likely to become Owners in the future.
 
 Mangopay intends to deprecate the legacy User endpoints, because they will have been made redundant by the new SCA-enabled versions.
-</Check>
+</Note>
 
 ## View and list users
 
@@ -382,9 +483,19 @@ On the POST and PUT, it can be only be **triggered** by the new SCA endpoint rou
 
 There is no new version of the [GET List Users](/api-reference/users/list-users) because it only returns a summary of key user data, rather than the full object, so no new endpoint is necessary.
 
-## Diagram: Lifecycle of SCA enrollment
+## User lifecycle diagram: Categories 
 
-The introduction of SCA to create an Owner user changes the lifecycle of a user because they cannot become an Owner without enrollment. The following diagram shows how SCA impacts the user lifecycle for setting up Payers and Owners. Once an Owner, a user can request [KYC/B verification](/guides/users/verification), which is not shown below. 
+The introduction of SCA to create an Owner user changes the lifecycle of a user because they cannot become an Owner without SCA. The following diagram shows how SCA impacts the user lifecycle for setting up Payers and Owners. 
+
+<Note>
+**Note – Not shown in diagram**
+
+The diagram below doesn't show: 
+- The PUT Update a User endpoints in all their use cases (e.g. updating Payers)
+- KYC/B verification, which a user can request once they are an Owner
+- The possibility of a user being [blocked](/guides/users/blocked-users) (which may happen to Payer or Owner)
+</Note>
+
 
 <img className="block dark:hidden" src="/images/diagram_sca_lifecycle_light.svg" width="100%"/>
 <img className="hidden dark:block" src="/images/diagram_sca_lifecycle_dark.svg" width="100%"/>
@@ -394,7 +505,7 @@ The introduction of SCA to create an Owner user changes the lifecycle of a user 
 <CardGroup cols={2}>
 <Card
   title="SCA session"
-  href="/guides/users/sca/session"
+  href="/guides/sca/session"
 >
 Read more about redirecting users for an SCA session
 </Card>
