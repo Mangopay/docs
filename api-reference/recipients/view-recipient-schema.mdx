@@ -57,12 +57,14 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
 </AccordionGroup>
 
 <ResponseExample>
-```json International
+```json EUR, international, individual
 {
     "DisplayName": {
         "Required": true,
         "MaxLength": 50,
-        "Pattern": "^(?!.*[&,'/]).{1,50}$"
+        "Pattern": "^(?!.*[&,'/]).{1,50}$",
+        "Label": "Display Name",
+        "EndUserDisplay": "Show"
     },
     "Currency": {
         "AllowedValues": [
@@ -71,59 +73,103 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         "Required": true,
         "MaxLength": 3,
         "MinLength": 3,
-        "Pattern": "^[a-zA-Z]{3}$"
+        "Pattern": "^[a-zA-Z]{3}$",
+        "Label": "Currency",
+        "EndUserDisplay": "Hide"
     },
     "RecipientType": {
         "AllowedValues": [
-            "Business"
+            "Individual"
         ],
         "Required": true,
-        "Pattern": "^[a-zA-Z]+$"
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Recipient Type",
+        "EndUserDisplay": "Hide"
     },
     "PayoutMethodType": {
         "AllowedValues": [
             "InternationalBankTransfer"
         ],
         "Required": true,
-        "Pattern": "^[a-zA-Z]+$"
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Payout Method Type",
+        "EndUserDisplay": "Hide"
     },
-    "BusinessRecipient": {
-        "BusinessName": {
+    "Tag": {
+        "Required": false,
+        "MaxLength": 255,
+        "Pattern": "^.{0,255}$",
+        "Label": "Tag",
+        "EndUserDisplay": "Hide"
+    },
+    "RecipientScope": {
+        "AllowedValues": [
+            "PAYOUT",
+            "PAYIN"
+        ],
+        "Required": false,
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Recipient Scope",
+        "EndUserDisplay": "Hide"
+    },
+    "IndividualRecipient": {
+        "FirstName": {
             "Required": true,
             "MaxLength": 255,
-            "Pattern": "^(?!.*[(),.:/]).{1,255}$"
+            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$",
+            "Label": "First Name",
+            "EndUserDisplay": "Show"
+        },
+        "LastName": {
+            "Required": true,
+            "MaxLength": 255,
+            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$",
+            "Label": "Last Name",
+            "EndUserDisplay": "Show"
         },
         "Address": {
             "AddressLine1": {
                 "Required": true,
                 "MaxLength": 255,
-                "Pattern": "^(?!.*[()/]).{1,255}$"
+                "Pattern": "^(?!.*[()/]).{1,255}$",
+                "Label": "Address Line 1",
+                "EndUserDisplay": "Show"
             },
             "AddressLine2": {
                 "Required": false,
                 "MaxLength": 255,
-                "Pattern": "^(?!.*[()/]).{1,255}$"
+                "Pattern": "^(?!.*[()/]).{1,255}$",
+                "Label": "Address Line 2",
+                "EndUserDisplay": "Show"
             },
             "City": {
                 "Required": true,
                 "MaxLength": 80,
-                "Pattern": "^(?!.*[&,.:_']).{1,80}$"
+                "Pattern": "^(?!.*[&,.:_']).{1,80}$",
+                "Label": "City",
+                "EndUserDisplay": "Show"
             },
             "Country": {
                 "Required": true,
                 "MaxLength": 2,
                 "MinLength": 2,
-                "Pattern": "^[a-zA-Z]+$"
+                "Pattern": "^[a-zA-Z]+$",
+                "Label": "Country",
+                "EndUserDisplay": "Show"
             },
             "Region": {
                 "Required": false,
                 "MaxLength": 50,
-                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$"
+                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$",
+                "Label": "Region",
+                "EndUserDisplay": "Show"
             },
             "PostalCode": {
                 "Required": true,
                 "MaxLength": 10,
-                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$"
+                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$",
+                "Label": "Postal Code",
+                "EndUserDisplay": "Show"
             }
         }
     },
@@ -131,17 +177,21 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         "IBAN": {
             "Required": true,
             "MaxLength": 34,
-            "Pattern": "^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$"
+            "Pattern": "^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$",
+            "Label": "IBAN",
+            "EndUserDisplay": "Show"
         }
     }
 }
 ```
-```json USD local
+```json USD, local, business
 {
     "DisplayName": {
         "Required": true,
         "MaxLength": 50,
-        "Pattern": "^(?!.*[&,'/]).{1,50}$"
+        "Pattern": "^(?!.*[&,'/]).{1,50}$",
+        "Label": "Display Name",
+        "EndUserDisplay": "Show"
     },
     "Currency": {
         "AllowedValues": [
@@ -150,80 +200,116 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         "Required": true,
         "MaxLength": 3,
         "MinLength": 3,
-        "Pattern": "^[a-zA-Z]{3}$"
+        "Pattern": "^[a-zA-Z]{3}$",
+        "Label": "Currency",
+        "EndUserDisplay": "Hide"
     },
     "RecipientType": {
         "AllowedValues": [
-            "Individual"
+            "Business"
         ],
         "Required": true,
-        "Pattern": "^[a-zA-Z]+$"
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Recipient Type",
+        "EndUserDisplay": "Hide"
     },
     "PayoutMethodType": {
         "AllowedValues": [
             "LocalBankTransfer"
         ],
         "Required": true,
-        "Pattern": "^[a-zA-Z]+$"
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Payout Method Type",
+        "EndUserDisplay": "Hide"
     },
-    "IndividualRecipient": {
-        "FirstName": {
+    "Tag": {
+        "Required": false,
+        "MaxLength": 255,
+        "Pattern": "^.{0,255}$",
+        "Label": "Tag",
+        "EndUserDisplay": "Hide"
+    },
+    "RecipientScope": {
+        "AllowedValues": [
+            "PAYOUT",
+            "PAYIN"
+        ],
+        "Required": false,
+        "Pattern": "^[a-zA-Z]+$",
+        "Label": "Recipient Scope",
+        "EndUserDisplay": "Hide"
+    },
+    "LocalBankTransfer": {
+        "USD": {
+            "AccountNumber": {
+                "Required": true,
+                "MaxLength": 12,
+                "MinLength": 8,
+                "Pattern": "^[0-9a-zA-Z]{8,12}$",
+                "Label": "Account Number",
+                "EndUserDisplay": "Show"
+            },
+            "ABA": {
+                "Required": true,
+                "MaxLength": 9,
+                "MinLength": 9,
+                "Pattern": "^\\d{9}$",
+                "Label": "ABA",
+                "EndUserDisplay": "Show"
+            }
+        }
+    },
+    "BusinessRecipient": {
+        "BusinessName": {
             "Required": true,
             "MaxLength": 255,
-            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$"
-        },
-        "LastName": {
-            "Required": true,
-            "MaxLength": 255,
-            "Pattern": "^(?!.*[()&,.:_/]).{1,255}$"
+            "Pattern": "^(?!.*[(),.:/]).{1,255}$",
+            "Label": "Business Name",
+            "EndUserDisplay": "Show"
         },
         "Address": {
             "AddressLine1": {
                 "Required": true,
                 "MaxLength": 255,
-                "Pattern": "^(?!.*[()/]).{1,255}$"
+                "Pattern": "^(?!.*[()/]).{1,255}$",
+                "Label": "Address Line 1",
+                "EndUserDisplay": "Show"
             },
             "AddressLine2": {
                 "Required": false,
                 "MaxLength": 255,
-                "Pattern": "^(?!.*[()/]).{1,255}$"
+                "Pattern": "^(?!.*[()/]).{1,255}$",
+                "Label": "Address Line 2",
+                "EndUserDisplay": "Show"
             },
             "City": {
                 "Required": true,
                 "MaxLength": 80,
-                "Pattern": "^(?!.*[&,.:_']).{1,80}$"
+                "Pattern": "^(?!.*[&,.:_']).{1,80}$",
+                "Label": "City",
+                "EndUserDisplay": "Show"
             },
             "Country": {
                 "Required": true,
                 "MaxLength": 2,
                 "MinLength": 2,
-                "Pattern": "^[a-zA-Z]+$"
+                "Pattern": "^[a-zA-Z]+$",
+                "Label": "Country",
+                "EndUserDisplay": "Show"
             },
             "Region": {
                 "Required": true,
                 "MaxLength": 50,
-                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$"
+                "Pattern": "^(?!.*[&,.:_'-/]).{1,50}$",
+                "Label": "Region",
+                "EndUserDisplay": "Show"
             },
             "PostalCode": {
                 "Required": true,
                 "MaxLength": 10,
-                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$"
-            }
-        }
-    },
-        "LocalBankTransfer": {
-        "USD": {
-            "ABA": {
-                "Required": true,
-                "MaxLength": 9,
-                "MinLength": 9,
-                "Pattern": "^\\d{9}$"
-            },
-            "AccountNumber": {
-              "Required": true,
-                "MaxLength": 12,
-                "MinLength": 8,
-                "Pattern": "^[0-9a-zA-Z]{8,12}$"
+                "Pattern": "^(?!.*[()&,.:_'/]).{1,10}$",
+                "Label": "Postal Code",
+                "EndUserDisplay": "Show"
             }
         }
     }
