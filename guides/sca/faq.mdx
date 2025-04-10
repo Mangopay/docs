@@ -54,14 +54,19 @@ Only transfers initiated directly by your end users will require SCA. Automated 
 For more details, see the [transfers](/guides/sca/transfers) guide.
 
 #### For SCA-applicable actions not taken by the user, but rather as part of automated workflows, will SCA be required?
-No, not for some specific actions that are not initiated by the user. Our transfer endpoint will be modified to include a new parameter `ScaContext`, which if set to `USER_NOT_PRESENT` can indicate that the transfer is out of scope of SCA. 
+For existing integrations, platforms will be able to identify actions not taken by the user thanks to the `USER_NOT_PRESENT` value of the new parameter `ScaContext`. These requests will not initially require SCA redirection. 
 
-Please note that it is essential that we understand the context and legal justification for such actions made without user presence, as bypassing direct user consent may incur security risks. Therefore the use of the `USER_NOT_PRESENT` parameter will be subject to workflow validation and implemented on a case-by-case basis.
+Over time, Mangopay will analyze the adoption of SCA and may be required to take appropriate action to ensure compliance. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt in its existing integration.
 
 For more details, see the [transfers](/guides/sca/transfers) guide.
 
 #### What happens if we perform actions on behalf of users, without their direct involvement? 
-When actions are executed on behalf of Mangopay account holders without direct user authentication, each case will be evaluated individually to determine the appropriate SCA process. It is essential that we understand the context and legal justification for such actions, as bypassing direct user consent could expose us to security risks. We remain committed to maintaining the highest standards of security and compliance.
+The `USER_NOT_PRESENT` value for `ScaContext` allows platforms to identify actions where SCA redirection will not be immediately required. 
+
+The use of this feature for actions taken on behalf of users, without their direct involvement, may be possible if the platform can demonstrate that it has the legal capacity to perform an action falling within the scope of the SCA on behalf of a third party. This legal capacity may result, for example, from a contractual arrangement (such as a mandate or representation contract) or another specific legal provision that would authorize the platform to act in this way.
+
+We remain committed to maintaining the highest standards of security and compliance, and Mangopay will analyze such cases over time to determine the appropriate arrangement. 
+
 
 #### When will SCA be triggered for our existing users, and how will it work?
 For existing users, Mangopay's features allow your platform to enroll them at a convenient point in their journey using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint. 
@@ -91,7 +96,9 @@ existing users, who already have `ACTIVE` as their `UserStatus`, will not be res
 
 On Recipients, Transfers, and Account Access they will also not be restricted (their status remains `ACTIVE`), but the relevant action will not succeed. In this case, you need to retry the Recipient creation or Transfer to allow the user to complete SCA successfully.
 
-In future, Mangopay may be required by regulators to start introducing consequences on users if they haven't enrolled in SCA, but this will be done with sufficient notice to platforms. These consequences may include removing certain permissions, blocking the account, reverting the category to `PAYER`, or closing the account.
+Mangopay may be required to start introducing consequences on users if they haven’t enrolled in SCA, but this will be done with sufficient notice to platforms. You will also be informed of the consequences of non-enrollment, which may include removing certain permissions, blocking the account, reverting the category to `PAYER`, or closing the account.
+
+Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt in its integration. We remain committed to maintaining the highest standards of security and compliance.
 
 See the guide section on [existing user integration](/guides/sca/users#existing-user-integration) **&rarr;**
 
