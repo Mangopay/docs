@@ -17,16 +17,15 @@ In the Recipients feature, each local and international account has a specified 
 
 In this way, the Recipients feature helps ensure that payouts are delivered effectively.
 
-Once Recipients is fully live in May 2025, the legacy Bank Account endpoints will be deprecated with a planned decommission in 2026. Existing bank accounts will be compatible with the new Recipients feature. This means: 
-- that your platform will be able to continue using the `BankAccountId` of **active** bank accounts for payouts.
+Once Recipients is fully live in Production in May 2025, existing bank accounts will be compatible with the new Recipients feature. This means your platform will be able to continue using the `BankAccountId` of **active** bank accounts for payouts.
 
 ### Recipient scopes
 
 #### Payout
 
-By default, the Recipient is considered to be for use with payouts. This will be indicated by the `RecipientScope` parameter which will have the default value `PAYOUT`. 
+By default, the Recipient is considered to be for use with payouts. This is indicated by the `RecipientScope` parameter which has the default value `PAYOUT`. 
 
-This kind of recipient can only be registered by an `OWNER` user and can be used for payouts. SCA is always required when the Recipient is created, so the API call will return `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage.
+This kind of recipient can only be registered by an `OWNER` user and can be used for payouts. SCA is always required when the Recipient is created, so the API call returns the `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage.
 
 Because the Recipient registration was authenticated with SCA, it can be considered a trusted beneficiary for future payouts. This allows the payout to be initiated without SCA, but the usual KYC verification requirements apply.
 
@@ -57,7 +56,7 @@ In Sandbox, SCA is not triggered if any of the following are true:
 
 A Recipient represents a bank account belonging to the beneficiary of a payout. A recipient can be an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address.
 
-## Payout methods
+### Payout methods
 
 Mangopay offers two payout methods: 
 - `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 

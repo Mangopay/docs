@@ -50,7 +50,8 @@ For new platforms, the parameter should be considered **required** and `USER_PRE
 
 Both values may result in the need for SCA redirection: the platform may include `USER_PRESENT` and be exempted, or include `USER_NOT_PRESENT` and have SCA imposed by Mangopay.
 
-When Mangopay determines that SCA is required, a call to any of the 4 endpoints above will return **only** the `PendingUserAction` object containing the `RedirectUrl` for the user to be able authenticate.
+When Mangopay determines that SCA is required, a call to any of the 4 endpoints above will return **only** the `PendingUserAction` object containing the `RedirectUrl` for the user to be able authenticate. 
+
 
 Once SCA is successful, subsequent calls to any of the above endpoints will return the wallet or transaction data for the next 180 days, until SCA will be required again.
 
@@ -59,13 +60,10 @@ When SCA can be exempted, because it has been less than 180 days since the last 
 ## Action required
 
 <Info>
-Integrating SCA redirection on account access will be mandatory for all platforms.
-
 **Possible exemptions on account access actions**
 
 - For user-initiated wallet access, the access request can be exempted if the last SCA for this action occurred less than 180 days ago. This means that SCA performed for a different action, such as registering a Recipient or initiating a transfer, **cannot** be used to exempt account access.
 - For existing integrations, the value `USER_NOT_PRESENT` can be used to declare an automated account access request which won't trigger SCA redirection. In future, and based on its analysis of adoption, Mangopay may be required to take action to ensure SCA adoption, such as overriding these requests.
-- Accessing a wallet of a `PAYER` is considered a technical action and is out of scope of SCA.
 </Info>
 
 <Info>
