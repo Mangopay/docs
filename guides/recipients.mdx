@@ -88,7 +88,7 @@ The Recipient `Status` is `PENDING` until the user authenticates successfully, a
 
 Set up a webhook for the `RECIPIENT_ACTIVE` event type to be notified of this.
 
-If SCA is not successfully completed, the status changes to `CANCELLED`. To retry SCA, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
+If SCA is not successfully completed, the status changes to `CANCELED`. To retry SCA, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
 </Step>
 </Steps>
 
@@ -98,7 +98,7 @@ When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by 
 
 Payouts can only be requested against a Recipient that is `ACTIVE`. 
 
-If you attempt a payout to a Recipient that is `PENDING` or `CANCELLED`, the Recipient ID is not considered valid and a 400 error is returned:
+If you attempt a payout to a Recipient that is `PENDING` or `CANCELED`, the Recipient ID is not considered valid and a 400 error is returned:
 
 ```json
 {
@@ -119,7 +119,7 @@ If you attempt a payout to a Recipient that is `DEACTIVATED`, the payout is crea
 The `Status` of the Recipient can have the following values.
 
 - `PENDING` – When a Recipient is first created, it has the `PENDING` status. The user must complete SCA before the recipient can become `ACTIVE` and be used.
-- `CANCELLED` – If SCA is not successful, the Recipient status changes to `CANCELLED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
+- `CANCELED` – If SCA is not successful, the Recipient status changes to `CANCELED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
 - `ACTIVE` – SCA was successful and the Recipient was created successfully. Payouts can only be requested to a Recipient that is `ACTIVE`.
 - `DEACTIVATED` – The recipient has been permanently disabled and can no longer be used for payouts. You can deactivate a Recipient using the [PUT Deactivate a Recipient](/api-reference/recipients/deactivate-recipient) endpoint.
 
