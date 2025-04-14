@@ -4,7 +4,10 @@ api: 'GET /v2.01/{ClientId}/users/{UserId}/wallets'
 ---
 
 import Array_WalletsResponse from '/snippets/p-response/Array_WalletsResponse.mdx';
+
 import UserId from '/snippets/p-path/UserId.mdx';
+
+import ScaContext from '/snippets/p-query/ScaContext.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
@@ -19,6 +22,10 @@ import NetListUserWallets from '/snippets/code/net-list-user-wallets.mdx';
 
 <UserId />  
 
+### Query parameters  
+
+<ScaContext/>
+
 ### Responses  
 
 <AccordionGroup>
@@ -31,9 +38,21 @@ import NetListUserWallets from '/snippets/code/net-list-user-wallets.mdx';
 
 </AccordionGroup>  
 
-<ResponseExample>  
+<AccordionGroup>
 
-```json 200  
+<Accordion title="401 - SCA required" defaultOpen>  
+
+When SCA is required for wallet access, this endpoint returns a **401 - Unauthorized** response code with the `RedirectUrl` in the `WWW-Authenticate` response header.
+
+In this case, your platform needs to retrieve the URL value, encode and add a `returnUrl` query parameter, and redirect the user.
+
+Read more about [SCA on wallet access](/guides/sca/wallets) **&rarr;**
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>  
+```json 200
 [
     {
         "Description": "Description of the user's wallet",
@@ -66,8 +85,10 @@ import NetListUserWallets from '/snippets/code/net-list-user-wallets.mdx';
         "CreationDate": 1724921476
     }
 ]
-```  
-
+```
+```json 410 - SCA required
+// No response body, RedirectUrl returned in WWW-Authenticate response header
+```
 </ResponseExample>  
 
 <RequestExample>  

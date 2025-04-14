@@ -14,6 +14,8 @@ import Description1Response from '/snippets/p-response/Description1Response.mdx'
 
 import WalletId from '/snippets/p-path/WalletId.mdx';
 
+import ScaContext from '/snippets/p-query/ScaContext.mdx';
+
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
   
 import PhpViewWallet from '/snippets/code/php-view-wallet.mdx';
@@ -26,6 +28,10 @@ import NetViewWallet from '/snippets/code/net-view-wallet.mdx';
 ### Path parameters  
 
 <WalletId />  
+
+### Query parameters  
+
+<ScaContext/>
 
 ### Responses  
 
@@ -53,6 +59,19 @@ import NetViewWallet from '/snippets/code/net-view-wallet.mdx';
 
 </AccordionGroup>  
 
+<AccordionGroup>
+
+<Accordion title="401 - SCA required" defaultOpen>  
+
+When SCA is required for wallet access, this endpoint returns a **401 - Unauthorized** response code with the `RedirectUrl` in the `WWW-Authenticate` response header.
+
+In this case, your platform needs to retrieve the URL value, encode and add a `returnUrl` query parameter, and redirect the user.
+
+Read more about [SCA on wallet access](/guides/sca/wallets) **&rarr;**
+</Accordion>
+
+</AccordionGroup>
+
 <ResponseExample>
 ```json 200  
 {
@@ -70,6 +89,9 @@ import NetViewWallet from '/snippets/code/net-view-wallet.mdx';
     "Tag": "Created using Mangopay API Postman collection",
     "CreationDate": 1719348029
 }
+```
+```json 410 - SCA required
+// No response body, RedirectUrl returned in WWW-Authenticate response header
 ```
 </ResponseExample>  
 
