@@ -13,17 +13,13 @@ This means that when an `OWNER` user initiates a transfer to a wallet held by an
 Mangopay is introducing a **new body parameter** of the existing [POST Create a Transfer](/api-reference/transfers/create-transfer), `ScaContext`, which will have the values:
 
 - `USER_PRESENT` – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
-- `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. SCA is not required (unless the request is overridden by Mangopay).
+- `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
 
-Both values may result in the need for SCA redirection: the platform may include `USER_PRESENT` and be exempted, or include `USER_NOT_PRESENT` and have SCA imposed by Mangopay.
+To begin with, the parameter is technically **optional** and its default value if not sent is `null`, which has the same meaning as `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt. 
 
-<Note>
-**Note – Implementation in agreement with Mangopay**
+For new platforms, the parameter should be considered **required** and `USER_PRESENT` should be considered the default value. 
 
-It is essential that Mangopay understands the context and legal justification for Transfer actions made without the user's presence, as bypassing direct user consent may incur security risks and non-compliance with applicable regulations. 
-
-Therefore the use of the `USER_NOT_PRESENT` value will be subject to workflow validation and implemented on a case-by-case basis with the appropriate supporting documentation as evidence.
-</Note>
+Both values may technically result in the need for SCA redirection: the platform may include `USER_PRESENT` and be exempted by Mangopay, or include `USER_NOT_PRESENT` and, in future, have SCA imposed by Mangopay.
 
 If Mangopay determines that SCA is required for the transfer request, the API response will contain `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage within 10 minutes of the API response.
 
@@ -81,23 +77,18 @@ You must ensure your integration relies on receiving the [webhooks](/webhooks) f
 ## Action required
 
 <Info>
-Integrating SCA redirection on transfers will be mandatory for all platforms. Implementation of `ScaContext` will be necessary for platforms needing to declare automated workflows.
-
 **Possible exemptions on transfer actions**
 
-The following exemptions may be applied by Mangopay:
-
 - For user-initiated transfers, Mangopay will apply the exemptions allowed by the regulations (such as low-risk or low-amount transfers, [read more](/guides/sca#exemptions-on-actions)). Platforms will not be able to specifically request exemptions.
-- For automated workflow transfers, SCA will not apply. Mangopay may override an automated transfer request (with `USER_NOT_PRESENT`) if it has reason to believe that the user is present and initiating the transfer.
-- A transfer debiting the wallet of a `PAYER` is considered a technical movement of funds and is out of scope of SCA.
+- For existing integrations, the value `USER_NOT_PRESENT` can be used to declare an automated workflow transfer which won't trigger SCA redirection. In future, and based on its analysis of adoption, Mangopay may be required to take action to ensure SCA adoption, such as overriding these requests.
 </Info>
 
 <Info>
 **Action required on transfers**
 
-- Analyze your platform's workflow to identify:
-  1. Transfers initiated by the user, which require the user to be present to authenticate
-  2. Transfers automated as part of your workflow, to which SCA will not apply
+- Analyze your platform's existing workflow to identify:
+  1. Transfers initiated by the user, which require the user to be present to authenticate. For these you need to send the `USER_PRESENT` value and redirect the user (unless the specific request is exempted).
+  2. Transfers to declare as automated, for which SCA redirection will not initially be required. For these, you need to send `USER_NOT_PRESENT`.
 - Ensure you have [implemented webhooks](/webhooks) for transfer event types:
   - `TRANSFER_NORMAL_CREATED`
   - `TRANSFER_NORMAL_FAILED`
