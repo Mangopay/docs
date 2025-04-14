@@ -1,0 +1,69 @@
+---
+title: 'Close a Natural User'  
+api: 'DELETE /v2.01/{ClientId}/users/natural/{UserId}'  
+description: Permanently close a user account so it can no longer be used
+---
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+This endpoint allows your platform to request the closure of a Mangopay Account as per Mangopay's terms and conditions.
+
+When a User is closed, the `UserStatus` changes to `CLOSED` but the resource remains available via the API for historical purposes. 
+
+Closure is only possible if all wallets held by the user are empty. Closure is allowed for both `UserCategory` `OWNER` and `PAYER`.
+
+<Warning>
+**Caution – Closure is irreversible**
+
+Calling this endpoint permanently changes the `UserStatus` to `CLOSED`. This cannot be undone, even by Mangopay. 
+
+Your platform can re-register the user using [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca).
+</Warning>
+
+### Path parameters  
+
+<UserId />  
+
+### Responses  
+
+<AccordionGroup>
+<Accordion title="204 - No Content" defaultOpen>
+The 204 response code indicates that the closure request was successful.
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400 - Wallets not empty">
+```json 
+{
+    "Message": "The user cannot be closed as one or several wallets are not empty",
+    "Type": "user_closure_not_possible",
+    "Id": "bcb91dae-bb4a-4f99-937c-8f8530c14a31#1744636047",
+    "Date": 1744636048,
+    "errors": null
+}
+```
+</Accordion>
+<Accordion title="400 - User already closed">
+```json 
+{
+    "Message": "An error occurred while closing the user",
+    "Type": "user_closure_failed",
+    "Id": "8524ae5f-3232-4910-b9db-4ffd7f4be4ee",
+    "Date": 1744631045,
+    "errors": null
+}
+```
+</Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```json REST
+// DELETE has no body parameters
+```
+</RequestExample>
+
+<ResponseExample>
+```json 204
+```
+</ResponseExample>
