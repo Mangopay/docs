@@ -20,14 +20,34 @@ The following diagram provides an overview of how the Mangopay-hosted SCA sessio
 
 This section describes how to handle the SCA redirection when required by an SCA enrollment or authentication scenario.
 
+#### Differences between scenarios
+
+While the redirection mechanism is the same in all cases, there are the following differences:
+- The redirect URL is returned in a response header for wallet access, whereas the others are in the response body ([Step 2](#2-retrieve-the-sca-redirect-url))
+- There is no webhook for a failed enrollment outcome, nor for wallet access outcomes ([Step 7](#7-confirm-the-session-outcome-and-retry-if-required))
+
 ### 1. Call an endpoint that triggers SCA redirection
-Your platform needs to redirect the user for an SCA session when your platform takes one of the following actions and calls the relevant endpoint (see linked guides for details):
+Your platform needs to redirect the user for an SCA session when your platform calls one of several endpoints to initiate an SCA-triggering action. 
+
+The following actions and endpoints trigger SCA redirection (see the linked guides for details).
+
+<Note>
+**Note – SCA only triggered for Natural and Soletrader users**
+
+SCA is not triggered for Legal users whose `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`, but the endpoints can still be integrated for them. For more details, see the section about [legal user integration](/guides/sca/users#legal-user-integration).
+</Note>
+
+<Tabs>
+<Tab title="Users">
+
+See [Users – SCA triggers in Sandbox](/guides/sca/users#sca-triggers-in-sandbox) for current testing information.
 
 <table>
 <thead>
 <tr>
 <th class="header">Action</th>
 <th class="header">Endpoints</th>
+<th class="header">Criteria</th>
 </tr>
 </thead>
 <tbody>
@@ -36,7 +56,10 @@ Your platform needs to redirect the user for an SCA session when your platform t
 [Register a Owner user for the first time](/guides/sca/users#register-an-owner-for-the-first-time)
 </td>
 <td class="table-content">
-[POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) if `UserCategory` is `OWNER`
+[POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+</td>
+<td class="table-content">
+If `UserCategory` is `OWNER`
 </td>
 </tr>
 <tr>
@@ -46,6 +69,9 @@ Your platform needs to redirect the user for an SCA session when your platform t
 <td class="table-content">
 [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
 </td>
+<td class="table-content">
+None (always returned)
+</td>
 </tr>
 <tr>
 <td class="table-content">
@@ -54,19 +80,144 @@ Your platform needs to redirect the user for an SCA session when your platform t
 <td class="table-content">
 [POST Enroll a User in SCA](/api-reference/users/enroll-user)
 </td>
+<td class="table-content">
+None (always returned)
+</td>
 </tr>
 <tr>
 <td class="table-content">
 [Re-enroll a User](/guides/sca/users#re-enroll-a-owner-user)
 </td>
 <td class="table-content">
-[PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) if the `PhoneNumber`, `PhoneNumberCountry`, or `Email` are changed; or [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca) if the `LegalRepresentative.PhoneNumber`, `LegalRepresentative.PhoneNumberCountry`, or `LegalRepresentative.Email` are changed
+[PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) or [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+</td>
+<td class="table-content">
+If `UserCategory` is `OWNER` and any of these are changed:
+- Natural
+  - `PhoneNumber`
+  - `PhoneNumberCountry`
+  - `Email`
+- Legal
+  - `LegalRepresentative.PhoneNumber`
+  - `LegalRepresentative.PhoneNumberCountry` 
+  - `LegalRepresentative.Email`
+</td>
+</tr>
+</tbody>
+</table> 
+    
+</Tab>
+<Tab title="Recipients">
+
+See [Recipients – SCA triggers in Sandbox](/guides/sca/recipients#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+[Register a bank account for an Owner](/guides/recipients#how-to-register-a-recipient-for-payouts)
+</td>
+<td class="table-content">
+[POST Create a Recipient](/api-reference/recipients/create-recipient)
+</td>
+<td class="table-content">
+If the user's `UserCategory` is `OWNER` and the recipient's `RecipientScope` is `PAYOUT` (or not sent)
 </td>
 </tr>
 </tbody>
 </table> 
 
-### 2. Retrieve the SCA RedirectUrl
+</Tab>
+<Tab title="Transfers">
+
+See [Transfers – SCA triggers in Sandbox](/guides/sca/transfers#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+[Initiate a transfer between two Owners](/guides/sca/transfers)
+</td>
+<td class="table-content">
+[POST Create a Transfer](/api-reference/transfers/create-transfer)
+</td>
+<td class="table-content">
+If `DebitedWalletId` and `CreditedWalletId` belong to two different users whose `UserCategory` is `OWNER` and an [exemption](/guides/sca#exemptions-on-actions) can't be applied by Mangopay
+</td>
+</tr>
+</tbody>
+</table> 
+
+</Tab>
+<Tab title="Wallet access">
+
+See [Wallet access – SCA triggers in Sandbox](/guides/sca/wallets#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+Access a specific wallet balance
+</td>
+<td class="table-content">
+[GET View a Wallet](/api-reference/wallets/view-wallet)
+</td>
+<td class="table-content" rowSpan={4}>
+If a successful SCA session using one of these 4 endpoints has not been completed in the last 180 days
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List a user's wallets
+</td>
+<td class="table-content">
+[GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List transactions for a wallet
+</td>
+<td class="table-content">
+[GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List transactions for a user
+</td>
+<td class="table-content">
+[GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+</td>
+</tr>
+</tbody>
+</table> 
+
+</Tab>
+</Tabs>
+
+### 2. Retrieve the SCA redirect URL
 
 In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value which you need for the next step.
 
@@ -135,6 +286,8 @@ The session of the `RedirectUrl` is valid for 10 minutes. If the user does not c
 
 If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint [POST Enroll a User in SCA](/api-reference/users/enroll-user).
 </Note>
+
+To test the OTP factor in Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow. You can also use a real phone number to receive the SMS OTP.
 
 ### 6. Retrieve the returnUrl query parameters
 
