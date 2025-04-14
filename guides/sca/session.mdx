@@ -183,7 +183,7 @@ Access a specific wallet balance
 <td class="table-content">
 [GET View a Wallet](/api-reference/wallets/view-wallet)
 </td>
-<td class="table-content" rowSpan={4}>
+<td class="table-content row-span" rowSpan={4}>
 If a successful SCA session using one of these 4 endpoints has not been completed in the last 180 days
 </td>
 </tr>
@@ -219,19 +219,56 @@ List transactions for a user
 
 ### 2. Retrieve the SCA redirect URL
 
-In the API response from an endpoint triggering SCA, the `PendingUserAction` object contains a `RedirectUrl` value which you need for the next step.
+The API response contains the redirect URL containing a unique token query parameter. You need to retrieve the full value dynamically, meaning the host and the query, for the next step.
 
-For example, in the API response:
+<Tabs>
+<Tab title="Users">
+For example, in the API response for user endpoints:
 
-```json
+```json 200 response body
 {
-...
+  ...
 	"PendingUserAction": {
-		"RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
+    "RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
     },
-...
+  ...
 }
 ```
+</Tab>
+<Tab title="Recipients">
+For example, in the API response for recipient creation:
+
+```json 200 response body
+{
+  ...
+	"PendingUserAction": {
+    "RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
+    },
+  ...
+}
+```
+</Tab>
+<Tab title="Transfers">
+For example, in the API response for transfer initiation:
+
+```json 200 response body
+{
+  ...
+	"PendingUserAction": {
+    "RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
+    },
+  ...
+}
+```
+</Tab>
+<Tab title="Wallet access">
+For example, in the API response for wallet access:
+
+```HTTP 401 response header
+WWW-Authenticate: PendingUserAction redirectUrl=https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21 
+```
+</Tab>
+</Tabs>
 
 The URL of the unique SCA session is:
 
@@ -284,7 +321,7 @@ Once on the session URL, the user can perform the necessary actions for the SCA 
 
 The session of the `RedirectUrl` is valid for 10 minutes. If the user does not complete the necessary steps during this time, the session can no longer be used and they are returned on your return URL.
 
-If this happens, you need to obtain a new `RedirectUrl` for them using the endpoint [POST Enroll a User in SCA](/api-reference/users/enroll-user).
+If this happens, you need to retry the SCA session using the relevant endpoint (see [Step 7](#7-confirm-the-session-outcome-and-retry-if-required) below) to obtain a new `RedirectUrl`.
 </Note>
 
 To test the OTP factor in Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow. You can also use a real phone number to receive the SMS OTP.
@@ -320,34 +357,44 @@ The `actionStatus` parameter indicates the status of the action being controlled
 
 The query parameters appended to the `returnUrl` are indicative.
 
-You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the SCA session by calling the relevant endpoint of the Mangopay API. 
+You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the action that triggered the SCA session by calling the relevant endpoint of the Mangopay API.
 
-Note that there is no webhook in the case of an unsuccessful enrollment in the user endpoints, but there will be in the case of recipient registration and for transfer initiation it is the existing `TRANSFER_NORMAL_FAILED`.
+<Tabs>
+<Tab title="Users">
 
 <table>
 <thead>
 <tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="header">SCA trigger</th>
+<th class="header">Success</th>
 <td class="table-content">
-Enrollment in user endpoints
+`UserStatus` changed from `PENDING_USER_ACTION` to `ACTIVE`
+</td>
+<td class="table-content">
+`USER_ACCOUNT_ACTIVATED`
 </td>
 </tr>
 <tr>
-<th class="header">Status change</th>
+<th class="header">Failure</th>
 <td class="table-content">
-`UserStatus` of the Natural or Legal user (`UserId`) changed from `PENDING_USER_ACTION` to `ACTIVE`. In case of an unsuccessful SCA session, the `UserStatus` stays as `PENDING_USER_ACTION`.
+None, `UserStatus` stayed as `PENDING_USER_ACTION`
+</td>
+<td class="table-content">
+None
 </td>
 </tr>
-<tr>
-<th class="header">Webhook event</th>
-<td class="table-content">
-`USER_ACCOUNT_ACTIVATED` (no webhook for unsuccessful enrollment)
-</td>
-</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
 <tr>
 <th class="header">Confirm</th>
 <td class="table-content">
@@ -362,6 +409,171 @@ Enrollment in user endpoints
 </tr>
 </tbody>
 </table>
+
+</Tab>
+<Tab title="Recipients">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+`Status` changed from `PENDING` to `ACTIVE`
+</td>
+<td class="table-content">
+`RECIPIENT_ACTIVE`
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+`Status` changed from `PENDING` to `CANCELED`
+</td>
+<td class="table-content">
+`RECIPIENT_CANCELED`
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a Recipient](/api-reference/recipients/view-recipient)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Create a Recipient](/api-reference/recipients/create-recipient)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+<Tab title="Transfers">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+`Status` changed from `CREATED` to `SUCCEEDED`
+</td>
+<td class="table-content">
+`TRANSFER_NORMAL_SUCCEEDED`
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+`Status` changed from `CREATED` to `FAILED`
+</td>
+<td class="table-content">
+`TRANSFER_NORMAL_FAILED`
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a Transfer](/api-reference/transfers/view-transfer)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Create a Transfer](/api-reference/transfers/create-transfer)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+<Tab title="Wallet access">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+None
+</td>
+<td class="table-content">
+None
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+None
+</td>
+<td class="table-content">
+None
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header" rowSpan={4}>**Confirm or retry**</th>
+<td class="table-content">
+[GET View a Wallet](/api-reference/wallets/view-wallet)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+</Tabs>
 
 
 ## Related resources
