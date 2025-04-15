@@ -1,0 +1,13 @@
+<ParamField body="ScaContext" type="string" required>
+**Possible values:** `USER_PRESENT`, `USER_NOT_PRESENT`
+
+**Default value:** `null` (parameter not technically required)
+
+The SCA context of the request, which should be considered required if the `AuthorId` references a user whose `UserCategory` is `OWNER`:
+- `USER_PRESENT` – The user is initiating the transfer and is actively present. The platform must [redirect the user](/guides/sca/session) for SCA using the `PendingUserAction.RedirectUrl` returned, unless an exemption can be applied by Mangopay such as on low-amount and low-risk transfers. Platforms are not able to request specific exemptions.
+- `USER_NOT_PRESENT` – No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
+
+The API returns what was sent. Both values may technically result in the need for SCA redirection, because an exemption may be applied by Mangopay or (in future) Mangopay may be required to override a given request.
+
+**Note:** `ScaContext` is a temporary mechanism to introduce SCA on existing endpoints and workflows. New integrations should consider the parameter required and send `USER_PRESENT` by default. Read more about [SCA on transfers](/guides/sca/transfers) **&rarr;**
+</ParamField>
