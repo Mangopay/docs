@@ -210,11 +210,23 @@ The following scenarios describe how you can enroll your users in SCA to create 
 
 In each case, the API call triggers SCA and returns the `PendingUserAction.RedirectUrl` redirection link. And in each case, the way you need to redirect the user and handle the outcome is the same. For more detailed guidance on this redirection process, [SCA session]().
 
+#### SCA triggers in Sandbox
+
+In Sandbox, SCA is triggered on the SCA-enabled POST and PUT endpoints when all of the following are true: 
+- `UserCategory` is `OWNER`
+- The type of the user is **Natural** or **Soletrader**
+
+In Sandbox, SCA is not triggered if any of the following are true:
+- `UserCategory` is `PAYER`
+- The legal user's `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`
+
+Notes:
+- [POST Enroll a User](/api-reference/users/enroll-user) returns `PendingUserAction.RedirectUrl` regardless of the user type
+- The PUT endpoints only trigger SCA redirection if `PhoneNumber`, `PhoneNumberCountry`, or `Email` are changed
+
 #### Testing
 
-In Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow.
-
-You can also test by using a real phone number to receive the SMS OTP.
+To test the OTP factor in Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow. You can also use a real phone number to receive the SMS OTP.
 
 <Check>
 **Best practice – Explore using Postman collection**
@@ -275,7 +287,7 @@ In the API response:
 The `PENDING_USER_ACTION` status triggers a [webhook notification](/webhooks) for the `USER_ACCOUNT_VALIDATION_ASKED` event type – set up this [Hook](/api-reference/webhooks/create-hook) to be notified.
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirect-url)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
 After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
@@ -343,7 +355,7 @@ In the API response:
 The `PENDING_USER_ACTION` status triggers a [webhook notification](/webhooks) for the `USER_ACCOUNT_VALIDATION_ASKED` event type – set up this [Hook](/api-reference/webhooks/create-hook) to be notified.
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirect-url)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
 After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
@@ -376,7 +388,7 @@ On the enrollment endpoint, the API returns only the `PendingUserAction.Redirect
 The user's `UserStatus` still changes to `PENDING_USER_ACTION`, which triggers the a `USER_ACCOUNT_VALIDATION_ASKED` [webhook](/webhooks).
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirect-url)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
 After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
@@ -429,7 +441,7 @@ Any PUT call that changes the `PhoneNumber` value triggers SCA, even if the user
 </Note>
 </Step>
 <Step title="Redirect the user to the SCA session">
-Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirect-url)). Then, redirect the user.
 </Step>
 <Step title="Confirm success or retry the session">
 After the SCA session, when the user is returned on your `returnUrl`, check the `controlStatus` and `actionStatus` query parameters attached by Mangopay (as described in [Step 5 and 6](/guides/sca/session#5-retrieve-the-returnurl-query-parameters)).
