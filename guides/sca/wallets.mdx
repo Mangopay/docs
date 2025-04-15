@@ -49,7 +49,7 @@ The endpoints to list transactions or refunds based on other objects (such as fo
 
 ### 1. Send ScaContext on Owner-initiated wallet access requests
 
-On the 4 endpoints listed above (only), Mangopay has introduced a **new query parameter**, `ScaContext`, which your platform needs to send on all requests initiated by Owners.
+On the 4 endpoints listed above (only), Mangopay has introduced a **new query parameter**, `ScaContext`, which your platform needs to send on all requests initiated by users whose `UserCategory` is `OWNER`.
 
 The `ScaContext` parameter has the values:
 
@@ -59,6 +59,8 @@ The `ScaContext` parameter has the values:
 To begin with, the parameter is technically **optional** and if not sent, it has the same effect as sending `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt.
 
 For new platforms, the parameter should be considered **required** and `USER_PRESENT` should be considered the default value. 
+
+You do not need to send this parameter if the `UserCategory` is `PAYER`.
 
 #### Example API request
 

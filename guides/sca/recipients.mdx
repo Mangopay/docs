@@ -18,7 +18,7 @@ In the Recipients feature, each local and international account has a specified 
 
 In this way, the Recipients feature helps ensure that payouts are delivered effectively.
 
-Once Recipients is fully live in Production in May 2025, existing bank accounts will be compatible with the new Recipients feature. This means your platform will be able to continue using the `BankAccountId` of **active** bank accounts for payouts.
+Once Recipients is fully live in Production in May 2025, existing bank accounts will be compatible with the new Recipients feature. This means your platform will be able to continue using the `BankAccountId` of **active** bank accounts for payouts, as well as for direct debits and pay-in refunds.
 
 ### Recipient scopes
 
@@ -88,7 +88,7 @@ A user's real bank account can therefore be registered more than once, for examp
 
 ## How to register a recipient for payouts
 
-To register a recipient for payouts for an `OWNER` user, the steps are as follows:
+To register a recipient for payouts for an `OWNER` user, follow the steps below. In the payout scenario described below, `RecipientScope` is `PAYOUT` (by default) and therefore SCA is required.
 
 <Steps>
 <Step title="View available payout methods">
@@ -114,9 +114,9 @@ You are strongly recommended to validate the recipient data before creating it. 
 </Check>
 </Step>
 <Step title="Create the recipient">
-Once validated, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint to register the account details.
+Once validated, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint with the same request body to register the account details. 
 
-The **201 - Created** response from the API shows the recipient's `Status` as `PENDING` and contains the `PendingUserAction.RedirectUrl` you need for the next step.
+The **201 - Created** response from the API shows the recipient's `Status` as `PENDING` and contains the `PendingUserAction.RedirectUrl` you need for the next step. 
 </Step>
 <Step title="Redirect the user to the SCA session">
 Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
@@ -146,7 +146,9 @@ Once Recipients is fully live in Production in May 2025, existing bank accounts 
 
 When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by calling the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint and entering the `Id` of the Recipient as the `BankAccountId`. 
 
-Payouts can only be requested against a Recipient that is `ACTIVE`. 
+Payouts can only be requested against a Recipient that has: 
+- `Status` value `ACTIVE`
+- `RecipientScope` value `PAYOUT`
 
 If you attempt a payout to a Recipient that is `PENDING` or `CANCELED`, the Recipient ID is not considered valid and a 400 error is returned:
 
