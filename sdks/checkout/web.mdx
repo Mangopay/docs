@@ -1029,6 +1029,17 @@ To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` obje
             The assigned function should implement backend creation of the [PayPal pay-in](/api-reference/paypal/create-paypal-payin) from your server.
             </td>
         </tr>
+        <tr>
+            <td class="table-content">`options.merchantId`</td>
+            <td class="table-content">string
+                **REQUIRED**</td>
+            <td class="table-content">
+            A unique identifier for the merchant account.  
+            <br />
+            This value is required to associate the payment with your merchant account when processing PayPal pay-ins.  
+            You can find your `merchantId` in your PayPal Business Account.
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -1054,6 +1065,7 @@ const options = {
         {
 	        type: "paypal",
 	        options: {
+              merchantId: 'YOUR_PAYPAL_MERCHANT_ID', 
 	          //define delegate to call when Paypal button is clicked
 	          onCreatePayment: (data) => createPayPalPayIn(data)
 	        }
