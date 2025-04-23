@@ -1,0 +1,148 @@
+---
+title: 'API - Feb 26, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+## User endpoints to enable SCA enrollment
+
+Mangopay is applying strong customer authentication (SCA) on the creation of Natural and Legal users with the `UserCategory` value `OWNER`. 
+
+SCA requires the Owner user to authenticate with Mangopay directly as they are the Mangopay account holder.
+
+For **Natural users**, enrollment of the **OTP factor** is available to integrate, requiring the individual's `PhoneNumber` and `Email`.
+
+For **Legal users**, enrollment of the **OTP factor** is available to integrate for **Soletraders**. The individual's phone number and email must be provided in `LegalRepresentative.PhoneNumber` and `LegalRepresentative.Email` and they must authenticate.
+
+In future, Mangopay will provide features to allow the other types of Legal user (Business, Organization, Partnership) to designate additional **authorized individuals** who can complete SCA on behalf of the entity.
+
+<Info>
+Mangopay started communicating by email about SCA on Owners during **February 2025**. Your platform will be required to complete the necessary integrations, with specific deadlines communicated during the year.
+
+For any questions, please contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Info>
+
+SCA is applicable to Owners in the following scenarios:
+
+1. Register an Owner for the first time
+2. Transition an existing Payer to Owner
+3. Enroll an existing Owner
+4. Re-enroll a User (if contact details change)
+
+In each case, your platform must redirect the individual to a Mangopay-hosted webpage. The redirection URL for the SCA session is returned by the Mangopay API in the response property `PendingUserAction.RedirectUrl`. Before redirecting, you need to define, encode, and apprend a `returnUrl` to which the session returns the user afterwards (whatever the outcome). 
+
+For guidance, see the new **Owner SCA** section:
+
+<Card title="Guide" href="/guides/sca">
+Owner SCA – Introduction, SCA session, enrollment
+</Card>
+
+<br/>
+
+## Endpoints
+
+There are new SCA-enabled endpoints for the creation and modification of users, as well as a dedicated one to change the `UserCategory`. The data schema has also changed, see the details for [Natural](/api-reference/users/natural-user-object-sca#changes-from-non-sca-object) and [Legal](/api-reference/users/legal-user-object-sca#changes-from-non-sca-object) users.
+
+<Card title="Create a Natural User (SCA)" href="/api-reference/users/create-natural-user-sca">
+Register a Natural Payer (with SCA enrollment)
+</Card>
+
+<Card title="Update a Natural User (SCA)" href="/api-reference/users/update-natural-user-sca">
+Modify details for a Natural Payer or Owner without changing category
+</Card>
+
+<Card title="Categorize a Natural User" href="/api-reference/users/categorize-natural-user">
+Transition a Natural Payer to Owner and enroll them in SCA
+</Card>
+
+<Card title="Create a Legal User (SCA)" href="/api-reference/users/create-legal-user-sca">
+Register a Legal Payer or Owner (with SCA enrollment)
+</Card>
+
+<Card title="Update a Legal User (SCA)" href="/api-reference/users/update-legal-user-sca">
+Modify details for a Legal Payer or Owner without changing category
+</Card>
+
+<Card title="Categorize a Legal User" href="/api-reference/users/categorize-legal-user">
+Transition a Legal Payer to Owner and enroll them in SCA
+</Card>
+
+There is a new endpoint for retrieving an enrollment link for legacy users (and new ones):
+
+<Card title="Enroll a User in SCA" href="/api-reference/users/enroll-user">
+Obtain an SCA redirection link to enroll an Owner user
+</Card>
+
+There is a new GET endpoint for the new Legal User data schema:
+
+<Card title="View a User (SCA)" href="/api-reference/users/view-user-sca">
+Retrieve a Natural or Legal User with SCA data schema
+</Card>
+
+<br/>
+
+## Webhooks
+
+There are new webhook [event types](/webhooks/event-types) to be notified of Owner account SCA enrollment. They are triggered for existing and newly created users but only if `UserCategory` is `OWNER`: 
+
+<table class="header-column">
+<tbody>
+<tr>
+<th class="header">`EventType`</th>
+<td class="table-content">
+`USER_ACCOUNT_VALIDATION_ASKED`
+</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Owner User has triggered SCA enrollment or re-enrollment. Their access to Mangopay features is restricted until they enroll successfully.
+
+The User's `UserStatus` has changed to `PENDING_USER_ACTION`. This event is only triggered if `UserCategory` is `OWNER`.
+</td>
+</tr>
+<tr>
+<th class="header">`RessourceId`</th>
+<td class="table-content">
+`UserId` (`Id` of the [Natural User (SCA)](/api-reference/users/natural-user-object-sca) or [Legal User (SCA)](/api-reference/users/natural-user-object-sca))
+</td>
+</tr>
+</tbody>
+</table>
+
+<table class="header-column">
+<tbody>
+<tr>
+<th class="header">`EventType`</th>
+<td class="table-content">
+`USER_ACCOUNT_ACTIVATED`
+</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Owner User has been successfully enrolled in SCA. They can now access Mangopay features.
+
+The User's `UserStatus` has changed from `PENDING_USER_ACTION` to `ACTIVE`. This event is only triggered if `UserCategory` is `OWNER`.
+</td>
+</tr>
+<tr>
+<th class="header">`RessourceId`</th>
+<td class="table-content">
+`UserId` (`Id` of the [Natural User (SCA)](/api-reference/users/natural-user-object-sca) or [Legal User (SCA)](/api-reference/users/natural-user-object-sca))
+</td>
+</tr>
+</tbody>
+</table>
+
+## Related resources
+<CardGroup cols={2}>
+<Card title="Guide" href="/guides/sca">
+Owner SCA – Introduction, SCA session, enrollment
+</Card>
+</CardGroup>
+
+</div>

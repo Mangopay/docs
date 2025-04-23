@@ -3,6 +3,8 @@ title: 'View a Transfer'
 api: 'GET /v2.01/{ClientId}/transfers/{TransferId}'  
 ---
 
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import ScaContext_Response from '/snippets/p-response/ScaContext_Response.mdx';
 import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
 import DebitedWalletIdResponse from '/snippets/p-response/DebitedWalletIdResponse.mdx';
 import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
@@ -28,6 +30,8 @@ import JavaViewTransfer from '/snippets/code/java-view-transfer.mdx';
 import PythonViewTransfer from '/snippets/code/python-view-transfer.mdx';
 import NetViewTransfer from '/snippets/code/net-view-transfer.mdx';
 
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
 <Note>
 **Note – Transfer data retained for 13 months**
 
@@ -36,14 +40,15 @@ An API call to retrieve a transfer whose `CreationDate` is older than 13 months 
 For more information, see the <a href="/api-reference/overview/data-availability-periods">Data availability periods</a> article.
 </Note>
 
-
 ### Path parameters  
 
 <TransferId />  
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -75,43 +80,81 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <DebitedWalletIdResponse />  
 
-<CreditedWalletIdResponse /></Accordion></AccordionGroup>  
+<CreditedWalletIdResponse />
+
+</Accordion>
+
+</AccordionGroup>  
 
 <ResponseExample>  
-
-```json 200
+```json 200 - SCA required
 {
-    "Id": "xfer_m_01JHQRDWW1VCBCPGEARD3PB82B",
-    "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1658928911,
-    "AuthorId": "user_m_01JHQ8H6TES9NX2WN9K3JQHY47",
-    "CreditedUserId": "142036728",
+    "ScaContext": "USER_PRESENT",
+    "Id": "xfer_c_01JRSHQFG2337DBQ4NS8XPYCK7",
+    "CreationDate": 1744614179,
+    "DebitedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "CreditedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "CreditedUserId": "user_m_01JRHSS3B18H86QA0C467RVK07",
     "DebitedFunds": {
         "Currency": "EUR",
-        "Amount": 1600
+        "Amount": 3001
     },
     "CreditedFunds": {
         "Currency": "EUR",
-        "Amount": 1582
+        "Amount": 3001
     },
     "Fees": {
         "Currency": "EUR",
-        "Amount": 18
+        "Amount": 0
     },
-    "Status": "SUCCEEDED",
-    "ResultCode": "000000",
-    "ResultMessage": "Success",
-    "ExecutionDate": 1658928911,
     "Type": "TRANSFER",
     "Nature": "REGULAR",
-    "DebitedWalletId": "wlt_m_01JHQRD0WZ1QWKNAMQF93E5M15",
-    "CreditedWalletId": "wlt_m_01JHQRDHGY6KY4R5HX0VWCEQZY"
+    "Status": "CREATED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_0196331bc1247e3fa33be6f9c797abd7"
+    }
 }
- ```  
-
+```
+```json 200 - SCA not required
+{
+    "ScaContext": "USER_PRESENT",
+    "Id": "xfer_c_01JRSHXFS5YX0HVCXZFQ4J2XMH",
+    "CreationDate": 1744614375,
+    "DebitedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "CreditedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "AuthorId": "user_m_01JRHSS3B18H86QA0C467RVK07",
+    "CreditedUserId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "Status": "SUCCEEDED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1744614375,
+    "PendingUserAction": null
+}
+```
 </ResponseExample>  
 
 <RequestExample>  
+    <RestGetNoBody />
     <PhpViewTransfer />
     <NodeViewTransfer />
     <RubyViewTransfer />

@@ -16,9 +16,9 @@ This guide helps you get started with the Checkout SDK on web browsers.
 </Info>  
 
 <Check>
-**Best practice – Check out our example app and demo**
+**Best practice – Check out our example app**
 
-To support you with your integration, be sure to make use of our <a href="https://github.com/Mangopay/mangopay-checkout-web/tree/main/examples" target="_blank">example app</a> on GitHub, and you can clone our <a href="https://playcode.io/1840460" target="_blank">PlayCode demo</a> to experiment with the code and see real-time results. 
+To support you with your integration, be sure to make use of our <a href="https://github.com/Mangopay/mangopay-checkout-web/tree/main/examples" target="_blank">example app</a> on GitHub, which has a <a href="https://checkout-demo-mangopay.netlify.app/">deployed demo</a>.
 </Check>
 
 ## Installation  
@@ -262,6 +262,10 @@ const CheckoutComponent = () => {
       /* Handle Card/PayPal payment complete */
   };
 
+  const onCancel = () => {
+      /* Handle cancellation of payment  */
+  };
+
   return (
     <MangopayCheckout
       ref={sdkRef}
@@ -272,6 +276,7 @@ const CheckoutComponent = () => {
       onChange={onChange}
       onTokenizationComplete={onTokenizationComplete}
       onPaymentComplete={onPaymentComplete}
+      onCancel={onCancel}
     />
   )
 }
@@ -337,6 +342,11 @@ const CheckoutComponent = () => {
             <td class="table-content">`onPaymentComplete`</td>
             <td class="table-content">Function(event)</td>
             <td class="table-content">Triggered when the transaction is completed, whatever the outcome (whether successful or failed).</td>
+        </tr>
+        <tr>
+            <td class="table-content">`onCancel`</td>
+            <td class="table-content">Function()</td>
+            <td class="table-content">Triggered when the payment process is canceled by the user. This can occur when the 3D Secure authentication window or PayPal, Google Pay, or Apple Pay popup is closed before completion.</td>
         </tr>
     </tbody>
 </table>
@@ -706,7 +716,7 @@ const validateApplePayMerchant = (validationURL: string): Promise<ApplePayMercha
 ### Requesting Apple Pay pay-in
 To request the payment, use the [Create an Apple Pay PayIn](/api-reference/apple-pay/create-apple-pay-payin) endpoint and include the Apple Pay `PaymentData`.
 1. Set up payment delegate – Assign a delegate function to the `onCreatePayment` attribute in your Apple Pay options.
-2. Handle payment authorization – After the shopper successfully authorizes a card for payment through the Apple Pay sheet, the SDK will call your `onCreatePayment` function and pass the `PaymentData` to it.
+2. Handle payment authorization – After the user successfully authorizes a card for payment through the Apple Pay sheet, the SDK will call your `onCreatePayment` function and pass the `PaymentData` to it.
 3. Create pay-in – Implement the backend creation of the [Apple Pay PayIn](/api-reference/apple-pay/create-apple-pay-payin) on your server using the `PaymentData` provided.
 4. Return pay-in object – After creating the pay-in, return the pay-in object to the SDK.
 
@@ -779,7 +789,8 @@ Offering Google Pay requires additional setup by the platform. For more informat
 **Caution - Add Mangopay Checkout to your Google Console**
 
 You need to add `checkout.mangopay.com` along with your domain to the authorized list in the Google Business Console to view the Google Pay payment popup.
-This allows the Checkout SDK to ensure the Google Pay experience is presented appropriately to your shoppers. Not following this guidance may impact your payment acceptance on Google Pay.
+
+This allows the Checkout SDK to ensure the Google Pay experience is presented appropriately to your users. Not following this guidance may impact your payment acceptance on Google Pay.
 </Warning>
 
 To configure the Google Pay payment method, specify `google_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
@@ -913,7 +924,7 @@ The `onTokenizationComplete` function is called after the user approves the paym
 ### Requesting Google Pay pay-in
 To request the payment, use the [Create a Google Pay PayIn](/api-reference/google-pay/create-google-pay-payin) endpoint. Include the Google Pay `PaymentData` and ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`.  
 1. **Set up payment delegate** – Assign a delegate function to the `onCreatePayment` attribute in your Google Pay options.
-2. **Handle payment authorization** – After the shopper successfully authorizes a card for payment through the Google Pay sheet, the SDK will call your `onCreatePayment` function and pass the `PaymentData` to it.
+2. **Handle payment authorization** – After the user successfully authorizes a card for payment through the Google Pay sheet, the SDK will call your `onCreatePayment` function and pass the `PaymentData` to it.
 3. **Create pay-in** – Implement the backend creation of the [Google Pay PayIn](/api-reference/google-pay/create-google-pay-payin) on your server using the `PaymentData` provided.
 4. **Return pay-in object** – After creating the pay-in, return the pay-in object to the SDK.
 
@@ -1018,6 +1029,17 @@ To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` obje
             The assigned function should implement backend creation of the [PayPal pay-in](/api-reference/paypal/create-paypal-payin) from your server.
             </td>
         </tr>
+        <tr>
+            <td class="table-content">`options.merchantId`</td>
+            <td class="table-content">string
+                **REQUIRED**</td>
+            <td class="table-content">
+            A unique identifier for the merchant account.  
+            <br />
+            This value is required to associate the payment with your merchant account when processing PayPal pay-ins.  
+            You can find your `merchantId` in your PayPal Business Account.
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -1043,6 +1065,7 @@ const options = {
         {
 	        type: "paypal",
 	        options: {
+              merchantId: 'YOUR_PAYPAL_MERCHANT_ID', 
 	          //define delegate to call when Paypal button is clicked
 	          onCreatePayment: (data) => createPayPalPayIn(data)
 	        }

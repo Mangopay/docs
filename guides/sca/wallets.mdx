@@ -1,0 +1,138 @@
+---
+title: SCA on Mangopay Account access 
+sidebarTitle: SCA on wallet access
+description: Read about how SCA impacts wallet access endpoints
+---
+
+When a Mangopay Account holder (`OWNER`) requests to access their Mangopay Account, they must authenticate using SCA. 
+
+## Scope
+
+Mangopay Account access can be considered as:
+
+- Viewing a wallet balance
+- List transactions crediting or debiting it
+
+SCA impacts actions on wallets held by `OWNER` users. SCA is required on first-time access and if more than 180 days have passed since the last SCA authentication for account access.
+
+<Note>
+**Note – Multiple wallets considered same account**
+
+All the wallets held by a single `OWNER` user are considered to be part of their Mangopay Account. This means that SCA only has to be done once to access any of the user's wallets. 
+</Note>
+
+<Info>
+**Possible exemptions on account access actions**
+
+- For user-initiated wallet access, the access request can be exempted if the last SCA for this action occurred less than 180 days ago. This means that SCA performed for a different action, such as registering a Recipient or initiating a transfer, **cannot** be used to exempt account access.
+- For existing integrations, the value `USER_NOT_PRESENT` described below can be used to declare an automated account access request which won't trigger SCA redirection. In future, and based on its analysis of adoption, Mangopay may be required to take action to ensure SCA adoption, such as overriding these requests.
+</Info>
+
+
+## Endpoints impacted
+
+For wallets, the following two endpoints (only) are in scope because they are considered to be accessing the balance of a wallet: 
+
+- [GET View a Wallet](/api-reference/wallets/view-wallet)
+- [GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+
+The endpoints to create and update wallets will not be affected by SCA.
+
+For transactions, the following two endpoints (only) are in scope because they are considered to be accessing the account's transaction history:
+
+- [GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+- [GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+
+The endpoints to list transactions or refunds based on other objects (such as for a mandate, card, dispute, etc.) will not be affected by SCA.
+
+## Action required
+
+### 1. Send ScaContext on Owner-initiated wallet access requests
+
+On the 4 endpoints listed above (only), Mangopay has introduced a **new query parameter**, `ScaContext`, which your platform needs to send on all requests initiated by users whose `UserCategory` is `OWNER`.
+
+The `ScaContext` parameter has the values:
+
+- `USER_PRESENT` – The user is initiating the access and is actively present. SCA is required unless successful SCA for wallet access took place in the last 180 days.
+- `USER_NOT_PRESENT`– No user is present: the access is automated by the platform as part of their declared and authorized workflow. SCA is not required (unless the request is overridden by Mangopay).
+
+To begin with, the parameter is technically **optional** and if not sent, it has the same effect as sending `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt.
+
+For new platforms, the parameter should be considered **required** and `USER_PRESENT` should be considered the default value. 
+
+You do not need to send this parameter if the `UserCategory` is `PAYER`.
+
+#### Example API request
+
+On the GET endpoints for wallet access, the `ScaContext` is a query parameter.
+
+So, for example, a request to the [GET List Wallets for a User](/api-reference/wallets/list-wallets-user) would be made on the following URL (in Sandbox):
+
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+https<span>://</span>api.sandbox.mangopay.com/v2.01/`ClientId`/users/`UserId`/wallets?ScaContext=USER_PRESENT
+</td>
+</tr>
+</tbody>
+</table> 
+
+### 2. Redirect the user for SCA if required 
+
+Your platform needs to consider that both values for `ScaContext` may technically result in the need for SCA redirection: you can include `USER_PRESENT` and be exempted by Mangopay, or include `USER_NOT_PRESENT` and, in future, have SCA imposed by Mangopay.
+
+When Mangopay determines that SCA is required, a call to any of the 4 endpoints above will return a **401 - Unauthorized**. 
+
+The `redirectUrl` value needed for the user to be able authenticate is returned in the `WWW-Authenticate` response header, in the following format: 
+
+#### Example API response
+
+```HTTP 401 response header
+WWW-Authenticate: PendingUserAction redirectUrl=https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21 
+```
+
+Your platform needs to retrieve the `redirectUrl` value to redirect the user.
+
+<Note>
+**Note – Encode and add your returnUrl before redirection**
+
+You must add your `returnUrl` before you redirect the user on the `RedirectUrl` value, otherwise the hosted web page cannot return them upon completion.
+
+For more details, see [How to redirect a user for SCA](/guides/sca/session#how-to-redirect-a-user-for-sca).
+</Note>
+
+The individual must authenticate on the Mangopay-hosted webpage within 10 minutes of the API response. After the SCA session, the user is returned to your specified `returnUrl`, regardless of the outcome.
+
+Once SCA is successful, subsequent calls to any of the above endpoints return the wallet or transaction data for the next 180 days, because SCA can be exempted, and then SCA redirection will be required again.
+
+#### Handling wallet access outcome
+
+There is no webhook notification for the SCA session itself, so in the case of wallet access you should rely on the `controlStatus` and `actionStatus` query parameters appended to your `returnUrl` by Mangopay after the SCA session.
+
+You can retry the wallet access by calling the relevant GET endpoint again.
+
+## SCA triggers in Sandbox
+
+In Sandbox, SCA is triggered on the [4 endpoints listed above](#endpoints-impacted) if all of the following are true:
+- The user has the `UserCategory` value `OWNER`  
+- The user's type is **Natural** or **Soletrader** 
+- `ScaContext` is `USER_PRESENT`
+- The last successful SCA session on any one of the 4 endpoints was more than 180 days ago (or has never happened)
+
+In Sandbox, SCA is not triggered if any of the following are true:
+- User has the `UserCategory` value `PAYER`
+- The legal user's `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`
+- `ScaContext` is `USER_NOT_PRESENT` or not sent (in which case it is `null`)
+- The last successful SCA session on any one of the 4 endpoints occurred within the last 180 days
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="SCA session"
+  href="/guides/sca/session"
+>
+Read more about redirecting users for an SCA session
+</Card>
+</CardGroup>

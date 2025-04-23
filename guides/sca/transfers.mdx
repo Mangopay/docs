@@ -1,0 +1,202 @@
+---
+title: SCA on transfers
+sidebarTitle: SCA on transfers
+description: Read how SCA impacts the transfer endpoint
+---
+
+## Scope
+
+When a Mangopay Account holder (`OWNER`) transfers funds to another Mangopay Account holder, they must authenticate using SCA.
+
+This means that when an `OWNER` user initiates a transfer to a wallet held by another `OWNER` user, the first user must authenticate the request. 
+
+<Info>
+**Possible exemptions on transfer actions**
+
+- For user-initiated transfers, Mangopay will apply the exemptions allowed by the regulations (such as low-risk or low-amount transfers, [read more](/guides/sca#exemptions-on-actions)). Platforms will not be able to specifically request exemptions.
+- For existing integrations, the value `USER_NOT_PRESENT` below can be used to declare an automated workflow transfer which won't trigger SCA redirection. In future, and based on its analysis of adoption, Mangopay may be required to take action to ensure SCA adoption, such as overriding these requests.
+</Info>
+
+## Action required
+
+On transfers between one `OWNER` user and another, your platform needs to implement SCA redirection to Mangopay's hosted webpage. 
+
+### 1. Send ScaContext on Owner-initiated transfers
+
+On the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint, Mangopay has introduced the body parameter `ScaContext`, which your platform needs to send on all transfers initiated by users whose `UserCategory` is `OWNER`. 
+
+The `ScaContext` parameter has the values:
+
+- `USER_PRESENT` – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
+- `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
+
+To begin with, the parameter is technically **optional** and its default value if not sent is `null`, which has the same meaning as `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt. 
+
+For new platforms, the parameter should be considered **required** for transfers initiated by `OWNER` users, and `USER_PRESENT` should be considered the default value.
+
+You do not need to send this parameter if the `UserCategory` is `PAYER`.
+
+#### Example API request
+
+<Accordion title="See API request example with user present">
+```json
+{
+    "ScaContext": "USER_PRESENT", 
+    "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001 
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },   
+    "DebitedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "CreditedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "Tag": "Created using Mangopay API Postman Collection"
+}
+```
+</Accordion>
+
+### 2. Redirect the user for SCA if required 
+
+Your platform needs to consider that both values for `ScaContext` may technically result in the need for SCA redirection: you can include `USER_PRESENT` and be exempted by Mangopay, or include `USER_NOT_PRESENT` and, in future, have SCA imposed by Mangopay.
+
+If Mangopay determines that SCA is required for the transfer request, the API response contains `PendingUserAction.RedirectUrl`, as shown in the example below.
+
+#### Example API response
+
+<Accordion title="See API response example if SCA required">
+```json
+{
+    "ScaContext": "USER_PRESENT",
+    "Id": "xfer_c_01JRSHQFG2337DBQ4NS8XPYCK7",
+    "CreationDate": 1744614179,
+    "DebitedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "CreditedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "CreditedUserId": "user_m_01JRHSS3B18H86QA0C467RVK07",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "Status": "CREATED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_0196331bc1247e3fa33be6f9c797abd7"
+    }
+}
+```
+</Accordion>
+
+<Note>
+**Note – Encode and add your returnUrl before redirection**
+
+You must add your `returnUrl` before you redirect the user on the `RedirectUrl` value, otherwise the hosted web page cannot return them upon completion.
+
+For more details, see [How to redirect a user for SCA](/guides/sca/session#how-to-redirect-a-user-for-sca).
+</Note>
+
+The individual must authenticate on the Mangopay-hosted webpage within 10 minutes of the API response. After the SCA session, the user is returned to your specified `returnUrl`, regardless of the outcome.
+
+### 3. Ensure your integration relies on transfer status and webhooks 
+
+The introduction of SCA makes reliance on the Transfer's `Status` essential. 
+
+Whereas previously, a Transfer's `Status` would typically pass to `SUCCEEDED` quickly, with SCA it will remain in `CREATED` until the user completes SCA.
+
+This means that your platform needs to rely on the existing webhook event types for the outcome of the transfer:
+
+- `TRANSFER_NORMAL_SUCCEEDED`
+- `TRANSFER_NORMAL_FAILED`
+
+For more details about setting up webhooks, see the dedicated [webhook guide](/webhooks).
+
+Once your system receives the webhook notification, call the [GET View a Transfer](/api-reference/transfers/view-transfer) endpoint to retrieve more information about the transfer.
+
+If SCA was not successful, the `Status` changes to `FAILED` and there are two new SCA-related functional errors that may be returned in `ResultCode` and `ResultMessage`:
+
+<table>
+<thead>
+<tr>
+<th class="header">`ResultCode`</th>
+<th class="header">`ResultMessage`</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`007101`	
+</td>
+<td class="table-content">
+Transfer authentication failed. Please retry with a new request.	
+</td>
+<td class="table-content">
+The user reached the number of retries for one of the authentication factors, so the SCA session failed.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`007102`	
+</td>
+<td class="table-content">
+Transfer authentication expired. Please initiate a new request.
+</td>
+<td class="table-content">
+The user did not complete all steps required within 10 minutes, so the SCA session expired.
+</td>
+</tr>
+</tbody>
+</table>
+
+A transfer can also fail for other reasons that were already applicable before the introduction of SCA. 
+
+To retry the transfer request, call the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint again. 
+
+## SCA triggers in Sandbox
+
+While in Production, Mangopay will apply the exemptions for low-risk or low-amount transfers ([read more](/guides/sca#exemptions-on-actions)), the behavior in Sandbox is described below for your integration and testing.
+
+In Sandbox, SCA is triggered on [POST Create a Transfer](/api-reference/transfers/create-transfer) when all of the following are true: 
+- `DebitedWalletId` and `CreditedWalletId` belong to different `OWNER` users. 
+- The type of users owning the wallets is **Natural** or **Soletrader** (in any combination for debited and credited user).
+- `DebitedFunds.Amount` is greater than 30 EUR or equivalent. So if `Currency` is `EUR`, this means `Amount` must be `3001` or more.
+- `ScaContext` is `USER_PRESENT`
+
+The users involved in the transfer don't have to be already enrolled in SCA.
+
+In Sandbox, SCA is not triggered if any of the following are true:
+- The legal user's `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`
+- The amount is less than 30 EUR or equivalent
+- `ScaContext` is `USER_NOT_PRESENT` or not sent (in which case it is `null`)
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="SCA session"
+  href="/guides/sca/session"
+>
+Read more about redirecting users for an SCA session
+</Card>
+<Card
+  title="Endpoint"
+  href="/api-reference/transfers/create-transfer"
+>
+Create a Transfer
+</Card>
+</CardGroup>

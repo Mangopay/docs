@@ -1,7 +1,7 @@
 ---
 title: 'Create a Natural User (SCA)'  
 api: 'POST /v2.01/{ClientId}/sca/users/natural'
-description: 'Register a Natural Payer or Owner'
+description: 'Register a Natural Payer or Owner (with SCA enrollment)'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -45,22 +45,25 @@ import FirstName1 from '/snippets/p-body/FirstName1.mdx';
 import Address3 from '/snippets/p-body/Address3.mdx';
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreateNaturalUserSca from '/snippets/code/rest-create-natural-user-sca.mdx';
+import RestCreateNaturalUserScaPayer from '/snippets/code/rest-create-natural-user-sca-payer.mdx';
+import RestCreateNaturalUserScaOwner from '/snippets/code/rest-create-natural-user-sca-owner.mdx';
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+<Note>
+**Note – SCA triggered for Owners**
 
-<Note>  
-**Note – Country-based restrictions apply to users** 
+If `UserCategory` is `OWNER`, this endpoint triggers SCA enrollment. Your platform needs to use the returned `PendingUserAction.RedirectUrl` (and add an encoded `returnUrl` query parameter) to redirect the user so they can enroll.
 
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
+Read more about how to redirect them in the [SCA session](/guides/sca/session) guide.
+</Note>
 
-For Natural Users, the following parameters are concerned:  
-- `Nationality`  
-- `CountryOfResidence`  
-- `Country` of the `Address`  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `Nationality`
+- `CountryOfResidence`
+- `Address.Country`
+</Note>
 
 ### Body parameters  
 
@@ -195,10 +198,10 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </AccordionGroup>  
 
 <ResponseExample>  
-```json 200 - Payer
+```json REST - Payer
 {
-    "FirstName": "Ruby",
-    "LastName": "Ringer",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": null,
     "Nationality": null,
     "CountryOfResidence": null,
@@ -207,14 +210,14 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "PhoneNumber": null,
-    "PhoneNumberCountry": null,
+    "PhoneNumber": "0611111111",
+    "PhoneNumberCountry": "FR",
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "PendingUserAction": null,
@@ -222,7 +225,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": false,
     "TermsAndConditionsAcceptedDate": null,
@@ -231,10 +234,10 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 }
 ```  
 
-```json 200 - Owner pending SCA
+```json REST - Owner
 {
-    "FirstName": "Ruby",
-    "LastName": "Ringer",
+    "FirstName": "Alex",
+    "LastName": "Smith",
     "Birthday": 652117514,
     "Nationality": "FR",
     "CountryOfResidence": "FR",
@@ -243,14 +246,14 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "ProofOfIdentity": null,
     "ProofOfAddress": null,
     "Capacity": "NORMAL",
-    "PhoneNumber": "+33611111111",
+    "PhoneNumber": "0611111111",
     "PhoneNumberCountry": "FR",
     "Address": {
-        "AddressLine1": "28136 Grimes Bridge",
-        "AddressLine2": "Finn Shoals",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "PendingUserAction": {
@@ -260,7 +263,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1734339135,
     "PersonType": "NATURAL",
-    "Email": "ruby.reinger@example.com",
+    "Email": "alex.smith@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": null,
@@ -271,5 +274,6 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
 </ResponseExample>  
 
 <RequestExample>  
-    <RestCreateNaturalUserSca />
+    <RestCreateNaturalUserScaPayer />
+    <RestCreateNaturalUserScaOwner />
 </RequestExample>

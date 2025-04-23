@@ -1,0 +1,568 @@
+---
+title: SCA session redirection
+sidebarTitle: Hosted session
+description: Learn how to redirect a user for their hosted SCA session
+---
+
+Mangopay's SCA feature relies on Mangopay-hosted webpage where the individual can complete all necessary steps for all authentication factors, whether that's first-time SCA enrollment or authenticating actions.
+
+To deliver this hosted SCA session, Mangopay provides a unique URL in the `RedirectUrl` response parameter on relevant actions across its API. The `RedirectUrl` is returned as part of the `PendingUserAction` response object.
+
+This guide describes how to redirect users for the SCA session. For more details about the factors, how they work, and the experience for users, see the [factors](/guides/sca/factors) guide.
+
+## Overview of the flow
+The following diagram provides an overview of how the Mangopay-hosted SCA session works. See the [how-to guide](#how-to-redirect-a-user-for-sca) below for step-by-step guidance.
+
+<img className="block dark:hidden" src="/images/diagram_sca_redirection_webhook_light.svg" width="100%"/>
+<img className="hidden dark:block" src="/images/diagram_sca_redirection_webhook_dark.svg" width="100%"/>
+
+## How to redirect a user for SCA
+
+This section describes how to handle the SCA redirection when required by an SCA enrollment or authentication scenario.
+
+### Differences between scenarios
+
+While the redirection mechanism is the same in all cases, there are the following differences:
+- The redirect URL is returned in a response header for wallet access, whereas the others are in the response body ([Step 2](#2-retrieve-the-sca-redirect-url))
+- There is no webhook for a failed enrollment outcome, nor for wallet access outcomes ([Step 7](#7-confirm-the-session-outcome-and-retry-if-required))
+
+### 1. Call an endpoint that triggers SCA redirection
+Your platform needs to redirect the user for an SCA session when your platform calls one of several endpoints to initiate an SCA-triggering action. 
+
+The following actions and endpoints trigger SCA redirection (see the linked guides for details).
+
+<Note>
+**Note – SCA only triggered for Natural and Soletrader users**
+
+SCA is not triggered for Legal users whose `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`, but the endpoints can still be integrated for them. For more details, see the section about [legal user integration](/guides/sca/users#legal-user-integration).
+</Note>
+
+<Tabs>
+<Tab title="Users">
+
+See [Users – SCA triggers in Sandbox](/guides/sca/users#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+[Register a Owner user for the first time](/guides/sca/users#register-an-owner-for-the-first-time)
+</td>
+<td class="table-content">
+[POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca) or [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+</td>
+<td class="table-content">
+If `UserCategory` is `OWNER`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[Transition an existing Payer to Owner](/guides/sca/users#transition-an-existing-payer-to-owner)
+</td>
+<td class="table-content">
+[PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
+</td>
+<td class="table-content">
+None (always returned)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[Enroll an existing Owner](/guides/sca/users#enroll-an-existing-owner)
+</td>
+<td class="table-content">
+[POST Enroll a User in SCA](/api-reference/users/enroll-user)
+</td>
+<td class="table-content">
+None (always returned)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[Re-enroll a User](/guides/sca/users#re-enroll-a-owner-user)
+</td>
+<td class="table-content">
+[PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) or [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+</td>
+<td class="table-content">
+If `UserCategory` is `OWNER` and any of these are changed:
+- Natural
+  - `PhoneNumber`
+  - `PhoneNumberCountry`
+  - `Email`
+- Legal
+  - `LegalRepresentative.PhoneNumber`
+  - `LegalRepresentative.PhoneNumberCountry` 
+  - `LegalRepresentative.Email`
+</td>
+</tr>
+</tbody>
+</table> 
+    
+</Tab>
+<Tab title="Recipients">
+
+See [Recipients – SCA triggers in Sandbox](/guides/sca/recipients#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+[Register a bank account for an Owner](/guides/recipients#how-to-register-a-recipient-for-payouts)
+</td>
+<td class="table-content">
+[POST Create a Recipient](/api-reference/recipients/create-recipient)
+</td>
+<td class="table-content">
+If the user's `UserCategory` is `OWNER` and the recipient's `RecipientScope` is `PAYOUT` (or not sent)
+</td>
+</tr>
+</tbody>
+</table> 
+
+</Tab>
+<Tab title="Transfers">
+
+See [Transfers – SCA triggers in Sandbox](/guides/sca/transfers#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+[Initiate a transfer between two Owners](/guides/sca/transfers)
+</td>
+<td class="table-content">
+[POST Create a Transfer](/api-reference/transfers/create-transfer)
+</td>
+<td class="table-content">
+If `DebitedWalletId` and `CreditedWalletId` belong to two different users whose `UserCategory` is `OWNER` and an [exemption](/guides/sca#exemptions-on-actions) can't be applied by Mangopay
+</td>
+</tr>
+</tbody>
+</table> 
+
+</Tab>
+<Tab title="Wallet access">
+
+See [Wallet access – SCA triggers in Sandbox](/guides/sca/wallets#sca-triggers-in-sandbox) for current testing information.
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Endpoints</th>
+<th class="header">Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+Access a specific wallet balance
+</td>
+<td class="table-content">
+[GET View a Wallet](/api-reference/wallets/view-wallet)
+</td>
+<td class="table-content row-span" rowSpan={4}>
+If a successful SCA session using one of these 4 endpoints has not been completed in the last 180 days
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List a user's wallets
+</td>
+<td class="table-content">
+[GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List transactions for a wallet
+</td>
+<td class="table-content">
+[GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+List transactions for a user
+</td>
+<td class="table-content">
+[GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+</td>
+</tr>
+</tbody>
+</table> 
+
+</Tab>
+</Tabs>
+
+### 2. Retrieve the SCA redirect URL
+
+The API response contains the redirect URL containing a unique token query parameter. You need to retrieve the full value dynamically, meaning the host and the query, for the next step.
+
+<Tabs>
+<Tab title="Users, recipients, transfers">
+For example, in the API response for user endpoints, recipient creation, and transfer initiation:
+
+```json 200 response body
+{
+  ...
+	"PendingUserAction": {
+    "RedirectUrl": "https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21"
+    },
+  ...
+}
+```
+</Tab>
+<Tab title="Wallet access">
+For example, in the API response for wallet access:
+
+```HTTP 401 response header
+WWW-Authenticate: PendingUserAction redirectUrl=https://sca.mangopay.com?token=0193d02f30df7a188c51cf890a191d21 
+```
+</Tab>
+</Tabs>
+
+The URL of the unique SCA session is:
+
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+https<span>://</span>sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191d21
+</td>
+</tr>
+</tbody>
+</table> 
+
+### 3. Encode and add your returnUrl
+Define a `returnUrl` to which the user will be returned after they authenticate on the Mangopay-hosted page, regardless of the outcome. 
+
+Append your URL to the `RedirectUrl` response value as the `returnUrl` query parameter, being sure to percent-encode any non-ASCII characters. 
+
+Continuing the previous example, if your `returnUrl` is <span>https:</span>//example.com, the full URL you will need to redirect the user on is:
+
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+<span>https:</span>//sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191d21&returnUrl=https%3A%2F%2Fexample.com
+</td>
+</tr>
+</tbody>
+</table> 
+
+<Warning>
+**Caution – Add your return URL before redirection**
+
+You must add your `returnUrl` before you redirect the user on the `RedirectUrl` value, otherwise the hosted web page cannot return them upon completion.
+
+The `returnUrl` parameter name is case-sensitive. 
+</Warning>
+
+Note that the concatenation of Mangopay's `RedirectUrl` and your encoded `returnUrl` must be less than 2,000 characters, which is the limit of most web browsers.
+
+### 4. Redirect the user to the hosted webpage
+
+Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value (including the unique token) and your added `returnUrl`.
+
+### 5. Let the user complete the session
+Once on the session URL, the user can perform the necessary actions for the SCA session. This includes enrollment or authentication, as well as all required authentication factors.
+
+<Note>
+**Note – Session timeout after 10 minutes**
+
+The session of the `RedirectUrl` is valid for 10 minutes. If the user does not complete the necessary steps during this time, the session can no longer be used and they are returned on your return URL.
+
+If this happens, you need to retry the SCA session using the relevant endpoint (see [Step 7](#7-confirm-the-session-outcome-and-retry-if-required) below) to obtain a new `RedirectUrl`.
+</Note>
+
+To test the OTP factor in Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow. You can also use a real phone number to receive the SMS OTP.
+
+### 6. Retrieve the returnUrl query parameters
+
+Once the user completes authentication (successfully or not) they are redirected to your `returnUrl`.
+
+On redirection, Mangopay adds two indicative query parameters to your `returnUrl`: `controlStatus` and `actionStatus`. 
+
+For example:
+
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+<span>https:</span>//example.com/?controlStatus=VALIDATED&actionStatus=SUCCEEDED
+</td>
+</tr>
+</tbody>
+</table> 
+
+The `controlStatus` parameter indicates the outcome of the SCA session itself:
+- `VALIDATED` - The SCA session was successful.
+- `FAILED` - The SCA session was unsuccessful and cannot be reused.
+
+The `actionStatus` parameter indicates the status of the action being controlled by the session (e.g. Recipient registration, transfer request): 
+- `SUCCEEDED` - The action was successful.
+- `FAILED` - The action was not determined to be successful by the session or the outcome was otherwise unknown.
+
+
+### 7. Confirm the session outcome and retry if required
+
+The query parameters appended to the `returnUrl` are indicative.
+
+You should listen for the [webhooks events](/webhooks) listed below, and confirm the outcome of the action that triggered the SCA session by calling the relevant endpoint of the Mangopay API.
+
+<Tabs>
+<Tab title="Users">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+`UserStatus` changed from `PENDING_USER_ACTION` to `ACTIVE`
+</td>
+<td class="table-content">
+`USER_ACCOUNT_ACTIVATED`
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+None, `UserStatus` stayed as `PENDING_USER_ACTION`
+</td>
+<td class="table-content">
+None
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a User (SCA)](/api-reference/users/view-user-sca)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Enroll a User](/api-reference/users/enroll-user)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+<Tab title="Recipients">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+`Status` changed from `PENDING` to `ACTIVE`
+</td>
+<td class="table-content">
+`RECIPIENT_ACTIVE`
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+`Status` changed from `PENDING` to `CANCELED`
+</td>
+<td class="table-content">
+`RECIPIENT_CANCELED`
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a Recipient](/api-reference/recipients/view-recipient)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Create a Recipient](/api-reference/recipients/create-recipient)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+<Tab title="Transfers">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+`Status` changed from `CREATED` to `SUCCEEDED`
+</td>
+<td class="table-content">
+`TRANSFER_NORMAL_SUCCEEDED`
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+`Status` changed from `CREATED` to `FAILED`
+</td>
+<td class="table-content">
+`TRANSFER_NORMAL_FAILED`
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header">Confirm</th>
+<td class="table-content">
+[GET View a Transfer](/api-reference/transfers/view-transfer)
+</td>
+</tr>
+<tr>
+<th class="header">Retry</th>
+<td class="table-content">
+[POST Create a Transfer](/api-reference/transfers/create-transfer)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+<Tab title="Wallet access">
+
+<table>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Status change</th>
+<th class="header">Webhook event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Success</th>
+<td class="table-content">
+None
+</td>
+<td class="table-content">
+None
+</td>
+</tr>
+<tr>
+<th class="header">Failure</th>
+<td class="table-content">
+None
+</td>
+<td class="table-content">
+None
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th class="header" rowSpan={4}>**Confirm or retry**</th>
+<td class="table-content">
+[GET View a Wallet](/api-reference/wallets/view-wallet)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+</td>
+</tr>
+<tr>
+<td class="table-content row-span">
+[GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+</td>
+</tr>
+</tbody>
+</table>
+
+</Tab>
+</Tabs>
+
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="Enrollment"
+  href="/guides/sca/users"
+>
+Read about enrollment scenarios in the user lifecycle
+</Card>
+<Card
+  title="Endpoints"
+  href="/api-reference/users"
+>
+See the SCA-enabled user endpoints
+</Card>
+</CardGroup>

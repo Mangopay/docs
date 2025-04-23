@@ -1,7 +1,7 @@
 ---
-title: 'Categorize a Legal User (SCA)'  
+title: 'Categorize a Legal User'  
 api: 'PUT /v2.01/{ClientId}/sca/users/legal/{UserId}/category'  
-description: 'Transition a Legal Payer to Owner'
+description: 'Transition a Legal Payer to Owner and enroll them in SCA'
 ---
 
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
@@ -40,11 +40,23 @@ import Aml from '/snippets/glossary/aml.mdx';
 
 import RestCategorizeLegalUser from '/snippets/code/rest-categorize-legal-user.mdx';
 
-This endpoint allows you to transition a user whose `UserCategory` is `PAYER` into an `OWNER` by providing the required information and obtaining an SCA session link in the `PendingUserAction.RedirectUrl` response field.
+This endpoint allows you to transition a user whose `UserCategory` is `PAYER` into an `OWNER` by providing the required information and redirecting them on the `PendingUserAction.RedirectUrl` response value to complete SCA enrollment.
 
-If the user's `UserCategory` is already `OWNER`, use the [PUT Activate a User](/api-reference/users/activate-user) endpoint to obtain an SCA session link.
+The `RedirectUrl` is currently only returned if `LegalPersonType` is `SOLETRADER`, but the endpoint should be integrated for the other types.
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+Optionally, you can update the `LegalRepresentative.Email` and provide or update the `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry` before SCA redirection.
+
+If the user's `UserCategory` is already `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
+
+[Read more about SCA redirection](/guides/sca/session) **&rarr;**
+
+<Note>
+**Note – Country-based restrictions apply to users**
+
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `LegalRepresentative.Nationality`
+- `LegalRepresentative.CountryOfResidence`
+</Note>
 
 ### Body parameters  
 
@@ -120,24 +132,24 @@ If the user's `UserCategory` is already `OWNER`, use the [PUT Activate a User](/
 }
 ```
 
-If the user's `UserCategory` is `OWNER`, use the [PUT Activate a User](/api-reference/users/activate-user) endpoint to obtain an SCA session link.
+If the user's `UserCategory` is `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
 </Accordion>
 </AccordionGroup>
 
 <ResponseExample>
 ```json 200 - Owner pending SCA
 {
-    "Name": "ACME Corporation",
-    "LegalPersonType": "BUSINESS",
+    "Name": "Alex Smith",
+    "LegalPersonType": "SOLETRADER",
     "LegalRepresentative": {
-        "FirstName": "Gunner",
-        "LastName": "Beier",
+        "FirstName": "Alex",
+        "LastName": "Smith",
         "ProofOfIdentity": null,
         "Birthday": 652117514,
         "Nationality": "FR",
         "CountryOfResidence": "FR",
-        "Email": "gunner.beier@example.com",
-        "PhoneNumber": "+33611111111",
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
         "PhoneNumberCountry": "FR"
     },
     "ProofOfRegistration": null,
@@ -148,26 +160,26 @@ If the user's `UserCategory` is `OWNER`, use the [PUT Activate a User](/api-refe
         "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cef9efe7782881459b02bed1986c"
     },
     "HeadquartersAddress": {
-        "AddressLine1": "18014 Jermain Grove",
-        "AddressLine2": "Harry Unions",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "LegalRepresentativeAddress": {
-        "AddressLine1": "8949 Jeremy Garden",
-        "AddressLine2": "Zulauf Summit",
+        "AddressLine1": "3 rue de la Cité",
+        "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
-        "PostalCode": "75001",
+        "Region": "Île-de-France",
+        "PostalCode": "75004",
         "Country": "FR"
     },
     "Id": "user_m_01JF7FKVP51PS3TYKCN79VZZ8M",
     "Tag": "Created using Mangopay API Collection Postman",
     "CreationDate": 1734344306,
     "PersonType": "LEGAL",
-    "Email": "acme.corporation@example.com",
+    "Email": "alex.smith.services@example.com",
     "KYCLevel": "LIGHT",
     "TermsAndConditionsAccepted": true,
     "TermsAndConditionsAcceptedDate": 1734344306,

@@ -39,19 +39,18 @@ This call is used to check whether or not the destination bank is eligible for i
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200 - Bank is reachable">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IsReachableResponse />  
 
-<UnreachableReasonResponse /></Accordion>
+<UnreachableReasonResponse />
 
-<Accordion title="200 - Bank is unreachable">  
-
-<IsReachableResponse />  
-
-<UnreachableReasonResponse /></Accordion>
+</Accordion>
 
 </AccordionGroup>  
+
 <AccordionGroup>  
 
 <Accordion title="400 - Instant payment disabled ">
@@ -65,44 +64,48 @@ This call is used to check whether or not the destination bank is eligible for i
         "PayoutModeRequested":"InstantPayment is disabled"
     }
 }  
- ```  
- </Accordion>
+```  
+</Accordion>
 
 </AccordionGroup>  
 
 <ResponseExample>  
-
-```json 200 - Bank is reachable  
+```json Reachable
 {
     "InstantPayout": {
         "IsReachable": true,
         "UnreachableReason": null
     }
 }  
- ```  
-
-```json 200 - Bank is unreachable  
+```
+```json Not reachable
 {
-    "InstantPayout":{
-        "IsReachable":false,
-        "UnreachableReason":{
-            "Code":"130010",
-            "Message":"Generic operation error"
+    "InstantPayout": {
+        "IsReachable": false,
+        "UnreachableReason": {
+            "Code": "130007",
+            "Message": "Destination Bank is not reachable"
         }
     }
-}  
- ```  
-
-
-
+}
+```
+```json Insufficient wallet balance
+{
+    "InstantPayout": {
+        "IsReachable": false,
+        "UnreachableReason": {
+            "Code": "001001",
+            "Message": "Unsufficient wallet balance"
+        }
+    }
+}
+```
 </ResponseExample>  
 
 <RequestExample>  
-
     <RestCheckInstantPayoutEligibility />
     <NodeCheckInstantPayoutEligibility />
     <JavaCheckInstantPayoutEligibility />
     <RubyCheckReachibility />
     <NetCheckInstantPayoutEligibility />
-    
 </RequestExample>

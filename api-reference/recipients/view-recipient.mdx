@@ -1,0 +1,130 @@
+---
+title: View a Recipient
+api: GET /v2.01/{ClientId}/recipients/{RecipientId}
+description: Fetch a recipient based on its ID
+---
+
+import UserId_Recipient_Response from '/snippets/p-response/UserId_Recipient_Response.mdx';
+import RecipientScope_Recipient_Response from '/snippets/p-response/RecipientScope_Recipient_Response.mdx';
+import Tag_Recipient_Response from '/snippets/p-response/Tag_Recipient_Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/InternationalBankTransfer_RecipientResponse.mdx';
+import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
+import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
+import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import RecipientId from '/snippets/p-path/RecipientId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Path parameters
+
+<RecipientId/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200" defaultOpen>
+<IdResponse/>
+<Status_RecipientResponse/>
+<CreationDateResponse/>
+<DisplayName_RecipientResponse />
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<UserId_Recipient_Response/>
+<RecipientScope_Recipient_Response/>
+<Tag_Recipient_Response/>
+<Tabs>
+<Tab title="Individual">
+<IndividualRecipient_RecipientResponse />
+</Tab>
+<Tab title="Business">
+<BusinessRecipient_RecipientResponse />
+</Tab>
+</Tabs>
+<br/>
+<Tabs>
+<Tab title="InternationalBankTransfer">
+<InternationalBankTransfer_RecipientResponse/>
+</Tab>
+<Tab title="LocalBankTransfer">
+<LocalBankTransfer_RecipientResponse/>
+</Tab>
+</Tabs>
+<PendingUserActionResponse/>
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json ACTIVE - EUR
+{
+    "Id": "rec_01JRADYFJYPFM10XPQ8VFWW947",
+    "Status": "ACTIVE",
+    "CreationDate": 1744106896,
+    "DisplayName": "Alex Smith EUR international payout account",
+    "PayoutMethodType": "InternationalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "UserId": "user_m_01JRADX7YD0060N5VAA0XPMM54",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "Alex Smith Consulting",
+        "Address": {
+            "AddressLine1": "3 rue de la Cité",
+            "AddressLine2": "Appartement 7",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "InternationalBankTransfer": {
+        "IBAN": "FR7630004000031234567890143",
+        "BIC": "BNPAFRPPXXX"
+    }
+}
+```
+```json ACTIVE - GBP
+{
+    "Id": "rec_01JRADRZMVZ12VXYV1A3DDX6JM",
+    "Status": "ACTIVE",
+    "CreationDate": 1744106716,
+    "DisplayName": "Alex Smith GBP local pay-in account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "GBP",
+    "UserId": "user_m_01JRADQMWEKV9X7C683MYQMQCN",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYIN",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "10 Kingsway",
+            "City": "London",
+            "PostalCode": "WC2B 6LH",
+            "Country": "GB"
+        }
+    },
+    "LocalBankTransfer": {
+        "GBP": {
+            "SortCode": "200000",
+            "AccountNumber": "55779911"
+        }
+    }
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>

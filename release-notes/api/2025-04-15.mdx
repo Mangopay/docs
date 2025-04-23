@@ -1,0 +1,104 @@
+---
+title: 'API - Apr 15, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+---
+
+
+## Recipients
+
+### <span class="pill pill-green">Added</span>
+#### Recipients endpoints, replacing legacy bank accounts
+
+Platforms can now integrate SCA on bank account registration thanks to the new Recipients feature, which is live in Sandbox.
+
+As well as supporting SCA, Recipients enable faster and more reliable local and international payouts, thanks to dedicated endpoints to dynamically retrieve the schema of the account details, and validate the user's data before registration. 
+
+The following endpoints have been added: 
+
+- [GET View payout methods](/api-reference/recipients/view-payout-methods)
+- [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema)
+- [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data)
+- [POST Create a Recipient](/api-reference/recipients/create-recipient)
+- [GET View a Recipient](/api-reference/recipients/view-recipient)
+- [GET List Recipients for a user](/api-reference/recipients/list-recipients-user)
+- [PUT Deactivate a Recipient](/api-reference/recipients/deactivate-recipient)
+
+The following [webhook](/webhooks) event types have been added: 
+- `RECIPIENT_ACTIVE`
+- `RECIPIENT_CANCELED`
+- `RECIPIENT_DEACTIVATED`
+
+Your platform's existing active bank accounts (`BankAccountId`) will continue to be usable for payouts, as well as direct debits and pay-in refunds. This migration is in progress and will be completed before Recipients goes live in Production (planned for mid-May 2025). 
+
+A new guide has been added:
+
+<CardGroup cols={2}>
+<Card title="Recipients guide" href="/guides/sca/recipients">
+Read about Recipient features and required integration, including SCA
+</Card>
+</CardGroup>
+
+---
+
+## Transfers
+
+### <span class="pill pill-green">Added</span>
+#### ScaContext and PendingUserAction on transfers
+
+Thanks to the new `ScaContext` body parameter on [POST Create a Transfer](/api-reference/transfers/create-transfer), platforms can now introduce SCA on user-initiated transfers between Owners (using the `USER_PRESENT` value) and identify automated transfers made as part of their authorized workflow (using the `USER_NOT_PRESENT`).
+
+The need to redirect for SCA, which may technically happen whatever the `ScaContext` value, is indicated by `PendingUserAction` in the response, which contains the `RedirectUrl` if SCA is needed (otherwise `null`).
+
+### <div class="pill pill-orange">Changed</div>
+#### User-initiated transfer status remains CREATED until SCA completed
+
+If a transfer triggers SCA, its `Status` remains `CREATED` until SCA is completed, at which the transaction is attempted and it may then pass to `SUCCEEDED`. 
+
+This means your integration must rely on the existing transfer [webhooks](/webhooks/event-types#transfers) and object status.
+
+### <div class="pill pill-green">Added</div>
+#### ResultCode 007101 and 007102 for SCA-related transfer failures
+
+Because a transfer can fail due to an expired or unsuccessful SCA session, two new ResultCode errors have been added:
+- `007101` – Transfer authentication failed. Please retry with a new request.
+- `007102` – Transfer authentication expired. Please initiate a new request.
+
+<br/>
+
+The existing guides have evolved with more guidance on the transfer scenario:
+
+<CardGroup cols={2}>
+<Card title="SCA on transfers" href="/guides/sca/transfers">
+Read about the impact on transfers and your integration
+</Card>
+<Card title="SCA session" href="/guides/sca/transfers">
+Read how to redirect a user for their hosted SCA session
+</Card>
+</CardGroup>
+
+---
+
+## Wallet access
+
+### <div class="pill pill-green">Added</div>
+#### ScaContext on wallet access endpoints
+
+Thanks to the new `ScaContext` query parameter, platforms can now introduce SCA on Owner-initiated wallet access requests, using the `USER_PRESENT` value.
+
+### <div class="pill pill-orange">Changed</div>
+#### Wallet access endpoints return 401 if SCA required
+
+To maintain the same behavior across the 4 GET endpoints impacted by SCA on wallet access, when SCA is required the endpoint returns a **401 - Unauthorized** response. Your platform can retrieve the redirectUrl that you need to use for the unique hosted SCA session in the WWW-Authenticate response header. 
+
+<br/>
+
+The existing guides have evolved with more guidance on the transfer scenario:
+
+<CardGroup cols={2}>
+<Card title="SCA on wallet access" href="/guides/sca/transfers">
+Read about the impact on wallet access and your integration
+</Card>
+<Card title="SCA session" href="/guides/sca/transfers">
+Read how to redirect a user for their hosted SCA session
+</Card>
+</CardGroup>

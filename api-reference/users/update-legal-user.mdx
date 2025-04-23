@@ -58,36 +58,26 @@ import JavaUpdateLegalUser from '/snippets/code/java-update-legal-user.mdx';
 import PythonUpdateLegalUser from '/snippets/code/python-update-legal-user.mdx';
 import NetUpdateLegalUser from '/snippets/code/net-update-legal-user.mdx';
 
-[Read more about the Legal User object →](/api-reference/users/legal-user-object)
+<Warning>
+**Caution – Modification may cause KYC/B verification downgrade** 
 
-<Warning>  
-**Caution – Modification may cause verification downgrade** 
-  
-Modification of some values may cause an Owner user to have a verification document marked as outdated, which may lead to their `KYCLevel` being downgraded from `REGULAR` to `LIGHT`.   
+If `KYCLevel` is `REGULAR`, modifying the following values triggers a [verification downgrade](/guides/users/verification/downgrade) to `LIGHT`: 
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.LastName`
+- `LegalRepresentative.Birthday`
+- `LegalRepresentative.Nationality`
+- `LegalPersonType`
+</Warning>
 
-The impacted parameters are:  
-- `LegalRepresentativeFirstName`  
-- `LegalRepresentativeLastName`  
-- `LegalRepresentativeBirthday`  
-- `LegalRepresentativeNationality`  
-- `LegalPersonType`  
+<Note>
+**Note – Country-based restrictions apply to users**
 
-For more information, see the <a href="/guides/users/verification/downgrade">Verification downgrade</a> article.
-</Warning>  
-
-<Note>  
-**Note – Country-based restrictions apply to users** 
-  
-Due to Mangopay's <Aml content="AML rules" />, it is not possible to create or modify users using blocked countries.  
-
-For Legal Users, the following parameters are concerned:  
-- `Country` of the `HeadquartersAddress`  
-- `LegalRepresentativeNationality`  
-- `LegalRepresentativeCountryOfResidence`  
-- `Country` of the `LegalRepresentativeAddress`  
-
-For more information, see the <a href="/guides/users/country-restrictions">Country restrictions</a> article.  
-</Note>  
+Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it is not possible to use blocked countries as the following:
+- `HeadquartersAddress.Country`
+- `LegalRepresentativeNationality`
+- `LegalRepresentativeCountryOfResidence`
+- `LegalRepresentativeAddress.Country`
+</Note>
 
 ### Path parameters  
 
@@ -244,7 +234,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "AddressLine1": "34 rue des Entreprises",
         "AddressLine2": "Appartement 14",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
@@ -280,7 +270,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "AddressLine1": "34 rue des Entreprises",
         "AddressLine2": "Batiment B",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75001",
         "Country": "FR"
     },
@@ -288,7 +278,7 @@ For more information, see the <a href="/guides/users/country-restrictions">Count
         "AddressLine1": "3 rue de la Cité",
         "AddressLine2": "Appartement 7",
         "City": "Paris",
-        "Region": "Ile-de-France",
+        "Region": "Île-de-France",
         "PostalCode": "75004",
         "Country": "FR"
     },

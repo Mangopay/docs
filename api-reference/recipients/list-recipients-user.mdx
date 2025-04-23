@@ -1,0 +1,79 @@
+---
+title: List Recipients for a User
+api: GET /v2.01/{ClientId}/users/{UserId}/recipients
+description: List recipients created for a UserId
+---
+
+import RecipientScope_Recipient_Response from '/snippets/p-response/RecipientScope_Recipient_Response.mdx';
+import UserId_Recipient_Response from '/snippets/p-response/UserId_Recipient_Response.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
+import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
+import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
+import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Path parameters
+
+<UserId/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200" defaultOpen>
+<ResponseField name="Recipients" type="array (objects)" defaultOpen>
+The list of recipients created for the user.
+<Expandable>
+<IdResponse/>
+<DisplayName_RecipientResponse/>
+<PayoutMethodType_RecipientResponse/>
+<RecipientType_RecipientResponse/>
+<Currency_RecipientResponse/>
+<UserId_Recipient_Response/>
+<Status_RecipientResponse/>
+<RecipientScope_Recipient_Response/>
+</Expandable>
+</ResponseField>
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json 200
+[
+    {
+        "Id": "rec_01JRADY1QCNHS6821GZJRVM1MV",
+        "DisplayName": "Alex Smith EUR international payout account",
+        "PayoutMethodType": "InternationalBankTransfer",
+        "RecipientType": "Business",
+        "Currency": "EUR",
+        "UserId": "user_m_01JRADX7YD0060N5VAA0XPMM54",
+        "Status": "PENDING",
+        "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JRADYCRSFG4J19C36AD893SF",
+        "DisplayName": "Alex Smith EUR international payout account",
+        "PayoutMethodType": "InternationalBankTransfer",
+        "RecipientType": "Business",
+        "Currency": "EUR",
+        "UserId": "user_m_01JRADX7YD0060N5VAA0XPMM54",
+        "Status": "PENDING",
+        "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JRADYFJYPFM10XPQ8VFWW947",
+        "DisplayName": "Alex Smith EUR international payout account",
+        "PayoutMethodType": "InternationalBankTransfer",
+        "RecipientType": "Business",
+        "Currency": "EUR",
+        "UserId": "user_m_01JRADX7YD0060N5VAA0XPMM54",
+        "Status": "ACTIVE",
+        "RecipientScope": "PAYOUT"
+    }
+]
+```
+</ResponseExample>

@@ -1,6 +1,6 @@
 ---
-title: Overview
-sidebarTitle: Overview
+title: Direct debit
+sidebarTitle: Direct debit
 'og:title': 'Direct debit pay-ins - Mangopay docs'
 'og:description': 'Learn about direct debits with Mangopay: how to create a bank account, set up a mandate and make a pay-in with Bacs or SEPA schemes.'  
 ---
@@ -61,7 +61,7 @@ import LogoBacs from '/snippets/logos/logo-bacs.mdx';
 
 ## Introduction  
 
-Direct debit is a term used to describe a preauthorized bank debit from a user’s bank account. Payments are authorized by the user by way of a **mandate**, which is an authorization from the user to their bank to allow the future debits by the collecting party.
+Direct debit is a term used to describe a preauthorized bank debit from a user's bank account. Payments are authorized by the user by way of a **mandate**, which is an authorization from the user to their bank to allow the future debits by the collecting party.
 
 Mangopay provides a hosted digital mandate form that users can confirm. Users can cancel a mandate at any time with their bank.
 
@@ -82,22 +82,26 @@ A GB-type Bank Account is required for the mandate.
 </Card>  
 </CardGroup>  
 
-The user’s bank must be participating in the relevant scheme, which is not always the case. It may also be that the scheme rules prevent the use of certain account types. 
+The user's bank must be participating in the relevant scheme, which is not always the case. It may also be that the scheme rules prevent the use of certain account types. 
 
 Mangopay does not offer the SEPA B2B scheme.
 
 ## How it works
 
+The steps for setting up a direct debit and collecting payments are described below. For more guidance on testing direct debits, including mock values, see [Testing – Payment methods](/testing/payment-methods#direct-debit).
+
 <Steps>
-<Step title="You register the user's bank account">
-The scheme of the mandate is determined automatically by the type of bank account you create.
-- For the **SEPA scheme**, you must use the <a href="/api-reference/bank-accounts/create-iban-bank-account">POST Create an IBAN Bank Account</a> endpoint.
-- For the **Bacs scheme**, you must use the <a href="/api-reference/bank-accounts/create-gb-bank-account">POST Create a GB Bank Account</a> endpoint.
+<Step title="Register the user's bank account">
+Using the `Id` of the user as the `UserId` path parameter, register their bank account using the relevant endpoint. The scheme of the mandate is determined automatically by the type of bank account you create.
+- For the **SEPA scheme**, use the <a href="/api-reference/bank-accounts/create-iban-bank-account">POST Create an IBAN Bank Account</a> endpoint.
+- For the **Bacs scheme**, use the <a href="/api-reference/bank-accounts/create-gb-bank-account">POST Create a GB Bank Account</a> endpoint.
+
+In response, the bank account's `Active` property should be `true` and its `Id` allows you to create the mandate.
 </Step>
-<Step title="You create the mandate">
-Once the bank account is created and active, you can create the mandate using the <a href="/api-reference/mandates/create-mandate">POST Create a Mandate</a> endpoint.
+<Step title="Create the mandate">
+Create the mandate using the <a href="/api-reference/mandates/create-mandate">POST Create a Mandate</a> endpoint, using the bank account's `Id` as the `BankAccountId` and defining a `ReturnURL` to which the user is returned after confirming the mandate.
 </Step>
-<Step title="The user confirms the mandate">
+<Step title="Let the user confirm the mandate">
 In the response to the mandate creation request, the API returns a `RedirectURL` to which you must redirect the user so they can validate the mandate. After confirming, the user is returned on the URL you provided for `ReturnURL`.
 
 <Note>
@@ -106,15 +110,16 @@ In the response to the mandate creation request, the API returns a `RedirectURL`
 The user must validate the mandate within 1 hour, otherwise it expires and a new mandate must be created.
 </Note>
 
-The Mandate’s `Status` changes from `CREATED` to `SUBMITTED`, indicating that it has been submitted to the issuing bank. It becomes `ACTIVE`:
+The Mandate's `Status` changes from `CREATED` to `SUBMITTED`, indicating that it has been submitted to the issuing bank. It becomes `ACTIVE`:
 - After the first successful pay-in for SEPA
 - After a few days (usually 3) for Bacs
 
+Set up webhooks for the `MANDATE_SUBMITTED` and `MANDATE_ACTIVE` [event types](/webhooks/event-types#direct-debit-mandates) to receive [webhook notifications](/webhooks).
 </Step>
-<Step title="You request the pay-in">
-Once the mandate’s `Status` is `SUBMITTED`, you can request the first pay-in using the <a href="/api-reference/direct-debit-payins/create-direct-debit-payin">POST Create a Direct Debit PayIn</a> endpoint.
+<Step title="Request the first pay-in">
+Once the mandate's `Status` is `SUBMITTED`, request the first pay-in using the <a href="/api-reference/direct-debit-payins/create-direct-debit-payin">POST Create a Direct Debit PayIn</a> endpoint, specifying the `Id` of the mandate as the `MandateId`.
 </Step>
-<Step title="Mangopay processes the pay-in">
+<Step title="Wait for the pay-in to be processed">
 Due to the nature of direct debits, payments take a few days to clear – see [processing times](#pay-in-processing-times) below.
 
 The wallet is credited when the pay-in's `Status` changes to `SUCCEEDED`.
@@ -123,7 +128,7 @@ You can be notified of this by setting up a <a href="/webhooks">webhook</a> for 
 
 You can then use the <a href="/api-reference/direct-debit-payins/view-payin-direct-debit">GET View a PayIn</a> endpoint to confirm the successful payment and other details. 
 </Step>
-<Step title="You request subsequent pay-ins">
+<Step title="Request subsequent pay-ins">
 You can continue requesting direct debit pay-ins as agreed with the user until the mandate is: 
 - Canceled - The user or the platform has canceled the mandate (Mandate `Status` becomes `FAILED`)
 - Expired - No pay-ins were made against the mandate in the last 24 months, which makes it expire (Mandate `Status` becomes `EXPIRED`)
@@ -235,13 +240,13 @@ The following table provides an example in terms of weekdays:
 </table> 
 
 ## Email notifications
-Mangopay notifies the user by email (to the user’s `Email` parameter) when a mandate is first confirmed and when a pay-in is created.
+Mangopay notifies the user by email (to the user's `Email` parameter) when a mandate is first confirmed and when a pay-in is created.
 
 While Mangopay's emails can't be customized, it is possible to deactivate them so you can put in place your own flow in accordance with scheme rules.
 
 ## Bacs specificities
 Note that for Bacs: 
-- NatWest, RBS, HSBC, Metro, and Nationwide banks don’t show the platform trading name on bank statements – only Mangopay is displayed.
+- NatWest, RBS, HSBC, Metro, and Nationwide banks don't show the platform trading name on bank statements – only Mangopay is displayed.
 - Mandates can't be created on accounts where multiple signatures are required (e.g. business accounts).
 
 ## Late failures, chargebacks and refunds
@@ -261,13 +266,13 @@ Usually, late failures occur:
 - Within 5 days for the SEPA scheme
 - Within 2 or 3 days for the Bacs scheme
 
-<Warning>  
-**Caution - Wait 8 business days prior to initiating a refund** 
+<Note>
+**Note – Refunds not possible within 7 days**
 
-For direct debits, disputes are not possible on refunded payments and vice versa.
-  
-To avoid conflicts between a refund and chargeback, you should wait at least 8 business days before processing a refund for a successful transaction.
-</Warning>  
+For direct debits, you must wait 7 calendar days before initiating a refund. This is because of the possibility that a late failure occurs, which would create a conflict on a pay-in that has already been refunded. 
+
+If you attempt to initiate a refund within 7 calendar days of the pay-in's `CreationDate`, the refund fails with the error [001405](/errors/codes/001405). In Sandbox, you can avoid this limitation using the available [mock value for testing](/testing/payment-methods#direct-debit).
+</Note>
 
 Besides late failures, a dispute can also be created if a user requests a chargeback on a direct debit payment with their bank.
 
@@ -280,7 +285,7 @@ The resulting disputes are always non-contestable and are possible:
 ## Related resources  
 
 <CardGroup col={2}> 
-    <Card title="How to" href="/guides/payment-methods/banking/direct-debit/sepa/how-to">
+    <Card title="How to" href="/guides/payment-methods/banking/direct-debit">
     Learn how to process a SEPA direct debit payment
     </Card>  
 

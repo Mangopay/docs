@@ -1,0 +1,69 @@
+---
+title: 'Enroll a User in SCA'
+api: 'POST /v2.01/{ClientId}/sca/users/{UserId}/enrollment'  
+description: 'Obtain an SCA redirection link to enroll an Owner user'
+---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import RestPostNoBody from '/snippets/code/rest-post-no-body.mdx';
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+If `UserCategory` is `OWNER`, this endpoint allows you to enroll a user in SCA. Your platform needs to retrieve the returned `PendingUserAction.RedirectUrl`, add an encoded `returnUrl` query parameter for them to be returned to after the SCA session, and redirect the user.
+
+[Read more about SCA redirection](/guides/sca/session) **&rarr;**
+
+You can use this endpoint to obtain a new session `RedirectUrl`. This is useful to: 
+- Enroll Owners created without SCA enrollment
+- Retry enrollment if a previous session was unsuccessful or expired (after 10 minutes)
+
+Calling this endpoint creates a new session regardless of whether there is one already in progress for the user. Calling this endpoint also doesn't change the user's `UserStatus`, even if the session expires or is unsuccessful.
+
+### Path parameters
+
+<UserId />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200">  
+
+<PendingUserActionResponse />  
+
+</Accordion>
+
+</AccordionGroup> 
+
+<AccordionGroup>
+
+<Accordion title="400 - Endpoint not allowed if category is PAYER">
+```json 
+{
+    "Message": "This endpoint is not allowed for User categorized as PAYER",
+    "Type": "not_allowed_for_user_category_payer",
+    "Id": "4f848681-e524-403b-913a-12bf47095328",
+    "Date": 1736765347,
+    "errors": null
+}
+```
+
+To enroll a user whose `UserCategory` is `PAYER` in SCA, use the endpoints [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user).
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>  
+```json 200
+{
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cf51ed367151a0cb1c59def21e13"
+    }
+}
+```
+</ResponseExample>  
+
+<RequestExample>  
+<RestPostNoBody/>
+</RequestExample>

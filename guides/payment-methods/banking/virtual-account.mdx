@@ -11,7 +11,7 @@ import IconGrayCross from '/snippets/icons/icon-gray-cross.mdx';
 
 Mangopay enables you to create an IBAN attached to a wallet. Once created, any funds wired by the user to that dedicated IBAN are credited automatically to the associated wallet, which simplifies reconciliation and improves the user experience. 
 
-In the API, the **Virtual Account** object allows you to create and manage dedicated IBANs for your users’ wallets. You can also see local and international pay-in capabilities available to your platform.
+In the API, the **Virtual Account** object allows you to create and manage dedicated IBANs for your users' wallets. You can also see local and international pay-in capabilities available to your platform.
 
 <Warning>
 **Caution - Replaces deprecated Banking Alias feature**
@@ -55,6 +55,14 @@ You call the <a href="/api-reference/virtual-accounts/create-virtual-account">PO
 
 The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
+<Note>
+**Note – UK Confirmation of Payee (CoP)**
+
+For `GB` virtual accounts, it takes approximately 48 hours for the account to be fully recognized by all banks through the UK's Confirmation of Payee (CoP) scheme. 
+
+Once the virtual account is `ACTIVE` it can technically receive funds. Depending on the user's bank, during the first 48 hours they may be shown a CoP alert but be able to ignore it, or be prevented from proceeding with the wire transfer.
+</Note>
+
 <Check>
 **Best practice – Set up webhook for active accounts**
 
@@ -83,6 +91,8 @@ The payment flow is as follows:
       **Caution – Ensure account is `ACTIVE`**
       
       You must always ensure the account is `ACTIVE` before inviting a payment, otherwise the funds will be returned.
+
+      See also the note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts.
     </Warning>
   </Step>
   <Step title="You present the payment details to the user">
@@ -113,8 +123,8 @@ The payment flow is as follows:
 ### Status
 
 The `Status` of the Virtual Account can have the following values:  
-- `PENDING` – The account creation request is being processed and full account details may not yet be returned. Any funds sent to the account are returned (if account details exist). `PENDING` can transition to `ACTIVE`, `FAILED`, or `BLOCKED`.
-- `ACTIVE` – The account is active and can receive funds. `ACTIVE` can transition to `BLOCKED` or `CLOSED`.
+- `PENDING` – The account creation request is being processed and full account details may not yet be returned. Any funds sent to the account are returned (if account details exist). `PENDING` can transition to `ACTIVE` or `FAILED`.
+- `ACTIVE` – The account is active and can receive funds (see note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts). `ACTIVE` can transition to `BLOCKED` or `CLOSED`. 
 - `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. This temporary status may be used during processes relating to user verification or fraud screening. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
 - `CLOSED` – The account has been deactivated and is closed. Any funds sent to the account are returned. This is a final state.
 - `FAILED` – The account creation request failed or was rejected. This final state is rare. Any funds sent to the account are returned (if account details exist). Depending on when the failure occurred, the following fields may be `null`:
@@ -181,7 +191,7 @@ See your platform's account capabilities per account type and country
 
 Mangopay offers IBANs for the following countries, specified in the `Country` parameter of both the Virtual Account object and the deprecated Banking Alias object. 
 
-When you create an account, the `Country` must correspond to the `Currency` of the account’s Wallet. If a payment is attempted to the account in a different currency than the wallet currency, the payment is returned to the payer and the wallet is not credited.
+When you create an account, the `Country` must correspond to the `Currency` of the account's Wallet. If a payment is attempted to the account in a different currency than the wallet currency, the payment is returned to the payer and the wallet is not credited.
 
 The following tables summarize the account coverage available to platforms who have contracted with **Mangopay S.A. (in the EEA)** and **Mangopay UK Ltd. (in the UK)**. It also shows a comparison between the Virtual Account endpoints and the deprecated Banking Alias.
 
@@ -204,29 +214,44 @@ The following tables summarize the account coverage available to platforms who h
           <td class="table-content">{IconGrayCross}</td>
         </tr>
         <tr>
+          <td class="table-content">CA - Canada</td>
+          <td class="table-content">CAD</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">DK - Denmark</td>
           <td class="table-content">DKK</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
-        <tr rowS>
+        <tr >
           <td class="table-content">DE - Germany</td>
-          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
           <td class="table-content">ES - Spain</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
           <td class="table-content">FR - France</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
+          <td class="table-content">LI - Lichtenstein</td>
+          <td class="table-content">CHF</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
@@ -237,10 +262,28 @@ The following tables summarize the account coverage available to platforms who h
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
+          <td class="table-content">NO - Norway</td>
+          <td class="table-content">NOK</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">PL - Poland</td>
           <td class="table-content">PLN</td>
           <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">SE - Sweden</td>
+          <td class="table-content">SEK</td>
           <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">US - USA</td>
+          <td class="table-content">USD</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
         </tr>
     </tbody>
   </table>
@@ -263,29 +306,44 @@ The following tables summarize the account coverage available to platforms who h
           <td class="table-content">{IconGrayCross}</td>
         </tr>
         <tr>
+          <td class="table-content">CA - Canada</td>
+          <td class="table-content">CAD</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">DK - Denmark</td>
           <td class="table-content">DKK</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
-        <tr rowS>
+        <tr>
           <td class="table-content">DE - Germany</td>
-          <td class="table-content" rowspan="4">EUR</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGrayCross}</td>
           <td class="table-content">{IconGrayCross}</td>
         </tr>
         <tr>
           <td class="table-content">ES - Spain</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGrayCross}</td>
           <td class="table-content">{IconGrayCross}</td>
         </tr>
         <tr>
           <td class="table-content">FR - France</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGrayCross}</td>
           <td class="table-content">{IconGrayCross}</td>
         </tr>
         <tr>
+          <td class="table-content">LI - Lichtenstein</td>
+          <td class="table-content">CHF</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">LU - Luxembourg</td>
+          <td class="table-content">EUR</td>
           <td class="table-content">{IconGreenCheck}</td>
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
@@ -296,10 +354,28 @@ The following tables summarize the account coverage available to platforms who h
           <td class="table-content">{IconGreenCheck}</td>
         </tr>
         <tr>
+          <td class="table-content">NO - Norway</td>
+          <td class="table-content">NOK</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
           <td class="table-content">PL - Poland</td>
           <td class="table-content">PLN</td>
           <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">SE - Sweden</td>
+          <td class="table-content">SEK</td>
           <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
+        </tr>
+        <tr>
+          <td class="table-content">US - USA</td>
+          <td class="table-content">USD</td>
+          <td class="table-content">Planned</td>
+          <td class="table-content">{IconGrayCross}</td>
         </tr>
     </tbody>
   </table>
@@ -349,7 +425,7 @@ The following table summarizes the differences between the two types:
     <tr>
       <th class="header">Purpose</th>
       <td class="table-content">Collection and reconciliation of funds by the platform</td>
-      <td class="table-content">User’s acceptance and storing of funds</td>
+      <td class="table-content">User's acceptance and storing of funds</td>
     </tr>
     <tr>
       <th class="header">Account owner</th>
@@ -358,8 +434,8 @@ The following table summarizes the differences between the two types:
     </tr>
     <tr>
       <th class="header">Account holder name example</th>
-      <td class="table-content">Mangopay S.A (for ACME Corp)</td>
-      <td class="table-content">Alex Smith</td>
+      <td class="table-content">MGP PlatformTradingName</td>
+      <td class="table-content">Alex Smith (Natural), ACME Corp (Legal)</td>
     </tr>
     <tr>
       <th class="header">Allowed user category</th>
@@ -380,22 +456,22 @@ The following table summarizes the differences between the two types:
 </table>
 
 <Note>
-**Note – Both types require user address data**
+**Note – User address data required for `USER_OWNED` account**
 
-Both types of virtual account require the following data to be provided in the corresponding user object:
-- `Address` for a Natural user
-- `LegalRepresentativeAddress` for a Legal user
+User-owned virtual accounts require the following data to be provided in the corresponding User object:
+- `Address` for a Natural User
+- `LegalRepresentativeAddress` for a Legal User
 
-This address data is not required for the user to be an Owner or to be KYC validated, but it must be present to successfully create a virtual account (regardless of whether its `VirtualAccountPurpose` is `COLLECTION` or `USER_OWNED`).
+This address data is not required for the user to be an Owner or to be KYC validated, but it must be present to successfully create a `USER_OWNED` Virtual Account. This data is not required for `COLLECTION` accounts.
 </Note>
 
 ### Collection accounts
 
-Collection accounts allow users to wire funds to their wallet using a designated virtual IBAN. Once created, any funds received on the IBAN are automatically credited to the wallet. The IBAN is owned by Mangopay, and the name of the account reflects both Mangopay and the platform’s name in the format “Mangopay S.A. (for PlatformTradingName)” or "Mangopay UK Ltd. (for PlatformTradingName)" 
+Collection accounts allow users to wire funds to their wallet using a designated virtual IBAN. Once created, any funds received on the IBAN are automatically credited to the wallet. The IBAN is owned by Mangopay, and the name of the account reflects both Mangopay and the platform's name in the format “MGP PlatformTradingName”. 
 
-Collection accounts need to be attached to the wallet of the user making the pay-in, meaning that you need to create one Virtual Account object per user. This **first user** can be categorized as a Payer and they don’t need to be KYC verified. In your workflow, you can trigger a transfer from the wallet to a **second user**, who must be categorized as an Owner to receive the transfer.
+Collection accounts need to be attached to the wallet of the user making the pay-in, meaning that you need to create one Virtual Account object per user. This **first user** can be categorized as a Payer and they don't need to be KYC verified. In your workflow, you can trigger a transfer from the wallet to a **second user**, who must be categorized as an Owner to receive the transfer.
 
-This type of account is mainly used for collecting and reconciling incoming funds, making it ideal for platforms that want to streamline these processes. Payouts are prohibited unless they’re for a refund.
+This type of account is mainly used for collecting and reconciling incoming funds, making it ideal for platforms that want to streamline these processes. Payouts are prohibited unless they're for a refund.
 
 <img className="block dark:hidden" src="/images/diagram_virtual_account_collection_light.svg" />
 <img className="hidden dark:block" src="/images/diagram_virtual_account_collection_dark.svg" />

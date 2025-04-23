@@ -1,10 +1,11 @@
 <ParamField body="PayoutModeRequested" type="string" >   
-**Allowed values:** `STANDARD`, `INSTANT_PAYMENT`, `INSTANT_PAYMENT_ONLY`
+**Possible values:** `STANDARD`, `INSTANT_PAYMENT`, `INSTANT_PAYMENT_ONLY`, `RTGS_PAYMENT`
 
 **Default value:** `STANDARD`
 
-The mode of the payout:  
-- `STANDARD` – A standard bank wire is requested and the processing time of the funds is up to 48 hours.  
-- `INSTANT_PAYMENT` – An instant payment bank wire is requested and the processing time is within 25 seconds. The payment will fall back to the `STANDARD` mode if any of the prerequisites are not met or if another problem occurs.  
-- `INSTANT_PAYMENT_ONLY` – An instant payment bank wire is requested and the processing time is within 25 seconds. There is no fallback if the prerequisites are not met or another problem occurs: the wallet is automatically refunded and the payout is not completed.  
+The mode defining how the payout request is sent:
+- `STANDARD` – Sent via the relevant route for the currency and destination account (which determine the typical funds [processing times](/guides/payouts#cutoffs-and-processing-times)). If a request is received after the applicable cutoff, it is processed the next working day.
+- `INSTANT_PAYMENT` – Sent via the SEPA Instant Credit Transfer scheme (funds processed within 25 seconds) with a fallback to `STANDARD` mode if any of the prerequisites are not met or if another issue occurs.
+- `INSTANT_PAYMENT_ONLY` – Sent via the SEPA Instant Credit Transfer scheme (funds processed within 25 seconds) without a fallback. If an issue occurs, the wallet automatically refunded.
+- `RTGS_PAYMENT` – Sent via the Eurozone’s [real-time gross settlement (RGTS)](/guides/payouts#real-time-gross-settlement-rtgs) scheme T2 (funds usually processed within 5 minutes) without a fallback. If the request is received after the applicable cutoff (16:15 CET), it is processed the next working day (from 07:00 CET).
 </ParamField>

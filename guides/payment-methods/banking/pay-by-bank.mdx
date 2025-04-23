@@ -1,0 +1,248 @@
+---
+title: Pay by Bank
+---
+
+import Ec_009199 from '/snippets/errors/009199.mdx';
+import Ec_009499 from '/snippets/errors/009499.mdx';
+import Ec_009103 from '/snippets/errors/009103.mdx';
+import Ec_001031 from '/snippets/errors/001031.mdx';
+import Ec_001034 from '/snippets/errors/001034.mdx';
+import Ec_206101 from '/snippets/errors/206101.mdx';
+import Ec_206102 from '/snippets/errors/206102.mdx';
+import Ec_206103 from '/snippets/errors/206103.mdx';
+import Ec_206104 from '/snippets/errors/206104.mdx';
+import Ec_206105 from '/snippets/errors/206105.mdx';
+import Ec_206106 from '/snippets/errors/206106.mdx';
+import Ec_206107 from '/snippets/errors/206107.mdx';
+import Ec_206108 from '/snippets/errors/206108.mdx';
+import Ec_206109 from '/snippets/errors/206109.mdx';
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                EU, UK
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                See the <a href="/guides/currencies">currencies</a> page for details
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](#refunds)</th>
+            <td class="table-content">
+                Supported [via payouts](/guides/payouts#refunds-using-payouts)
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Disputes</th>
+            <td class="table-content">
+                Users authenticate directly with their bank, so there is no dispute process and a low risk of unrecognized or fraudulent payments
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring&nbsp;payments</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## About
+
+Pay by Bank relies on open banking, which allows third-party providers to access banking data and initiate transactions on behalf of customers (in line with applicable regulations). Your platform can allow users to pay directly from their bank account, via a range of bank wire transfer schemes.
+
+## How it works
+
+The Pay by Bank payment method allows you to redirect the user to their bank to initiate and authenticate the bank wire.
+
+<Steps titleSize="h3">
+<Step title="User chooses payment method">
+On your app or website, the user selects Pay by Bank as the payment method. 
+
+Optionally you can present the user with the list of banks for their `Country`. If you provide the `BankName` in your API request, the user doesn't have to choose it on the hosted page.
+
+You can also invite the user to select the `Scheme` they wish to use, otherwise the instant one is used by default (if supported by the bank). See below for more about [banks and schemes](#banks-and-schemes).
+
+In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user's `IBAN` and `BIC` up front. Otherwise, these details enable the account to be preselected.
+</Step>
+<Step title="Payment initiation">
+You initiate the payment request by calling [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin), specifying the `ReturnURL` to which the user will be returned after payment (whatever the outcome).
+
+If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
+
+You should also provide the `BankName`, `IBAN`, `BIC`, and `Scheme` if you obtained them from the user.
+
+<Warning>
+**Caution – Pay-in currency must match account currency**
+
+The currency of the pay-in request must correspond to the currency of the account the user selects, otherwise the user is returned an error and the pay-in fails.
+</Warning>
+</Step>
+<Step title="Redirection">
+You redirect the user to the hosted page via the `RedirectURL` in the API response. 
+
+On the hosted page, the user initiates the payment by: 
+
+- Selecting their bank (based on `Country`), unless specified in `BankName`
+- Selecting the account to be debited, which requires authentication to connect to their bank (unless specified by `IBAN` and `BIC`) – this is known as the **account information service (AIS)** that is authenticated in some countries, notably Germany
+- Authenticating their payment – this is known as the **payment initiation service (PIS)** which is always authenticated in all countries
+
+<Note>
+**Note – Session timeout 9 minutes**
+
+The Pay by Bank session lasts for 9 minutes, at which point the pay-in fails automatically if no action has been taken by the user.
+</Note> 
+</Step>
+<Step title="Return">
+After payment, the user is returned on your specified `ReturnURL`:
+
+- To a website if `PaymentFlow` is `WEB` (default value)
+- To a mobile app if the `PaymentFlow` is `APP`
+</Step>
+<Step title="Outcome">
+If the payment was initiated successfully by the user, then the response parameter `ProcessingStatus` is returned with its only value `PENDING_SUCCEEDED` and the `Status` is `CREATED`.
+
+`ProcessingStatus` is **only** returned if the payment initiation was successful, and it triggers a [webhook](/webhooks) for the dedicated [event type](/webhooks/event-types): 
+
+- `PAYIN_NORMAL_PROCESSING_STATUS_PENDING_SUCCEEDED`
+
+`ProcessingStatus` only has one value, `PENDING_SUCCEEDED`, which is temporarily returned until the final outcome is known. If it is not returned, then the payment was not initiated successfully by the user. 
+
+When the bank wire from the user's account is received on Mangopay's account, the pay-in's  `Status` changes from `CREATED` to `SUCCEEDED` and the `ResultCode` changes to `000000`. This outcome triggers a webhook for the event type:
+
+- `PAYIN_NORMAL_SUCCEEDED`
+
+Depending on the `Scheme` that is used, it can take up to 72 hours for the pay-in to succeed.
+
+If the pay-in fails, it's `Status` changes to `FAILED` and a `ResultCode` and `ResultMessage` are returned giving the reason (see [Functional errors](#functional-errors) below). This outcome triggers a webhook for the event type:
+
+- `PAYIN_NORMAL_FAILED`
+</Step>
+</Steps>
+
+## Banks and schemes
+
+Once redirected on the `RedirectUrl` to the Pay by Bank hosted experience, the user selects their bank (unless sent in `BankName`) and chooses the account to be debited. 
+
+On the hosted Pay by Bank page, however, they are not able to select the scheme used for the payment. 
+
+You can send the `Scheme` in your API request, and we recommend that you present this choice to the user beforehand.
+
+<Note>
+**Note – Ensure clear communication with the user**
+
+Whether you leave the `Scheme` choice to the user (recommended) or not, you should communicate clearly which scheme is being used.
+
+Furthermore, it is possible for a bank to charge the user additional fees (separately) for an instant scheme, but this will become less common as markets adapt.
+</Note>
+
+By default (with the exception of Denmark) the local instant payment scheme is used for the payment if it is supported by the bank, otherwise the non-local scheme is used. If `Country` is `DK` then there is no default and the `Scheme` must be specified. 
+
+If your API call specifies the instant scheme but the bank doesn't support it, then the non-instant scheme is used. However, the API returns the value that you sent, even after the funds arrive on Mangopay's account and the `Status` becomes `SUCCEEDED`.
+
+### Supported schemes
+
+The following `Scheme` values are available depending on the `Country`:
+
+<table>
+<thead>
+<tr><th class="header-compact">Country</th><th class="header-compact">Supported `Scheme` values</th><th class="header-compact">Default value (if supported by the bank)</th></tr>
+</thead>
+<tbody>
+<tr><td>`AT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`DE`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`DK`</td><td>`DANISH_DOMESTIC_CREDIT_TRANSFER`, `INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS`, `INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG`</td><td>No default - must be specified</td></tr>
+<tr><td>`EE`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`ES`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`FI`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`FR`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`GB`</td><td>`FASTER_PAYMENTS`</td><td>`FASTER_PAYMENTS`</td></tr>
+<tr><td>`IE`</td><td>`SEPA_CREDIT_TRANSFER`</td><td>`SEPA_CREDIT_TRANSFER`</td></tr>
+<tr><td>`IT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`LT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`NL`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+<tr><td>`NO`</td><td>`NORWEGIAN_DOMESTIC_CREDIT_TRANSFER`, `INSTANT_NORWEGIAN_DOMESTIC_CREDIT_TRANSFER_STRAKS`</td><td>`INSTANT_NORWEGIAN_DOMESTIC_CREDIT_TRANSFER_STRAKS`</td></tr>
+<tr><td>`PL`</td><td>`SEPA_CREDIT_TRANSFER`, `INSTANT_POLISH_DOMESTIC_CREDIT_TRANSFER`, `POLISH_DOMESTIC_CREDIT_TRANSFER`</td><td>`INSTANT_POLISH_DOMESTIC_CREDIT_TRANSFER`</td></tr>
+<tr><td>`PT`</td><td>`SEPA_CREDIT_TRANSFER`, `SEPA_INSTANT_CREDIT_TRANSFER`</td><td>`SEPA_INSTANT_CREDIT_TRANSFER`</td></tr>
+</tbody>
+</table>
+
+### Supported banks
+
+The list of banks supported in each country is available in the CSV lists below. Each list contains:
+- `Country`
+- Bank (display name)
+- `BankName` value (e.g. `at-easybank-ob`)
+- `Scheme` values supported by the bank
+
+For testing data, see [Payment methods - Testing](/testing/payment-methods#pay-by-bank)
+
+<CardGroup cols={1}>
+<Card title="All countries" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/00_all_countries_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+</CardGroup>
+<CardGroup cols={4}>
+<Card title="AT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/AT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="DE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/DE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="DK" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/DK_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="EE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/EE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="ES" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/ES_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="FI" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/FI_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="FR" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/FR_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="GB" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/GB_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="IE" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/IE_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="IT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/IT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="LT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/LT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="NL" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/NL_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="NO" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/NO_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="PL" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/PL_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+<Card title="PT" href="https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payment-methods/banking/pay-by-bank/PT_supported_banks_Pay_by_Bank_Mangopay.csv"></Card>
+</CardGroup>
+
+## Refunds
+
+Pay by Bank relies on bank wire schemes which have no native refund functionality. However, you can refund pay-ins by using payouts and specifying the initial transaction ID. See [Refunds using payouts](/guides/payouts#refunds-using-payouts) for details.
+
+## Functional errors
+
+If the Pay by Bank PayIn `Status` changes to `FAILED`, the following `ResultCode` errors may be returned.
+
+<Accordion title="Functional errors">
+
+<Ec_009199/>
+<Ec_009499/>
+<Ec_009103/>
+<Ec_001031/>
+<Ec_001034/>
+<Ec_206101/>
+<Ec_206102/>
+<Ec_206103/>
+<Ec_206104/>
+<Ec_206105/>
+<Ec_206106/>
+<Ec_206107/>
+<Ec_206108/>
+<Ec_206109/>
+
+</Accordion>
+
+## Related resources
+
+<CardGroup col={2}>
+<Card title="Testing" href="/testing/payment-methods#pay-by-bank">
+See testing data
+</Card>
+<Card title="Endpoints" href="/api-reference/pay-by-bank/pay-by-bank-payin-object">
+The Pay by Bank PayIn object
+</Card>
+</CardGroup>

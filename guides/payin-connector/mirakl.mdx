@@ -1,0 +1,432 @@
+---
+title: Pay-In Connector integration for Mirakl Connector platforms
+description: Guide for platforms using the Mirakl Connector to prepare for the launch of the Mangopay Pay-In Connector
+---
+
+Platforms are able to use third-party acquirers along with Mangopay pay-ins and then benefit from Mangopay's wallet and payout capabilities. 
+
+Mangopay is developing a new **Pay-In Connector** to provide better transparency on funds acquired by other PSPs but which then transit the Mangopay environment. 
+
+The Mirakl Connector, which your platform is using, will take care of this functionality for all Mirakl Orders, regardless of whether the payments are processed by a third-party PSP or by Mangopay. However, we require you to enrich Mirakl Orders with some data so they can be processed.
+
+Furthermore, we require certain actions from all platforms using third-party acquirer PSPs, including those using the Mirakl Connector. 
+
+{/* For Mirakl Connector platforms also processing first-party payments for the sale of their own goods, we will require integration of the Pay-In Connector to declare these direct payments. This is because these payments are not visible in Mirakl and therefore not handled by the Mirakl Connector. */}
+
+While developments of the Pay-In Connector are being finalized, certain actions can be started on your side.
+
+## Confirm your PSP provides settlement files
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition (whether the platform uses the Mirakl Connector or not)
+
+**Actionable:** Now
+</Info>
+
+Settlement data consists of:
+
+- **A list of transactions** and details for each: type (e.g. payment, refund, chargeback), identifiers, amounts, date, status information, etc.
+- **Summary data** relating to the settlement of those transactions: date of settlement, total amount sent to your platform, total amount of commission retained by the PSP, etc.
+
+Many PSPs provide daily settlement files, but it is possible that your provider doesn't. In this case, you need to request that they start making files available to you, ideally daily.
+
+<Check>
+**Best practice – Request settlement files as soon as possible (if not already provided)**
+
+If your PSP doesn't provide settlement files today, you need to request that they do as soon as possible.
+
+This data is essential for regulatory compliance and Mangopay relies on your partner PSP to provide you the files.
+</Check>
+
+## Enrich Mirakl Connector integration
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition and using the Mirakl Connector
+
+**Actionable:** Now
+</Info>
+
+### 1. Create custom Order fields in the Mirakl Dashboard
+
+Mirakl allows its operators to create custom data fields (for Stores, Orders, etc.) for specific business needs.
+
+Mangopay's Mirakl Connector relies on these custom fields to standardize the transactional data that is not always present in Orders. Without these fields, Mangopay's Pay-In Connector can't declare external payments (called Intents in the Pay-In Connector) or reconcile and release funds.
+
+#### How to create fields
+
+To create custom fields in the Mirakl Dashboard:
+
+1. Navigate to ***Settings*** in the sidebar menu.
+2. Select the entity: ***Orders***
+3. Go to the ***Custom fields*** tab.
+4. Click ***Create custom field*** and fill in the required details such as ***Label***, ***Code***, ***Type***, and ***Description***. 
+
+Follow the specifications in the table below exactly. 
+
+For the Mirakl settings not mentioned below we recommend:
+
+- ***Store account permissions***: ***Invisible*** or ***Read only***
+- ***Required field***: No
+
+There are no requirements for the ***Label***, which is your custom display name.
+
+#### Fields to create
+
+<table>
+<thead>
+<tr>
+<th class="header">Code</th>
+<th class="header">Description</th>
+<th class="header">Type (Mirakl Dashboard)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`mgp-external-provider-name`</td>
+<td class="table-content">The name of the external provider processing the transaction.</td>
+<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/payin-connector/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-processing-date`</td>
+<td class="table-content">The date at which the transaction was created.</td>
+<td class="table-content">***Date (ISO 8601 format)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-reference`</td>
+<td class="table-content">The unique identifier of the transaction at the provider level.</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-merchant-reference`</td>
+<td class="table-content">The unique identifier of the transaction at the merchant level.</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-payment-method`</td>
+<td class="table-content">The name of the payment method used to process the transaction.</td>
+<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/payin-connector/supported-payment-methods).</td>
+</tr>
+</tbody>
+</table>
+
+<Check>
+**Best practice – Use list values not text strings**
+
+The data values sent in `mgp-external-provider-name` and `mgp-external-provider-payment-method` must match the supported enum values linked above.
+
+Therefore, it is better to use the Mirakl ***Single values list*** format with the specified values rather than free text. In the Mirakl API this format is `LIST` with `accepted_values`.
+
+Note that the payment method is not required by Mangopay, so if you make it required on Mirakl then all values must be in the supported values.
+</Check>
+
+### 2. Integrate the custom Order fields into your Mirakl API calls
+
+Now that the fields have been created, you need to integrate them on your calls to the Mirakl API for Orders.
+
+The following fields are required for correct processing by Mangopay's Pay-In Connector
+
+<table>
+<thead>
+<tr>
+<th class="header">Field</th>
+<th class="header">Required</th>
+<th class="header">Expected values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`mgp-external-provider-name`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">One of the [supported external providers](/guides/payin-connector/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-processing-date`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">ISO 8601 date time in UTC (YYYY-MM-DDTHH:MM:SSZ)</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-reference`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">String</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-merchant-reference`</td>
+<td class="table-content">No</td>
+<td class="table-content">String</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-payment-method`</td>
+<td class="table-content">No</td>
+<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this field can be left blank (provided you created it as not required).</td>
+</tr>
+</tbody>
+</table>
+
+You can send the data on the Mirakl endpoints:
+
+- **OR01** when you create an Order – this is recommended
+- **OR31** by editing an existing Order, if the data becomes available after creation
+
+<Note>
+**Note – Incomplete custom fields blocks release of funds**
+
+You should provide the custom field data as early as possible in the flow.
+
+If the data is not present, it blocks the Pay-In Connector from reconciling the Order with an Intent subsequently releasing the funds. 
+</Note>
+
+<Check>
+**Best practice – Start sending custom fields now**
+
+You should start sending the custom fields on Orders as soon as possible, even before Mangopay's Pay-In Connector is launched.
+</Check>
+
+#### Example of custom fields in Mirakl API call
+```json
+...
+    "order_additional_fields": [
+        {
+            "code": "mgp-external-provider-name",
+            "type": "LIST",
+            "value": "ADYEN"
+        },
+        {
+            "code": "mgp-external-processing-date",
+            "type": "DATE",
+            "value": "2013-10-21T13:28:06.419Z"
+        },
+        {
+            "code": "mgp-external-provider-reference",
+            "type": "STRING",
+            "value": "b8fd937e-f1ce-4ad7-9744-59797957beeb"
+        },
+        {
+            "code": "mgp-external-merchant-reference",
+            "type": "STRING",
+            "value": "6f9b2ec2-d51e-4193-ac78-a18589f7d8af"
+        },
+        {
+            "code": "mgp-external-provider-payment-method",
+            "type": "LIST",
+            "value": "VISA"
+        }
+    ]
+...
+```
+
+---
+
+The rest of this page provides information on the actions that your platform will be required to complete once the **Pay-In Connector** is live. 
+
+## Provide settlement files to Mangopay
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition (whether the platform uses the Mirakl Connector or not)
+
+**Actionable:** When the Pay-In Connector launches (Sandbox: May 2025; Production: June 2025)
+</Info>
+
+<Note>
+**Note – Beta documentation for communication purposes only, subject to minor change**
+
+The information provided below aims to prepare you as much as possible for your integration of the **Pay-In Connector**.
+
+We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as final developments are completed. and approach the launch.
+</Note>
+
+The Mangopay Pay-In Connector will need settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
+
+For Mirakl Connector platforms, the payment intent declarations will be created automatically by the connector, but the settlement data must be provided by the platform.
+
+### Process
+
+<Note>
+**Note – Process and send the settlement as soon as it becomes available** 
+
+You should follow the process below as soon as settlement files become available from your PSP. In many cases this means daily.
+</Note>
+
+To provide your settlement data to Mangopay, you need to: 
+
+<Steps>
+<Step title="Extract the relevant data from your PSP's files">
+Extract the data points required by [Mangopay's format](#specifications-of-the-Mangopay-format-settlement-file) from your PSP's settlement files.
+</Step>
+<Step title="Create a CSV according to Mangopay's format">
+Generate a CSV file conforming to Mangopay's format that contains the extracted data.
+
+Each file must contain only a single currency.
+</Step>
+<Step title="Send the file via the dedicated API endpoint">
+Upload the file using the dedicated API endpoint (released as part of the Pay-In Connector).
+
+> ##### POST Upload a settlement file
+```bash
+# Note: Beta doc given for communication purposes only
+curl -X POST ".../v2.01/{ClientId}/payins/intents/settlements" \
+-H "Authorization: Bearer token" \
+-F "file=@/example/file-path.csv"
+```
+
+In response, the API will return a JSON object containing `SettlementId`, declared amount, settled amount, status, etc.
+</Step>
+{/* <Step title="Handle unprocessed data (if required)">
+In case any data from your settlement could not be processed for some reason, you may need to reprocess transactions. The nature of this post-processing is still in development.
+</Step> */}
+</Steps>
+
+### Example settlement file in Mangopay format
+
+<Info>
+**Beta documentation subject to minor change**
+
+The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as final developments are completed.
+</Info>
+
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payin-connector/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+
+There are no requirements for the **file name** – you can name your file how you like.
+
+### Specifications of the Mangopay-format settlement file
+
+<Info>
+**Beta documentation subject to minor change**
+
+The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as final developments are completed.
+</Info>
+
+Columns per transaction included in the settlement file:
+
+<table>
+<thead>
+<tr>
+<th class="header">Column label</th>
+<th class="header">Necessity</th>
+<th class="header">Format</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ExternalProviderReference</td>
+<td class="table-content">Required</td>
+<td class="table-content">String</td>
+<td class="table-content">The unique identifier (ID) of the transaction as recognized within your PSP’s system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProcessingDate</td>
+<td class="table-content">Required</td>
+<td class="table-content">ISO 8601 date time in UTC (YYYY-MM-DDTHH:MM:SSZ)</td>
+<td class="table-content">
+The date the transaction was processed and executed in your PSP’s system.
+</td>
+</tr>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Required</td>
+<td class="table-content">String</td>
+<td class="table-content">Your platform’s Client ID as recognized within Mangopay’s system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalTransactionType</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">
+The type of the transaction:
+- PAYMENT – The payment operation to authorize and capture funds.
+- REFUND – The reversal of a payment.
+- DISPUTE – The operation created when a chargeback occurs.
+</td>
+</tr>
+<tr>
+<td class="table-content">ExternalPaymentMethod</td>
+<td class="table-content">Optional</td>
+<td class="table-content">Enum</td>
+<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this optional field can be left blank.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalTransactionStatus</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">
+The status of the transaction: 
+- SETTLED – Payment successfully processed: funds are expected to be received.
+- REFUNDED – Refund fully processed: funds have been returned to the end user.
+- REFUND_REVERSED – Refund processed but reversed: funds have been returned to your platform.
+- DISPUTED – Funds deducted due to a dispute and not available for settlement.
+- DEFENDED – Funds temporarily returned to your platform as part of the dispute contest process.
+- DISPUTED_WON – Dispute resolved in favor of your platform.
+- DISPUTED_LOST – Dispute resolved against your platform: funds permanently withdrawn.
+</td>
+</tr>
+<tr>
+<td class="table-content">Amount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The amount debited from your end user as recorded by your PSP's system.</td>
+</tr>
+<tr>
+<td class="table-content">Currency</td>
+<td class="table-content">Required</td>
+<td class="table-content">Three-letter ISO 4217 code</td>
+<td class="table-content">The currency used to process the transaction and debit your end user in your PSP's system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalInitialReference</td>
+<td class="table-content">Required if ExternalTransactionType is REFUND or DISPUTE</td>
+<td class="table-content">String</td>
+<td class="table-content">The unique identifier (ID) of the initial transaction in the case of a refund or dispute.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProviderFees</td>
+<td class="table-content">Optional</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The amount debited from the transaction as commission by your PSP's system.</td>
+</tr>
+</tbody>
+</table>
+
+Rows of summary data under the columns, preceded by a single empty row: 
+
+<table>
+<thead>
+<tr>
+<th class="header">Row label</th>
+<th class="header">Necessity</th>
+<th class="header">Format</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">SettlementDate</td>
+<td class="table-content">Required</td>
+<td class="table-content">ISO 8601 date in UTC (YYYY-MM-DD)</td>
+<td class="table-content">The date the provider processed the settlement</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProviderName</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">The name of the [supported external providers](/guides/payin-connector/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">TotalSettlementFeesAmount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The total amount of the fees withdrawn from the total amount settled</td>
+</tr>
+<tr>
+<td class="table-content">TotalSettlementAmount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The total amount your PSP confirmed as sent to your platform's external bank account.</td>
+</tr>
+<tr>
+<td class="table-content">SettlementCurrency</td>
+<td class="table-content">Required</td>
+<td class="table-content">Three-letter ISO 4217 code</td>
+<td class="table-content">The currency of the settlement file. Each file should contain a single currency.</td>
+</tr>
+</tbody>
+</table>

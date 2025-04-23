@@ -4,8 +4,12 @@ api: 'GET /v2.01/{ClientId}/users/{UserId}/wallets'
 ---
 
 import Array_WalletsResponse from '/snippets/p-response/Array_WalletsResponse.mdx';
+
 import UserId from '/snippets/p-path/UserId.mdx';
-  
+
+import ScaContext from '/snippets/p-query/ScaContext.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 import PhpListWallet from '/snippets/code/php-list-wallet.mdx';
 import NodeListWalletsUser from '/snippets/code/node-list-wallets-user.mdx';
@@ -14,19 +18,55 @@ import JavaListUserWallets from '/snippets/code/list-user-wallets-java.mdx';
 import PythonListUserWallets from '/snippets/code/python-list-user-wallets.mdx';
 import NetListUserWallets from '/snippets/code/net-list-user-wallets.mdx';
 
+<Note>
+**Note – SCA triggered by this endpoint**
+
+This endpoint requires the user to complete SCA to authenticate the access to their wallet, unless SCA for wallet access was successfully completed in the last 180 days (read more about [SCA on wallet access](/guides/sca/wallets)).
+
+When SCA is required, this endpoint returns a **401 - Unauthorized** response.
+
+To let the user complete the SCA session on the Mangopay-hosted webpage, your platform needs to retrieve the `RedirectUrl` from the `WWW-Authenticate` response header, add an encoded `returnUrl` query parameter, and redirect the user. Read more about how to redirect them in the [SCA session](/guides/sca/session) guide.
+</Note>
+
 ### Path parameters  
 
 <UserId />  
 
+### Query parameters  
+
+<ScaContext/>
+
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
 
-<Array_WalletsResponse /></Accordion></AccordionGroup>  
+<Accordion title="200">  
+
+<Array_WalletsResponse />
+
+</Accordion>
+
+</AccordionGroup>  
+
+<AccordionGroup>
+
+<Accordion title="401 - SCA required" defaultOpen>  
+
+When SCA is required for wallet access, this endpoint returns a **401 - Unauthorized** response code with the `redirectUrl` in the `WWW-Authenticate` response header: 
+
+```HTTP 401 response header
+WWW-Authenticate: PendingUserAction redirectUrl=https://sca.sandbox.mangopay.com/?token=0193cf51ed367151a0cb1c59def21e13
+```
+
+In this case, your platform needs to retrieve the URL value, encode and add a `returnUrl` query parameter, and redirect the user.
+
+Read more about [SCA redirection](/guides/sca/) and [SCA on wallet access](/guides/sca/wallets) **&rarr;**
+</Accordion>
+
+</AccordionGroup>
 
 <ResponseExample>  
-
-```json 200  
+```json 200
 [
     {
         "Description": "Description of the user's wallet",
@@ -59,12 +99,14 @@ import NetListUserWallets from '/snippets/code/net-list-user-wallets.mdx';
         "CreationDate": 1724921476
     }
 ]
-```  
-
+```
+```json 401 - SCA required
+// No response body, redirectUrl returned in WWW-Authenticate response header
+```
 </ResponseExample>  
 
 <RequestExample>  
-  
+    <RestGetNoBody/>
     <PhpListWallet />
     <NodeListWalletsUser />
     <RubyListWalletsUser />

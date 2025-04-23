@@ -1,0 +1,91 @@
+---
+title: 'Create an IDV Session'
+api: 'POST /v2.01/{ClientId}/users/{UserId}/identity-verifications'
+description: 'Start an identity verification session and get a link for the hosted experience'
+---
+
+import UserId from '/snippets/p-path/UserId.mdx';
+import ReturnURL4 from '/snippets/p-body/ReturnURL4.mdx';
+import Tag3 from '/snippets/p-body/Tag3.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import HostedUrlResponse from '/snippets/p-response/HostedUrlResponse.mdx';
+import Status13Response from '/snippets/p-response/Status13Response.mdx';
+import ReturnURL3Response from '/snippets/p-response/ReturnURL3Response.mdx';
+
+import RestCreateIdvSession from '/snippets/code/rest-create-idv-session.mdx';
+
+<Note>
+**Note – Available for Natural, Soletrader, and Business**
+
+An IDV Session can only be created for Natural and Legal Users whose `UserCategory` is `OWNER`. 
+
+For Legal users, the feature is only available for `LegalPersonType` values `BUSINESS` and `SOLETRADER`.
+</Note>
+
+
+### Path parameters
+
+<UserId />
+
+### Body parameters
+
+<ReturnURL4 />
+
+<Tag3 />
+
+### Responses
+
+<AccordionGroup>
+
+<Accordion title="200">
+
+<IdResponse />
+
+<Tag2Response />
+
+<CreationDateResponse />
+
+<HostedUrlResponse />
+
+<Status13Response />
+
+<ReturnURL3Response />
+
+</Accordion>
+
+</AccordionGroup>
+
+<AccordionGroup>
+
+<Accordion title="400 - User must be OWNER">
+```json
+{
+    "Message": "This feature is only available for users categorised as Owner.",
+    "Type": "invalid_action",
+    "Id": "49377b80-01b4-4b68-ba8b-99920aaf47a9",
+    "Date": 1736344654.0,
+    "errors": null
+}
+```
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>
+```json
+{
+    "Id": "idnver_01JH2ZK1MKAMG5H2Q20M5K6020",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1736340768,
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/66ebfacebd780d434e8e6a9d?sessionId=677e75212400002f00a6edd0&redirectURL=https%3A%2F%2Fexample.com",
+    "Status": "PENDING",
+    "ReturnUrl": "https://example.com"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestCreateIdvSession />
+</RequestExample>

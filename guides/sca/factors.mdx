@@ -1,0 +1,133 @@
+---
+title: Authentication factors
+sidebarTitle: Factors
+description: Learn how authentication factors work on the hosted webpage
+---
+
+Mangopay is delivering SCA via a unique session on a hosted webpage. The URL for the session is returned on relevant API calls, and your platform needs to redirect the user to complete the session – see [SCA session](/guides/sca/session) for details on how to do this.
+
+The hosted webpage solution allows your platform to integrate SCA in a secure and seamless way for all necessary actions. The same session can be used for enrollment of the user when their account is created.
+
+On the hosted webpage of Mangopay's SCA session, the user can take all steps necessary to enroll and authenticate using the factors required by regulations.
+
+Mangopay is providing the following authentication factors.
+
+<table>
+<thead>
+<tr>
+  <th class="header">Availability</th>
+  <th class="header">Factor</th>
+  <th class="header">Type</th>
+  <th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="table-content">
+  Available
+  </td>
+  <td class="table-content">
+  [Personal identification number (PIN)](#pin)
+  </td>
+  <td class="table-content">
+  Knowledge
+  </td>
+  <td class="table-content">
+  The individual enters a 6-digit code they defined during enrollment.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Available
+  </td>
+  <td class="table-content">
+  Phone-based [one-time passcode (OTP)](#otp)
+  </td>
+  <td class="table-content">
+  Possession
+  </td>
+  <td class="table-content">
+  The individual receives a 6-digit OTP via SMS to the phone number provided during enrollment.
+  </td>
+</tr>
+</tbody>
+</table>
+
+<Note>
+**Note – Session lifetime 10 minutes**
+
+The unique SCA session is valid for 10 minutes once the `PendingUserAction.RedirectUrl` is returned by the API. 
+
+During this time, the individual must complete all necessary steps for all factors for the session to be considered successful.
+
+The session is identified by the unique token in the `RedirectUrl`. So if the user refreshes the screen, or closes and re-opens the same link, then they can continue using the same session within 10 minutes.
+</Note>
+
+## PIN
+
+The PIN factor relies on a 6-digit code defined and memorized by the individual, which they enter during the session.
+
+##### Enrollment
+
+To enroll, the individual: 
+
+1. Defines a 6-digit PIN
+2. Re-enters the 6-digit PIN a second time to ensure a match
+3. Clicks ***Save*** to confirm
+4. Enters their PIN defined previously
+
+##### Authentication
+
+To authenticate, the individual: 
+
+1. Enters their PIN defined previously
+
+## OTP
+
+The OTP factor relies on a temporary 6-digit code sent to the individual's phone, which they can enter during the session. 
+
+<Note>
+**Note – OTP lifetime 5 minutes**
+
+While the SCA session is valid for 10 minutes, once the user clicks the button to send the SMS, the code is valid for 5 minutes.
+
+The user can request a new code after 30 seconds, even if the first one hasn't expired.
+</Note>
+
+##### Enrollment
+
+To enroll, the individual: 
+
+1. Enters their mobile phone number (or confirms the pre-populated number, if `PhoneNumber` was present in the API call to create or update the user)
+2. Clicks a button to send the SMS
+3. Enters the 6-digit code received by SMS
+
+##### Authentication
+
+To authenticate, the individual:
+
+1. Clicks a button to send the SMS
+2. Enters the 6-digit code received by SMS
+
+### Test data
+
+In Sandbox, you can use the phone number `0611111111` and `FR` (`+33611111111`) with the passcode **702100** to simulate a successful flow. You can also send this data in the `PhoneNumber` (or `LegalRepresentative.PhoneNumber`) to pre-populate the field.
+
+You can also test by using a real phone number to receive the SMS OTP.
+
+### Handling phone number data
+
+Mangopay's SCA session allows the individual to provide their phone number directly to Mangopay. This data is not shared with your platform for privacy reasons. The same phone number can be used with more than one user account.
+
+Your platform can send the user's phone number to Mangopay via the API – in the `PhoneNumber` parameter of the Natural User or the `LegalRepresentative.PhoneNumber` of the Legal User.
+
+If the phone number data is present in the user object, then the field is pre-populated for the user to confirm or modify.
+
+<Note>
+**Note – SCA session phone number doesn't update API**
+
+The phone number provided or confirmed by the user during the SCA session is not subsequently updated in the User API object.
+
+Changing the `PhoneNumber` or `LegalRepresentative.PhoneNumber` data in the API object triggers SCA re-enrollment ([read more](/guides/sca/users#re-enroll-an-enrolled-owner)).
+</Note>
+
