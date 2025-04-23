@@ -120,88 +120,97 @@ Functional errors (`ResultCode`) are possible on a 200 response. <a href="/guide
 }
 ````
 </Accordion>
-</AccordionGroup>
-
-### Related resources
-
-<CardGroup cols={2}>
-<Card
-  title="Guide"
-  href="/guides/payment-methods/banking/virtual-account"
->
-Learn more about virtual accounts
-</Card>
-<Card
-  title="Virtual Account object"
-  href="/api-reference/virtual-accounts/virtual-account-object"
->
-Read about the Virtual Account API endpoints
-</Card>
-</CardGroup>
-
-
-<ResponseExample>
-```json 200 - PENDING
+<Accordion title="400 - Banking alias already exists">
+```json
 {
-    "Id": "wltbank_01JPHTX1G4R4GC0A4CE6JA8CQC",
-    "Tag": "Created using Mangopay API Postman Collection",
-    "CreationDate": 1742207324,
-    "WalletId": "wlt_m_01JPHTXDNY69SW5KCJGAXK6YR4",
-    "VirtualAccountPurpose": "USER_OWNED",
-    "Country": "GB",
-    "Active": false,
-    "Status": "PENDING",
-    "AccountOwner": null,
-    "LocalAccountDetails": {
-        "Address": null,
-        "Account": {
-            "SortCode": "608382",
-            "AccountNumber": "21762697"
-        }
-    },
-    "InternationalAccountDetails": [
-        {
-            "Address": null,
-            "Account": {
-                "Iban": "GB62SAPY60838221762697",
-                "Bic": "SAPYGB2L"
-            }
-        }
-    ],
-    "Capabilities": {
-        "LocalPayinAvailable": true,
-        "InternationalPayinAvailable": true,
-        "Currencies": [
-            "GBP"
-        ]
-    },
-    "ResultCode": null,
-    "ResultMessage": null
+    "Id": "f577f4c5-3175-4023-b97a-8f5af47fdbff",
+    "Message": "There is already a banking alias existing for this wallet",
+    "Type": "wallet_banking_alias_already_exists",
+    "Date": 1743678181.0,
+    "errors": null
 }
 ```
-````json 200 - ACTIVE
+</Accordion>
+<Accordion title="400 - Address required for User-Owned">
+```json
 {
-    "Id": "wltbank_m_01J7NCAT73Q15SVSM9S6Z36GRZ",
+    "Id": "19987822-6cd1-4dd8-8b83-8cfdda49bcb2",
+    "Message": "Missing field in Address for USER_OWNED account purpose",
+    "Type": "user_error",
+    "Date": 1743678181.0,
+    "errors": null
+}
+```
+</Accordion>
+<Accordion title="400 - UBO declaration required for User-Owned">
+```json
+{
+    "Id": "2063a5ba-558e-4ebe-b527-1cee9783564a",
+    "Message": "Missing wallet owner UBO details",
+    "Type": "user_error",
+    "Date": 1743678181.0,
+    "errors": null
+}
+```
+</Accordion>
+<Accordion title="403 - User-Owned only allowed if user's UserCategory is OWNER">
+```json
+{
+    "Id": "b8449773-2fe3-4fee-87f3-c8c84dc574ea",
+    "Message": "Refused due to user UserCategory: PAYER",
+    "Type": "forbidden_ressource",
+    "Date": 1743678181.0,
+    "errors": null
+}
+```
+</Accordion>
+<Accordion title="403 - User-Owned only allowed if user's KYCLevel is REGULAR">
+```json
+{
+    "Id": "7081ae37-f4b2-4c38-9bc4-9a14546d544f",
+    "Message": "The user is not KYC-validated",
+    "Type": "forbidden_ressource",
+    "Date": 1743678181.0,
+    "errors": null
+}
+```
+</Accordion>
+<Accordion title="403 - Refused due to fraud policy">
+```json
+{
+    "Id": "2063a5ba-558e-4ebe-b527-1cee9783564a",
+    "Message": "Missing wallet owner UBO details",
+    "Type": "user_error",
+    "Date": 1743678181.0,
+    "errors": null
+}
+```
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json 200 - ACTIVE
+{
+    "Id": "wltbank_01JSH9TKTHE2KHXENE8K4KD46C",
     "Tag": "Created using Mangopay API Postman Collection",
-    "CreationDate": 1726220691,
-    "WalletId": "wlt_m_01J7NC9YKP3NB1PADF4SHZY712",
-    "CreditedUserId": "user_m_01J7KACBPAV7XAF8AH9BDCJPRS",
+    "CreationDate": 1745411198,
+    "WalletId": "wlt_m_01JSH9TDQHSMZX5GDV6TSM9SYN",
     "VirtualAccountPurpose": "COLLECTION",
     "Country": "GB",
-    "Status": "ACTIVE",
     "Active": true,
-    "AccountOwner": "MGP PlatformTradingName",
+    "Status": "ACTIVE",
+    "AccountOwner": "MGP PLATFORM NAME",
     "LocalAccountDetails": {
         "Address": {
             "StreetName": "2, Avenue Amélie",
             "PostCode": "L-1125",
             "TownName": "Luxembourg",
             "CountrySubDivision": null,
-            "Country": "Luxembourg"
+            "Country": "LU"
         },
         "Account": {
             "SortCode": "608382",
-            "AccountNumber": "21762697"
+            "AccountNumber": "23356198"
         }
     },
     "InternationalAccountDetails": [
@@ -211,10 +220,10 @@ Read about the Virtual Account API endpoints
                 "PostCode": "L-1125",
                 "TownName": "Luxembourg",
                 "CountrySubDivision": null,
-                "Country": "Luxembourg"
+                "Country": "LU"
             },
             "Account": {
-                "Iban": "GB62SAPY60838221762697",
+                "Iban": "GB79SAPY60838223356198",
                 "Bic": "SAPYGB2L"
             }
         }
@@ -229,9 +238,8 @@ Read about the Virtual Account API endpoints
     "ResultCode": "000000",
     "ResultMessage": "Success"
 }
-````
+```
 </ResponseExample>
-
 
 <RequestExample>
 <RestCreateVirtualAccount />
