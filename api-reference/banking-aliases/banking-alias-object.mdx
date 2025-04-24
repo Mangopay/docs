@@ -18,16 +18,17 @@ import LocalAccountDetails from '/snippets/object-attributes/LocalAccountDetails
   
 ### Description
 Mangopay relies on the Banking Alias object to create a virtual IBAN or account number attached to a wallet. Once attached, the IBAN can be used by end users to wire funds directly to the wallet.
-<Note>  
-**Note – Regulated feature** 
-  
-The virtual IBAN feature is regulated and has the following constraints:
-- Activation is required, including in Sandbox (contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>)
-- A contract amendment is needed to specify the BIC to use for your platform
-- Only one banking alias can be created per wallet
-- Fees cannot be taken on pay-ins to banking aliases
 
-</Note>  
+<Warning>
+**Caution – Replaced by Virtual Accounts**
+
+New integrations should use [Virtual Accounts](/api-reference/virtual-accounts/virtual-account-object), which have replaced Banking Aliases. Existing banking aliases can continue to be used and these endpoints are still supported.
+</Warning>
+
+Constraints and comparison with virtual accounts:
+- It's not possible to take `Fees` on External Instruction pay-ins to banking aliases – this constraint also exists on virtual accounts
+- Only one Banking Alias can be created per wallet, whereas multiple are possible with virtual accounts (of the same [type](/guides/payment-methods/banking/virtual-iban#types))
+- On Banking Alias, `LocalAccountDetails` are only available for the UK (`Country` is `GB`), and no further [country expansion](/guides/payment-methods/banking/virtual-iban#iban-countries-and-currencies) is planned
 
 ### Attributes  
 
