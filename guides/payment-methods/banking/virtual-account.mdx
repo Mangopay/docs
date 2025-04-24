@@ -1,6 +1,5 @@
 ---
 title: Virtual accounts
-description: Guide for beta release
 ---
 
 import IconGreenCheck from '/snippets/icons/icon-green-check.mdx';
@@ -9,29 +8,24 @@ import IconGrayCross from '/snippets/icons/icon-gray-cross.mdx';
 
 ## Introduction
 
-Mangopay enables you to create an IBAN attached to a wallet. Once created, any funds wired by the user to that dedicated IBAN are credited automatically to the associated wallet, which simplifies reconciliation and improves the user experience. 
+Mangopay enables you to create an IBAN or local account identifier attached to a wallet. Once created, any funds wired by the user to the dedicated account are credited automatically to the associated wallet, which simplifies reconciliation and improves the user experience.
 
-In the API, the **Virtual Account** object allows you to create and manage dedicated IBANs for your users' wallets. You can also see local and international pay-in capabilities available to your platform.
+In the API, the **Virtual Account** object allows you to create and manage dedicated virtual IBANs for your users' wallets. You can also see local and international pay-in capabilities available to your platform.
 
-<Warning>
-**Caution - Replaces deprecated Banking Alias feature**
+<Note>
+**Caution - Replaces Banking Alias feature**
 
 The Virtual Account endpoints replace the legacy <a href="/api-reference/banking-aliases">Banking Alias</a> endpoints, which should be considered deprecated and no longer used.
 
-New platforms should integrate using Virtual Accounts. Existing platforms are invited to change their integration to benefit from extended country and currency coverage.
-</Warning>
+New platforms should integrate using Virtual Accounts. While existing Banking Alias objects and endpoints continue to be supported, platforms are invited to change their integration to benefit from extended country and currency coverage.
+</Note>
 
-The Virtual Account endpoints bring many advantages over the deprecated Banking Alias: 
+The Virtual Account endpoints bring many advantages over the Banking Alias feature: 
 - Extended country and currency coverage, including country-specific IBANs for EUR countries and expansion into new international markets
 - Multiple accounts per wallet
-- Ability to open accounts in the name of the user
+- Ability to open accounts in the name of the user thanks to user-owned accounts (see [types](#types) below)
 - Adherence to financial market standards (ISO 20022)
-
-<Note>
-**Note - Beta release**
-
-This beta documentation is designed to allow early-adopting platforms to integrate virtual accounts. The feature is subject to minor changes until public launch.
-</Note>
+- Dedicated endpoint giving the countries and currencies available to your platform ([GET View Virtual Account availabilities](/api-reference/virtual-accounts/view-virtual-account-availabilities))
 
 ## How it works
 
@@ -51,7 +45,7 @@ The currency of the wallet must match the currency of the account you intend to 
 </Warning>
 </Step>
 <Step title="You create the virtual account">
-You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the country and purpose (see [types](#types) for details).
+You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the country and purpose, whether Collection or User-Owned (see [types](#types) for details).
 
 The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
@@ -150,50 +144,22 @@ You should set up <a href="/webhooks">webhook notifications</a> for the followin
 
 There is no event type corresponding to the `PENDING` status.
 
-### Endpoints
+### Functional errors
 
-The following endpoints are available for managing the <a href="/api-reference/virtual-accounts/virtual-account-object">Virtual Account object</a>:
+In most cases, the virtual account passes from `PENDING` to `ACTIVE` immediately or within a few seconds. You are strongly advised to rely on the `VIRTUAL_ACCOUNT_ACTIVE` webhook.
 
-<CardGroup cols={1}>
-<Card
-  title="POST Create a Virtual Account"
-  href="/api-reference/virtual-accounts/create-virtual-account"
->
-Set up a virtual IBAN or local account attached to a wallet
-</Card>
-<Card
-  title="PUT Deactivate a Virtual Account"
-  href="/api-reference/virtual-accounts/deactivate-virtual-account"
->
-Close an account permanently to prevent it being used
-</Card>
-<Card
-  title="GET View a Virtual Account"
-  href="/api-reference/virtual-accounts/view-virtual-account"
->
-See details of a virtual account
-</Card>
-<Card
-  title="GET List Virtual Accounts for a Wallet"
-  href="/api-reference/virtual-accounts/list-virtual-accounts-wallet"
->
-See all virtual accounts attached to a wallet
-</Card>
-<Card
-  title="GET View Virtual Account Availabilities"
-  href="/api-reference/virtual-accounts/view-virtual-account-availabilities"
->
-See your platform's account capabilities per account type and country
-</Card>
-</CardGroup>
+In some rare cases, a `USER_OWNED` Virtual Account object can be created (the POST endpoint returns 200) but then subsequently fail with the following `ResultCode` errors because the user doesn't meet the requirements:
+- <a href="/errors/codes/002703">002703</a> – User is not an Owner (for `USER_OWNED`)
+- <a href="/errors/codes/002981">002981</a> – User is not KYC verified (for `USER_OWNED`)
+
 
 ## IBAN countries and currencies
 
-Mangopay offers IBANs for the following countries, specified in the `Country` parameter of both the Virtual Account object and the deprecated Banking Alias object. 
+Mangopay offers IBANs for the following countries, specified in the `Country` parameter of both the Virtual Account object and the legacy Banking Alias object. 
 
 When you create an account, the `Country` must correspond to the `Currency` of the account's Wallet. If a payment is attempted to the account in a different currency than the wallet currency, the payment is returned to the payer and the wallet is not credited.
 
-The following tables summarize the account coverage available to platforms who have contracted with **Mangopay S.A. (in the EEA)** and **Mangopay UK Ltd. (in the UK)**. It also shows a comparison between the Virtual Account endpoints and the deprecated Banking Alias.
+The following tables summarize the account coverage available to platforms who have contracted with **Mangopay S.A. (in the EEA)** and **Mangopay UK Ltd. (in the UK)**. It also shows a comparison between the Virtual Account endpoints and the legacy Banking Alias.
 
 <Tabs>
   <Tab title="EEA">
@@ -203,7 +169,7 @@ The following tables summarize the account coverage available to platforms who h
         <th class="header">IBAN country</th>
         <th class="header">Wallet currency</th>
         <th class="header">Virtual Account</th>
-        <th class="header">Banking Alias (deprecated)</th>
+        <th class="header">Banking Alias</th>
       </tr>
     </thead>
     <tbody>
@@ -382,12 +348,12 @@ The following tables summarize the account coverage available to platforms who h
   </Tab>
 </Tabs>
 
-Platforms can see what countries and currencies are available to them at any time using the <a href="">GET List Virtual Account Availabilities</a> endpoint. 
+Platforms can see what countries and currencies are available to them at any time using the [GET List Virtual Account availabilities](/api-reference/virtual-accounts/view-virtual-account-availabilities) endpoint. 
 
 ### Account formats
 The virtual account details are available in two response parameters: 
 
-- `LocalAccountDetails` – An object containing the `Address` and `Account` details in local format, based on the Virtual Account `Country`. Note that the properties of the `Account` object vary depending on the country.
+- `LocalAccountDetails` – An object containing the `Address` and `Account` details in local format, based on the Virtual Account `Country`. Note that the properties of the `Account` object vary depending on the `Country`.
 - `InternationalAccountDetails` – An array of objects containing the `Address` and `Account` in international format (typically IBAN/BIC but this may change). Where country-specific IBANs exist for the account, multiple objects are returned.
 
 <Check>
@@ -402,8 +368,8 @@ The properties of these objects may vary, so dynamic retrieval allows you to ens
 
 There are two types of virtual accounts, defined by the `VirtualAccountPurpose` on creation:
 
-- `COLLECTION` – Owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. 
-- `USER_OWNED` – Owned by the wallet owner, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner.
+- `COLLECTION` – Owned by Mangopay and usable by platforms and/or users for the purpose of collecting and reconciling incoming funds paid by users. Payouts are generally prohibited from the associated wallet except for refunds. The user can be categorized as a Payer or an Owner. The `AccountOwner` is "MGP `PlatformTradingName`"
+- `USER_OWNED` – Owned by the user owning the wallet, enabling them to accept and store funds and make payments. KYC verification is required and the user must be categorized as an Owner. The `AccountOwner` is Natural User's "`FirstName` `LastName`" or Legal User's "`Name`".
 
 <Note>
   **Note – One VirtualAccountPurpose per wallet**
@@ -434,8 +400,8 @@ The following table summarizes the differences between the two types:
     </tr>
     <tr>
       <th class="header">Account holder name example</th>
-      <td class="table-content">MGP PlatformTradingName</td>
-      <td class="table-content">Alex Smith (Natural), ACME Corp (Legal)</td>
+      <td class="table-content">"MGP `PlatformTradingName`"</td>
+      <td class="table-content">"`FirstName` `LastName`" (Natural user) or "`Name`" (Legal user)</td>
     </tr>
     <tr>
       <th class="header">Allowed user category</th>
@@ -482,14 +448,3 @@ User-owned accounts allow platforms to create a unique IBAN for a specific user.
 
 <img className="block dark:hidden" src="/images/diagram_virtual_account_user_owned_light.svg" />
 <img className="hidden dark:block" src="/images/diagram_virtual_account_user_owned_dark.svg" />
-
-## Errors 
-
-The following 200 errors may be returned on the virtual accounts feature: 
-
-- <a href="/errors/codes/015101">015101</a> – Unsupported currency
-- <a href="/errors/codes/015102">015102</a> – Invalid country for wallet currency
-- <a href="/errors/codes/002703">002703</a> – User is not an Owner (for `USER_OWNED`)
-- <a href="/errors/codes/002981">002981</a> – User is not KYC verified (for `USER_OWNED`)
-- <a href="/errors/codes/015201">015201</a> – Transaction refused due to `VirtualAccountPurpose`
-
