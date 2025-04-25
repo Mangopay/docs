@@ -38,7 +38,7 @@ Mangopay enables you to create an IBAN or local account identifier attached to a
 In the API, the [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) object allows you to create and manage dedicated virtual IBANs for your users' wallets. You can also see local and international pay-in capabilities available to your platform.
 
 <Note>
-**Caution - Replaces Banking Alias feature**
+**Note - Replaces Banking Alias feature**
 
 The [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints replace the legacy [Banking Alias](/api-reference/banking-aliases/banking-alias-object) endpoints, which should be considered deprecated and no longer used.
 
@@ -51,6 +51,12 @@ The Virtual Account endpoints bring many advantages over the Banking Alias featu
 - Ability to open accounts in the name of the user thanks to user-owned accounts (see [types](#types) below)
 - Adherence to financial market standards (ISO 20022)
 - Dedicated endpoint giving the countries and currencies available to your platform ([GET View Virtual Account availabilities](/api-reference/virtual-accounts/view-virtual-account-availabilities))
+
+### SCT Instant on FR accounts
+
+On FR virtual accounts and banking aliases (`Country` is `FR`), Mangopay accepts payments via the SEPA Instant Credit Transfer (SCT Inst) scheme.
+
+This means that when your users initiate the payment with their bank, they can use SCT Inst if it is offered by their bank, and funds should arrive in about 25 seconds.
 
 ## How it works
 
@@ -70,7 +76,7 @@ The currency of the wallet must match the currency of the account you intend to 
 </Warning>
 </Step>
 <Step title="You create the virtual account">
-You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the country and purpose, whether Collection or User-Owned (see [types](#types) for details).
+You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the `Country` and `VirtualAccountPurpose`, whether `COLLECTION` or `USER_OWNED` (see [types](#types) for details).
 
 The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
