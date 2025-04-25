@@ -25,14 +25,14 @@ import PhpCreateIbanBankAccount from '/snippets/code/php-create-iban-bank-accoun
 import NodeCreateIbanBankAccount from '/snippets/code/node-create-iban-bank-account.mdx';
 import RubyCreateIbanBankAccount from '/snippets/code/ruby-create-iban-bank-account.mdx';
 import JavaCreateIbanBankAccount from '/snippets/code/java-create-iban-bank-account.mdx';
-import PythonCreateIbanBankAccount from '/snippets/code/python-create-iban-bank-account.mdx'; 
+import PythonCreateIbanBankAccount from '/snippets/code/python-create-iban-bank-account.mdx';    
 import NetCreateIbanBankAccount from '/snippets/code/net-create-iban-bank-account.mdx'; 
 
 <Warning>  
 **Caution – Only for countries that use IBAN** 
   
 Only use the IBAN type for accounts registered in countries that use IBAN and aren’t GB, US, or CA (for which you should use the dedicated type).   
-</Warning>  
+</Warning>
 
 ### Path parameters  
 
@@ -77,7 +77,7 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
 </AccordionGroup>  
 <AccordionGroup>  
 
-<Accordion title="400 - Invalid BIC format ">
+<Accordion title="400 - BIC format not valid">
 ```json  
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -88,9 +88,22 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
         "BIC": "The field BIC must match the regular expression '^[a-zA-Z]{6}\\w{2}(\\w{3})?$'."
     }
 }
- ```  
+```
 </Accordion>
-<Accordion title="400 - Invalid IBAN">
+<Accordion title="400 - BIC value not valid">
+```json  
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "709e198c-c72a-4589-8055-b210c3360893#1745589614",
+    "Date": 1745589615,
+    "errors": {
+        "BIC": "The value is not a valid BIC"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - IBAN not valid">
 ```json
 {
     "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
@@ -101,7 +114,7 @@ Only use the IBAN type for accounts registered in countries that use IBAN and ar
         "IBAN": "The value is not a valid IBAN"
     }
 }  
- ```  
+```
 </Accordion>
 
 </AccordionGroup>  
