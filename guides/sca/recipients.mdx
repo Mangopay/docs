@@ -146,11 +146,11 @@ Once Recipients is fully live in Production in May 2025, existing bank accounts 
 
 When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by calling the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint and entering the `Id` of the Recipient as the `BankAccountId`. 
 
-Payouts can only be requested against a Recipient that has: 
+Payouts can only be requested against a Recipient that has:
 - `Status` value `ACTIVE`
-- `RecipientScope` value `PAYOUT`
+- `RecipientScope` value `PAYOUT` (but the `PAYIN` value is allowed if the payout is [serving as a refund](/guides/payouts#refunds-using-payouts) and specifies a `PaymentRef`)
 
-If you attempt a payout to a Recipient that is `PENDING` or `CANCELED`, the Recipient ID is not considered valid and a 400 error is returned:
+If you attempt a payout to a Recipient that is `PENDING` (for example, if SCA is in progress) or `CANCELED` (if SCA is not successful), then the Recipient ID is not considered valid and a 400 error is returned:
 
 ```json
 {
@@ -171,7 +171,7 @@ If you attempt a payout to a Recipient that is `DEACTIVATED`, the payout is crea
 The `Status` of the Recipient can have the following values.
 
 - `PENDING` – When a Recipient is first created, it has the `PENDING` status. The user must complete SCA before the recipient can become `ACTIVE` and be used.
-- `CANCELED` – If SCA is not successful, the Recipient status changes to `CANCELED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
+- `CANCELED` – If SCA is not successfully completed, the Recipient status changes to `CANCELED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
 - `ACTIVE` – SCA was successful and the Recipient was created successfully. Payouts can only be requested to a Recipient that is `ACTIVE`.
 - `DEACTIVATED` – The recipient has been permanently disabled and can no longer be used for payouts. You can deactivate a Recipient using the [PUT Deactivate a Recipient](/api-reference/recipients/deactivate-recipient) endpoint.
 
