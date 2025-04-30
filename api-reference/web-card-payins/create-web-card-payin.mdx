@@ -1,6 +1,6 @@
 ---
-title: 'Create a Web Card PayIn'  
-api: 'POST /v2.01/{ClientId}/payins/card/web'  
+title: 'Create a Web Card PayIn'
+api: 'POST /v2.01/{ClientId}/payins/card/web'
 ---
 
 import DebitedWalletIdResponse from '/snippets/p-response/DebitedWalletIdResponse.mdx';
@@ -59,8 +59,16 @@ import NetCreateWebCardPayin from '/snippets/code/net-create-web-card-payin.mdx'
 <Note>  
 **Note – Timeout after 15 minutes** 
   
-The hosted payment page session lasts 15 minutes, at which point the pay-in fails automatically with result code [101109](/errors/codes/101109) if it is not completed by the user.
+The hosted payment page session on the `RedirectURL` lasts 15 minutes, at which point the pay-in fails automatically with result code [101109](/errors/codes/101109) if it is not completed by the user.
 </Note>
+
+<Warning>
+**Caution – TemplateURL customization feature deprecated**
+
+The `TemplateURL` response parameter is deprecated and must no longer be used to redirect the user. You must redirect the user on the `RedirectURL`.
+
+The `TemplateURLOptions` body parameter is also deprecated as the feature allowing minor customization of the hosted page is no longer supported.
+</Warning>
 
 ### Body parameters  
 
@@ -157,11 +165,11 @@ The hosted payment page session lasts 15 minutes, at which point the pay-in fail
 </AccordionGroup>  
 
 <ResponseExample>  
-```json 200 - Default page
+```json 200 - CREATED
 {
-    "Id": "payin_m_01JHQVV446832CA5QAXRYCWV58",
-    "Tag": "Example with customized payment page",
-    "CreationDate": 1662454775,
+    "Id": "wt_f0f67b58-2856-469c-952c-b06e556a70e6",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1746006308,
     "AuthorId": "user_m_01JHQRCND66XP99SVBXQRP54MF",
     "CreditedUserId": "user_m_01JHQRCND66XP99SVBXQRP54MF",
     "DebitedFunds": {
@@ -186,9 +194,9 @@ The hosted payment page session lasts 15 minutes, at which point the pay-in fail
     "DebitedWalletId": null,
     "PaymentType": "CARD",
     "ExecutionType": "WEB",
-    "RedirectURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=f40de6033b7847659387970d98477848&transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58&token=161eekDgqtEVMXbhR3431662108348469",
-    "ReturnURL": "http://www.example.com?transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58",
-    "TemplateURL": "https://api.sandbox.mangopay.com/Content/PaylineTemplateWidget?rp=f40de6033b7847659387970d98477848&transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58",
+    "RedirectURL": "https://pay.mangopay.com?id=wt_f0f67b58-2856-469c-952c-b06e556a70e6&client-token=hpp_f5d3a2c1b8e045f7a9d6c3b2a1e9d8c7",
+    "ReturnURL": "http://example.com&transactionId=wt_f0f67b58-2856-469c-952c-b06e556a70e6",
+    "TemplateURL": null,
     "CardType": "CB_VISA_MASTERCARD",
     "Culture": "EN",
     "SecureMode": "DEFAULT",
@@ -216,70 +224,7 @@ The hosted payment page session lasts 15 minutes, at which point the pay-in fail
             "Country": "FR"
         }
     },
-    "StatementDescriptor": "Platform",
-    "BankName": null
-}  
-```
-```json 200 - Customized page
-{
-    "Id": "payin_m_01JHQVV446832CA5QAXRYCWV58",
-    "Tag": "Example with customized payment page",
-    "CreationDate": 1662454775,
-    "AuthorId": "user_m_01JHQRCND66XP99SVBXQRP54MF",
-    "CreditedUserId": "user_m_01JHQRCND66XP99SVBXQRP54MF",
-    "DebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 2000
-    },
-    "CreditedFunds": {
-        "Currency": "EUR",
-        "Amount": 1900
-    },
-    "Fees": {
-        "Currency": "EUR",
-        "Amount": 100
-    },
-    "Status": "CREATED",
-    "ResultCode": null,
-    "ResultMessage": null,
-    "ExecutionDate": null,
-    "Type": "PAYIN",
-    "Nature": "REGULAR",
-    "CreditedWalletId": "wlt_m_01JHQRD0WZ1QWKNAMQF93E5M15",
-    "DebitedWalletId": null,
-    "PaymentType": "CARD",
-    "ExecutionType": "WEB",
-    "RedirectURL": "https://www.example.com/template/?transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58&token=1jLXHAjyfjxGiJJQv2971662454776237",
-    "ReturnURL": "http://www.example.com?transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58",
-    "TemplateURL": "https://www.example.com/template/?transactionId=payin_m_01JHQVV446832CA5QAXRYCWV58",
-    "CardType": "CB_VISA_MASTERCARD",
-    "Culture": "EN",
-    "SecureMode": "DEFAULT",
-    "Billing": {
-        "FirstName": "Alex",
-        "LastName": "Smith",
-        "Address": {
-            "AddressLine1": "6 rue de la Cité",
-            "AddressLine2": "Appartement 3",
-            "City": "Paris",
-            "Region": "Île-de-France",
-            "PostalCode": "75001",
-            "Country": "FR"
-        }
-    },
-    "Shipping": {
-        "FirstName": "Alex",
-        "LastName": "Smith",
-        "Address": {
-            "AddressLine1": "6 rue de la Cité",
-            "AddressLine2": "Appartement 3",
-            "City": "Paris",
-            "Region": "Île-de-France",
-            "PostalCode": "75001",
-            "Country": "FR"
-        }
-    },
-    "StatementDescriptor": "Platform",
+    "StatementDescriptor": "Example123",
     "BankName": null
 }
 ```
