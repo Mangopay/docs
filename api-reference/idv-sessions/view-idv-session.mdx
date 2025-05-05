@@ -51,8 +51,12 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 </AccordionGroup> */}
 
+<RequestExample>
+<RestGetNoBody />
+</RequestExample>
+
 <ResponseExample>
-```json VALIDATED
+```json Natural validated
 {
     "Id": "idnver_01JH2ZK1MKAMG5H2Q20M5K6020",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -62,18 +66,104 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
     "ReturnUrl": "https://example.com"
 }
 ```
-```json REFUSED
+```json REFUSED - Name mismatch
 {
-    "Id": "idnver_01JH35XNHDE7XPSN7PQ9M5E0TZ",
+    "Id": "idnver_01JTG8BTG92TTRP5VSNV35ZYGM",
     "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1736347407,
-    "HostedUrl": "https://user-verification.sandbox.mangopay.com/66ebfac69781de13da97bbaa?sessionId=677e8f102400002c00a5f1df&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d9b2c2885039758599bc?sessionId=6818b5bd24000034007adb66&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
     "Status": "REFUSED",
-    "ReturnUrl": "https://example.com"
+    "UserId": "user_m_01JTG7NDTE52MZCCF50QHJ870A",
+    "CreationDate": 1746449852,
+    "LastUpdate": 1746449945,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTG8EJC242YG9R5167TEDCJJ",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746449942,
+            "LastUpdate": 1746449942,
+            "Data": [
+                {
+                    "Type": "FIRST_NAME",
+                    "Value": "ALEXIS"
+                },
+                {
+                    "Type": "LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "BIRTHDATE",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTG8EMSD10Q83JZVS7PC5BDF",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "DOCUMENT_NOT_ACCEPTED",
+                    "Value": "ID name mismatch with declared user data"
+                }
+            ],
+            "CreationDate": 1746449945,
+            "LastUpdate": 1746449945,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTG8EN3YGMCR2DZNV9SBES47",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746449945,
+            "LastUpdate": 1746449945,
+            "Data": []
+        }
+    ]
+}
+```
+```json Natural, refused (no data extraction)
+{
+    "Id": "idnver_01JTG7VYWNZJ0C02ZJTQF23GPD",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d9b2c2885039758599bc?sessionId=6818b3b524000010000b8701&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "REFUSED",
+    "UserId": "user_m_01JTG7NDTE52MZCCF50QHJ870A",
+    "CreationDate": 1746449333,
+    "LastUpdate": 1746449646,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTG85E05C2PDPB7J2DZ2VQMB",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "FACE_MATCH_FAIL",
+                    "Value": "Document IDV has been refused by the provider"
+                }
+            ],
+            "CreationDate": 1746449643,
+            "LastUpdate": 1746449643,
+            "Data": [
+                {
+                    "Type": "FIRST_NAME",
+                    "Value": ""
+                },
+                {
+                    "Type": "LAST_NAME",
+                    "Value": ""
+                },
+                {
+                    "Type": "BIRTHDATE",
+                    "Value": null
+                }
+            ]
+        }
+    ]
 }
 ```
 </ResponseExample>
-
-<RequestExample>
-<RestGetNoBody />
-</RequestExample>
