@@ -6,14 +6,15 @@ description: 'See the status and basic details of an identity verification sessi
 
 import IdvSessionId from '/snippets/p-path/IdvSessionId.mdx';
 
-import ReturnURL4 from '/snippets/p-body/ReturnURL4.mdx';
-import Tag3 from '/snippets/p-body/Tag3.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
-import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import HostedUrlResponse from '/snippets/p-response/HostedUrlResponse.mdx';
-import Status13Response from '/snippets/p-response/Status13Response.mdx';
 import ReturnURL3Response from '/snippets/p-response/ReturnURL3Response.mdx';
+import Status13Response from '/snippets/p-response/Status13Response.mdx';
+import UserId2Response from '/snippets/p-response/UserId2Response.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import LastUpdate1Response from '/snippets/p-response/LastUpdate1Response.mdx';
+import ChecksResponse from '/snippets/p-response/ChecksResponse.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
@@ -27,17 +28,15 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 <Accordion title="200">
 
-<IdResponse />
-
-<Tag2Response />
-
-<CreationDateResponse />
-
-<HostedUrlResponse />
-
-<Status13Response />
-
-<ReturnURL3Response />
+<IdResponse/>
+<Tag2Response/>
+<HostedUrlResponse/>
+<ReturnURL3Response/>
+<Status13Response/>
+<UserId2Response/>
+<CreationDateResponse/>
+<LastUpdate1Response/>
+<ChecksResponse/>
 
 </Accordion>
 
@@ -56,17 +55,74 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 </RequestExample>
 
 <ResponseExample>
-```json Natural validated
+```json PENDING
 {
-    "Id": "idnver_01JH2ZK1MKAMG5H2Q20M5K6020",
+    "Id": "idnver_01JTGFRGJTHCKRZWAGSV1ZEF3W",
     "Tag": "Created using the Mangopay API Postman collection",
-    "CreationDate": 1736340768,
-    "HostedUrl": "https://user-verification.sandbox.mangopay.com/66ebfacebd780d434e8e6a9d?sessionId=677e75212400002f00a6edd0&redirectURL=https%3A%2F%2Fexample.com",
-    "Status": "VALIDATED",
-    "ReturnUrl": "https://example.com"
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d9b2c2885039758599bc?sessionId=6818d4082500001000a083b8&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "PENDING",
+    "UserId": "user_m_01JTG7NDTE52MZCCF50QHJ870A",
+    "CreationDate": 1746457608,
+    "LastUpdate": 1746457608,
+    "Checks": []
 }
 ```
-```json REFUSED - Name mismatch
+```json Natural VALIDATED
+{
+    "Id": "idnver_01JTG8BTG92TTRP5VSNV35ZYGM",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d9b2c2885039758599bc?sessionId=6818b5bd24000034007adb66&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "VALIDATED",
+    "UserId": "user_m_01JTG7NDTE52MZCCF50QHJ870A",
+    "CreationDate": 1746449852,
+    "LastUpdate": 1746449945,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTG8EJC242YG9R5167TEDCJJ",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746449942,
+            "LastUpdate": 1746449942,
+            "Data": [
+                {
+                    "Type": "FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "BIRTHDATE",
+                    "Value": "775958800"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTG8EMSD10Q83JZVS7PC5BDF",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746449945,
+            "LastUpdate": 1746449945,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTG8EN3YGMCR2DZNV9SBES47",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746449945,
+            "LastUpdate": 1746449945,
+            "Data": []
+        }
+    ]
+}
+```
+```json Natural REFUSED - Name mismatch
 {
     "Id": "idnver_01JTG8BTG92TTRP5VSNV35ZYGM",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -95,7 +151,7 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
                 },
                 {
                     "Type": "BIRTHDATE",
-                    "Value": "123456789"
+                    "Value": "775958800"
                 }
             ]
         },
@@ -125,7 +181,7 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
     ]
 }
 ```
-```json Natural, refused (no data extraction)
+```json Natural REFUSED - Doc not accepted
 {
     "Id": "idnver_01JTG7VYWNZJ0C02ZJTQF23GPD",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -162,6 +218,413 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
                     "Value": null
                 }
             ]
+        }
+    ]
+}
+```
+```json Soletrader VALIDATED
+{
+    "Id": "idnver_01JS43RGHMF7BEQBE0Q84AT4DH",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d975c28850397585971b?sessionId=6819cc56270000350001fb38&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "VALIDATED",
+    "UserId": "user_m_01JS43QXKETMZXTGPPX60EX92B",
+    "CreationDate": 1746521174,
+    "LastUpdate": 1746521546,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JS43WDEC19A9GB2Z4JB94MKJ",
+            "Type": "BUSINESS_NAME_MATCH",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJCEH2DWX417FFS7G57YHQ4",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521244,
+            "LastUpdate": 1746521244,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "ALEX SMITH SERVICES"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQN80FZM639ZA8WM4634N",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521543,
+            "LastUpdate": 1746521543,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "668649600"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQMHSYMRHC43A0KFJZRP",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQT76ZC90S4726CJYFAR",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        }
+    ]
+}
+```
+```json Soletrader REVIEW
+{
+    "Id": "idnver_01JTJCCBZXKEYTXRA6V4MB0QXG",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d975c28850397585971b?sessionId=6819cc56270000350001fb38&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "REVIEW",
+    "UserId": "user_m_01JTJCC6TFG75TV37VHKC764ZP",
+    "CreationDate": 1746521174,
+    "LastUpdate": 1746521546,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTJCEH2DWX417FFS7G57YHQ4",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "DOCUMENT_NOT_ACCEPTED",
+                    "Value": "Document has been refused by the provider"
+                }
+            ],
+            "CreationDate": 1746521244,
+            "LastUpdate": 1746521244,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "ALEX SMITH SERVICES"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQN80FZM639ZA8WM4634N",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521543,
+            "LastUpdate": 1746521543,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "668649600"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQMHSYMRHC43A0KFJZRP",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQT76ZC90S4726CJYFAR",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        }
+    ]
+}
+```
+```json Business VALIDATED
+{
+    "Id": "idnver_01JT8EBPE4GEN5W92BCZNDHQZ9",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d990c288503975859882?sessionId=6814b5b82500002f00edcb7a&redirectURL=https%3A%2F%2Fwww.ReturnUrl.com%2F",
+    "ReturnUrl": "https://www.example.com/",
+    "Status": "VALIDATED",
+    "UserId": "user_m_01JT8EBNP4F4YPMSS4GMTEMZBF",
+    "CreationDate": 1746187704,
+    "LastUpdate": 1746187990,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JT8EFM7MWZ9AFX5VRHJTKFP3",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746187833,
+            "LastUpdate": 1746187833,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "EXAMPLE SERVICES"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JT8EMA22R2PSDD6NYDRADZPE",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746187987,
+            "LastUpdate": 1746187987,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "775958800"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JT8EMCJH665WV75A0AYQ3J4F",
+            "Type": "BUSINESS_INSIGHTS_MATCH",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746187989,
+            "LastUpdate": 1746187989,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JT8EMCPZ2ZPM318HEBEXD8SM",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746187989,
+            "LastUpdate": 1746187989,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JT8EMCV6XGMJ5GC0Q17K4J0H",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746187989,
+            "LastUpdate": 1746187989,
+            "Data": []
+        }
+    ]
+}
+```
+```json Business REVIEW
+{
+    "Id": "idnver_01JTJCCBZXKEYTXRA6V4MB0QXG",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d975c28850397585971b?sessionId=6819cc56270000350001fb38&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "REVIEW",
+    "UserId": "user_m_01JTJCC6TFG75TV37VHKC764ZP",
+    "CreationDate": 1746521174,
+    "LastUpdate": 1746521546,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTJCEH2DWX417FFS7G57YHQ4",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "DOCUMENT_NOT_ACCEPTED",
+                    "Value": "Document has been refused by the provider"
+                }
+            ],
+            "CreationDate": 1746521244,
+            "LastUpdate": 1746521244,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "EXAMPLE SERVICES"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": "123456789"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQN80FZM639ZA8WM4634N",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521543,
+            "LastUpdate": 1746521543,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEX"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "668649600"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQMHSYMRHC43A0KFJZRP",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJCQQT76ZC90S4726CJYFAR",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746521546,
+            "LastUpdate": 1746521546,
+            "Data": []
+        }
+    ]
+}
+```
+```json Business REFUSED
+{
+    "Id": "idnver_01JTJ6QBVXGPRDCMD6HW34Q049",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "HostedUrl": "https://user-verification.sandbox.mangopay.com/6810d990c288503975859882?sessionId=6819b52b2400003200f1fb5b&redirectURL=https%3A%2F%2Fexample.com%2F",
+    "ReturnUrl": "https://example.com/",
+    "Status": "REFUSED",
+    "UserId": "user_m_01JTJ6QB6PEKFRDKTX8JZS4QHR",
+    "CreationDate": 1746515242,
+    "LastUpdate": 1746515585,
+    "Checks": [
+        {
+            "CheckId": "idnchc_01JTJ6TBFREZY6KDXVW62SFY6Y",
+            "Type": "BUSINESS_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746515340,
+            "LastUpdate": 1746515340,
+            "Data": [
+                {
+                    "Type": "COMPANY_NAME",
+                    "Value": "EXAMPLE SERVICES"
+                },
+                {
+                    "Type": "COMPANY_NUMBER",
+                    "Value": null
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJ6XRYDMHE1132HBQNDXBKB",
+            "Type": "IDENTITY_DOCUMENT_VERIFICATION",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746515452,
+            "LastUpdate": 1746515452,
+            "Data": [
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_FIRST_NAME",
+                    "Value": "ALEXIS"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_LAST_NAME",
+                    "Value": "SMITH"
+                },
+                {
+                    "Type": "LEGAL_REPRESENTATIVE_BIRTHDATE",
+                    "Value": "668649600"
+                }
+            ]
+        },
+        {
+            "CheckId": "idnchc_01JTJ6XVF039GY2FY4RT5PD4P9",
+            "Type": "BUSINESS_INSIGHTS_MATCH",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "DOCUMENT_NOT_ACCEPTED",
+                    "Value": "Not OK"
+                }
+            ],
+            "CreationDate": 1746515455,
+            "LastUpdate": 1746515455,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJ6XVRADVYC4D61CYQFMP00",
+            "Type": "IDV_NAME_MATCH_CHECK",
+            "CheckStatus": "REFUSED",
+            "Reasons": [
+                {
+                    "Type": "DOCUMENT_NOT_ACCEPTED",
+                    "Value": "ID name mismatch with declared user data"
+                }
+            ],
+            "CreationDate": 1746515455,
+            "LastUpdate": 1746515455,
+            "Data": []
+        },
+        {
+            "CheckId": "idnchc_01JTJ6XW1S6F03701FBGG2C3AY",
+            "Type": "IDV_AGE_CHECK",
+            "CheckStatus": "VALIDATED",
+            "Reasons": [],
+            "CreationDate": 1746515456,
+            "LastUpdate": 1746515456,
+            "Data": []
         }
     ]
 }
