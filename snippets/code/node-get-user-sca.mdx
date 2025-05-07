@@ -1,0 +1,25 @@
+```javascript NodeJS  
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-mangopay-client-id',
+  clientApiKey: 'your-mangopay-api-key',
+})
+
+let user = {
+  Id: "user_m_01JTNJDEXCGS9G3X4ZZDPE2A8R",
+};
+
+const getUser = async (userId) => {
+  return await mangopay.Users.getSca(userId)
+    .then((response) => {
+      console.info(response);
+      return response;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+};
+
+getUser(user.Id);
+```
