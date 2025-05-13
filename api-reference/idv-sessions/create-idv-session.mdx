@@ -41,7 +41,7 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
 
 <AccordionGroup>
 
-<Accordion title="200">
+<Accordion title="200 - Response parameters">
 
 <IdResponse />
 
@@ -61,6 +61,31 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
 
 <AccordionGroup>
 
+<Accordion title="403 - Feature not activated">
+```json 
+{
+    "type": "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+    "title": "Forbidden",
+    "status": 403,
+    "traceId": "00-046605fe21abece0903b78483c6dc5dd-099f889c8e09309c-01"
+}
+```
+</Accordion>
+
+<Accordion title="400 - User ID not valid">
+```json
+{
+    "Message": "Missing or incorrect required parameter",
+    "Type": "param_error",
+    "Id": "6b5b73cd-6d4c-4ea5-8859-9447dfe2c5b2",
+    "Date": 1746458497.0,
+    "errors": {
+        "UserId": "UserId is not valid"
+    }
+}
+```
+</Accordion>
+
 <Accordion title="400 - User must be OWNER">
 ```json
 {
@@ -76,10 +101,19 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
 <Accordion title="400 - Legal user must be BUSINESS or SOLETRADER">
 ```json ORGANIZATION 
 {
-    "Message": "The LegalUserType ORGANIZATION is not currently supported in the identity verification process.",
+    "Message": "The LegalUserType ORGANIZATION is not currently supported in the identity verification process. An event will be skipped. PartnerId: {ClientId}/ UserExternalId: {UserId}",
     "Type": "invalid_action",
     "Id": "6e42d540-efea-4fcc-9a85-fd1f5a09bc03",
     "Date": 1746447478.0,
+    "errors": null
+}
+```
+```json PARTNERSHIP
+{
+    "Message": "The LegalUserType PARTNERSHIP is not currently supported in the identity verification process. An event will be skipped. PartnerId: {ClientId}/ UserExternalId: {UserId}",
+    "Type": "invalid_action",
+    "Id": "58148aa4-57bb-4d61-94e6-c1450116606e",
+    "Date": 1746458611.0,
     "errors": null
 }
 ```
