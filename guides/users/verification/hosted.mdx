@@ -7,7 +7,7 @@ Mangopay’s hosted identity verification session enables platforms to redirect 
 Based on the data and documents of the session, Mangopay performs automated checks and determines an outcome. In the case of Legal users, the session may also require a manual review from Mangopay’s team before an outcome can be given.
 
 <Note>
-**Note – Activation required **
+**Note – Activation required**
 
 The hosted KYC/KYB verification feature must be activated by Mangopay. Contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to get started.
 </Note>
@@ -49,11 +49,11 @@ For Legal users, Mangopay the user may be requested to provide a registration pr
 
 #### User data must be consistent with identity document
 
-The hosted session analyzes the individual’s identity document and extracts its first name, last name, and date of birth. These three data points must correspond to data that is already present in the user object before the session is initiated. When a session is successful, these verified data points are overwritten in the user object (see [verified data](#verified-data) for details).
+The hosted session analyzes the individual’s identity document and extracts its first name and last name. These three data points must correspond to data that is already present in the user object before the session is initiated. When a session is successful, these verified data points are overwritten in the user object (see [verified data](#verified-data) for details).
 
-For Natural users, the first name, last name, and date of birth of the identity document must match the `FirstName`, `LastName`, and `Birthday` of the Natural object.
+For Natural users, the first name and last name of the identity document must match the `FirstName` and `LastName` of the Natural object.
 
-For Legal Soletrader users, then the first name, last name, and date of birth of the identity document must match the `FirstName`, `LastName`, and `Birthday` of the `LegalRepresentative` object of the corresponding Legal user.
+For Legal Soletrader users, then the first name and last name of the identity document must match the `FirstName` and `LastName` of the `LegalRepresentative` object of the corresponding Legal user.
 
 For Legal Business users, the person completing the identity document check does not have to be the declared legal representative in the user object. However, they must be an individual listed as a company director in the relevant national registry. 
 
@@ -164,7 +164,7 @@ This section describes the actions taken by the user and the checks performed by
 | Type | Description |
 | :--- | :--- |
 | `IDENTITY_DOCUMENT_VERIFICATION` | Verifies the authenticity of the identity document, the liveness of the selfie, and that the selfie matches the identity document photo. |
-| `IDV_NAME_MATCH_CHECK`  | Checks whether the first name, last name and date of birth of the identity document match the `FirstName`, `LastName`, and `Birthday` of the Natural user object. <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
+| `IDV_NAME_MATCH_CHECK`  | Checks whether the first name and last name of the identity document match the `FirstName` and `LastName` of the Natural user object. <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
 | `IDV_AGE_CHECK` | Checks whether the individual on the identity document meets the minimum age requirement for Mangopay users (age 18). <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
 
 ### Soletrader user flow
@@ -188,7 +188,7 @@ This section describes the actions taken by the user and the checks performed by
 | :--- | :--- |
 | `BUSINESS_VERIFICATION` | Looks up the business details entered by the user during the session in the national registry to find a match. <br/> <br/> If not successful, the user is asked to upload a registration proof document and the session status will be `REVIEW`. |
 | `IDENTITY_DOCUMENT_VERIFICATION` | Verifies the authenticity of the identity document, the liveness of the selfie, and that the selfie matches the identity document photo. |
-| `IDV_NAME_MATCH_CHECK` | Checks whether the first name, last name and date of birth of the identity document match the `FirstName`, `LastName`, and `Birthday` of the `LegalRepresentative` of the Legal user object. <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful.  |
+| `IDV_NAME_MATCH_CHECK` | Checks whether the first name and last name of the identity document match the `FirstName` and `LastName` of the `LegalRepresentative` of the Legal user object. <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful.  |
 | `IDV_AGE_CHECK` | Checks whether the individual on the ID document meets the minimum age requirement for Mangopay users (age 18). <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
 | `BUSINESS_NAME_CHECK` | Checks whether the name on the identity document is present in the name of the registered sole proprietor in the relevant national registry. <br/> <br/> This check is performed manually if `BUSINESS_VERIFICATION` is unsuccessful. |
 
@@ -450,7 +450,7 @@ The `Value` is preset if the session was automatically refused. If a Natural use
 <tr>
 <td class="table-content">`IDV_NAME_MATCH_CHECK`</td>
 <td class="table-content">`DOCUMENT_NOT_ACCEPTED`</td>
-<td class="table-content">The name and date of birth of the identity document did not match with the `FirstName`, `LastName` and `Birthday` of the natural user or the declared `LegalRepresentative` in the user object.</td>
+<td class="table-content">The first name and last name of the identity document did not match with the `FirstName` and `LastName` of the natural user or the declared `LegalRepresentative` in the user object.</td>
 <td class="table-content">
 First, update the data of the user object to match the identity document.
 
