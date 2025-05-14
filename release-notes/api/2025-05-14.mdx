@@ -1,0 +1,33 @@
+---
+title: 'API - May 14, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+### Recipients: Country parameter added to improve international coverage 
+The `Country` parameter has been added to Recipients as: 
+- A required query parameter on [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema)
+- A required body parameter on [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) and [POST Create a Recipient](/api-reference/recipients/create-recipient) 
+- A response parameter on the Recipient object
+
+<div class="pill pill-orange">Changed</div>
+
+### Recipients: InternationalBankTransfer schema changed to AccountNumber and BIC
+The `InternationalBankTransfer` object now contains an `AccountNumber` (renamed from `IBAN`) and `BIC`. 
+
+These changes allow for a consistent international schema for all payout countries, including those that don't use IBAN. 
+
+For countries that use IBAN, the `AccountNumber` is an IBAN format and the returned BIC is generated from the IBAN. For countries that don't use IBAN, the `AccountNumber` format depends on the `Country` and the `BIC` is also required.
+
+Platforms should retrieve all Recipient schemas, including local and international, dynamically from the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema) endpoint.
+
+For more information about recipients, see the dedicated guide: 
+
+<Card title="Guide" href="/guides/sca/recipients">
+Read about integrating Recipients for bank account registration
+</Card>
+
+</div>
