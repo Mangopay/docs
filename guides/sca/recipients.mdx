@@ -18,7 +18,19 @@ In the Recipients feature, each local and international account has a specified 
 
 In this way, the Recipients feature helps ensure that payouts are delivered effectively.
 
-Once Recipients is fully live in Production in May 2025, existing bank accounts will be compatible with the new Recipients feature. This means your platform will be able to continue using the `BankAccountId` of **active** bank accounts for payouts, as well as for direct debits and pay-in refunds.
+### Action required 
+
+Integrate Recipients for new bank account registrations, including SCA redirection (if `RecipientScope` is `PAYOUT`, see below). 
+
+All payout currencies are available in Recipients in Production and Sandbox.
+
+#### Migration of existing active bank accounts 
+
+Your platform's existing active bank accounts in Production are being migrated to the Recipients service and will be available in the coming weeks. Once completed, calls to [GET List Recipients for a User](/api-reference/recipients/list-recipients-user) will contain legacy bank accounts under their corresponding Recipient schema.
+
+The `BankAccountId` of active bank accounts will remain the same (and be returned in the `RecipientId` field).
+
+All active legacy bank accounts will be migrated, including those used for direct debits and pay-in refunds (see [pay-in scope](#pay-in) below).
 
 ### Recipient scopes
 
@@ -61,30 +73,29 @@ A Recipient represents the beneficiary and the beneficiary account of a payout. 
 
 Mangopay offers two payout methods: 
 - `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 
-- `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` of the payout. 
+- `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` and destination `Country` of the payout. 
 
 You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
 
 Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. 
 
-For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. Registering the recipient requires the account's IBAN.
+For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. 
+
+On international payouts, if a country uses IBAN then the `AccountNumber` is the local IBAN format and the returned BIC is generated from the IBAN. For countries that don't use IBAN, the `AccountNumber` format depends on the `Country` and the `BIC` is also required. So in the CAD to US example, the AccountNumber must be a US account identifier and the BIC is required.
+
 
 However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code. 
 
-To know exactly which details are required to register the account, call the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema):
+Platforms should retrieve all Recipient schemas, including local and international, dynamically from the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema) endpoint:
+- `AUD` – Account number, branch-state-branch (BSB) number
 - `CAD` – Account number, institution number, branch code, bank name
 - `EUR` – IBAN
 - `GBP` – Account number, sort code
-- `USD` – Account number, ABA routing number
-
-The following are not yet available but planned:
-- `AUD` – Account number, branch-state-branch (BSB) number
 - `HKD` – Account number, BIC, branch code
 - `SGD` – Account number, BIC
+- `USD` – Account number, ABA routing number
 
-For international payouts, the IBAN is required for all currencies. 
-
-Each recipient can be used for one combination of a payout method and currency, which together determine the account details required.
+Each recipient can be used for one combination of a payout method, currency, and country, which together determine the account details required.
 
 A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
 
