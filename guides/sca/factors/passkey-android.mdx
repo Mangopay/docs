@@ -1,0 +1,182 @@
+---
+title: WebAuthn passkey on Android
+sidebarTitle: WebAuthn on Android
+description: Integrate Mangopay's passkey factor in Android apps
+---
+
+This guide provides an overview of how to get started integrating the WebAuthn passkey factor in Android apps, for secure web-based authentication.
+
+On Android, `AuthTab` is part of the Android Browser library that enables apps to authenticate users via a web service, presenting a secure and user-friendly popup browser for login flows.
+
+## Setup
+
+1. Add the necessary dependencies to your app's build.gradle.kts file:
+
+```kotlin
+dependencies {
+    implementation("androidx.browser:browser-auth:1.0.0-alpha03")
+    // Other dependencies
+}
+```
+
+2. Define your custom URL scheme in your AndroidManifest.xml:
+
+```xml
+<activity
+    android:name=".YourActivity"
+    android:exported="true"
+    android:launchMode="singleTask">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="mgpandroid" android:host="auth" />
+    </intent-filter>
+</activity>
+```
+
+## Full code example
+
+```kotlin
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.OptIn
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.auth.AuthTabIntent
+import androidx.browser.auth.ExperimentalAuthTab
+
+// MARK: - Configuration Constants
+
+const val CONST_BASE_URL = "https://example.com" // Set your backend authentication URL here
+const val CONST_SCHEME = "mgpandroid://auth" // Your custom URL scheme
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var authTabLauncher: ActivityResultLauncher<Intent>
+
+    @OptIn(ExperimentalAuthTab::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        
+        // Register the Auth Tab launcher
+        authTabLauncher = AuthTabIntent.registerActivityResultLauncher(this, this::handleAuthResult)
+    }
+    
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Handle intent when app is opened from CustomTabs via our custom scheme
+        intent.data?.let { uri ->
+            handleIncomingURL(uri)
+        }
+    }
+    
+    /**
+     * Starts the web authentication session
+     */
+    @OptIn(ExperimentalAuthTab::class)
+    fun startAuthentication() {
+        val strUrl = CONST_BASE_URL + "&returnUrl=" + CONST_SCHEME
+        val authUrl = Uri.parse(strUrl)
+        
+        // Create and launch AuthTab directly
+        val authTabIntent = AuthTabIntent.Builder().build()
+        authTabIntent.launch(authTabLauncher, authUrl, "mgpandroid")
+    }
+    
+    /**
+     * Handle the authentication result from AuthTab
+     */
+    @OptIn(ExperimentalAuthTab::class)
+    private fun handleAuthResult(result: AuthTabIntent.AuthResult) {
+        when (result.resultCode) {
+            AuthTabIntent.RESULT_OK -> {
+                // Process the result URI
+                val callbackURL = result.resultUri
+                
+                // Handle the callback URL received from the authentication flow
+                handleIncomingURL(callbackURL)
+            }
+            AuthTabIntent.RESULT_CANCELED -> {
+                Log.d("Authentication", "Authentication was canceled")
+            }
+            AuthTabIntent.RESULT_VERIFICATION_FAILED -> {
+                Log.e("Authentication", "Verification failed")
+            }
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> {
+                Log.e("Authentication", "Verification timed out")
+            }
+        }
+    }
+    
+    /**
+     * Handles the URL returned from the authentication flow
+     * This handles URLs from both the AuthTab result and from CustomTabs fallback
+     */
+    private fun handleIncomingURL(url: Uri?) {
+        if (url == null) {
+            Log.e("Authentication", "No callback URL received")
+            return
+        }
+        
+        Log.d("Authentication", "Incoming URL: $url")
+        
+        // Ensure the URL uses the expected custom scheme
+        val scheme = url.scheme
+        if (scheme != "mgpandroid") {
+            Log.e("Authentication", "Invalid URL scheme")
+            return
+        }
+        
+        // Extract query parameters
+        val controlStatus = url.getQueryParameter("controlStatus") ?: ""
+        val actionStatus = url.getQueryParameter("actionStatus") ?: ""
+        
+        // Check if authentication was successful
+        if (controlStatus == "VALIDATED" && actionStatus == "SUCCEEDED") {
+            Log.d("Authentication", "Action succeeded")
+            // Handle successful authentication
+        } else {
+            // Handle authentication failure or unexpected status
+            Log.e("Authentication", "Action Failed: controlStatus=$controlStatus, actionStatus=$actionStatus")
+        }
+    }
+}
+```
+
+## Automatic fallback mechanism
+
+The `androidx.browser.auth.AuthTabIntent` library automatically handles the fallback to CustomTabs if AuthTab is not supported on the device. You don't need to implement any custom logic for this fallback – the library takes care of it.
+
+However, there are differences in how the redirect URL is handled:
+
+1. When using AuthTab directly, the result comes back through the `handleAuthResult` callback.
+2. When the library falls back to CustomTabs, the result comes back through your activity's `onNewIntent` method.
+
+Therefore, it's important to implement both methods to handle both cases.
+
+## Usage example
+
+To use the authentication in your app:
+
+```kotlin
+// Inside an activity or fragment
+val authButton = findViewById<Button>(R.id.authButton)
+authButton.setOnClickListener {
+    startAuthentication()
+}
+```
+
+## Notes
+- Replace `CONST_BASE_URL` with your backend authentication URL.
+
+
+## Troubleshooting
+
+- If the callback URL doesn't trigger your app, ensure the URL scheme in your manifest matches exactly with what you're using in the code.
+- Make sure your Android manifest has the correct intent filter for handling the callback URL.
+- If authentication fails, check the logs for detailed error information.
