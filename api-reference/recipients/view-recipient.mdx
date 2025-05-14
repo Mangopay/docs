@@ -14,6 +14,7 @@ import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_Reci
 import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
 import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
 import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import Country_RecipientResponse from '/snippets/p-response/Country_RecipientResponse.mdx';
 import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/InternationalBankTransfer_RecipientResponse.mdx';
 import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
 import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
@@ -39,6 +40,7 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 <PayoutMethodType_RecipientResponse/>
 <RecipientType_RecipientResponse/>
 <Currency_RecipientResponse/>
+<Country_RecipientResponse/>
 <UserId_Recipient_Response/>
 <RecipientScope_Recipient_Response/>
 <Tag_Recipient_Response/>
@@ -64,7 +66,7 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 </AccordionGroup>
 
 <ResponseExample>
-```json ACTIVE - EUR
+```json ACTIVE, EUR, international, PAYOUT
 {
     "Id": "rec_01JRADYFJYPFM10XPQ8VFWW947",
     "Status": "ACTIVE",
@@ -73,6 +75,7 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
     "PayoutMethodType": "InternationalBankTransfer",
     "RecipientType": "Business",
     "Currency": "EUR",
+    "Country": "FR",
     "UserId": "user_m_01JRADX7YD0060N5VAA0XPMM54",
     "Tag": "Created using the Mangopay API Postman collection",
     "RecipientScope": "PAYOUT",
@@ -93,16 +96,17 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
     }
 }
 ```
-```json ACTIVE - GBP
+```json ACTIVE, GBP, local, PAYIN
 {
-    "Id": "rec_01JRADRZMVZ12VXYV1A3DDX6JM",
+    "Id": "rec_01JV6ZJZHRK8K7X79BFEZ0MPR4",
     "Status": "ACTIVE",
-    "CreationDate": 1744106716,
-    "DisplayName": "Alex Smith GBP local pay-in account",
+    "CreationDate": 1747212402,
+    "DisplayName": "Alex Smith GBP account",
     "PayoutMethodType": "LocalBankTransfer",
     "RecipientType": "Individual",
     "Currency": "GBP",
-    "UserId": "user_m_01JRADQMWEKV9X7C683MYQMQCN",
+    "Country": "GB",
+    "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
     "Tag": "Created using the Mangopay API Postman collection",
     "RecipientScope": "PAYIN",
     "IndividualRecipient": {
@@ -119,6 +123,38 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
         "GBP": {
             "SortCode": "200000",
             "AccountNumber": "55779911"
+        }
+    }
+}
+```
+```json ACTIVE, USD, local, PAYOUT
+{
+    "Id": "rec_01JV700CD7E5GP9SFZHGX0RV2E",
+    "Status": "ACTIVE",
+    "CreationDate": 1747212841,
+    "DisplayName": "Alex Smith USD account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "USD",
+    "Country": "US",
+    "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "900 Williams Ave.",
+            "City": "New York",
+            "Region": "NY",
+            "PostalCode": "10025",
+            "Country": "US"
+        }
+    },
+    "LocalBankTransfer": {
+        "USD": {
+            "ABA": "071000288",
+            "AccountNumber": "11696419"
         }
     }
 }

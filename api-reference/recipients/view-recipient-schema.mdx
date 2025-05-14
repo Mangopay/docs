@@ -7,11 +7,13 @@ description: Fetch the data requirements for a given currency, payout method typ
 import PayoutMethodType from '/snippets/p-query/PayoutMethodType.mdx';
 import RecipientType from '/snippets/p-query/RecipientType.mdx';
 import Currency from '/snippets/p-query/Currency.mdx';
+import Country from '/snippets/p-query/Country.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 import DisplayNameResponse_Recipient_Schema from '/snippets/p-response/DisplayNameResponse_Recipient_Schema.mdx';
 import CurrencyResponse_Recipient_Schema from '/snippets/p-response/CurrencyResponse_Recipient_Schema.mdx';
+import CountryResponse_Recipient_Schema from '/snippets/p-response/CountryResponse_Recipient_Schema.mdx';
 import RecipientTypeResponse_Recipient_Schema from '/snippets/p-response/RecipientTypeResponse_Recipient_Schema.mdx';
 import PayoutMethodTypeResponse_Recipient_Schema from '/snippets/p-response/PayoutMethodTypeResponse_Recipient_Schema.mdx';
 import IndividualRecipientResponse_Recipient_Schema from '/snippets/p-response/IndividualRecipientResponse_Recipient_Schema.mdx';
@@ -22,17 +24,19 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
 ### Query parameters  
 
 <PayoutMethodType />
-<RecipientType />
 <Currency />
+<Country />
+<RecipientType />
 
 ### Responses  
 
 <AccordionGroup>
 
-<Accordion title="200" defaultOpen>
+<Accordion title="200">
 
 <DisplayNameResponse_Recipient_Schema />
 <CurrencyResponse_Recipient_Schema />
+<CountryResponse_Recipient_Schema />
 <RecipientTypeResponse_Recipient_Schema />
 <PayoutMethodTypeResponse_Recipient_Schema />
 <Tabs>
@@ -56,8 +60,24 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
 
 </AccordionGroup>
 
+<AccordionGroup>
+<Accordion title="400 - Unsupported Country for Currency on LocalBankTransfer">
+```json
+{
+    "Id": "410e8496-64cb-4594-83c3-0d66f85f4abe",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1747210826,
+    "Errors": {
+        "PayoutMethodType": "UNSUPPORTED_PAYOUT_METHOD_FOR_CURRENCY"
+    }
+}
+```
+</Accordion>
+</AccordionGroup>
+
 <ResponseExample>
-```json EUR, international, individual
+```json EUR, US, international, individual
 {
     "DisplayName": {
         "Required": true,
@@ -75,6 +95,17 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         "MinLength": 3,
         "Pattern": "^[a-zA-Z]{3}$",
         "Label": "Currency",
+        "EndUserDisplay": "Hide"
+    },
+    "Country": {
+        "AllowedValues": [
+            "US"
+        ],
+        "Required": true,
+        "MaxLength": 2,
+        "MinLength": 2,
+        "Pattern": "^[a-zA-Z]{2}$",
+        "Label": "Destination Country",
         "EndUserDisplay": "Hide"
     },
     "RecipientType": {
@@ -174,17 +205,24 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         }
     },
     "InternationalBankTransfer": {
-        "IBAN": {
+        "AccountNumber": {
             "Required": true,
-            "MaxLength": 34,
-            "Pattern": "^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$",
-            "Label": "IBAN",
+            "MaxLength": 12,
+            "MinLength": 8,
+            "Pattern": "^[0-9a-zA-Z]{8,12}$",
+            "Label": "Account Number",
+            "EndUserDisplay": "Show"
+        },
+        "BIC": {
+            "Required": true,
+            "Pattern": "^[0-9a-zA-Z]{8}([0-9a-zA-Z]{3})?$",
+            "Label": "BIC",
             "EndUserDisplay": "Show"
         }
     }
 }
 ```
-```json USD, local, business
+```json CAD, CA, local, business
 {
     "DisplayName": {
         "Required": true,
@@ -195,13 +233,24 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
     },
     "Currency": {
         "AllowedValues": [
-            "USD"
+            "CAD"
         ],
         "Required": true,
         "MaxLength": 3,
         "MinLength": 3,
         "Pattern": "^[a-zA-Z]{3}$",
         "Label": "Currency",
+        "EndUserDisplay": "Hide"
+    },
+    "Country": {
+        "AllowedValues": [
+            "CA"
+        ],
+        "Required": true,
+        "MaxLength": 2,
+        "MinLength": 2,
+        "Pattern": "^[a-zA-Z]{2}$",
+        "Label": "Destination Country",
         "EndUserDisplay": "Hide"
     },
     "RecipientType": {
@@ -240,21 +289,35 @@ import LocalBankTransferResponse_Recipient_Schema from '/snippets/p-response/Loc
         "EndUserDisplay": "Hide"
     },
     "LocalBankTransfer": {
-        "USD": {
+        "CAD": {
             "AccountNumber": {
                 "Required": true,
-                "MaxLength": 12,
-                "MinLength": 8,
-                "Pattern": "^[0-9a-zA-Z]{8,12}$",
+                "MaxLength": 35,
+                "MinLength": 7,
+                "Pattern": "^\\d{7,35}$",
                 "Label": "Account Number",
                 "EndUserDisplay": "Show"
             },
-            "ABA": {
+            "InstitutionNumber": {
                 "Required": true,
-                "MaxLength": 9,
-                "MinLength": 9,
-                "Pattern": "^\\d{9}$",
-                "Label": "ABA",
+                "MaxLength": 3,
+                "MinLength": 3,
+                "Pattern": "^\\d{3}$",
+                "Label": "Institution Number",
+                "EndUserDisplay": "Show"
+            },
+            "BranchCode": {
+                "Required": true,
+                "MaxLength": 5,
+                "MinLength": 5,
+                "Pattern": "^\\d{5}$",
+                "Label": "Branch Code",
+                "EndUserDisplay": "Show"
+            },
+            "BankName": {
+                "Required": true,
+                "MaxLength": 50,
+                "Label": "Bank Name",
                 "EndUserDisplay": "Show"
             }
         }

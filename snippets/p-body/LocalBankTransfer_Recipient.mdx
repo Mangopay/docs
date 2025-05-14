@@ -1,11 +1,5 @@
-import IBAN_Recipient from '/snippets/p-body/IBAN_Recipient.mdx';
-
 <ParamField body="LocalBankTransfer" type="object" required>
-The account details if `PayoutMethodType` is `LocalBankTransfer`.
-
-Only one of `InternationalBankTransfer` or `LocalBankTransfer` is required.
-
-The `LocalBankTransfer` depends on the `Currency`. One of:
+The account details if `PayoutMethodType` is `LocalBankTransfer`, depending on the `Currency`. One of:
 <Tabs>
 {/* <Tab title="AUD">
   <ParamField body="AUD" type="object" required>
@@ -26,25 +20,25 @@ The `LocalBankTransfer` depends on the `Currency`. One of:
 <Tab title="CAD">
   <ParamField body="CAD" type="object" required>
   <Expandable title="properties" defaultOpen>
+    <ParamField body="AccountNumber" type="string" required>
+    Format: 7–35 digits (pattern: `^\\d{7,35}$`)
+
+    The account number of the Canadian account.
+    </ParamField>
     <ParamField body="InstitutionNumber" type="string" required>
     Format: 3 digits (pattern: `^\\d{3}$`)
     
     The institution number of the Canadian account.
-    </ParamField>
-    <ParamField body="BankName" type="string" required>
-    Length: 1–50
-
-    The bank name of the Canadian account.
     </ParamField>
     <ParamField body="BranchCode" type="string" required>
     Format: 5 digits (pattern: `^\\d{5}$`)
     
     The branch code of the Canadian account.
     </ParamField>
-    <ParamField body="AccountNumber" type="string" required>
-    Format: 7–35 digits (pattern: `^\\d{7,35}$`)
+    <ParamField body="BankName" type="string" required>
+    Length: 1–50
 
-    The account number of the Canadian account.
+    The bank name of the Canadian account.
     </ParamField>
   </Expandable>
   </ParamField>
@@ -52,22 +46,26 @@ The `LocalBankTransfer` depends on the `Currency`. One of:
 <Tab title="EUR">
   <ParamField body="EUR" type="object" required>
   <Expandable title="properties" defaultOpen>
-    <IBAN_Recipient/>
+    <ParamField body="IBAN" type="string">
+    Format: A valid IBAN (pattern: `^[a-zA-Z]{2}\\d{2}\\s*(\\w{4}\\s*){2,7}\\w{1,4}\\s*$`)
+
+    The IBAN of the account.
+    </ParamField>
   </Expandable>
   </ParamField>
 </Tab>
 <Tab title="GBP">
   <ParamField body="GBP" type="object" required>
   <Expandable title="properties" defaultOpen>
-    <ParamField body="SortCode" type="string" required>
-    Format: 6 digits (pattern: `^\\d{6}$`)
-
-    The sort code of the UK account.
-    </ParamField>
     <ParamField body="AccountNumber" type="string" required>
     Format: 8 digits (pattern: `^\\d{8}$`)
     
     The account number of the UK account.
+    </ParamField>
+    <ParamField body="SortCode" type="string" required>
+    Format: 6 digits (pattern: `^\\d{6}$`)
+
+    The sort code of the UK account.
     </ParamField>
   </Expandable>
   </ParamField>
@@ -128,15 +126,15 @@ The `LocalBankTransfer` depends on the `Currency`. One of:
 <Tab title="USD">
   <ParamField body="USD" type="object" required>
   <Expandable title="properties" defaultOpen>
-    <ParamField body="ABA" type="string" required>
-    Format: 9 digits (pattern: `^\\d{9}$`)
-
-    The ABA routing number of the US account.
-    </ParamField>
     <ParamField body="AccountNumber" type="string" required>
     Format: 8–12 alphanumeric characters (pattern: `^[0-9a-zA-Z]{8,12}$`)
 
     The account number of the US account.
+    </ParamField>
+    <ParamField body="ABA" type="string" required>
+    Format: 9 digits (pattern: `^\\d{9}$`)
+
+    The ABA routing number of the US account.
     </ParamField>
   </Expandable>
   </ParamField>
