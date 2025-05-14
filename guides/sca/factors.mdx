@@ -1,6 +1,6 @@
 ---
 title: Authentication factors
-sidebarTitle: Factors
+sidebarTitle: Overview
 description: Learn how authentication factors work on the hosted webpage
 ---
 
@@ -26,11 +26,17 @@ On the `RedirectUrl`, the user first sees a Mangopay-branded welcome screen expl
 
 #### Welcome screen on enrollment
 
+Below is an example of the SCA welcome screen on Owner user creation:
+
 <img height="512" src="/images/screenshot_sca_welcome_enroll.png" />
 
 #### Welcome screen on authentication
 
-<img height="512" src="/images/screenshot_sca_welcome_auth.png" />
+<img height="512" src="/images/screenshot_sca_welcome_transfer_auth.png" />
+
+Note that the authentication example above is for a [transfer](/guides/sca/transfers) request, which shows the transfer currency and amount. The trading name is shown in every scenario along with:
+- For recipient bank account registration, the IBAN or local account number 
+- For wallet access, a mention of access to personal account information
 
 ## Factors presented
 
@@ -51,10 +57,10 @@ Mangopay provides the following authentication factors.
   [Passkeys (WebAuthn)](#passkey)
   </td>
   <td class="table-content">
-  Knowledge and inherence
+  No
   </td>
   <td class="table-content">
-  No
+  Knowledge and inherence
   </td>
   <td class="table-content">
   The individual uses the native authentication features (biometrics, password, passcode) of their device that they set up during enrollment.
@@ -65,10 +71,10 @@ Mangopay provides the following authentication factors.
   [Personal identification number (PIN)](#pin)
   </td>
   <td class="table-content">
-  Knowledge
+  Yes
   </td>
   <td class="table-content">
-  Yes
+  Knowledge
   </td>
   <td class="table-content">
   The individual enters a 6-digit code they defined during enrollment.
@@ -91,6 +97,8 @@ Mangopay provides the following authentication factors.
 </tbody>
 </table>
 
+#### Logic governing optional trusted devices
+
 Defining a trusted device as a passkey is optional. 
 
 If the user chooses to enroll a trusted device, then only the PIN is enrolled as the second factor.
@@ -105,17 +113,28 @@ The passkey factor relies on the Web Authentication, or WebAuthn, standard to cr
 - A public key that is not secret and is stored on the Mangopay server
 - A private key that is secret and is stored on the user's device
 
-The private key is accessed using the device's authentication features: for example, a password or fingerprint on a laptop, or a passcode, fingerprint, or face on a smartphone.
+The private key is accessed using the device's authentication features: for example, a password or fingerprint on a laptop; or a passcode, fingerprint, or face on a smartphone.
+
+Because WebAuthn doesn't rely on a password, it is resistant to phishing and data breaches. It has wide adoption on web browsers and mobile devices.
+
+For mobile app integrations, passkeys are not supported if the `RedirectUrl` is opened in a webview. The factor must be integrated natively. See the dedicated guides for details on how to do this: 
+<CardGroup cols={2}>
+<Card title="iOS" href="/guides/sca/factors/ios">
+Integrate the passkey factor in iOS apps
+</Card>
+<Card title="Android" href="/guides/sca/factors/android">
+Integrate the passkey factor in Android apps
+</Card>
+</CardGroup>
 
 #### Passkey device enrollment
-
 
 To enroll, the user: 
 1. Chooses to enroll their device as a trusted device
 2. Selects where to store the passkey from the options proposed by their device
 3. Authenticates using their device authentication feature (biometrics, password, passcode)
 
-Below is an example of the process using MacOS, a passkey stored in a Google Chrome profile, and the laptop password.
+Below is an example of the enrollment process using Chrome on MacOS, a passkey stored in a Google Chrome profile, and the laptop password.
 
 <img height="512" src="/images/screenshot_sca_passkey_enroll.png" />
 
@@ -126,7 +145,7 @@ During authentication:
 2. Selects the passkey to use
 3. Authenticates using their device authentication feature (biometrics, password, passcode)
 
-Below is an example of the process using MacOS, a passkey stored in a Google Chrome profile, and the laptop password.
+Below is an example of the authentication process using Chrome on MacOS, a passkey stored in a Google Chrome profile, and the laptop password.
 
 <img height="512" src="/images/screenshot_sca_passkey_auth.png" />
 
