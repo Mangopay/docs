@@ -6,18 +6,19 @@ title: 'Authentication'
 
 The Mangopay REST API uses the OAuth 2.0 authentication protocol to provide secure access to resources.   
 
-<Note>  
+<Warning>
+**Caution – API security practices** 
+
+- Overuse of the OAuth token endpoint is a security risk and may result in rate limiting or blocking actions from Mangopay. You must ensure you use your authentication token for the full duration of its lifetime for all subsequent calls (and not renew it every call, see [Step 2](#2-use-the-bearer-token-for-its-full-lifetime) below).
+- HTTPS is mandatory for production environments  
+- You must call the API from your server. Calling the API from the browser is a security risk and is not supported by Mangopay.
+</Warning>
+
+<Note>
 **Note – SDKs handle authentication automatically** 
   
 For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. See the <a href="#sdk-authentication">SDK authentication</a> section for more details.  
-</Note>  
-
-<Warning>  
-**Caution – API security practices** 
-  
-- HTTPS is mandatory for production environments  
-- You must call the API from your server. Calling the API from the browser is a security risk and is not supported by Mangopay.
-</Warning>  
+</Note>
 
 ## OAuth 2.0 authentication  
 
@@ -143,10 +144,14 @@ To do so, add it to the Authorization header of your requests, preceded by "Bear
     </tr>
 </table>
 
+#### Overuse of OAuth token endpoint
+
 <Warning>
 **Caution – Use token for its full lifetime**
 
-You should use the token on all other API calls until a new token is needed. Requesting a new token too often results in unnecessary API calls and can put avoidable strain on your server.
+Overuse of the OAuth token endpoint is a security and performance risk and may result in rate limiting or blocking actions from Mangopay.
+
+You must use the token on all other API calls until a new token is needed. Requesting a new token too often results in unnecessary API calls and can put avoidable strain on your server and Mangopay's.
 
 Base your integration dynamically on the `expires_in` and do not hard-code the default value. We recommend triggering a new OAuth token call **30 seconds** before the `expires_in` value.
 </Warning>
