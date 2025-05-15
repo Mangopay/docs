@@ -55,7 +55,7 @@ It is not possible to initiate an action and then ask the user to complete the S
 
 ## Integration required for SCA
 
-The table below lists the mandatory integration that we require your platform to undertake, along with their availability in Sandbox to start implementation.
+The table below lists the mandatory integration that we require your platform to undertake, along with their availability in Sandbox and Production to start implementation.
 
 <table>
 <thead>
@@ -117,7 +117,7 @@ See [Legal user integration](/guides/sca/users#legal-user-integration), date to 
 </tr>
 <tr>
 <td class="table-content">
-[SCA on Recipients](/guides/sca/recipients) (bank account/payment account registration), including webhooks	
+Registration of new bank accounts as [Recipients](/guides/sca/recipients) with SCA for Owners
 </td>
 <td class="table-content">
 Now
@@ -125,7 +125,7 @@ Now
 </tr>
 <tr>
 <td class="table-content">
-[SCA on Transfers](/guides/sca/transfers) (user-initiated between Owners) and use of `ScaContext`
+[SCA on Transfers](/guides/sca/transfers) that are user-initiated between two Owners using `ScaContext`
 </td>
 <td class="table-content">
 Now
@@ -144,7 +144,7 @@ Now
 </tr>
 <tr>
 <td class="table-content">
-[SCA on Mangopay Account access](/guides/sca/wallets) (wallet balance and transactions history)	
+[SCA on Mangopay Account access](/guides/sca/wallets) for Owners using `ScaContext`
 </td>
 <td class="table-content">
 Now
@@ -187,15 +187,13 @@ You must add your `returnUrl` before you redirect the user on the `RedirectUrl` 
 
 ## Factors
 
-Mangopay's hosted SCA session allows the user to both enroll in SCA and authenticate using the required factors.
-
-All factors must be enrolled by the individual because they are all required for authentication.
+Mangopay's hosted SCA session allows the user to both enroll in SCA and authenticate using the required factors. [Read more](/guides/sca/factors) **&rarr;**
 
 <table>
 <thead>
 <tr>
-  <th class="header">Availability</th>
   <th class="header">Factor</th>
+  <th class="header">Required</th>
   <th class="header">Type</th>
   <th class="header">Description</th>
 </tr>
@@ -203,30 +201,44 @@ All factors must be enrolled by the individual because they are all required for
 <tbody>
 <tr>
   <td class="table-content">
-  Available
+  Trusted device using WebAuthn [passkey](/guides/sca/factors#passkey)
   </td>
   <td class="table-content">
-  Phone-based one-time passcode (OTP)
+  No
   </td>
   <td class="table-content">
-  Possession
+  Possession (of device) and inherence (if biometrics) or knowledge (if password or passcode)
   </td>
   <td class="table-content">
-  The individual receives a 6-digit OTP via SMS to the phone number provided during enrollment.
+  The individual uses the native authentication features (biometrics, password, passcode) of their device that they set up during enrollment.
   </td>
 </tr>
 <tr>
   <td class="table-content">
-  Available
+  [Personal identification number (PIN)](/guides/sca/factors#pin)
   </td>
   <td class="table-content">
-  Personal identification number (PIN)
+  Yes
   </td>
   <td class="table-content">
   Knowledge
   </td>
   <td class="table-content">
   The individual enters a 6-digit code they defined during enrollment.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Phone-based [one-time passcode (OTP)](/guides/sca/factors#otp)
+  </td>
+  <td class="table-content">
+  If passkey not used
+  </td>
+  <td class="table-content">
+  Possession
+  </td>
+  <td class="table-content">
+  The individual receives a 6-digit OTP via SMS to the phone number provided during enrollment.
   </td>
 </tr>
 </tbody>
