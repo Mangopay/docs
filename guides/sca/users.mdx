@@ -155,10 +155,22 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
 </tbody>
 </table>
 
+### Pending user action
+
+The new `PENDING_USER_ACTION` status value prevents the user from accessing Mangopay services until they enroll in SCA. 
+
 The user's `UserStatus` becomes `PENDING_USER_ACTION` after the following events:
-- Creation using the SCA-enabled POST endpoints if `OWNER`
-- Categorization as `OWNER` using the SCA-enabled endpoints
-- If already enrolled in SCA, modification `Email` (`LegalRepresentative.Email`) or `PhoneNumber` (`LegalRepresentative.PhoneNumber`) via the SCA-enabled PUT endpoints
+- Creation using the SCA-enabled POST endpoints if `OWNER`:
+  - [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+  - [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+- Categorization as `OWNER` using the SCA-enabled endpoints:
+  - [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user)
+  - [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
+- If already enrolled in SCA, modification `Email` (`LegalRepresentative.Email`) or `PhoneNumber` (`LegalRepresentative.PhoneNumber`) via the SCA-enabled PUT endpoints: 
+  - [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+  - [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+
+A call to the dedicated enrollment endpoint ([POST Enroll a User in SCA](/api-reference/users/enroll-user)) does **not** change the user's status to `PENDING_USER_ACTION` to ensure the user is not blocked if they are unable to complete SCA successfully.
 
 <Warning>
 **Caution – Changing category with legacy PUT**
@@ -179,6 +191,8 @@ When the user's `UserStatus` is `PENDING_USER_ACTION`, they are unable to access
     "errors": null
 }
 ```
+
+If your user is stuck in a `PENDING_USER_ACTION` status, then you can use [POST Enroll a User in SCA](/api-reference/users/enroll-user) to retrieve a new SCA session for them to enroll.
 
 ### Restrictions on existing users
 
