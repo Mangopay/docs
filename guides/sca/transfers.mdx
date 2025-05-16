@@ -167,7 +167,9 @@ A transfer can also fail for other reasons that were already applicable before t
 
 To retry the transfer request, call the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint again. 
 
-## SCA triggers in Sandbox
+## Testing
+
+### SCA triggers in Sandbox
 
 While in Production, Mangopay will apply the exemptions for low-risk or low-amount transfers ([read more](/guides/sca#exemptions-on-actions)), the behavior in Sandbox is described below for your integration and testing.
 
@@ -183,6 +185,12 @@ In Sandbox, SCA is not triggered if any of the following are true:
 - The legal user's `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`
 - The amount is less than 30 EUR or equivalent
 - `ScaContext` is `USER_NOT_PRESENT` or not sent (in which case it is `null`)
+
+### Postman 
+
+The Mangopay API Postman collection contains a dedicated folder for <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/jk6okvt" target="_blank">SCA on transfers and wallet access</a>, has the calls needed to set up two Owner users, get funds into their wallets via a direct card pay-in, and then transfer between them using the `ScaContext` value `USER_PRESENT`.
+
+See the [Postman](/postman) guide for details on how to fork the collection and set up your environment with your `ClientId` and API key.
 
 ## Related resources
 

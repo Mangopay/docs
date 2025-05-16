@@ -63,18 +63,6 @@ A Recipient may be needed for a `PAYER` (or `OWNER`) in two specific pay-in scen
 
 This kind of recipient, with the `RecipientScope` value `PAYIN`, can be created for a user with the `UserCategory` `PAYER` or `OWNER`, and does not require SCA.
 
-### SCA triggers in Sandbox 
-
-In Sandbox, SCA is triggered on [POST Create a Recipient](/api-reference/recipients/create-recipient) when all of the following are true: 
-- `RecipientScope` is `PAYOUT` (or not sent)
-- The user's type is Natural or Soletrader
-- The user is an `OWNER` (which is necessary for the `RecipientScope` `PAYOUT`)
-
-In Sandbox, SCA is not triggered if any of the following are true: 
-- `RecipientScope` is `PAYIN`
-- The Legal user's `LegalPersonType` is `BUSINESS`, `ORGANIZATION`, or `PARTNERSHIP`
-- The user is a `PAYER`
-
 ### Recipient types
 
 A Recipient represents the beneficiary and the beneficiary account of a payout. A recipient can be an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address.
@@ -108,6 +96,26 @@ Platforms should retrieve all Recipient schemas, including local and internation
 Each recipient can be used for one combination of a payout method, currency, and country, which together determine the account details required.
 
 A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
+
+## Testing
+
+### SCA triggers in Sandbox 
+
+In Sandbox, SCA is triggered on [POST Create a Recipient](/api-reference/recipients/create-recipient) when all of the following are true: 
+- `RecipientScope` is `PAYOUT` (or not sent)
+- The user's type is Natural or Soletrader
+- The user is an `OWNER` (which is necessary for the `RecipientScope` `PAYOUT`)
+
+In Sandbox, SCA is not triggered if any of the following are true: 
+- `RecipientScope` is `PAYIN`
+- The Legal user's `LegalPersonType` is `BUSINESS`, `ORGANIZATION`, or `PARTNERSHIP`
+- The user is a `PAYER`
+
+### Postman 
+
+In the <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/47sedyl" target="_blank">Recipients folder</a> of the Mangopay API Postman collection you'll find all Recipients endpoints, including some examples to get you started in different currencies, countries, and payout and pay-in scopes. 
+
+See the [Postman](/postman) guide for details on how to fork the collection and set up your environment with your `ClientId` and API key.
 
 ## How to register a recipient for payouts
 
