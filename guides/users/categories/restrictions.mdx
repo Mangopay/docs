@@ -85,6 +85,14 @@ Otherwise a request to [POST Create a Payout](/api-reference/payouts/create-payo
 
 Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)). For Payers, a request to [PUT Submit a KYC Document](/api-reference/kyc-documents/submit-kyc-document) will result in the document `Status` being set to `REFUSED` and a `KYC_FAILED` event.
 
+<Note>
+**Note – If a KYC document is requested for a Payer, they will be able to send it**
+
+Mangopay conducts routine pay-in screening for anti-fraud purposes as part of it's regulatory obligations as an [EMI](/guides/glossary#electronic-money-institution-emi).
+
+In some cases, Mangopay may request an ID document or proof of address from a Payer as part of this process, which must be submitted as a KYC document via the API or Dashboard. If this happens, there will be no restriction for the Payer to submit the document.
+</Note>
+
 Payers are not able to declare beneficial owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object). If the user is a Payer, the [POST Create a UBO Declaration](/api-reference/ubo-declarations/create-ubo-declaration) endpoint will return an error:
 
 <Accordion title="Example of error that will be returned">
