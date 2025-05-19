@@ -1,14 +1,16 @@
 ---
 title: 'Categories'
-sidebarTitle: 'Categories'  
+sidebarTitle: 'Overview'  
 'og:description': 'How Mangopay’s system of Payers and Owners provides efficiency and security: what each category needs and what they can do.'  
 ---
+
+import Platform from '/snippets/glossary/platform.mdx';
 
 Your platform facilitates payments between two groups of users: those who only need to send money and those who receive it. Mangopay calls these groups Payers and Owners.
 
 ## Payers  
 
-The Payer category is designed for users who **only** need to make payments to other users – they don’t need to receive money.
+The Payer category is designed for users who **only** need to make payments to other users – they don’t need to receive funds.
 
 ### Possible actions  
 
@@ -35,14 +37,16 @@ The following table summarizes the actions a Payer can and can’t take:
     </tbody>
 </table> 
 
+For more information about the restrictions being applied to `PAYER` users, see the [restrictions](/guides/users/categories/restrictions) article.
+
 ### Required information  
 
-To create a Payer, you need to provide the following information:
+A Payer needs to provide the following information:
 
 <table>
     <thead>
         <tr>
-            <th class="header">User category</th>
+            <th class="header">User type</th>
             <th class="header">Required information</th>
         </tr>
     </thead>
@@ -101,9 +105,9 @@ Owners can do everything Payers can. The following table summarizes the actions 
                 - Make pay-ins to their wallet (and receive pay-in refunds)
                 - Transfer money to an Owner’s wallet (and receive transfer refunds)
                 - Receive transfers to their wallet from another user
-                - Request KYC verification
+                - Request KYC/KYB verification
             </td>
-            <td class="table-content">Request a payout to their bank account **unless they have been verified**. Find out more about [Verification](/guides/users/verification).</td>
+            <td class="table-content">Request a payout to their bank account **unless they have been KYC/KYB verified**. Find out more about [KYC/KYB verification](/guides/users/verification).</td>
         </tr>
     </tbody>
 </table>
@@ -115,7 +119,7 @@ To create an Owner, or modify an existing Payer into an Owner, you need to provi
 <table>
     <thead>
         <tr>
-            <th class="header">User category</th>
+            <th class="header">User type</th>
             <th class="header">Required information</th>
         </tr>
     </thead>
@@ -175,8 +179,8 @@ The relevant T&Cs for your users are provided when your platform signs the contr
 In the API, whether a user is a Payer or an Owner is governed by the `UserCategory` parameter, which has the following possible values:
 
 - `PAYER` – User who can only make pay-ins to their wallets and transfers to other wallets (as well as refunds for pay-ins and transfers).
-- `OWNER` – User who can also receive transfers to their wallets. Owners are able to request [KYC verification](/guides/users/verification), which if successful gives them the `KYCLevel` of `REGULAR` and the ability to request payouts.
-- `PLATFORM` – Single specific user that represents the platform. The `PLATFORM` value is only assigned by Mangopay and may be used as part of the validated workflow implemented by the platform.
+- `OWNER` – User who can also receive transfers to their wallets. Owners are able to request [KYC/KYB verification](/guides/users/verification), which if successful gives them the `KYCLevel` of `REGULAR` and the ability to request payouts.
+- `PLATFORM` – Single specific user that represents the <Platform content="platform"/>. The `PLATFORM` value is only assigned by Mangopay and may be used as part of the validated workflow implemented by the platform.
 
 When your platform first creates a User object, they must be assigned either the `PAYER` or `OWNER` category. 
 
@@ -197,6 +201,12 @@ In addition to the `PLATFORM` user, there may be other users that are implemente
 ## Related resources
 
 <CardGroup cols={2}>
+<Card
+  title="Restrictions on Payers"
+  href="/guides/users/categories/restrictions"
+>
+Read about how user categorization is reflected in technical restrictions
+</Card>
 <Card
   title="SCA on users"
   href="/guides/sca/users"
