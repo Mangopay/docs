@@ -12,7 +12,7 @@ Mangopay provides a regularly updated Postman collection for you to test the Man
 <Info >
     **Prerequisites**
 
-- A `ClientId` and an API key – if you don't have these, <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get access to the <a href="https:/z/hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>
+- A `ClientId` and an API key – if you don't have these, <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get access to the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>
 - A Postman account (you can install the preferred version for your system at https://www.getpostman.com/)
 </Info>
 
@@ -20,34 +20,46 @@ Click Run with Postman to fork the collection into your workspace:
 
 ><a href="https://app.getpostman.com/run-collection/15344095-47c29023-1d0b-4f09-ae65-9054db181208?action=collection%2Ffork&collection-url=entityId%3D15344095-47c29023-1d0b-4f09-ae65-9054db181208%26entityType%3Dcollection%26workspaceId%3Dce5d4567-dadc-448f-9509-778fee33cca0#?env%5BMANGOPAY%20Sandbox%5D=W3sia2V5IjoiRU5WX1VSTCIsInZhbHVlIjoiaHR0cHM6Ly9hcGkuc2FuZGJveC5tYW5nb3BheS5jb20iLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6Imh0dHBzOi8vYXBpLnNhbmRib3gubWFuZ29wYXkuY29tIiwic2Vzc2lvbkluZGV4IjowfSx7ImtleSI6IkNMSUVOVF9VUkwiLCJ2YWx1ZSI6IiIsImVuYWJsZWQiOnRydWUsInR5cGUiOiJzZWNyZXQiLCJzZXNzaW9uVmFsdWUiOiIiLCJzZXNzaW9uSW5kZXgiOjF9LHsia2V5IjoiQVBJX0tFWSIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6InNlY3JldCIsInNlc3Npb25WYWx1ZSI6IiIsInNlc3Npb25JbmRleCI6Mn1d">Run with Postman</a>
 
+<Check>
+**Best practice – Watch the collection for updates**
+
+Watch the collection by clicking the eye icon on the parent folder to receive an email when new additions and changes are merged.
+
+You can then pull the changes to bring your fork up to date.
+</Check>
+
 ## Set up your environment  
 
 Once the collection is forked, make sure you've selected the relevant environment and set up the key variables if they are not already defined:  
 - `ENV_URL` – Should be https://api.sandbox.mangopay.com 
-- `API_KEY` – Your Sandbox API key, available in the Mangopay Dashboard.  
+- `API_KEY` – Your Sandbox API key, available in the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>.  
 - `CLIENT_ID` – Your Client ID, available in the Mangopay Dashboard.  
-- `VERSION` – Must be the Mangopay API version which is `V2.01`.  
 
 We also recommend you set variables used for some specific calls:  
 - `CURRENCY` – Enter the default currency for your tests. Keep in mind that some payment methods don’t support all currencies, so you might need to update them manually at times.  
-- `CULTURE` – Enter the default culture value. The Culture parameter is mostly used in web payment methods, but keep in mind that payment methods don’t necessarily support the same cultures. We recommend you use EN for a better experience.  
+- `CULTURE` – Enter the default culture value. The `Culture` parameter is mostly used in web payment methods, but keep in mind that payment methods don’t necessarily support the same values. We recommend you use `EN` for a better experience.  
 
 <Note>  
 **Note - Other variables populated automatically** 
   
-Where relevant, calls in the collection contain tests (in the Tests tab of the request) that populate other variables based on the response from the API.   
+Where relevant, calls in the collection contain post-request scripts (in the ***Scripts*** tab of the request) that populate other variables based on the response from the API.
 
-For example, the Create a Natural User call populates a `USER_NATURAL_PAYER` variable; Create a Wallet populates a `WALLET_ID`, and so on. Likewise, during the card registration process, the tests populate the tokenization data automatically, meaning you should be able to submit the calls one after another without having to copy and paste values manually.   
+For example, the **Create a Natural User** call populates a `USER_NATURAL_PAYER` variable with the returned `Id`; **Create a Wallet** populates a `WALLET_ID`, and so on. Likewise, during the card registration process, the tests populate the tokenization data automatically, meaning you should be able to submit the calls one after another without having to copy and paste values manually.   
 </Note>  
 
 ## Authenticate Postman calls  
 
 The Mangopay API uses OAuth 2.0 to authenticate calls, which is supported by Postman.
 
-In Postman, authentication for the collection is managed in the **Authorization** tab of the parent folder. Child folders and individual calls inherit this authentication.
+In Postman, authentication for the collection is managed in the ***Authorization*** tab of the parent folder. Child folders and individual calls inherit this authentication.
 
-In the **Authorization** tab, the `API_KEY` and `CLIENT_ID` variables are set up to call the OAuth token endpoint.
+In the ***Authorization*** tab, ensure: 
+- The ***Access Token URL*** field contains the `ENV_URL` variable followed by `/v2.01/oauth/token` to call the [OAuth token endpoint](/api-reference/overview/authentication).
+- The ***Client ID*** field contains the `CLIENT_ID` variable.
+- The ***Client Secret*** field contains the `API_KEY` variable.
+- All the variables are showing **blue**, indicating that they are defined, and not red.
 
+### How to generate the first token  
 <Note>  
 **Note – Postman auto-refreshes tokens** 
   
@@ -56,16 +68,15 @@ Postman can automatically refresh the OAuth token, but the first token needs to 
 You also need to generate a new token manually if you change from one collection to another, or from one set of API credentials (Client ID and API key) to another.
 </Note>  
 
-### How to generate a token  
-- On the Authorization tab of the collection, scroll down to the bottom and click on Get new access token.
-- Postman calls the OAuth token endpoint to get a token. Once done, click Proceed (Postman proceeds automatically after 5 seconds).  
-- In the Manage access tokens dialog, you can see the details of the generated token. On the left, you can see all other tokens with the option to delete expired tokens. Click Use token to add the token to the Authorization tab and use it to authenticate calls.
+1. On the ***Authorization*** tab of the collection, scroll down to the bottom and click on ***Get new access token***.
+2. Postman calls the OAuth token endpoint to get a token. Once done, click ***Proceed*** (Postman proceeds automatically after 5 seconds).  
+3. In the ***Manage access tokens*** dialog, you can see the details of the generated token. On the left, you can see all other tokens with the option to delete expired tokens. Click ***Use token*** to add the token to the ***Authorization*** tab and use it to authenticate calls.
 
-## Understand the collection  
+## Collection structure
 
-The Mangopay API Postman collection is built with variables and scripts to so that you can test a flow of actions more easily. There are folders for specific features or flows, as well as the full reference of API endpoints. 
+The Mangopay API Postman collection is built with variables and scripts to so that you can test a flow of actions more easily. In the **Workflows and tutorials** folder, you'll find folders of groups of collections ordered for specific use cases. In the All API endpoints folder, you'll find the API endpoints grouped by topic or object (approximately following the docs API reference navigation).
 
-You'll also find comments with further guidance in the body of relevant requests. 
+You'll also find comments with specific guidance in the body of relevant requests. 
 
 ## Stay up to date  
 
