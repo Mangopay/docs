@@ -29,8 +29,6 @@ To listen to an event type on your chosen URL, set up a webhook in the <a href="
 </tr>
 </table>
 
-
-
 <table>
 <tr>
 <th class="header">Event type</th>
@@ -174,6 +172,75 @@ The User's `KYCLevel` has changed from `REGULAR` to `LIGHT`.
 The User has been KYC/KYB verified by Mangopay. 
 
 The User's `KYCLevel` has changed from `LIGHT` to `REGULAR`.
+</td>
+</tr>
+</table>
+
+### IDV sessions
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`IdvSessionId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View an IDV Session](/api-reference/idv-sessions/view-idv-session)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Hosted KYC/KYB solution](/guides/users/verification/hosted)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`IDENTITY_VERIFICATION_VALIDATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The IDV Session’s `Status` changed to `VALIDATED` and the User became KYC/KYB verified.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`IDENTITY_VERIFICATION_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The IDV Session’s `Status` changed to `REFUSED` and the User was not KYC/KYB verified.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`IDENTITY_VERIFICATION_INCONCLUSIVE`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The IDV Session’s `Status` changed to `REVIEW` and the session is under manual review by Mangopay’s teams before an outcome can be given.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`IDENTITY_VERIFICATION_OUTDATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The IDV Session’s `Status` changed to `OUT_OF_DATE` indicating that the user’s KYC/KYB verification status was [downgraded](/guides/users/verification/downgrade). To regain KYC/KYB verified status, the user must complete a new IDV Session successfully.
 </td>
 </tr>
 </table>
@@ -358,7 +425,6 @@ The UBO Declaration has been submitted for validation and is being processed.
 The UBO Declaration has been validated by the Mangopay Compliance team.  
 </td>
 </tr>
-
 </table>
   
 <table>
@@ -372,7 +438,6 @@ The UBO Declaration has been validated by the Mangopay Compliance team.
 The UBO Declaration is incomplete and additional information or documents may be required.  
 </td>
 </tr>
-
 </table>
   
 <table>
@@ -386,7 +451,92 @@ The UBO Declaration is incomplete and additional information or documents may be
 The UBO Declaration has been refused by Mangopay.
 </td>
 </tr>
+</table>
 
+## Country authorizations
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`CountryCode`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View authorizations for a country](/api-reference/country-authorizations/view-authorizations-country)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Country restrictions](/guides/users/country-restrictions)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`COUNTRY_AUTHORIZATION_UPDATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The restrictions related to a country have been updated.  
+</td>
+</tr>
+</table>
+
+## Recipients 
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`RecipientId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Recipient](/api-reference/recipients/view-recipient)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Recipients](/guides/sca/recipients)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`RECIPIENT_ACTIVE`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Recipient was created successfully, including the SCA session if `RecipientScope` is `OWNER`, and it can now be used for payments.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`RECIPIENT_CANCELED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Recipient creation was unsuccessful because the SCA session was not successful. The `CANCELED` status is only relevant if `RecipientScope` is `OWNER`.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`RECIPIENT_DEACTIVATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Recipient was permanently deactivated and can no longer be used.
+</td>
+</tr>
 </table>
 
 ## Pay-ins
@@ -1003,234 +1153,6 @@ The Mandate has been successfully validated, an email has been sent to the end u
 </tr>
 </table>
 
-## Transfers
-
-<table>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`TransferId`</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a Transfer](/api-reference/transfers/view-transfer)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;guides</th>
-<td class="table-content"></td>
-</tr>
-</table>
-
-
-
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_NORMAL_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer has been created but is not yet processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_NORMAL_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer could not be processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_NORMAL_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer has been successfully processed.  
-</td>
-</tr>
-</table>
-
-## Refunds
-
-### Pay-in refunds
-
-<table>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`RefundId`</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Refunds - Pay-in](/guides/refunds#pay-in-refunds)</td>
-</tr>
-</table>
-
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_REFUND_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The PayIn Refund transaction has been created but is not yet processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_REFUND_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The PayIn Refund transaction could not be processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYIN_REFUND_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The PayIn Refund transaction has been successfully processed.  
-</td>
-</tr>
-</table>
-
-### Transfer refunds
-
-<table>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`RefundId`</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Refunds - Transfer](/guides/refunds#transfer-refunds)</td>
-</tr>
-</table>
-
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_REFUND_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer Refund has been created but is not yet processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_REFUND_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer Refund transaction could not be processed.  
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`TRANSFER_REFUND_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The Transfer Refund transaction has been successfully processed.  
-</td>
-</tr>
-</table>
-
-### Payout returns
-
-<table>
-<tr>
-<th class="header">Resource</th>
-<td class="table-content">`RefundId`</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
-</tr>
-<tr>
-<th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Payouts - Returns](/guides/payouts#payout-returns)</td>
-</tr>
-</table>
-
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYOUT_REFUND_CREATED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The payout return has been created.
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYOUT_REFUND_FAILED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The payout return has failed.
-</td>
-</tr>
-</table>
-  
-<table>
-<tr>
-<th class="header">Event type</th>
-<td class="table-content">`PAYOUT_REFUND_SUCCEEDED`</td>
-</tr>
-<tr>
-<th class="header">Description</th>
-<td class="table-content">
-The payout return has been successfully processed.
-</td>
-</tr>
-</table>
-
 ## Disputes
 
 ### Disputes
@@ -1509,32 +1431,90 @@ The Settlement Transfer has been successfully processed.
 </tr>
 </table>
 
-## Recipients 
+## Transfers
 
 <table>
 <tr>
 <th class="header">Resource</th>
-<td class="table-content">`RecipientId`</td>
+<td class="table-content">`TransferId`</td>
 </tr>
 <tr>
 <th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View a Recipient](/api-reference/recipients/view-recipient)</td>
+<td class="table-content">[GET View a Transfer](/api-reference/transfers/view-transfer)</td>
 </tr>
 <tr>
 <th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Recipients](/guides/sca/recipients)</td>
+<td class="table-content"></td>
 </tr>
 </table>
 
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`RECIPIENT_ACTIVE`</td>
+<td class="table-content">`TRANSFER_NORMAL_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Recipient was created successfully, including the SCA session if `RecipientScope` is `OWNER`, and it can now be used for payments.
+The Transfer has been created but is not yet processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_NORMAL_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Transfer could not be processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_NORMAL_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Transfer has been successfully processed.  
+</td>
+</tr>
+</table>
+
+## FX conversions
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`ConversionId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Conversion](/api-reference/conversions/view-conversion)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Conversions](/guides/)</td>
+</tr>
+</table>
+
+### Instant conversions
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`INSTANT_CONVERSION_CREATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Instant Conversion was initiated and its `Status` changed to `CREATED`, but is not yet processed.
 </td>
 </tr>
 </table>
@@ -1542,12 +1522,12 @@ The Recipient was created successfully, including the SCA session if `RecipientS
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`RECIPIENT_CANCELED`</td>
+<td class="table-content">`INSTANT_CONVERSION_SUCCEEDED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Recipient creation was unsuccessful because the SCA session was not successful. The `CANCELED` status is only relevant if `RecipientScope` is `OWNER`.
+The Instant Conversion was processed successfully and its `Status` changed to `SUCCEEDED`.
 </td>
 </tr>
 </table>
@@ -1555,12 +1535,53 @@ The Recipient creation was unsuccessful because the SCA session was not successf
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`RECIPIENT_DEACTIVATED`</td>
+<td class="table-content">`INSTANT_CONVERSION_FAILED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Recipient was permanently deactivated and can no longer be used.
+The Instant Conversion could not be processed. See the `ResultCode` and `ResultMessage` for more information about the [error](/errors/codes#fx-conversions) that occurred.
+</td>
+</tr>
+</table>
+
+### Quoted conversions
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`QUOTED_CONVERSION_CREATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Quoted Conversion was initiated and its `Status` changed to `CREATED`, but is not yet processed.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`QUOTED_CONVERSION_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Quoted Conversion was processed successfully and its `Status` changed to `SUCCEEDED`.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`QUOTED_CONVERSION_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Quoted Conversion could not be processed. See the `ResultCode` and `ResultMessage` for more information about the [error](/errors/codes#fx-conversions) that occurred.
 </td>
 </tr>
 </table>
@@ -1679,34 +1700,172 @@ The Instant Payout transaction has been successfully processed.
 </tr>
 </table>
 
-## Helpers
+## Refunds
 
-### Country authorizations
+### Pay-in refunds
 
 <table>
 <tr>
 <th class="header">Resource</th>
-<td class="table-content">`CountryCode`</td>
+<td class="table-content">`RefundId`</td>
 </tr>
 <tr>
 <th class="header">Related&nbsp;GET</th>
-<td class="table-content">[GET View authorizations for a country](/api-reference/country-authorizations/view-authorizations-country)</td>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
 </tr>
 <tr>
 <th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Country restrictions](/guides/users/country-restrictions)</td>
+<td class="table-content">[Refunds - Pay-in](/guides/refunds#pay-in-refunds)</td>
 </tr>
 </table>
 
 <table>
 <tr>
 <th class="header">Event type</th>
-<td class="table-content">`COUNTRY_AUTHORIZATION_UPDATED`</td>
+<td class="table-content">`PAYIN_REFUND_CREATED`</td>
 </tr>
 <tr>
 <th class="header">Description</th>
 <td class="table-content">
-The restrictions related to a country have been updated.  
+The PayIn Refund transaction has been created but is not yet processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_REFUND_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The PayIn Refund transaction could not be processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYIN_REFUND_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The PayIn Refund transaction has been successfully processed.  
+</td>
+</tr>
+</table>
+
+### Transfer refunds
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`RefundId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Refunds - Transfer](/guides/refunds#transfer-refunds)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_REFUND_CREATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Transfer Refund has been created but is not yet processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_REFUND_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Transfer Refund transaction could not be processed.  
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`TRANSFER_REFUND_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Transfer Refund transaction has been successfully processed.  
+</td>
+</tr>
+</table>
+
+### Payout returns
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`RefundId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a Refund](/api-reference/refunds/view-refund)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Payouts - Returns](/guides/payouts#payout-returns)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYOUT_REFUND_CREATED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The payout return has been created.
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYOUT_REFUND_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The payout return has failed.
+</td>
+</tr>
+</table>
+  
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`PAYOUT_REFUND_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The payout return has been successfully processed.
 </td>
 </tr>
 </table>
