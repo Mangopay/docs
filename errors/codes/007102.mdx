@@ -1,0 +1,74 @@
+---
+title: '007102'
+description: '<small>&#8249; [All error codes](/errors/codes#generic-transaction-errors)</small>'
+---
+  
+<table>
+    <tbody>
+        <tr>
+            <th class="header"><strong>Error message</strong></th>
+            <td class="table-content">Transfer authentication expired. Please initiate a new request.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Description</strong></th>
+            <td class="table-content">The user did not complete all steps required within 10 minutes, so the SCA session expired.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Categories</strong></th>
+            <td class="table-content">  
+<div class="label">Transfers</div>  
+<div class="label">SCA</div>  
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+#### Causes  
+
+This error occurs when a transfer is attempted and SCA is required, but the SCA session is not completed within 10 minutes.
+
+SCA is required on Transfers between two users with the `UserCategory` of `OWNER`. On existing integrations, this is indicated by setting `ScaContext` to `USER_PRESENT` in the request. Read more about [SCA on transfers](/guides/sca/transfers).
+
+If the SCA session expires, the Transfer's `Status` changes from `CREATED` to `FAILED`.
+
+#### What to do  
+
+In this scenario, you can retry the Transfer to generate a new SCA session that the user can authenticate. The `PendingUserAction.RedirectUrl` has a validity of 10 minutes from when it is returned, so you need to redirect the user immediately to complete the session.
+
+Ensure your integration relies on [transfer webhooks](/webhooks/event-types#transfers) to know the outcome of SCA.
+
+#### Example 
+
+Example of the failed transfer retrieve using [GET View a Transfer](/api-reference/transfers/view-transfer):
+
+```json
+{
+    "Id": "xfer_c_01JRSHQFG2337DBQ4NS8XPYCK7",
+    "CreationDate": 1744614179,
+    "DebitedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "CreditedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "CreditedUserId": "user_m_01JRHSS3B18H86QA0C467RVK07",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "Status": "FAILED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": "007102",
+    "ResultMessage": "Transfer authentication expired. Please initiate a new request.",
+    "ExecutionDate": null,
+    "PendingUserAction": null
+}
+```
+
