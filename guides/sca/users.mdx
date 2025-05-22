@@ -170,7 +170,19 @@ The user's `UserStatus` becomes `PENDING_USER_ACTION` after the following events
   - [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
   - [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
 
-A call to the dedicated enrollment endpoint ([POST Enroll a User in SCA](/api-reference/users/enroll-user)) does **not** change the user's status to `PENDING_USER_ACTION` to ensure the user is not blocked if they are unable to complete SCA successfully.
+Set up a [webhook notification](/webhooks) for the [event type](/webhooks/event-types) `USER_ACCOUNT_VALIDATION_ASKED` to be notified when the user's `UserStatus` changes to `PENDING_USER_ACTION`.
+
+The `USER_ACCOUNT_ACTIVATED` event type sends a notification when the `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`.
+
+<Note>
+**Note – POST Enroll a User endpoint doesn't change UserStatus**
+
+A call to the dedicated enrollment endpoint ([POST Enroll a User in SCA](/api-reference/users/enroll-user)) does **not** change the user's status to `PENDING_USER_ACTION` (it stays as `ACTIVE`), and no `USER_ACCOUNT_VALIDATION_ASKED` webhook notification is sent.
+
+This ensures that legacy users do not become blocked if they are unable to complete SCA successfully.
+</Note>
+
+The `PENDING_USER_ACTION` value for `UserStatus` and the webhook `USER_ACCOUNT_VALIDATION_ASKED` are not triggered if the user is a Legal Business, Partnership, or Organization, as SCA is not yet available for [these user types](#legal-user-integration).
 
 <Warning>
 **Caution – Changing category with legacy PUT**
