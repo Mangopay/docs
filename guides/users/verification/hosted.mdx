@@ -147,7 +147,7 @@ The following [event types](/webhooks/event-types) are available:
 - `IDENTITY_VERIFICATION_VALIDATED` – The IDV Session’s `Status` changed to `VALIDATED` and the User became KYC/KYB verified.
 - `IDENTITY_VERIFICATION_FAILED` – The IDV Session’s `Status` changed to `REFUSED` and the User was not KYC/KYB verified.
 - `IDENTITY_VERIFICATION_INCONCLUSIVE` – The IDV Session’s `Status` changed to `REVIEW` and the session is under manual review by Mangopay’s teams before an outcome can be given.
-- `IDENTITY_VERIFICATION_OUTDATED` – The IDV Session’s `Status` changed to `OUTDATED` indicating that the user’s KYC/KYB verification status was downgraded. To regain KYC/KYB verified status, the user must complete a new IDV Session successfully.
+- `IDENTITY_VERIFICATION_OUTDATED` – The IDV Session’s `Status` changed to `OUT_OF_DATE` indicating that the user’s KYC/KYB verification status was downgraded. To regain KYC/KYB verified status, the user must complete a new IDV Session successfully.
 
 ## User flows and checks performed
 
@@ -336,7 +336,7 @@ A refused session must be retried in full even if some of the `Checks` were succ
 
 ### Downgrade
 
-Finally, the `Status` may also change to `OUTDATED`, which indicates that the user’s KYC/KYB verification status was downgraded. The **user** object’s `KYCLevel` was changed from `REGULAR` to `LIGHT`. For more information about this mechanism, see [KYC/KYB downgrade]().
+Finally, the `Status` may also change to `OUT_OF_DATE`, which indicates that the user’s KYC/KYB verification status was downgraded. The **user** object’s `KYCLevel` was changed from `REGULAR` to `LIGHT`. For more information about this mechanism, see [KYC/KYB downgrade]().
 
 In this case, you need to create another IDV Session object for the user to go through the verification process again.
 
