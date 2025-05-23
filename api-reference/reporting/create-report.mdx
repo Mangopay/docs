@@ -3,65 +3,73 @@ title: 'Create a Report'
 api: 'POST /v2.01/{ClientId}/reporting/reports'  
 ---
 
-import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
-import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
-// import ColumnsResponse from '/snippets/p-response/ColumnsResponse.mdx';
-// import FiltersResponse from '/snippets/p-response/FiltersResponse.mdx';
-// import PreviewResponse from '/snippets/p-response/PreviewResponse.mdx';
-import SortResponse from '/snippets/p-response/SortResponse.mdx';
-// import ReportTypeResponse from '/snippets/p-response/ReportTypeResponse.mdx';
-// import CallbackURLResponse from '/snippets/p-response/CallbackURLResponse.mdx';
-import DownloadURLResponse from '/snippets/p-response/DownloadURLResponse.mdx';
-import DownloadFormatResponse from '/snippets/p-response/DownloadFormatResponse.mdx';
-import Status16Response from '/snippets/p-response/Status4Response.mdx';
-import ReportDateResponse from '/snippets/p-response/ReportDateResponse.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Tag3Response from '/snippets/p-response/Tag3Response.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
-import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import ReportDateResponse from '/snippets/p-response/ReportDateResponse.mdx';
+import Status16Response from '/snippets/p-response/Status4Response.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import DownloadFormatResponse from '/snippets/p-response/DownloadFormatResponse.mdx';
+import DownloadURLResponse from '/snippets/p-response/DownloadURLResponse.mdx';
+import ReportType2Response from '/snippets/p-response/ReportType2Response.mdx';
+import SortResponse from '/snippets/p-response/SortResponse.mdx';
+import AfterDate2Response from '/snippets/p-response/AfterDate2Response.mdx';
+import BeforeDate2Response from '/snippets/p-response/BeforeDate2Response.mdx';
+import Filters3Response from '/snippets/p-response/Filters3Response.mdx';
+import Columns1Response from '/snippets/p-response/Columns1Response.mdx'
 
-Id
-Tag
-CreationDate
-ReportDate
-Status
-ResultCode
-ResultMessage
-DownloadFormat
-DownloadURL
-ReportType
-Sort
-AfterDate
-BeforeDate
-Filters
-Columns
-
-
-import Columns1 from '/snippets/p-body/Columns1.mdx';
-import Filters1 from '/snippets/p-body/Filters1.mdx';
-import Preview from '/snippets/p-body/Preview.mdx';
-import Sort from '/snippets/p-body/Sort.mdx';
-import CallbackURL from '/snippets/p-body/CallbackURL.mdx';
-import DownloadFormat from '/snippets/p-body/DownloadFormat.mdx';
 import Tag5 from '/snippets/p-body/Tag5.mdx';
-
-
+import DownloadFormat1 from '/snippets/p-body/DownloadFormat1.mdx';
+import ReportType from '/snippets/p-body/ReportType.mdx';
+import Sort1 from '/snippets/p-body/Sort.mdx';
+import AfterDate2 from '/snippets/p-body/AfterDate2.mdx';
+import BeforeDate2 from '/snippets/p-body/BeforeDate2.mdx';
+import Filters3 from '/snippets/p-body/Filters3.mdx';
+import Columns1 from '/snippets/p-body/Columns1.mdx';
 
 
 <Note>  
 **Note – Report expires after 31 days** 
   
-A Reporting object expires after 31 days and you can no longer download it after this period. You can generate a new report with the same filters and dates.
+A report expires after 31 days, at which point it can no longer be downloaded. On expiry, the report's `Status` becomes `EXPIRED` and the `DownloadURL` becomes `null`.
+
+You can generate a new report with the same filters and dates.
 </Note>
 
 ### Body parameters  
 
+<Tag5/>
+<DownloadFormat1/>
+<ReportType/>
+<Sort1/>
+<AfterDate2/>
+<BeforeDate2/>
+<Filters3/>
+<Columns1/>
 
 
 ### Responses  
 
 <AccordionGroup>
 
-<Accordion title="200">  
+<Accordion title="200 - Response parameters">
+
+<IdResponse/>
+<Tag3Response/>
+<CreationDateResponse/>
+<ReportDateResponse/>
+<Status16Response/>
+<ResultCodeResponse/>
+<ResultMessageResponse/>
+<DownloadFormatResponse/>
+<DownloadURLResponse/>
+<ReportType2Response/>
+<SortResponse/>
+<AfterDate2Response/>
+<BeforeDate2Response/>
+<Filters3Response/>
+<Columns1Response/>
 
 </Accordion>
 
@@ -69,8 +77,18 @@ A Reporting object expires after 31 days and you can no longer download it after
 
 <AccordionGroup>
 
-<Accordion title="400 ">
-
+<Accordion title="400 - Max. 12 months between AfterDate and BeforeDate">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "552b8151-ee15-4aaa-886c-aaf2757aea76",
+    "Date": 1748009585.0,
+    "errors": {
+        "Report": "Max 12 months between AfterDate and BeforeDate."
+    }
+}
+```
 </Accordion>
 
 </AccordionGroup>
@@ -93,7 +111,7 @@ A Reporting object expires after 31 days and you can no longer download it after
     "BeforeDate": 1743465599,
     "Filters": {
         "UserId": "user_m_01JSM1ZG3MAWR272S99ZKE2WSP",
-        "WalletId": "wlt_m_01JSM21JYR8CFM43XREZQS1ZXH"
+        "Currency": "EUR"
     },
     "Columns": [
         "ClientId",
@@ -180,7 +198,7 @@ A Reporting object expires after 31 days and you can no longer download it after
     "BeforeDate": 1743465599,
     "Filters": {
         "UserId": "user_m_01JSM1ZG3MAWR272S99ZKE2WSP",
-        "WalletId": "wlt_m_01JSM21JYR8CFM43XREZQS1ZXH"
+        "Currency": "EUR"
     }
 }
 ```
