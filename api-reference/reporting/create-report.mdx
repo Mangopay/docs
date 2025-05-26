@@ -1,6 +1,7 @@
 ---
 title: 'Create a Report'  
 api: 'POST /v2.01/{ClientId}/reporting/reports'  
+description: 'Generate a reporting service report'
 ---
 
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
@@ -17,7 +18,7 @@ import SortResponse from '/snippets/p-response/SortResponse.mdx';
 import AfterDate2Response from '/snippets/p-response/AfterDate2Response.mdx';
 import BeforeDate2Response from '/snippets/p-response/BeforeDate2Response.mdx';
 import Filters3Response from '/snippets/p-response/Filters3Response.mdx';
-import Columns1Response from '/snippets/p-response/Columns1Response.mdx'
+import Columns1Response from '/snippets/p-response/Columns1Response.mdx';
 
 import Tag5 from '/snippets/p-body/Tag5.mdx';
 import DownloadFormat1 from '/snippets/p-body/DownloadFormat1.mdx';
@@ -28,11 +29,16 @@ import BeforeDate2 from '/snippets/p-body/BeforeDate2.mdx';
 import Filters3 from '/snippets/p-body/Filters3.mdx';
 import Columns1 from '/snippets/p-body/Columns1.mdx';
 
+This endpoint generates a report from Mangopay's Reporting Service, which is replacing the legacy report types. 
+
+Two types of report are available, specified in the `ReportType`:
+- `USER_WALLET_TRANSACTIONS` – All transactions crediting or debiting user wallets: pay-ins, transfers, conversions, and payouts, as well as refunds of all types and repudiations (from chargebacks).
+- `COLLECTED_FEES`– Detail of transactions crediting or debiting the fees wallet: transactions of all types (pay-ins, transfers, refunds, payouts, etc.) that have a positive or negative fees amount.
 
 <Note>  
 **Note – Report expires after 31 days** 
   
-A report expires after 31 days, at which point it can no longer be downloaded. On expiry, the report's `Status` becomes `EXPIRED` and the `DownloadURL` becomes `null`.
+A Reporting Service report expires after 31 days, at which point it can no longer be downloaded. On expiry, the report's `Status` becomes `EXPIRED` and the `DownloadURL` becomes `null`.
 
 You can generate a new report with the same filters and dates.
 </Note>

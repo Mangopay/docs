@@ -1,133 +1,74 @@
 ---
 title: 'List all Reports'  
-api: 'GET /v2.01/{ClientId}/reports'  
+api: 'GET /v2.01/{ClientId}/reporting/reports'
+description: 'List key data of Reporting Service reports'
 ---
 
-import Array_ReportsResponse from '/snippets/p-response/Array_ReportsResponse.mdx';
+import Array_ReportingResponse from '/snippets/p-response/Array_ReportingResponse.mdx';
+
+import Status3 from '/snippets/p-query/Status3.mdx';
 import AfterDate3 from '/snippets/p-query/AfterDate3.mdx';
 import BeforeDate3 from '/snippets/p-query/BeforeDate3.mdx';
+import Sort1 from '/snippets/p-query/Sort1.mdx';
+import per_page from '/snippets/p-query/per_page.mdx';
+import page from '/snippets/p-query/page.mdx';
 
-import PhpListReports from '/snippets/code/php-list-reports.mdx';
-import NodeListReports from '/snippets/code/node-list-reports.mdx';
-import RubyListReports from '/snippets/code/ruby-list-reports.mdx';
-import ListReportsPython from '/snippets/code/list-reports-python.mdx';
-import NetListReports from '/snippets/code/net-list-reports.mdx';
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
 ### Query parameters  
 
-<BeforeDate3 />  
-
-<AfterDate3 />  
+<Status3/>
+<BeforeDate3/>
+<AfterDate3/>
+<Sort/>
+<per_page/>
+<page/>
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
-
-<Array_ReportsResponse /></Accordion></AccordionGroup>  
+<AccordionGroup>
+<Accordion title="200">  
+<Array_ReportingResponse />
+</Accordion>
+</AccordionGroup>  
 
 <ResponseExample>  
-
 ```json 200
 [
     {
-        "Id": "report_m_01JFA0JQQJ1X6W6VT6042SASTC",
-        "CreationDate": 1734429204,
-        "Tag": "Created using Mangopay API Postman Collection",
-        "ReportDate": 1734429204,
-        "Status": "READY_FOR_DOWNLOAD",
-        "DownloadFormat": "CSV",
-        "DownloadURL": "https://downloads.sandbox.mangopay.com/85565d93430945388122986252982648.csv?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6IioiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3MzQ1MTU2MDR9fX1dfQ__&Signature=YvcEtwjbs2hR4mOb2UuGICdh082lFrCjS1XtwJ~Zem7~vDc8bPPo-2kBA-Neb0Hs7V9gApR5mJ9B6RPOgDzKKdBEVD4iBS066eNYIymuW2fY5IXjfuzFgv0id5yi2ynFcmX02sgSgd9WGChYpUTBH36R-McNbAPG3viOu8FZ5LM9IWR44qnMwrM-8IWXPBpg9yh7uZy6ehDjJpoi9tswNnzt445vpORRMF3clMl~tRel59EcsMV73c-~B1Qvd9inBa6msh6eww~kkcP5FE~MCr4oQ-DsX0lZPAXLoSOJNbhOotNqKgwlBrYwAT1gLV510kUlbJy~4bPDmmsgbSqETw__",
-        "CallbackURL": null,
-        "ReportType": "TRANSACTIONS",
-        "Sort": "CreationDate:ASC",
-        "Preview": false,
-        "Filters": {
-            "BeforeDate": 1658317644,
-            "AfterDate": 1655725644,
-            "Type": [],
-            "ResultCode": [],
-            "Status": [],
-            "Nature": [],
-            "WalletId": null,
-            "AuthorId": null,
-            "MinDebitedFundsAmount": null,
-            "MinDebitedFundsCurrency": null,
-            "MaxDebitedFundsAmount": null,
-            "MaxDebitedFundsCurrency": null,
-            "MinFeesAmount": null,
-            "MinFeesCurrency": null,
-            "MaxFeesAmount": null,
-            "MaxFeesCurrency": null
-        },
-        "Columns": [
-            "Id",
-            "Tag",
-            "CreationDate",
-            "ExecutionDate",
-            "AuthorId",
-            "CreditedUserId",
-            "DebitedFundsAmount",
-            "DebitedFundsCurrency",
-            "CreditedFundsAmount",
-            "CreditedFundsCurrency",
-            "FeesAmount",
-            "FeesCurrency",
-            "Status",
-            "ResultCode",
-            "ResultMessage",
-            "Type",
-            "Nature",
-            "CreditedWalletId",
-            "DebitedWalletId"
-        ],
+        "Id": "report_01JW6854FGRG1JVVSEWZP4B20C",
+        "ReportType": "COLLECTED_FEES",
+        "Status": "GENERATING",
+        "LastUpdated": 1748261573,
+        "CreationDate": 1748261573,
+        "Tag": "Created using the Mangopay API Postman collection",
+        "ResultCode": null,
+        "ResultMessage": null
+    },
+    {
+        "Id": "report_01JVYRQHQ7G5VKGA6SM0EEVVA5",
+        "ReportType": "USER_WALLET_TRANSACTIONS",
+        "Status": "GENERATED",
+        "LastUpdated": 1748010518,
+        "CreationDate": 1748010518,
+        "Tag": "Created using the Mangopay API Postman collection",
         "ResultCode": "000000",
         "ResultMessage": "Success"
     },
-    {
-        "Id": "report_m_01JFA0QC7K9CJ339JX4KV08CMW",
-        "CreationDate": 1734429356,
-        "Tag": "Created using Mangopay API Postman Collection",
-        "ReportDate": 1734429356,
-        "Status": "READY_FOR_DOWNLOAD",
-        "DownloadFormat": "CSV",
-        "DownloadURL": "https://downloads.sandbox.mangopay.com/fd9f07b1c84a444aaca68eca2f597495.csv?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6IioiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3MzQ1MTU3NTZ9fX1dfQ__&Signature=PL0gj96VDkO43AtYkWJyoO7nj1wAFH7axqTwIVLWq3JHN1dadvBoQHaZb~P8tg3PFV3JSjv5MRu62JnHKFzlOAxW6-rpY7zN2MtsNTy9X32c63crC7MqxfZMNze4xkedbmQ~afsFfO6JAncwa40osf28x-1E64K7NrXjGxGO2RykEpwoyJz2g01qY8yjEONYmc0HEdg3lp1OBpLF~Ep3IRQkWLuLfIPbogGsj~NxbTgjQOqM7l~A7KHY5VOgHi-9fR4dd2uI4f-84BbTxmtcv0Uz~um5GhzsjejOV0TEziGVXvxtTEXK7h4cHVHm9YfR4G0jOZi9oRgkW0WYCIz31Q__",
-        "CallbackURL": null,
-        "ReportType": "WALLETS",
-        "Sort": "CreationDate:ASC",
-        "Preview": false,
-        "Filters": {
-            "BeforeDate": 1658838931,
-            "AfterDate": 1656246931,
-            "OwnerId": null,
-            "Currency": null,
-            "MinBalanceAmount": null,
-            "MinBalanceCurrency": null,
-            "MaxBalanceAmount": null,
-            "MaxBalanceCurrency": null
-        },
-        "Columns": [
-            "Id",
-            "Tag",
-            "CreationDate",
-            "Owners",
-            "Description",
-            "BalanceAmount",
-            "BalanceCurrency",
-            "Currency",
-            "FundsType"
-        ],
+        {
+        "Id": "report_01JR92549WWKAP2G1WW0DRAC80",
+        "ReportType": "USER_WALLET_TRANSACTIONS",
+        "Status": "EXPIRED",
+        "LastUpdated": 1746739535,
+        "CreationDate": 1744060977,
+        "Tag": "Created using the Mangopay API Postman collection",
         "ResultCode": "000000",
         "ResultMessage": "Success"
     }
 ]
-```  
-
+```
 </ResponseExample>  
 
 <RequestExample>  
-    <PhpListReports />
-    <NodeListReports />
-    <RubyListReports />
-    <ListReportsPython />
-    <NetListReports />
+<RestGetNoBody/>
 </RequestExample>
