@@ -194,7 +194,7 @@ This section describes the actions taken by the user and the checks performed by
 | `IDENTITY_DOCUMENT_VERIFICATION` | Verifies the authenticity of the identity document, the liveness of the selfie, and that the selfie matches the identity document photo. |
 | `IDV_NAME_MATCH_CHECK` | Checks whether the first name and last name of the identity document match the `FirstName` and `LastName` of the `LegalRepresentative` of the Legal user object. <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful.  |
 | `IDV_AGE_CHECK` | Checks whether the individual on the ID document meets the minimum age requirement for Mangopay users (age 18). <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
-| `BUSINESS_NAME_CHECK` | Checks whether the name on the identity document is present in the name of the registered sole proprietor in the relevant national registry. <br/> <br/> This check is performed manually if `BUSINESS_VERIFICATION` is unsuccessful. |
+| `BUSINESS_NAME_MATCH` | Checks whether the name on the identity document is present in the name of the registered sole proprietor in the relevant national registry. <br/> <br/> This check is performed manually if `BUSINESS_VERIFICATION` is unsuccessful. |
 
 ### Business user flow
 
@@ -222,7 +222,7 @@ This section describes the actions taken by the user and the checks performed by
 | `BUSINESS_VERIFICATION` | Looks up the business details entered by the user during the session in the national registry to find a match. <br/> <br/> If not successful, the user is asked to upload a registration proof document and the session status will be `REVIEW`. |
 | `IDENTITY_DOCUMENT_VERIFICATION` | Verifies the authenticity of the identity document, the liveness of the selfie, and that the selfie matches the identity document photo. |
 | `IDV_AGE_CHECK` | Checks whether the individual on the identity document meets the minimum age requirement for Mangopay users (age 18). <br/> <br/> Only performed if `IDENTITY_DOCUMENT_VERIFICATION` is successful. |
-| `BUSINESS_INSIGHTS_CHECK` | Checks whether the name on the ID document matches one of the directors listed in the national registry, and whether the PSC data declared in the session is coherent with the PSC data in the registry. <br/> <br/> This check is performed manually if `BUSINESS_VERIFICATION` is unsuccessful. |
+| `BUSINESS_INSIGHTS_MATCH` | Checks whether the name on the ID document matches one of the directors listed in the national registry, and whether the PSC data declared in the session is coherent with the PSC data in the registry. <br/> <br/> This check is performed manually if `BUSINESS_VERIFICATION` is unsuccessful. |
 
 ## Session notes
 
@@ -305,7 +305,7 @@ When the `REFUSED` value is returned automatically:
 
 Manual review is only possible for Legal users.
 
-If the `BUSINESS_VERIFICATION` returned no match or a partial match or the `BUSINESS_INSIGHTS_CHECK` (Business) or `BUSINESS_NAME_CHECK` (Soletrader) was not validated automatically, then the session must be reviewed manually by Mangopay and the `Status` becomes `REVIEW`.
+If the `BUSINESS_VERIFICATION` returned no match or a partial match or the `BUSINESS_INSIGHTS_MATCH` (Business) or `BUSINESS_NAME_CHECK` (Soletrader) was not validated automatically, then the session must be reviewed manually by Mangopay and the `Status` becomes `REVIEW`.
 
 When the `REVIEW` status is returned:
 
