@@ -1,62 +1,151 @@
 ---
-title: 'Limits'  
-'og:description': 'See the limits for users under Mangopay’s Payment Services and Electronic Money Services.'  
+title: "KYC/KYB limits"
+'og:description': "See the KYC/KYB limits for users under Mangopay's Payment Services (EU) and Electronic Money Services (EU and UK)"
 ---
   
 import Emi from '/snippets/glossary/emi.mdx';
 import Payout from '/snippets/glossary/payout.mdx';
-import Platform from '/snippets/glossary/platform.mdx';
-  
 
-As explained in the <a href="/guides/users/verification">Verification</a> section, Owner users who are not verified are limited in the actions they can perform on your platform.  
+As a regulated <Emi content="electronic money institution"/>, Mangopay is required by law to conduct due diligence on users to whom it provides payment or e-money services. As part of these obligations, Mangopay applies limits to payment functionalities that users can access based on their status.
 
-For the vast majority of our <Platform content="platforms" />, who operate under Mangopay’s Payment Services, these limits mean that Owner users must be verified to be able to request <Payout content="payouts" />.  
+## Contributing factors
 
-### Payment Services
+### User attributes
+
+There are two attributes of users in the Mangopay product that determine their limitations: 
+
+- `UserCategory` – Whether the user is a `PAYER` or an `OWNER`, as explained in the articles on these [categories](/guides/users/categories) and the [restrictions](/guides/users/categories/restrictions) applied.
+- `KYCLevel` – Whether the user has completed the necessary identity verification checks to be KYC/KYB verified (indicated by the value `REGULAR`) or not (indicated by the value `LIGHT`). More information about managing these processes for users is available in the [KYC/KYB verification](/guides/users/verification) section.
+
+A user must be an `OWNER` before they can request verification and undergo the KYC/KYB verification process. This means that all `PAYER` users have the `KYCLevel` of `LIGHT`.
+
+This page focuses on the KYC/KYB limits in place once the user is an `OWNER` based on whether or not they are KYC/KYB verified. The [category restrictions](/guides/users/categories/restrictions) article focuses on finer product restrictions relating to `PAYER` and `OWNER` categories.
+
+### Platform’s contractual status
+
+The limits that are applicable to your users differ depending on: 
+
+- Where your platform is registered (EEA or UK)
+- Which Mangopay entity your platform contracts with (Mangopay S.A. or Mangopay UK Ltd.)
+- Which kind of Mangopay services you use (Payment Services (PS) or Electronic Money Services (EMS))
+
+These factors are all defined at the start of your partnership with Mangopay by your platform's contractual agreement.
+
+Mangopay offers one of two kinds of services to platforms: 
+- **Payment Services (PS)** as Mangopay S.A. to platforms registered in the EEA
+- **Electronic Money Services (EMS)**:
+  - As Mangopay S.A. to platforms registered in the EEA
+  - As Mangopay U.K. Ltd. to platforms registered in the UK
+
+Mangopay S.A. is an EMI under Luxembourg law, authorized by the CSSF. Mangopay U.K. Ltd. is an EMI under UK law, authorized by the FCA. Read more about [Mangopay's EMI status](/guides/glossary#electronic-money-institution-emi). 
+
+## Overview of limits
+
+The following table gives an overview of the possible contractual situations of your platform and the limits that apply in each case if the user's `KYCLevel` is `LIGHT` (which is always the if their `UserCategory` is `PAYER`):
 
 <table>
-    <tbody>
-        <tr>
-            <th class="header">Pay-in</th>
-            <td class="table-content">No limit</td>
-        </tr>
-        <tr>
-            <th class="header">Payout</th>
-            <td class="table-content">Verification is compulsory for any amount</td>
-        </tr>
-    </tbody>
+<thead>
+<tr>
+<th class="header">KYC/KYB limits</th>
+<th class="header">Payouts</th>
+<th class="header">User balance</th>
+<th class="header" rowSpan={2}>Applicable to user categories</th>
+</tr>
+<tr>
+<th class="header">Description (see below for more details)</th>
+<th class="header header-normal-weight">Maximum cumulated payout (all wallets)</th>
+<th class="header header-normal-weight">Maximum user balance (all wallets) before payouts and transfers blocked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">PS (EU)</th>
+<td class="table-content">€0 (meaning payouts not allowed unless KC/KYB verified)</td>
+<td class="table-content">Not applied</td>
+<td class="table-content">`PAYER` and `OWNER`</td>
+</tr>
+<tr>
+<th class="header">EMS (EU and UK)</th>
+<td class="table-content">
+€150 per calendar month
+(€100 in Germany)
+</td>
+<td class="table-content">Not applied</td>
+<td class="table-content">`OWNER` only</td>
+</tr>
+</tbody>
 </table>
 
-However, as an <Emi content="Electronic Money Institution" />, Mangopay is also authorized to provide Electronic Money Services. In these services, the platform has a different legal status in relation to Mangopay, which is better suited in some exceptional cases.   
+#### Note on currency
 
-<Note>  
-**Note - Availability of services depends on region** 
-  
-For regulatory and commercial reasons, Electronic Money Services may not be available in your region or for your products.  
-</Note>  
+Funds are expressed on this page in EUR for simplicity. For processing in other currencies, the equivalent amount is taken into consideration (based on a rate applied by Mangopay). 
 
-The limits that apply to Electronic Money Services are different to those of Payment Services.  
+The rules apply to all amounts regardless of currency, meaning that a user is limited for all currencies combined.
 
-### Electronic Money Services
+#### Note on Germany
+
+For EU EMS platforms registered in Germany, the amount of both payouts and user balance limits is €100 rather than €150.
+
+## Description of limits
+
+### Payouts
 
 <table>
-    <thead>
-        <tr>
-            <th class="header"></th>
-            <th class="header">Cumulated payout amount per calendar month</th>
-            <th class="header">User balance</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th class="header">Germany</th>
-            <td class="table-content">€100</td>
-            <td class="table-content">€100</td>
-        </tr>
-        <tr>
-            <th class="header">Rest of EEA</th>
-            <td class="table-content">€150</td>
-            <td class="table-content">€150</td>
-        </tr>
-    </tbody>
+<thead>
+<tr>
+<th class="header">Services&nbsp;used</th>
+<th class="header">Payout limit description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">PS (EU only)</th>
+<td class="table-content">
+A user cannot request a payout for any amount unless they are KYC/KYB verified and their `KYCLevel` is `REGULAR`.
+</td>
+</tr>
+<tr>
+<th class="header">EMS (EU or UK)</th>
+<td class="table-content">
+A user can request payouts up to the cumulated value of €150&ast; per calendar month. Once this threshold is reached, payouts are blocked until the 1st corresponding date of the next calendar month.
+
+So if the user makes 3 payouts of €50 each on the 5th, 12th and 24th of the month, the next payout amount available to them would be €50 from the 5th of the next month,  €100 from the 12th, or €150 from the 24th.
+
+As shown in the example above, the calendar month is a rolling month from the date of the first month to the corresponding date of the next month. If the date does not exist in the next month (e.g. the 30 February) then the last date of the month is used.
+
+Also as shown in the example above, the monthly period applies to the cumulated payout amount, meaning that all amounts paid out require the month to elapse before the user is free to pay them out again.
+</td>
+</tr>
+</tbody>
 </table>
+
+### User balance
+
+<table>
+<thead>
+<tr>
+<th class="header">Services&nbsp;used</th>
+<th class="header">User balance limit description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">PS (EU only)</th>
+<td class="table-content">
+Not applicable: there are no limits relating to the amount of funds that can be accumulated in user wallets.
+</td>
+</tr>
+<tr>
+<th class="header">EMS (EU or UK)</th>
+<td class="table-content">
+The user balance limit prevents the user from making payouts or transfers out of any their wallets if the cumulated balance of all wallets reaches €150&ast;.
+
+Once the user reaches this threshold, the user must undergo KYC/KYB verification to be able to request a payout or transfer from one of their wallets.
+
+The user can continue to accumulate more than €150&ast; in their wallets, but they are unable to exit the funds without KYC/KYB verification.
+</td>
+</tr>
+</tbody>
+</table>
+
+*&ast; €100 if the platform is based in Germany*
