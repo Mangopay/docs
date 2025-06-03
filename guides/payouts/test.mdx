@@ -3,7 +3,7 @@ title: Payout routes per currency
 ---
 
 export const CurrencyPayoutRoutesDropdown = () => {
-  // ALL_PAYMENT_DATA is now defined inside the component function
+  // Data defined inside the component function
   const ALL_PAYMENT_DATA = {
     AED: { local: [], international: [{ rail: "SWIFT", cutoffTime: "10:30" }], },
     AUD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "11:00" }], },
@@ -31,17 +31,13 @@ export const CurrencyPayoutRoutesDropdown = () => {
     ZAR: { local: [], international: [{ rail: "SWIFT", cutoffTime: "14:30, 09:30" }], },
   };
 
-  // 1. Get currency codes and sort them alphabetically (this ensures dropdown is sorted)
   const sortedCurrencyCodes = Object.keys(ALL_PAYMENT_DATA).sort();
-
-  // 2. Transform sorted codes into the array structure for the dropdown
   const processedCurrencyData = sortedCurrencyCodes.map(code => ({
     value: code,
-    label: `${code}`, // Displaying the currency code as the label
+    label: `${code}`,
     details: ALL_PAYMENT_DATA[code]
   }));
 
-  // 3. Add the placeholder option at the beginning
   const currencyDropdownOptions = [
     {
       value: '',
@@ -53,36 +49,29 @@ export const CurrencyPayoutRoutesDropdown = () => {
   ];
 
   const [selectedValue, setSelectedValue] = useState(currencyDropdownOptions[0].value);
+  const selectedOption = currencyDropdownOptions.find(opt => opt.value === selectedValue);
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
 
-  const selectedOption = currencyDropdownOptions.find(opt => opt.value === selectedValue);
+  // Define styles that were used in renderRoutes or for similar elements
+  const listStyle = { listStyleType: 'none', paddingLeft: '0' };
+  const listItemStyle = { border: '1px solid #eee', padding: '10px', marginBottom: '10px', borderRadius: '4px' };
+  const railNameStyle = { display: 'block', marginBottom: '5px', color: '#007bff', fontWeight: 'bold' };
+  // const routeDetailStyle = {}; // No specific style object was used for this div previously
 
-  const renderRoutes = (routes, type, currencyCode) => {
-    if (!routes || routes.length === 0) {
-      return <p>No specific {type.toLowerCase()} routes listed for this currency.</p>;
-    }
-    return (
-      <ul style={{ listStyleType: 'none', paddingLeft: '0' }}>
-        {routes.map((route, index) => (
-          <li key={`${currencyCode}-${type}-${route.rail}-${index}`} style={{ border: '1px solid #eee', padding: '10px', marginBottom: '10px', borderRadius: '4px' }}>
-            <strong style={{ display: 'block', marginBottom: '5px', color: '#007bff' }}>{route.rail}</strong>
-            <div><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  const sectionTitleStyle = { marginTop: '0', marginBottom: '10px', color: '#333' }; // For "Payout Routes for..."
+  const subSectionTitleStyle = { marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px', fontWeight: 'bold' };
+
 
   return (
     <div style={{ border: '1px solid #e0e0e0', padding: '20px', borderRadius: '8px', marginBottom: '25px', backgroundColor: '#fdfdfd' }}>
-      <label htmlFor="currency-routes-dropdown-data-inside" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
+      <label htmlFor="currency-routes-dropdown-single-return" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
         Select Currency for Payout Route Information:
       </label>
       <select
-        id="currency-routes-dropdown-data-inside" // Changed id slightly
+        id="currency-routes-dropdown-single-return"
         value={selectedValue}
         onChange={handleChange}
         style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box', marginBottom: '20px' }}
@@ -100,16 +89,38 @@ export const CurrencyPayoutRoutesDropdown = () => {
             <p>{selectedOption.details.message}</p>
           ) : (
             <>
-              <h4 style={{ marginTop: '0', marginBottom: '10px', color: '#333' }}>
+              <h4 style={sectionTitleStyle}>
                 Payout Routes for {selectedOption.label}:
               </h4>
               <div>
-                <h5 style={{ marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px' }}>International Routes:</h5>
-                {renderRoutes(selectedOption.details.international, 'International', selectedOption.value)}
+                <h5 style={subSectionTitleStyle}>International Routes:</h5>
+                {(!selectedOption.details.international || selectedOption.details.international.length === 0) ? (
+                  <p>No specific International routes listed for this currency.</p>
+                ) : (
+                  <ul style={listStyle}>
+                    {selectedOption.details.international.map((route, index) => (
+                      <li key={`${selectedOption.value}-International-${route.rail}-${index}`} style={listItemStyle}>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <div style={{ marginTop: '20px' }}>
-                <h5 style={{ marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px' }}>Local Routes:</h5>
-                {renderRoutes(selectedOption.details.local, 'Local', selectedOption.value)}
+                <h5 style={subSectionTitleStyle}>Local Routes:</h5>
+                {(!selectedOption.details.local || selectedOption.details.local.length === 0) ? (
+                  <p>No specific Local routes listed for this currency.</p>
+                ) : (
+                  <ul style={listStyle}>
+                    {selectedOption.details.local.map((route, index) => (
+                      <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} style={listItemStyle}>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </>
           )}
@@ -118,6 +129,5 @@ export const CurrencyPayoutRoutesDropdown = () => {
     </div>
   );
 };
-
 
 <CurrencyPayoutRoutesDropdown />
