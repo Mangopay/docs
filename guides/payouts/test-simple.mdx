@@ -1,0 +1,71 @@
+---
+title: Payout routes per currency
+---
+
+export const SimpleDropdown = () => {
+  // Updated options: each option now has a 'details' property
+  const options = [
+    {
+      value: '',
+      label: 'Select an option...',
+      details: 'Please choose an item from the list to see more information.',
+      disabled: true
+    },
+    {
+      value: 'option1',
+      label: 'Feature Alpha',
+      details: 'Feature Alpha provides advanced analytics and reporting. Ideal for data-driven decisions.'
+    },
+    {
+      value: 'option2',
+      label: 'Service Beta',
+      details: 'Service Beta offers 24/7 support and dedicated account management. Perfect for enterprise clients.'
+    },
+    {
+      value: 'option3',
+      label: 'Product Gamma',
+      details: 'Product Gamma is our latest innovation in user experience, designed for simplicity and efficiency.'
+    },
+  ];
+
+  // useState hook to store the currently selected value
+  const [selectedValue, setSelectedValue] = useState(options[0].value); // Default to the placeholder
+
+  // Handler function to update state when the dropdown selection changes
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  };
+
+  // Find the full selected option object to access its label and details
+  const selectedOption = options.find(opt => opt.value === selectedValue);
+
+  return (
+    <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '5px', marginBottom: '20px' }}>
+      <label htmlFor="enhanced-dropdown" style={{ marginRight: '10px', fontWeight: 'bold' }}>
+        Select Feature:
+      </label>
+      <select
+        id="enhanced-dropdown"
+        value={selectedValue}
+        onChange={handleChange}
+        style={{ padding: '8px', borderRadius: '4px', marginBottom: '10px' }}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value} disabled={option.disabled}>
+            {option.label} {/* The text that appears in the dropdown itself */}
+          </option>
+        ))}
+      </select>
+
+      {/* Display the details text for the selected option */}
+      {selectedOption && ( // Check if selectedOption is found
+        <div style={{ marginTop: '10px', padding: '10px', border: '1px dashed #eee', borderRadius: '4px', backgroundColor: '#f9f9f9' }}>
+          <h4>Details for {selectedOption.label}:</h4>
+          <p>{selectedOption.details}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+<SimpleDropdown />
