@@ -1,0 +1,179 @@
+export const paymentData = {
+  EUR: {
+    local: [
+      { rail: "SCT", cutoffTime: "12:30" },
+      { rail: "SCT Inst", cutoffTime: "24/7" },
+      { rail: "T2", cutoffTime: "16:15" },
+    ],
+    international: [{ rail: "SWIFT", cutoffTime: "16:00" }],
+  },
+  GBP: {
+    local: [
+      { rail: "FPS", cutoffTime: "24/7" },
+      { rail: "CHAPS", cutoffTime: "17:45" },
+    ],
+    international: [{ rail: "SWIFT", cutoffTime: "17:45, 18:30" }],
+  },
+  USD: {
+    local: [{ rail: "ACH", cutoffTime: "21:45" }],
+    international: [{ rail: "SWIFT", cutoffTime: "18:50, 18:30" }],
+  },
+  DKK: {
+    local: [{ rail: "Intradag", cutoffTime: "11:30" }],
+    international: [{ rail: "SWIFT", cutoffTime: "12:30, 08:00" }],
+  },
+  CAD: {
+    local: [{ rail: "EFT", cutoffTime: "17:00" }],
+    international: [{ rail: "SWIFT", cutoffTime: "17:00, 12:00" }],
+  },
+  PLN: {
+    local: [{ rail: "Sorbnet", cutoffTime: "16:00" }],
+    international: [{ rail: "SWIFT", cutoffTime: "11:45, 11:00" }],
+  },
+  CHF: {
+    local: [{ rail: "SIC", cutoffTime: "16:15" }],
+    international: [{ rail: "SWIFT", cutoffTime: "12:30" }],
+  },
+  NOK: {
+    local: [{ rail: "NICS", cutoffTime: "11:30" }],
+    international: [{ rail: "SWIFT", cutoffTime: "14:30, 08:00" }],
+  },
+  SEK: {
+    local: [{ rail: "RIX-Inst", cutoffTime: "24/7" }],
+    international: [{ rail: "SWIFT", cutoffTime: "15:00, 08:00" }],
+  },
+  CZK: {
+    local: [{ rail: "Certis", cutoffTime: "9:00" }],
+    international: [{ rail: "SWIFT", cutoffTime: "9:00" }],
+  },
+  HUF: {
+    local: [{ rail: "Intergiro", cutoffTime: "13:15" }],
+    international: [{ rail: "SWIFT", cutoffTime: "14:00" }],
+  },
+  RON: {
+    local: [{ rail: "ReGIS", cutoffTime: "12:15" }],
+    international: [{ rail: "SWIFT", cutoffTime: "11:30" }],
+  },
+  AUD: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "11:00" }],
+  },
+  NZD: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "17:00 D+1" }],
+  },
+  HKD: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "14:30" }],
+  },
+  TRY: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "10:00" }],
+  },
+  ZAR: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "14:30, 09:30" }],
+  },
+  SAR: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "8:00" }],
+  },
+  JPY: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "08:00, 17:00 D+1" }],
+  },
+  ILS: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "12:00" }],
+  },
+  SGD: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "18:30 D+1" }],
+  },
+  AED: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "10:30" }],
+  },
+  CNH: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "9:00" }],
+  },
+  MXN: {
+    local: [],
+    international: [{ rail: "SWIFT", cutoffTime: "16:30" }],
+  },
+};
+
+function CurrencyPayoutRoutes() {
+  // Get the list of currency codes from the data
+  const availableCurrencies = Object.keys(payoutRoutesData);
+
+  // State to store the currently selected currency.
+  // Initialize with the first currency in the list, or null if no currencies.
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    availableCurrencies.length > 0 ? availableCurrencies[0] : null
+  );
+
+  // Handler function to update selectedCurrency when the dropdown changes.
+  const handleCurrencyChange = (event) => {
+    setSelectedCurrency(event.target.value);
+  };
+
+  // Get the routes for the currently selected currency.
+  const currentRoutes = selectedCurrency ? payoutRoutesData[selectedCurrency] : null;
+
+  if (!availableCurrencies.length) {
+    return <p>No currency data available.</p>;
+  }
+
+  return (
+    <div style={{ fontFamily: 'Arial, sans-serif', border: '1px solid #eee', padding: '20px', borderRadius: '8px' }}>
+      <h3 style={{ marginTop: '0' }}>Select Currency for Payout Routes</h3>
+      <div style={{ marginBottom: '15px' }}>
+        <label htmlFor="currency-select" style={{ marginRight: '10px', fontWeight: 'bold' }}>Currency:</label>
+        <select
+          id="currency-select"
+          value={selectedCurrency}
+          onChange={handleCurrencyChange}
+          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+        >
+          {availableCurrencies.map((currency) => (
+            <option key={currency} value={currency}>
+              {currency}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {selectedCurrency && currentRoutes && (
+        <div>
+          <h4>Payout Routes for {selectedCurrency}:</h4>
+          {currentRoutes.international && currentRoutes.international.length > 0 && (
+            <div>
+              <strong>International:</strong>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                {currentRoutes.international.map((route, index) => (
+                  <li key={`int-${index}`}>{route}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {currentRoutes.local && currentRoutes.local.length > 0 ? (
+            <div>
+              <strong>Local:</strong>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                {currentRoutes.local.map((route, index) => (
+                  <li key={`loc-${index}`}>{route}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            currentRoutes.local !== undefined && <p><em>No specific local routes available for {selectedCurrency}.</em></p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default CurrencyPayoutRoutes;
