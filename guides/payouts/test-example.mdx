@@ -1,9 +1,10 @@
----
+{/* ---
 title: Payout routes per currency
 ---
 
 export const CurrencyPayoutRoutesDropdown = () => {
-  const paymentData = {
+  // Data defined inside the component function
+  const ALL_PAYMENT_DATA = {
     AED: { local: [], international: [{ rail: "SWIFT", cutoffTime: "10:30" }], },
     AUD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "11:00" }], },
     CAD: { local: [{ rail: "EFT", cutoffTime: "17:00" }], international: [{ rail: "SWIFT", cutoffTime: "17:00, 12:00" }], },
@@ -30,11 +31,11 @@ export const CurrencyPayoutRoutesDropdown = () => {
     ZAR: { local: [], international: [{ rail: "SWIFT", cutoffTime: "14:30, 09:30" }], },
   };
 
-  const sortedCurrencyCodes = Object.keys(paymentData).sort();
+  const sortedCurrencyCodes = Object.keys(ALL_PAYMENT_DATA).sort();
   const processedCurrencyData = sortedCurrencyCodes.map(code => ({
     value: code,
     label: `${code}`,
-    details: paymentData[code]
+    details: ALL_PAYMENT_DATA[code]
   }));
 
   const currencyDropdownOptions = [
@@ -54,11 +55,13 @@ export const CurrencyPayoutRoutesDropdown = () => {
     setSelectedValue(event.target.value);
   };
 
+  // Define styles that were used in renderRoutes or for similar elements
   const listStyle = { listStyleType: 'none', paddingLeft: '0' };
   const listItemStyle = { border: '1px solid #eee', padding: '10px', marginBottom: '10px', borderRadius: '4px' };
   const railNameStyle = { display: 'block', marginBottom: '5px', color: '#007bff', fontWeight: 'bold' };
+  // const routeDetailStyle = {}; // No specific style object was used for this div previously
 
-  const sectionTitleStyle = { marginTop: '0', marginBottom: '10px', color: '#333' };
+  const sectionTitleStyle = { marginTop: '0', marginBottom: '10px', color: '#333' }; // For "Payout Routes for..."
   const subSectionTitleStyle = { marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px', fontWeight: 'bold' };
 
 
@@ -127,4 +130,4 @@ export const CurrencyPayoutRoutesDropdown = () => {
   );
 };
 
-<CurrencyPayoutRoutesDropdown />
+<CurrencyPayoutRoutesDropdown /> */}
