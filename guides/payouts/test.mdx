@@ -65,11 +65,11 @@ export const CurrencyPayoutRoutesDropdown = () => {
 
   return (
     <div style={{ border: '1px solid #e0e0e0', padding: '20px', borderRadius: '8px', marginBottom: '25px', backgroundColor: '#fdfdfd' }}>
-      <label htmlFor="currency-routes-dropdown-single-return" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
+      <label htmlFor="currency-routes-dropdown-with-type" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
         Select Currency for Payout Route Information:
       </label>
       <select
-        id="currency-routes-dropdown-single-return"
+        id="currency-routes-dropdown-with-type"
         value={selectedValue}
         onChange={handleChange}
         style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box', marginBottom: '20px' }}
@@ -98,6 +98,7 @@ export const CurrencyPayoutRoutesDropdown = () => {
                   <ul style={listStyle}>
                     {selectedOption.details.international.map((route, index) => (
                       <li key={`${selectedOption.value}-International-${route.rail}-${index}`} style={listItemStyle}>
+                        <div style={routeDetailItemStyle}><strong>Type:</strong> Non-domestic</div>
                         <strong style={railNameStyle}>{route.rail}</strong>
                         <div style={routeDetailItemStyle}><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
                         <div style={routeDetailItemStyle}><strong>Delivery Time:</strong> {route.deliveryTime}</div>
@@ -114,6 +115,7 @@ export const CurrencyPayoutRoutesDropdown = () => {
                   <ul style={listStyle}>
                     {selectedOption.details.local.map((route, index) => (
                       <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} style={listItemStyle}>
+                        <div style={routeDetailItemStyle}><strong>Type:</strong> Domestic</div>
                         <strong style={railNameStyle}>{route.rail}</strong>
                         <div style={routeDetailItemStyle}><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
                         <div style={routeDetailItemStyle}><strong>Delivery Time:</strong> {route.deliveryTime}</div>
