@@ -207,25 +207,31 @@ export const CurrencyPayoutRoutesDropdown = () => {
         <h4 className="currency-details-title">
           Payout routes for {selectedOption.label}:
         </h4>
+        <div className="currency-route-headers grid grid-cols-4 gap-x-3 items-baseline text-sm font-semibold text-gray-600 py-2 border-b-2 border-gray-300 mb-2">
+          <div>Type</div>
+          <div>Name</div>
+          <div>Cutoff time (CET)</div>
+          <div>Delivery time (typical)</div>
+        </div>
         <div>
           <h5 className="currency-routes-subtitle">International</h5>
           {!selectedOption.details.international || selectedOption.details.international.length === 0 ? <p>No international routes available for {selectedOption.label}.</p> : <ul className="currency-routes-list">
-            {selectedOption.details.international.map((route, index) => <li key={`${selectedOption.value}-International-${route.rail}-${index}`} className="currency-route-item">
-              <div className="currency-route-detail-item"><strong>Type:</strong> Non-domestic</div>
-              <div className="currency-route-detail-item"><strong>Name:</strong> {route.rail}</div>
-              <div className="currency-route-detail-item"><strong>Cutoff time:</strong> {route.cutoffTime}</div>
-              <div className="currency-route-detail-item"><strong>Delivery time:</strong> {route.deliveryTime}</div>
+            {selectedOption.details.international.map((route, index) => <li key={`${selectedOption.value}-International-${route.rail}-${index}`} className="currency-route-item grid grid-cols-4 gap-x-3 items-baseline">
+              <div className="currency-route-detail-item">Non-domestic</div>
+              <div className="currency-route-detail-item">{route.rail}</div>
+              <div className="currency-route-detail-item">{route.cutoffTime}</div>
+              <div className="currency-route-detail-item">{route.deliveryTime}</div>
             </li>)}
           </ul>}
         </div>
         <div className="currency-routes-local-section">
           <h5 className="currency-routes-subtitle">Domestic</h5>
           {!selectedOption.details.local || selectedOption.details.local.length === 0 ? <p>No domestic routes available for {selectedOption.label}.</p> : <ul className="currency-routes-list">
-            {selectedOption.details.local.map((route, index) => <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} className="currency-route-item">
-              <div className="currency-route-detail-item"><strong>Type:</strong> Domestic</div>
-              <div className="currency-route-detail-item"><strong>Name:</strong> {route.rail}</div>
-              <div className="currency-route-detail-item"><strong>Cutoff time:</strong> {route.cutoffTime}</div>
-              <div className="currency-route-detail-item"><strong>Delivery time:</strong> {route.deliveryTime}</div>
+            {selectedOption.details.local.map((route, index) => <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} className="currency-route-item grid grid-cols-4 gap-x-3 items-baseline">
+              <div className="currency-route-detail-item">Domestic</div>
+              <div className="currency-route-detail-item">{route.rail}</div>
+              <div className="currency-route-detail-item">{route.cutoffTime}</div>
+              <div className="currency-route-detail-item">{route.deliveryTime}</div>
             </li>)}
           </ul>}
         </div>
