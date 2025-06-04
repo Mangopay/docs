@@ -1,7 +1,3 @@
----
-title: Payout routes per currency
----
-
 export const CurrencyPayoutRoutesDropdown = () => {
   const paymentData = {
     AED: { local: [], international: [{ rail: "SWIFT", cutoffTime: "10:30", deliveryTime: "1-3 Business Days" }], },
@@ -54,16 +50,24 @@ export const CurrencyPayoutRoutesDropdown = () => {
     setSelectedValue(event.target.value);
   };
 
+  const routeItemStyle = { border: '1px solid #eee', padding: '10px', marginBottom: '10px', borderRadius: '4px' };
+  const railNameStyle = { display: 'block', marginBottom: '5px', color: '#007bff', fontWeight: 'bold' };
+  const routeDetailItemStyle = { marginBottom: '3px' };
+
+  const sectionTitleStyle = { marginTop: '0', marginBottom: '10px', color: '#333' };
+  const subSectionTitleStyle = { marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px', fontWeight: 'bold' };
+
+
   return (
-    <div className="currency-dropdown-container">
-      <label htmlFor="currency-routes-dropdown-css" className="currency-dropdown-label">
+    <div style={{ border: '1px solid #e0e0e0', padding: '20px', borderRadius: '8px', marginBottom: '25px', backgroundColor: '#fdfdfd' }}>
+      <label htmlFor="currency-routes-dropdown-divs" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
         Select Currency for Payout Route Information:
       </label>
       <select
-        id="currency-routes-dropdown-css"
+        id="currency-routes-dropdown-divs"
         value={selectedValue}
         onChange={handleChange}
-        className="currency-dropdown-select"
+        style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box', marginBottom: '20px' }}
       >
         {currencyDropdownOptions.map((option) => (
           <option key={option.value} value={option.value} disabled={option.disabled}>
@@ -73,46 +77,46 @@ export const CurrencyPayoutRoutesDropdown = () => {
       </select>
 
       {selectedOption && selectedOption.details && (
-        <div className="currency-details-section">
+        <div style={{ marginTop: '10px' }}>
           {selectedOption.details.message ? (
             <p>{selectedOption.details.message}</p>
           ) : (
             <>
-              <h4 className="currency-details-title">
+              <h4 style={sectionTitleStyle}>
                 Payout Routes for {selectedOption.label}:
               </h4>
               <div>
-                <h5 className="currency-routes-subtitle">International Routes:</h5>
+                <h5 style={subSectionTitleStyle}>International Routes:</h5>
                 {(!selectedOption.details.international || selectedOption.details.international.length === 0) ? (
                   <p>No specific International routes listed for this currency.</p>
                 ) : (
-                  <ul className="currency-routes-list">
+                  <div>
                     {selectedOption.details.international.map((route, index) => (
-                      <li key={`${selectedOption.value}-International-${route.rail}-${index}`} className="currency-route-item">
-                        <div className="currency-route-detail-item"><strong>Type:</strong> Non-domestic</div>
-                        <strong className="currency-route-rail-name">{route.rail}</strong>
-                        <div className="currency-route-detail-item"><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
-                        <div className="currency-route-detail-item"><strong>Delivery Time:</strong> {route.deliveryTime}</div>
-                      </li>
+                      <div key={`${selectedOption.value}-International-${route.rail}-${index}`} style={routeItemStyle}>
+                        <div style={routeDetailItemStyle}><strong>Type:</strong> Non-domestic</div>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div style={routeDetailItemStyle}><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                        <div style={routeDetailItemStyle}><strong>Delivery Time:</strong> {route.deliveryTime}</div>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
-              <div className="currency-routes-local-section">
-                <h5 className="currency-routes-subtitle">Local Routes:</h5>
+              <div style={{ marginTop: '20px' }}>
+                <h5 style={subSectionTitleStyle}>Local Routes:</h5>
                 {(!selectedOption.details.local || selectedOption.details.local.length === 0) ? (
                   <p>No specific Local routes listed for this currency.</p>
                 ) : (
-                  <ul className="currency-routes-list">
+                  <div>
                     {selectedOption.details.local.map((route, index) => (
-                      <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} className="currency-route-item">
-                        <div className="currency-route-detail-item"><strong>Type:</strong> Domestic</div>
-                        <strong className="currency-route-rail-name">{route.rail}</strong>
-                        <div className="currency-route-detail-item"><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
-                        <div className="currency-route-detail-item"><strong>Delivery Time:</strong> {route.deliveryTime}</div>
-                      </li>
+                      <div key={`${selectedOption.value}-Local-${route.rail}-${index}`} style={routeItemStyle}>
+                        <div style={routeDetailItemStyle}><strong>Type:</strong> Domestic</div>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div style={routeDetailItemStyle}><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                        <div style={routeDetailItemStyle}><strong>Delivery Time:</strong> {route.deliveryTime}</div>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
             </>
@@ -122,5 +126,3 @@ export const CurrencyPayoutRoutesDropdown = () => {
     </div>
   );
 };
-
-<CurrencyPayoutRoutesDropdown />
