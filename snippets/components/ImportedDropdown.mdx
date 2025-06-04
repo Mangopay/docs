@@ -1,34 +1,124 @@
-export const ImportedDropdown = () => {
-  const options = [
-    { value: 'option1', label: 'Choice A', customText: 'You picked Choice A. Excellent decision!' },
-    { value: 'option2', label: 'Choice B', customText: 'Choice B selected. A very popular choice.' },
-    { value: 'option3', label: 'Choice C', customText: 'Ah, Choice C! The adventurous one.' }
+export const CurrencyPayoutRoutesDropdown = () => {
+  const paymentData = {
+    AED: { local: [], international: [{ rail: "SWIFT", cutoffTime: "10:30" }], },
+    AUD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "11:00" }], },
+    CAD: { local: [{ rail: "EFT", cutoffTime: "17:00" }], international: [{ rail: "SWIFT", cutoffTime: "17:00, 12:00" }], },
+    CHF: { local: [{ rail: "SIC", cutoffTime: "16:15" }], international: [{ rail: "SWIFT", cutoffTime: "12:30" }], },
+    CNH: { local: [], international: [{ rail: "SWIFT", cutoffTime: "9:00" }], },
+    CZK: { local: [{ rail: "Certis", cutoffTime: "9:00" }], international: [{ rail: "SWIFT", cutoffTime: "9:00" }], },
+    DKK: { local: [{ rail: "Intradag", cutoffTime: "11:30" }], international: [{ rail: "SWIFT", cutoffTime: "12:30, 08:00" }], },
+    EUR: { local: [{ rail: "SCT", cutoffTime: "12:30" }, { rail: "SCT Inst", cutoffTime: "24/7" }, { rail: "T2", cutoffTime: "16:15" },], international: [{ rail: "SWIFT", cutoffTime: "16:00" }], },
+    GBP: { local: [{ rail: "FPS", cutoffTime: "24/7" }, { rail: "CHAPS", cutoffTime: "17:45" },], international: [{ rail: "SWIFT", cutoffTime: "17:45, 18:30" }], },
+    HKD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "14:30" }], },
+    HUF: { local: [{ rail: "Intergiro", cutoffTime: "13:15" }], international: [{ rail: "SWIFT", cutoffTime: "14:00" }], },
+    ILS: { local: [], international: [{ rail: "SWIFT", cutoffTime: "12:00" }], },
+    JPY: { local: [], international: [{ rail: "SWIFT", cutoffTime: "08:00, 17:00 D+1" }], },
+    MXN: { local: [], international: [{ rail: "SWIFT", cutoffTime: "16:30" }], },
+    NOK: { local: [{ rail: "NICS", cutoffTime: "11:30" }], international: [{ rail: "SWIFT", cutoffTime: "14:30, 08:00" }], },
+    NZD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "17:00 D+1" }], },
+    PLN: { local: [{ rail: "Sorbnet", cutoffTime: "16:00" }], international: [{ rail: "SWIFT", cutoffTime: "11:45, 11:00" }], },
+    RON: { local: [{ rail: "ReGIS", cutoffTime: "12:15" }], international: [{ rail: "SWIFT", cutoffTime: "11:30" }], },
+    SAR: { local: [], international: [{ rail: "SWIFT", cutoffTime: "8:00" }], },
+    SEK: { local: [{ rail: "RIX-Inst", cutoffTime: "24/7" }], international: [{ rail: "SWIFT", cutoffTime: "15:00, 08:00" }], },
+    SGD: { local: [], international: [{ rail: "SWIFT", cutoffTime: "18:30 D+1" }], },
+    TRY: { local: [], international: [{ rail: "SWIFT", cutoffTime: "10:00" }], },
+    USD: { local: [{ rail: "ACH", cutoffTime: "21:45" }], international: [{ rail: "SWIFT", cutoffTime: "18:50, 18:30" }], },
+    ZAR: { local: [], international: [{ rail: "SWIFT", cutoffTime: "14:30, 09:30" }], },
+  };
+
+  const sortedCurrencyCodes = Object.keys(paymentData).sort();
+  const processedCurrencyData = sortedCurrencyCodes.map(code => ({
+    value: code,
+    label: `${code}`,
+    details: paymentData[code]
+  }));
+
+  const currencyDropdownOptions = [
+    {
+      value: '',
+      label: 'Select a Currency...',
+      details: { message: 'Please choose a currency to see its available payout routes.' },
+      disabled: true
+    },
+    ...processedCurrencyData
   ];
 
-  const [selectedValue, setSelectedValue] = useState(options[0].value);
+  const [selectedValue, setSelectedValue] = useState(currencyDropdownOptions[0].value);
+  const selectedOption = currencyDropdownOptions.find(opt => opt.value === selectedValue);
 
-  const handleDropdownChange = (event) => {
+  const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
 
-  const selectedOptionObject = options.find(opt => opt.value === selectedValue);
+  const listStyle = { listStyleType: 'none', paddingLeft: '0' };
+  const listItemStyle = { border: '1px solid #eee', padding: '10px', marginBottom: '10px', borderRadius: '4px' };
+  const railNameStyle = { display: 'block', marginBottom: '5px', color: '#007bff', fontWeight: 'bold' };
+
+  const sectionTitleStyle = { marginTop: '0', marginBottom: '10px', color: '#333' };
+  const subSectionTitleStyle = { marginBottom: '8px', borderBottom: '1px solid #ddd', paddingBottom: '5px', fontWeight: 'bold' };
+
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', border: '1px solid #f0f0f0', padding: '15px', borderRadius: '5px' }}>
+    <div style={{ border: '1px solid #e0e0e0', padding: '20px', borderRadius: '8px', marginBottom: '25px', backgroundColor: '#fdfdfd' }}>
+      <label htmlFor="currency-routes-dropdown-single-return" style={{ marginRight: '10px', fontWeight: '600', display: 'block', marginBottom: '8px' }}>
+        Select Currency for Payout Route Information:
+      </label>
       <select
+        id="currency-routes-dropdown-single-return"
         value={selectedValue}
-        onChange={handleDropdownChange}
-        style={{ padding: '8px', marginRight: '10px', borderRadius: '4px', minWidth: '150px' }}
+        onChange={handleChange}
+        style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', width: '100%', boxSizing: 'border-box', marginBottom: '20px' }}
       >
-        {options.map(option => (
-          <option key={option.value} value={option.value}>
+        {currencyDropdownOptions.map((option) => (
+          <option key={option.value} value={option.value} disabled={option.disabled}>
             {option.label}
           </option>
         ))}
       </select>
-      <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#f9f9f9', border: '1px dashed #ccc', minHeight: '40px' }}>
-        <strong>Selected Info:</strong> {selectedOptionObject ? selectedOptionObject.customText : 'No option selected'}
-      </div>
+
+      {selectedOption && selectedOption.details && (
+        <div style={{ marginTop: '10px' }}>
+          {selectedOption.details.message ? (
+            <p>{selectedOption.details.message}</p>
+          ) : (
+            <>
+              <h4 style={sectionTitleStyle}>
+                Payout Routes for {selectedOption.label}:
+              </h4>
+              <div>
+                <h5 style={subSectionTitleStyle}>International Routes:</h5>
+                {(!selectedOption.details.international || selectedOption.details.international.length === 0) ? (
+                  <p>No specific International routes listed for this currency.</p>
+                ) : (
+                  <ul style={listStyle}>
+                    {selectedOption.details.international.map((route, index) => (
+                      <li key={`${selectedOption.value}-International-${route.rail}-${index}`} style={listItemStyle}>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div style={{ marginTop: '20px' }}>
+                <h5 style={subSectionTitleStyle}>Local Routes:</h5>
+                {(!selectedOption.details.local || selectedOption.details.local.length === 0) ? (
+                  <p>No specific Local routes listed for this currency.</p>
+                ) : (
+                  <ul style={listStyle}>
+                    {selectedOption.details.local.map((route, index) => (
+                      <li key={`${selectedOption.value}-Local-${route.rail}-${index}`} style={listItemStyle}>
+                        <strong style={railNameStyle}>{route.rail}</strong>
+                        <div><strong>Cutoff Time:</strong> {route.cutoffTime}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
