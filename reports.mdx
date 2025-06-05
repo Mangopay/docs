@@ -11,7 +11,7 @@ Reports are available via the Dashboard and also directly from the API.
 
 ## Report features
 
-There are two report features that currently exist:
+There are two report features that currently exist. The table below gives an overview of the key differences: 
 
 <table class="header-column">
 <thead>
@@ -26,7 +26,6 @@ There are two report features that currently exist:
 <tr>
 <th class="header">Report types</th>
 <td class="table-content">
-new line to test:
 - User wallet transactions
 - Collected fees
 </td>
@@ -41,7 +40,7 @@ new line to test:
 Dashboard (Hub revamped 2024)
 </td>
 <td class="table-content">
-Legacy dashboard (deprecated)
+Legacy dashboard (being phased out)
 </td>
 </tr>
 <tr>
@@ -50,7 +49,7 @@ Legacy dashboard (deprecated)
 Webhook event type
 </td>
 <td class="table-content">
-`CallbackURL` parameter
+`CallbackURL` parameter in request body
 </td>
 </tr>
 <tr>
@@ -68,17 +67,23 @@ Webhook event type
 
 ## Reporting service (2025)
 
+### Generate a report via the Dashboard 
+
+
+
 ### Generate a report via API 
 
 <Steps>
-  <Step title="Set up webhooks for download notifications (recommended)">
+  <Step title="Set up webhooks to be notified that report is ready for download (recommended)">
     Set up webhooks for the following event types:
     - `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
-    - `REPORT_FAILED` – Indicates that a report was not generated successfully.
+    - `REPORT_FAILED` – Indicates that a report was not generated successfully
   </Step>
   <Step title="Generate the report">
-    Call the POST Create a Report endpoint to generate your report, selecting the `ReportType` and date range. You can also specify the columns your wish to include in the report, otherwise the default ones will be used. 
+    Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. You can also specify the columns your wish to include in the report, otherwise the default ones are used (see [columns tables](#columns-user-wallet-transactions) below).
     
+    You should also apply the relevant filters to your report:
+    - USER_WALLET_TRANSACTIONS – Filter
     For the User Wallet Transactions report, you also should apply one or more filters to narrow the dataset. For example: 
     - UserId, to return all the transactions 
   </Step>
@@ -89,6 +94,14 @@ Webhook event type
   A report is valid for 31 days. After this, its `Status` changes to `EXPIRED` at it is no longer available for download. You can re-generate another report with the same parameters, or else update your report to capture data from the latest period.
   </Step>
 </Steps>
+
+### Filters (User Wallet Transactions)
+
+If the ReportType is USER_WALLET_TRANSACTIONS, the following filters and filter combinations can be used to generate a report containing the following transactions:
+
+- UserId – Report uses the value to contain only transactions where the value is the AuthorId of the transaction
+- WalletId – The 
+
 
 
 ### Columns (User Wallet Transactions)
