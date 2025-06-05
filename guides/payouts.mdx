@@ -216,12 +216,34 @@ A [Refund](/api-reference/refunds/refund-object) object cannot be created to rei
 - [Bank wire pay-in](/api-reference/bank-wire-payins/bank-wire-payin-object)
 - [Pay-in to virtual IBAN](/api-reference/banking-aliases/external-instruction-bank-wire-payin-object)
 
-In these cases, a payout must be used instead.
+In these cases, a payout must be used instead, as described below.
 
-For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request. To do so, use the `PaymentRef` body parameter when you call the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint:
+<Note>
+**Note – Refunds using payouts via the Dashboard**
 
-1. Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
-2. Provide the `Id` of the initial pay-in as the `ReferenceId` value
+The Mangopay Dashboard allows you to initiate refunds using payouts for bank wire and virtual IBAN pay-ins. To do so, use the ***Refund*** button on the pay-in details screen.
+</Note>
+
+### Initiate a payout using a refund via API
+
+<Steps>
+<Step title="Register the bank account (if not already registered)">
+Create the [Recipient](/api-reference/recipients/recipient-object) or [Bank Account](/api-reference/bank-accounts/bank-account-object) object needed for a payout.
+
+If using recipients, the `RecipientScope` can be `PAYIN` if the user is a `PAYER`, as this type does not require SCA.
+
+The account details should match those of the initial pay-in. For a pay-in to virtual IBAN, these details are returned in the `DebitedBankAccount` when you call [GET View a PayIn (External Instruction)](/api-reference/virtual-accounts/view-payin-external-instruction). For a bank wire pay-in, these details may be available in the returned `TransactionDetails`.
+</Step>
+<Step title="Initiate the payout">
+For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request.
+
+Request the payout by calling [POST Create a Payout](/api-reference/payouts/create-payout). In your request, use the `PaymentRef` body parameter: 
+- Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
+- Provide the `Id` of the initial pay-in as the `ReferenceId` value
+
+A full example request is provided below.
+</Step>
+</Steps>
 
 ### Example API request
 
@@ -229,19 +251,15 @@ The payout request body below shows the `PaymentRef` object containing the `PAYI
 
 <RestCreatePayoutPayinRefund/>
 
-Note the following conditions and possibilities: 
+### Conditions and possibilities
+
+Note the following conditions and possibilities for `PAYIN_REFUND` payouts: 
 
 - The `ReferenceId` value must be the `Id` of a pay-in that was successful (it's `Status` is `SUCCEEDED`)
 - The `Fees` value can't be negative, meaning that you can't reimburse any fees taken on the initial bank wire pay-in
 - You can create multiple payouts that reference the same pay-in `Id`
 
 If a payout containing a `PAYIN_REFUND` reference is returned, it follows the same process as other payouts.
-
-<Note>
-**Note – Refunds using payouts via the Dashboard**
-
-The Mangopay Dashboard allows you to initiate refunds using payouts for bank wire and virtual IBAN pay-ins. To do so, use the ***Refund*** button on the pay-in details screen.
-</Note>
 
 ## Payout returns  
 
