@@ -29,6 +29,7 @@ import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import PayoutId from '/snippets/p-path/PayoutId.mdx';
 
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 import NodeViewPayoutCheckModeApplied from '/snippets/code/node-view-payout-check-mode-applied.mdx';
   
 This call returns the information about a payout with additional information about the payout mode (`ModeRequested`, `ModeApplied`, and `FallbackReason` parameters).  
@@ -105,7 +106,7 @@ For more information, see the <a href="/api-reference/overview/data-availability
 
 <ResponseExample>  
 
-```json 200 - Standard
+```json Standard
 {
     "Id": "po_m_01HQMZSGSQPPXC51TZHDAYFAJF",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -134,14 +135,14 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "DebitedWalletId": "204069727",
     "PaymentType": "BANK_WIRE",
     "BankAccountId": "204070675",
-    "BankWireRef": "ExampleInvoice1234",
+    "BankWireRef": "Example123",
     "ModeRequested": null,
     "ModeApplied": "STANDARD",
     "FallbackReason": null,
     "EndToEndId": "2c2184396eef4e5da90ab48a2feeb51d"
 }  
  ```
-```json 200 - GBP FPS
+```json Standard - GBP FPS
 {
     "Id": "po_b_01HPM8PX3KJV245H409Q3XD0Z7",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -177,7 +178,7 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "EndToEndId": "58810b9cf8c745b2a45f17f5d06a151f"
 }  
 ```
-```json 200 - SCT Inst
+```json SCT Inst (no fallback)
 {
     "Id": "po_m_01HQMZZV376RRXYQGQAHZ4TN9K",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -206,14 +207,54 @@ For more information, see the <a href="/api-reference/overview/data-availability
     "DebitedWalletId": "204069727",
     "PaymentType": "BANK_WIRE",
     "BankAccountId": "204070675",
-    "BankWireRef": "ExampleInvoice1234",
+    "BankWireRef": "Example123",
     "ModeRequested": "INSTANT_PAYMENT_ONLY",
     "ModeApplied": "INSTANT_PAYMENT",
     "FallbackReason": null,
     "EndToEndId": "e8052ae4729f4abe9355442020f411a9"
 }  
 ```
-```json 200 - RTGS
+```json SCT Inst (fallbacked)
+{
+    "Id": "po_m_01HQMZZV376RRXYQGQAHZ4TN9K",
+    "Tag": null,
+    "CreationDate": 1709027880,
+    "AuthorId": "204069570",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+      "Currency": "EUR",
+        "Amount": 3387
+    },
+    "CreditedFunds": {
+      "Currency": "EUR",
+        "Amount": 3387
+    },
+    "Fees": {
+      "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1709028132,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "3496428130",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "204070675",
+    "BankWireRef": "Example123",
+    "ModeRequested": "INSTANT_PAYMENT",
+    "ModeApplied": "STANDARD",
+    "FallbackReason": {
+        "Code": "001999",
+        "Message": "An unexpected issue prevented the operation from completing. Please retry or contact support."
+    },
+    "EndToEndId": "e8052ae4729f4abe9355442020f411a9",
+    "PaymentRef": null
+}
+```
+```json RTGS
 {
     "Id": "po_m_01JMCS9ED9YTYZBJ3CH0GEMEDS",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -252,6 +293,7 @@ For more information, see the <a href="/api-reference/overview/data-availability
 ```
 </ResponseExample>  
 
-<RequestExample>  
+<RequestExample>
+    <RestGetNoBody />
     <NodeViewPayoutCheckModeApplied />
 </RequestExample>
