@@ -6,70 +6,71 @@ title: 'Data formats'
 The Mangopay API follows the standards below regarding the data formats it returns and accepts.
 
 <table class="header-column">
-    <tbody>
-        <tr>
-            <th class="header">**Dates**</th>
-            <td class="table-content">
-                Dates and times are defined as **Unix timestamps**, which are integers representing the number of seconds since the Unix Epoch **in UTC** (January 1, 1970, 00:00:00 UTC).
+<tbody>
+<tr>
+<th class="header">**Dates**</th>
+<td class="table-content">
+Dates and times are defined as **Unix timestamps**, which are integers representing the number of seconds since the Unix Epoch **in UTC** (January 1, 1970, 00:00:00 UTC).
 
-                For birth dates, ensure you convert the individual's timezone to UTC to avoid midnight being interpreted as the day before and causing issues with verification checks.
-            </td>
-        </tr>
-        <tr>
-            <th class="header">**Object IDs**</th>
-            <td class="table-content">
-                The unique identifier returned for an object (its `Id`) is a **string** and must be handled as such. The maximum length that will be returned is **128 characters**.
+For birth dates, ensure you convert the individual's timezone to UTC to avoid midnight being interpreted as the day before and causing issues with verification checks.
+</td>
+</tr>
+<tr>
+<th class="header">**Object IDs**</th>
+<td class="table-content">
+The unique identifier returned for an object (its `Id`) is a **string** and must be handled as such. The maximum length that can be returned is **128 characters**.
 
-                Several variants exist for the value of this string.
-                
-                The most recently adopted variant is a <a href="https://github.com/ulid/spec" target="_blank">ULID</a> (universally unique lexicographically sortable identifier) with one or more prefixes separated by an underscore:
+Several variants exist for the value of this string.
 
-                - `cvr_01HN0FR5371TCNEF305P97D8Q9`
-                - `user_m_01J82SPSKW53XZM936PDVN76W0`
-                - `po_b_02HMVJH4ZJWX9E5K66KTN9H118`
-                
-                Other variants are also in use depending on the API feature and when the object was created:
+The most recently adopted variant is a <a href="https://github.com/ulid/spec" target="_blank">ULID</a> (universally unique lexicographically sortable identifier) with one or more prefixes separated by an underscore:
 
-                - `wt_287afe02-498a-4076-b022-42e8997a172f` – UUID (universally unique identifier, also called a globally unique identifier or GUID) with one or more prefixes
-                - `2774fac1-d33f-4c5a-8e21-88b772ec2943` – UUID without prefix
-                - `card_m_vHrtUIVelDzkPmdL`– prefixed alphanumeric string
-                - `4659626451` – string containing only digits
-            </td>
-        </tr>
-        <tr>
-            <th class="header">**Amounts**</th>
-            <td class="table-content">
-                All monetary amounts are integers of the currency’s **minor unit** (the smallest sub-division).
+- `cvr_01HN0FR5371TCNEF305P97D8Q9`
+- `user_m_01J82SPSKW53XZM936PDVN76W0`
+- `po_b_02HMVJH4ZJWX9E5K66KTN9H118`
+- `xfer_refund_c_01JX28BTTWQMR1TXH4TC87D7NA`
 
-                So for example: 
+Other variants are also in use depending on the API feature and when the object was created:
 
-                - EUR 12.60 is represented as `1260`
-                - JPY 12 is represented as `12`
-            </td>
-        </tr>
-        <tr>
-            <th class="header">**Currencies**</th>
-            <td class="table-content">
-                Currency codes follow the three-letter <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank">ISO 4217</a> format.
+- `wt_287afe02-498a-4076-b022-42e8997a172f` – UUID (universally unique identifier, also called a globally unique identifier or GUID) with one or more prefixes
+- `2774fac1-d33f-4c5a-8e21-88b772ec2943` – UUID without prefix
+- `card_m_vHrtUIVelDzkPmdL`– prefixed alphanumeric string
+- `4659626451` – string containing only digits
+</td>
+</tr>
+<tr>
+<th class="header">**Amounts**</th>
+<td class="table-content">
+All monetary amounts must be passed as **integers** and not strings. Amounts are expressed in the currency's **minor unit** (the smallest sub-division).
 
-                The full list of possible supported values across all API features is: `AED`, `AUD`, `CAD`, `CHF`, `CZK`, `DKK`, `EUR`, `GBP`, `HKD`, `JPY`, `NOK`, `PLN`, `SEK`, `USD`, `ZAR`.
+So for example: 
 
-                The available currencies vary across payment methods, cards, wallets, and payouts, and according to your contract. 
+- EUR 12.60 is represented as `1260`
+- JPY 12 is represented as `12`
+</td>
+</tr>
+<tr>
+<th class="header">**Currencies**</th>
+<td class="table-content">
+Currency codes follow the three-letter <a href="https://www.iso.org/iso-4217-currency-codes.html" target="_blank">ISO 4217</a> format.
 
-                For more information, see the <a href="/guides/currencies">Currencies</a> article.
-            </td>
-        </tr>
-        <tr>
-            <th class="header">**Countries**</th>
-            <td class="table-content">
-                Country codes follow the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">ISO 3166-1 alpha-2</a> format (two letters, e.g. US, GB, FR). The three-letter format is used exceptionally. Ensure you follow guidance in the endpoint.
+The full list of possible supported values across all API features is: `AED`, `AUD`, `CAD`, `CHF`, `CZK`, `DKK`, `EUR`, `GBP`, `HKD`, `JPY`, `NOK`, `PLN`, `SEK`, `USD`, `ZAR`.
 
-                Accepted values are the following: AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW.
-            </td>
-        </tr>
-        <tr>
-            <th class="header">**Languages**</th>
-            <td class="table-content">Language codes generally follow the <a href="https://www.iso.org/iso-639-language-code" target="_blank">ISO 639-1 alpha-2</a> format (two letters, e.g. EN, FR) but ensure you follow guidance in the relevant endpoint.</td>
-        </tr>
-    </tbody>
+The available currencies vary across payment methods, cards, wallets, and payouts, and according to your contract. 
+
+For more information, see the <a href="/guides/currencies">Currencies</a> article.
+</td>
+</tr>
+<tr>
+<th class="header">**Countries**</th>
+<td class="table-content">
+Country codes follow the <a href="https://www.iso.org/iso-3166-country-codes.html" target="_blank">ISO 3166-1 alpha-2</a> format (two letters, e.g. US, GB, FR). The three-letter format is used exceptionally. Ensure you follow guidance in the endpoint.
+
+Accepted values are the following: AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW.
+</td>
+</tr>
+<tr>
+<th class="header">**Languages**</th>
+<td class="table-content">Language codes generally follow the <a href="https://www.iso.org/iso-639-language-code" target="_blank">ISO 639-1 alpha-2</a> format (two letters, e.g. EN, FR) but ensure you follow guidance in the relevant endpoint.</td>
+</tr>
+</tbody>
 </table>
