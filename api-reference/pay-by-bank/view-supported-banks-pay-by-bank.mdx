@@ -1,0 +1,136 @@
+---
+title: View supported banks for Pay by Bank
+api: GET /v2.01/{ClientId}/payment-methods/openbanking/metadata/supported-banks
+description: Retrieve supported banks to present to a user for Pay by Bank pay-ins
+---
+
+import per_page_PayByBank from '/snippets/p-query/per_page_PayByBank.mdx';
+import page from '/snippets/p-query/page.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+### Query parameters
+
+<ParamField query="CountryCodes" type="string">
+**Allowed values:** `AT`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `IE`, `IT`, `LV`, `LT`, `NL`, `NO`, `PL`, `PT`.
+
+The countries for which to return supported banks. You can combine query values in a comma-separated list.
+</ParamField>
+
+<per_page_PayByBank/>
+<page/>
+
+
+### Responses
+
+
+
+<RequestExample>
+<RestGetNoBody/>
+</RequestExample>
+
+<ResponseExample>
+```json REST (10 banks by default)
+{
+    "SupportedBanks": {
+        "Countries": [
+            {
+                "Banks": [
+                    {
+                        "BankName": "at-demobank-open-banking-embedded",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "at-demobank-open-banking-redirect",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "at-demobank-password",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "AT"
+            },
+            {
+                "Banks": [
+                    {
+                        "BankName": "de-demo-commerzbank-ob",
+                        "Scheme": [
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER",
+                            "PIS_FUTURE_DATE"
+                        ],
+                        "Name": "Commerzbank Sandbox"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-embedded-templates",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-redirect",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-redirect-pisonly",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-password",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "DE"
+            },
+            {
+                "Banks": [
+                    {
+                        "BankName": "dk-demobank-open-banking-embedded",
+                        "Scheme": [
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG",
+                            "DANISH_DOMESTIC_CREDIT_TRANSFER",
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "dk-demobank-open-banking-redirect",
+                        "Scheme": [
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG",
+                            "DANISH_DOMESTIC_CREDIT_TRANSFER",
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "DK"
+            }
+        ]
+    }
+}
+```
+</ResponseExample>
+
+
