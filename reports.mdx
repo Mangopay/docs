@@ -5,14 +5,393 @@ title: 'Reports'
   
 {/* Imports */}  
 
-Mangopay provides the ability to generate reports so you can download a large amount of data in CSV format for accounting or analysis purposes.   
+Mangopay provides platforms reporting features so that your platform can download data relating to your payment operations. 
 
-Two types of report are available via the API:
+Reports are available via the Dashboard and also directly from the API.
+
+## Report features
+
+There are two report features that currently exist. The table below gives an overview of the key differences: 
 
 <table class="header-column">
-  <tbody>
-    <tr>
-      <th class="header">Transactions&nbsp;report</th>
+<thead>
+<tr>
+<th>
+</th>
+<th class="header">Reporting service (released 2025)</th>
+<th class="header">Legacy reports</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="header">Report types</th>
+<td class="table-content">
+- User wallet transactions
+- Collected fees
+</td>
+<td class="table-content">
+- Transactions report
+- Wallets report
+</td>
+</tr>
+<tr>
+<th class="header">Dashboard availability</th>
+<td class="table-content">
+Dashboard (Hub revamped 2024)
+</td>
+<td class="table-content">
+Legacy dashboard (being phased out)
+</td>
+</tr>
+<tr>
+<th class="header">Notification system</th>
+<td class="table-content">
+Webhook event type
+</td>
+<td class="table-content">
+`CallbackURL` parameter in request body
+</td>
+</tr>
+<tr>
+<th class="header">Generation endpoint</th>
+<td class="table-content">
+- [POST Create a Report](/api-reference/reporting/create-report)
+</td>
+<td class="table-content">
+- [POST Create a Transactions report](/api-reference/reports/create-transactions-report)
+- [POST Create a Wallets report](/api-reference/reports/create-wallets-report)
+</td>
+</tr>
+</tbody>
+</table>
+
+<Note>
+**Note – Report objects not interoperable**
+
+The two reporting features are independent, meaning that a legacy report object (`ReportId`) cannot be retrieved via the new GET endpoint, and a new report object (`ReportingId`) is not available from the legacy endpoint.
+</Note>
+
+## Reporting service (2025)
+
+### Generate a report via API 
+
+<Steps>
+  <Step title="Set up webhooks to be notified that report is ready for download (recommended)">
+    Set up webhooks for the following event types:
+    - `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
+    - `REPORT_FAILED` – Indicates that a report was not generated successfully
+  </Step>
+  <Step title="Generate the report">
+    Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. You can also specify the columns your wish to include in the report, otherwise the default ones are used (see [columns tables](#columns-user-wallet-transactions) below).
+    
+    You should also apply the relevant filters to your report:
+    - `COLLECTED_FEES` – Include the `Currency` filter to narrow the report to one currency's fees wallet. 
+    - `USER_WALLET_TRANSACTIONS` – Narrow the report by `UserId`, `WalletId`, and/or `Currency` to suit your needs.
+  </Step>
+  <Step title="Download when ready">
+  When the report status changes to `GENERATED`, the `DownloadURL` is populated with the URL where you can download the report. 
+  </Step>
+  <Step title="Repeat process as needed">
+  A report is valid for 31 days. After this, its `Status` changes to `EXPIRED` at it is no longer available for download. You can re-generate another report with the same parameters, or else update your report to capture data from the latest period.
+  </Step>
+</Steps>
+
+### Filters
+
+To filter the data that will be included in the report, include the relevant filters in the body of your request.
+
+#### Filters (Collected Fees)
+
+For the `COLLECTED_FEES` report, the `Currency` filter can be used to focus on one currency's Fees Wallet (otherwise all currencies' Fees Wallets are included).
+
+#### Filters (User Wallet Transactions)
+
+For the `USER_WALLET_TRANSACTIONS` report, three filters are available: 
+- `Currency` – The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
+- `UserId` – The unique identifier of the user referenced as the `AuthorId` or `CreditedUserId` of the transaction.
+- `WalletId` – The unique identifier of the wallet referenced as the `DebitedWalletId` or `CreditedWalletId` of the transaction.
+
+Each filter can be used on its own or in combination, in which case the report data satisfies both filters:
+- `UserId` and `Currency` – Report contains all transactions (credited or debited) in the currency where UserId is the AuthorId
+- `UserId` and `WalletId` – Report contains all transactions (credited or debited) in all currencies where the UserId is specified as the `DebitedWalletId` or `CreditedWalletId`. If the `WalletId` is not a wallet owned by the `UserId`, then the report will be empty.
+ 
+The `Currency` and `WalletId` cannot be used together.
+
+If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
+
+### Columns (User Wallet Transactions)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Unique identifier associated with the API key</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">TransactionId</td>
+<td class="table-content">Unique identifier of the transaction</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was created</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreationDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was created</td>
+<td class="table-content">No</td>
+</tr>
+<tr>
+<td class="table-content">ExecutionDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was executed</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">ExecutionDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was executed</td>
+<td class="table-content">No</td>
+</tr>
+<tr>
+<td class="table-content">AuthorId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreditedUserId</td>
+<td class="table-content">The unique identifier of the credited user</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DebitedFundsAmount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DebitedFundsCurrency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreditedFundsAmount</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreditedFundsCurrency</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the transaction: PAYIN, TRANSFER, CONVERSION, PAYOUT</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">Nature</td>
+<td class="table-content">Nature of the transaction: REGULAR, REPUDIATION, REFUND, SETTLEMENT</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CreditedWalletId</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DebitedWalletId</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">BankAccountId</td>
+<td class="table-content">Unique identifier of the bank account</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">PreauthorizationId</td>
+<td class="table-content">Unique identifier of the preauthorization</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">BankWireRef</td>
+<td class="table-content">For payouts, custom description to appear on the user's bank statement along with the platform name</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CardId</td>
+<td class="table-content">Unique identifier of the card</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CardAlias</td>
+<td class="table-content">The card number, partially obfuscated</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CardType</td>
+<td class="table-content">The type of the card</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CardCountry</td>
+<td class="table-content">The country of the card</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">CardExpirationDate</td>
+<td class="table-content">The expiry date of the card</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">Culture</td>
+<td class="table-content">The language in which the payment page is to be displayed</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DeclaredDebitedFundsAmount</td>
+<td class="table-content">Amount of the declared funds of the pay-in bank wire</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DeclaredDebitedFundsCurrency</td>
+<td class="table-content">Currency of the declared funds of the pay-in bank wire</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DeclaredFeesAmount</td>
+<td class="table-content">Amount of the declared fees of the pay-in bank wire</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">DeclaredFeesCurrency</td>
+<td class="table-content">Currency of the declared fees of the pay-in bank wire</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">ExecutionType</td>
+<td class="table-content">Execution type of the pay-in</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">PaymentType</td>
+<td class="table-content">Payment type of the pay-in</td>
+<td class="table-content">Yes</td>
+</tr>
+<tr>
+<td class="table-content">WireReference</td>
+<td class="table-content">The reference bank wire transfer (classic or to virtual IBAN)</td>
+<td class="table-content">Yes</td>
+</tr>
+</tbody>
+</table>
+
+### Columns (Collected Fees)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Unique identifier associated with the API key</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">TransactionId</td>
+<td class="table-content">Unique identifier of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">ExecutionDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">AuthorId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedWalletId</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedWalletId</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsCurrency</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsAmount</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsCurrency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsAmount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the transaction: PAYIN, TRANSFER, CONVERSION, PAYOUT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Nature</td>
+<td class="table-content">Nature of the transaction: REGULAR, REPUDIATION, REFUND, SETTLEMENT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">PaymentType</td>
+<td class="table-content">Payment type of the pay-in</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Tag</td>
+<td class="table-content">Custom data added to the object</td>
+<td class="table-content">Yes</td>
+</tr>
+</tbody>
+</table>
+
+## Legacy reports 
+
+<table class="header-column">
+<tbody>
+<tr>
+  <th class="header">Transactions&nbsp;report</th>
       <td class="table-content">
         Provides the pay-ins, payouts, transfers, and conversions made on the platform. This includes all natures of transaction (regular, refund, repudiation, and settlement).  
 
@@ -30,7 +409,7 @@ Two types of report are available via the API:
   </tbody>
 </table>
 
-## Report creation flow  
+### Legacy report creation flow
 
 When creating a report with the dedicated endpoints, its `Status` is `PENDING` at first, until it becomes ready for download. There is a short waiting time, (usually a few seconds) which depends on the size of the requested report.  
 
@@ -42,9 +421,9 @@ Using the `ReportId`, you can use the View a Report endpoint to get the `Downloa
 
 A report expires after 24 hours (i.e., you can no longer download it after this period). You can still generate a new report with the same filters and information easily.  
 
-## Setting up a transactions report  
+### Set up a legacy transactions report
 
-### Columns  
+#### Columns (legacy transactions report)
 
 On the <a href="/api-reference/reports/create-transactions-report">POST Create a Transactions Report</a> endpoint, you can add the following values in the `Columns` parameter to choose which information should be included in the report.
 
@@ -207,15 +586,15 @@ On the <a href="/api-reference/reports/create-transactions-report">POST Create a
     </tbody>
 </table>
 
-### Filters  
+#### Filters (legacy transactions report)
 
 In order to optimize the report, you can take advantage of a series of filters available in the <a href="/api-reference/reports/create-transactions-report">Create a Transactions Report</a> endpoint documentation.  
 
 Thanks to the `BeforeDate` and `AfterDate` filters, you can define a time range based on the `CreationDate` of the transactions. The date range can’t exceed 6 months, and you can’t view transactions which occurred more than 36 months in the past.  
 
-## Setting up a wallets report  
+### Set up a legacy wallets report
 
-### Columns  
+#### Columns (legacy wallets report)
 
 On the <a href="/api-reference/reports/create-wallets-report">POST Create a Wallets Report</a> endpoint, you can add the following values in the `Columns` parameter to choose which information should be included in the report.
 
@@ -270,7 +649,7 @@ On the <a href="/api-reference/reports/create-wallets-report">POST Create a Wall
     </tbody>
 </table> 
 
-### Filters  
+#### Filters (legacy wallets report)
 
 In order to optimize the report, you can take advantage of a series of filters available in the <a href="/api-reference/reports/create-wallets-report">POST Create a Wallets Report</a> endpoint documentation.  
 
