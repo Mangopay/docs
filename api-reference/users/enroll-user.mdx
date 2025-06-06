@@ -20,6 +20,14 @@ You can use this endpoint to obtain a new session `RedirectUrl`. This is useful 
 
 Calling this endpoint creates a new valid session that can be used, even if there is one already in progress for the user. Calling this endpoint also doesn't change the user's `UserStatus`, even if the session expires or is unsuccessful.
 
+<Note>
+**Note – This endpoint doesn't change UserStatus**
+
+Calling this endpoint does **not** change the user's status to `PENDING_USER_ACTION` (it stays as `ACTIVE`) and no `USER_ACCOUNT_VALIDATION_ASKED` webhook notification is sent.
+
+This ensures that legacy users do not become blocked if they are unable to complete SCA successfully.
+</Note>
+
 ### Path parameters
 
 <UserId />  
