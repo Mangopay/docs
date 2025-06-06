@@ -65,11 +65,13 @@ Webhook event type
 </tbody>
 </table>
 
+<Note>
+**Note – Report objects not interoperable**
+
+The two reporting features are independent, meaning that a legacy report object (`ReportId`) cannot be retrieved via the new GET endpoint, and a new report object (`ReportingId`) is not available from the legacy endpoint.
+</Note>
+
 ## Reporting service (2025)
-
-### Generate a report via the Dashboard 
-
-
 
 ### Generate a report via API 
 
@@ -83,9 +85,8 @@ Webhook event type
     Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. You can also specify the columns your wish to include in the report, otherwise the default ones are used (see [columns tables](#columns-user-wallet-transactions) below).
     
     You should also apply the relevant filters to your report:
-    - USER_WALLET_TRANSACTIONS – Filter
-    For the User Wallet Transactions report, you also should apply one or more filters to narrow the dataset. For example: 
-    - UserId, to return all the transactions 
+    - `COLLECTED_FEES` – Include the `Currency` filter to narrow the report to one currency's fees wallet. 
+    - `USER_WALLET_TRANSACTIONS` – Narrow the report by `UserId`, `WalletId`, and/or `Currency` to suit your needs.
   </Step>
   <Step title="Download when ready">
   When the report status changes to `GENERATED`, the `DownloadURL` is populated with the URL where you can download the report. 
@@ -95,14 +96,28 @@ Webhook event type
   </Step>
 </Steps>
 
-### Filters (User Wallet Transactions)
+### Filters
 
-If the ReportType is USER_WALLET_TRANSACTIONS, the following filters and filter combinations can be used to generate a report containing the following transactions:
+To filter the data that will be included in the report, include the relevant filters in the body of your request.
 
-- UserId – Report uses the value to contain only transactions where the value is the AuthorId of the transaction
-- WalletId – The 
+#### Filters (Collected Fees)
 
+For the `COLLECTED_FEES` report, the `Currency` filter can be used to focus on one currency's Fees Wallet (otherwise all currencies' Fees Wallets are included).
 
+#### Filters (User Wallet Transactions)
+
+For the `USER_WALLET_TRANSACTIONS` report, three filters are available: 
+- `Currency` – The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
+- `UserId` – The unique identifier of the user referenced as the `AuthorId` or `CreditedUserId` of the transaction.
+- `WalletId` – The unique identifier of the wallet referenced as the `DebitedWalletId` or `CreditedWalletId` of the transaction.
+
+Each filter can be used on its own or in combination, in which case the report data satisfies both filters:
+- `UserId` and `Currency` – Report contains all transactions (credited or debited) in the currency where UserId is the AuthorId
+- `UserId` and `WalletId` – Report contains all transactions (credited or debited) in all currencies where the UserId is specified as the `DebitedWalletId` or `CreditedWalletId`. If the `WalletId` is not a wallet owned by the `UserId`, then the report will be empty.
+ 
+The `Currency` and `WalletId` cannot be used together.
+
+If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
 
 ### Columns (User Wallet Transactions)
 
