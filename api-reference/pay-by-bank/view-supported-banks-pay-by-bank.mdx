@@ -9,6 +9,8 @@ import page from '/snippets/p-query/page.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 
+This endpoint allows you to retrieve a paginated list of banks that you can present to the user for selection during their Pay by Bank checkout experience. Once they have selected their bank, and optionally the scheme, submit the data of their selection to the [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin) endpoint. [Read the guide](/guides/payment-methods/banking/pay-by-bank) **&rarr;**
+
 ### Query parameters
 
 <ParamField query="CountryCodes" type="string">
@@ -22,6 +24,39 @@ The countries for which to return supported banks. You can combine query values 
 
 
 ### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters" defaultOpen>
+
+<ResponseField name="SupportedBanks" type="object">
+The supported banks listed by country.
+<Expandable title="properties" defaultOpen>
+<ResponseField name="Countries" type="array (object)">
+Array of objects listing the paginated `Banks` per `Country`.
+<Expandable title="properties" defaultOpen>
+<ResponseField name="Banks" type="array (object)">
+List of paginated banks for the country. Display the list of banks for the user to choose before submitting their selection in the [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin) request. 
+<Expandable title="properties" defaultOpen>
+<ResponseField name="BankName" type="string">
+The bank's `BankName` to identify it in the pay-in request.
+</ResponseField>
+<ResponseField name="Scheme" type="array (string)">
+The `Scheme` values supported by the bank, which can be presented to the user for selection before submission in the pay-in request.
+</ResponseField>
+<ResponseField name="Name" type="type">
+The bank's display name to show to the user for selection.
+</ResponseField>
+</Expandable>
+<ResponseField name="Country" type="string">
+The `Country` value for the paginated list of `Banks` objects.
+</ResponseField>
+</ResponseField>
+</Expandable>
+</ResponseField>
+</Expandable>
+</ResponseField>
+</Accordion>
+</AccordionGroup>
 
 
 
