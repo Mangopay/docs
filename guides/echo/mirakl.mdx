@@ -1,19 +1,19 @@
 ---
-title: Pay-In Connector integration for Mirakl Connector platforms
-description: Guide for platforms using the Mirakl Connector to prepare for the launch of the Mangopay Pay-In Connector
+title: Mangopay Echo integration for Mirakl Connector platforms
+description: Guide for platforms using the Mirakl Connector to prepare for the launch of Mangopay Echo
 ---
 
 Platforms are able to use third-party acquirers along with Mangopay pay-ins and then benefit from Mangopay's wallet and payout capabilities. 
 
-Mangopay is developing a new **Pay-In Connector** to provide better transparency on funds acquired by other PSPs but which then transit the Mangopay environment. 
+Mangopay is developing a new connector called **Mangopay Echo** to provide better transparency on funds acquired by other PSPs but which then transit the Mangopay environment. 
 
-The Mirakl Connector, which your platform is using, will take care of this functionality for all Mirakl Orders, regardless of whether the payments are processed by a third-party PSP or by Mangopay. However, we require you to enrich Mirakl Orders with some data so they can be processed.
+The Mirakl Connector, which your platform is using, will take care of the Mangopay Echo functionality for all Mirakl Orders, regardless of whether the payments are processed by a third-party PSP or by Mangopay. However, we require you to enrich Mirakl Orders with some data so they can be processed.
 
 Furthermore, we require certain actions from all platforms using third-party acquirer PSPs, including those using the Mirakl Connector. 
 
-{/* For Mirakl Connector platforms also processing first-party payments for the sale of their own goods, we will require integration of the Pay-In Connector to declare these direct payments. This is because these payments are not visible in Mirakl and therefore not handled by the Mirakl Connector. */}
+{/* For Mirakl Connector platforms also processing first-party payments for the sale of their own goods, we will require integration of Mangopay Echo to declare these direct payments. This is because these payments are not visible in Mirakl and therefore not handled by the Mirakl Connector. */}
 
-While developments of the Pay-In Connector are being finalized, certain actions can be started on your side.
+While developments of Mangopay Echo are being finalized, certain actions can be started on your side.
 
 ## Confirm your PSP provides settlement files
 
@@ -50,7 +50,7 @@ This data is essential for regulatory compliance and Mangopay relies on your par
 
 Mirakl allows its operators to create custom data fields (for Stores, Orders, etc.) for specific business needs.
 
-Mangopay's Mirakl Connector relies on these custom fields to standardize the transactional data that is not always present in Orders. Without these fields, Mangopay's Pay-In Connector can't declare external payments (called Intents in the Pay-In Connector) or reconcile and release funds.
+Mangopay's Mirakl Connector relies on these custom fields to standardize the transactional data that is not always present in Orders. Without these fields, Mangopay Echo can't declare external payments (called Intents in the Echo solution) or reconcile and release funds.
 
 #### How to create fields
 
@@ -84,7 +84,7 @@ There are no requirements for the ***Label***, which is your custom display name
 <tr>
 <td class="table-content">`mgp-external-provider-name`</td>
 <td class="table-content">The name of the external provider processing the transaction.</td>
-<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/payin-connector/supported-providers).</td>
+<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/echo/supported-providers).</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-processing-date`</td>
@@ -104,7 +104,7 @@ There are no requirements for the ***Label***, which is your custom display name
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
 <td class="table-content">The name of the payment method used to process the transaction.</td>
-<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/payin-connector/supported-payment-methods).</td>
+<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/echo/supported-payment-methods).</td>
 </tr>
 </tbody>
 </table>
@@ -123,7 +123,7 @@ Note that the payment method is not required by Mangopay, so if you make it requ
 
 Now that the fields have been created, you need to integrate them on your calls to the Mirakl API for Orders.
 
-The following fields are required for correct processing by Mangopay's Pay-In Connector
+The following fields are required for correct processing by Mangopay Echo:
 
 <table>
 <thead>
@@ -137,7 +137,7 @@ The following fields are required for correct processing by Mangopay's Pay-In Co
 <tr>
 <td class="table-content">`mgp-external-provider-name`</td>
 <td class="table-content">Yes</td>
-<td class="table-content">One of the [supported external providers](/guides/payin-connector/supported-providers).</td>
+<td class="table-content">One of the [supported external providers](/guides/echo/supported-providers).</td>
 </tr>
 <tr>
 <td class="table-content">`mgp-external-processing-date`</td>
@@ -157,7 +157,7 @@ The following fields are required for correct processing by Mangopay's Pay-In Co
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
 <td class="table-content">No</td>
-<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this field can be left blank (provided you created it as not required).</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods). If the payment method is not supported, this field can be left blank (provided you created it as not required).</td>
 </tr>
 </tbody>
 </table>
@@ -172,13 +172,13 @@ You can send the data on the Mirakl endpoints:
 
 You should provide the custom field data as early as possible in the flow.
 
-If the data is not present, it blocks the Pay-In Connector from reconciling the Order with an Intent subsequently releasing the funds. 
+If the data is not present, it prevents Echo from reconciling the Order with an Intent subsequently releasing the funds. 
 </Note>
 
 <Check>
 **Best practice – Start sending custom fields now**
 
-You should start sending the custom fields on Orders as soon as possible, even before Mangopay's Pay-In Connector is launched.
+You should start sending the custom fields on Orders as soon as possible, even before Mangopay Echo is launched.
 </Check>
 
 #### Example of custom fields in Mirakl API call
@@ -216,25 +216,25 @@ You should start sending the custom fields on Orders as soon as possible, even b
 
 ---
 
-The rest of this page provides information on the actions that your platform will be required to complete once the **Pay-In Connector** is live. 
+The rest of this page provides information on the actions that your platform will be required to complete once the **Mangopay Echo** is live. 
 
 ## Provide settlement files to Mangopay
 
 <Info>
 **Applies to:** Any platform using a third-party PSP for funds acquisition (whether the platform uses the Mirakl Connector or not)
 
-**Actionable:** When the Pay-In Connector launches (Sandbox: May 2025; Production: June 2025)
+**Actionable:** When the Mangopay Echo launches (Sandbox: May 2025; Production: June 2025)
 </Info>
 
 <Note>
 **Note – Beta documentation for communication purposes only, subject to minor change**
 
-The information provided below aims to prepare you as much as possible for your integration of the **Pay-In Connector**.
+The information provided below aims to prepare you as much as possible for your integration of **Mangopay Echo**.
 
 We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as final developments are completed. and approach the launch.
 </Note>
 
-The Mangopay Pay-In Connector will need settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
+Mangopay Echo will need settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
 
 For Mirakl Connector platforms, the payment intent declarations will be created automatically by the connector, but the settlement data must be provided by the platform.
 
@@ -258,7 +258,7 @@ Generate a CSV file conforming to Mangopay's format that contains the extracted 
 Each file must contain only a single currency.
 </Step>
 <Step title="Send the file via the dedicated API endpoint">
-Upload the file using the dedicated API endpoint (released as part of the Pay-In Connector).
+Upload the file using the dedicated API endpoint (released as part of Echo).
 
 > ##### POST Upload a settlement file
 ```bash
@@ -283,7 +283,7 @@ In case any data from your settlement could not be processed for some reason, yo
 The information provided below aims to prepare you as much as possible for your future integration (Sandbox: May 2025). There may be minor changes in some details as final developments are completed.
 </Info>
 
-You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/payin-connector/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
 
 There are no requirements for the **file name** – you can name your file how you like.
 
@@ -342,7 +342,7 @@ The type of the transaction:
 <td class="table-content">ExternalPaymentMethod</td>
 <td class="table-content">Optional</td>
 <td class="table-content">Enum</td>
-<td class="table-content">One of the [supported payment methods](/guides/payin-connector/supported-payment-methods). If the payment method is not supported, this optional field can be left blank.</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods). If the payment method is not supported, this optional field can be left blank.</td>
 </tr>
 <tr>
 <td class="table-content">ExternalTransactionStatus</td>
@@ -408,7 +408,7 @@ Rows of summary data under the columns, preceded by a single empty row:
 <td class="table-content">ExternalProviderName</td>
 <td class="table-content">Required</td>
 <td class="table-content">Enum</td>
-<td class="table-content">The name of the [supported external providers](/guides/payin-connector/supported-providers).</td>
+<td class="table-content">The name of the [supported external providers](/guides/echo/supported-providers).</td>
 </tr>
 <tr>
 <td class="table-content">TotalSettlementFeesAmount</td>
