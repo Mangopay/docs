@@ -10,10 +10,6 @@ import PhpCloseNaturalUser from '/snippets/code/php-close-natural-user.mdx';
 
 This endpoint allows your platform to close a Mangopay Account, as per Mangopay's <a href="https://mangopay.com/terms-and-conditions" target="_blank">terms and conditions</a>, in the event that the agreement between the user and the platform comes to an end.
 
-When a User is closed, the `UserStatus` changes to `CLOSED` but the resource remains available via the API for historical purposes. Closing a user account does not affect Mangopay's data retention obligations or processes. Personal data associated with the closed account will be retained in accordance with Mangopay's data retention policies.
-
-Closure is only possible if all wallets held by the user are empty. Closure is allowed for both `UserCategory` `OWNER` and `PAYER`.
-
 <Warning>
 **Caution – Closure is irreversible**
 
@@ -21,6 +17,15 @@ Calling this endpoint immediately and permanently changes the `UserStatus` to `C
 
 Your platform can re-register the user using [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca).
 </Warning>
+
+Closure is only possible if all wallets held by the user are empty. Closure is allowed for both `UserCategory` `OWNER` and `PAYER`.
+
+When a User is closed (whether via this endpoint or by Mangopay): 
+- The `UserStatus` changes to `CLOSED` (and the `USER_ACCOUNT_CLOSED` [webhook](/webhooks/event-types#account-closure) is sent)
+- The user has inflows and outflows [blocked](/guides/users/blocked-users) (and the relevant [webhooks](/webhooks/event-types#user-regulatory-status) are sent)
+- The user object remains available via the API and Dashboard for historical purposes
+
+Closing a user account does not affect Mangopay's data retention obligations or processes. Personal data associated with the closed account will be retained in accordance with Mangopay's data retention policies.
 
 <Note>
 **Note – Do not overuse OAuth token endpoint if automating calls**
