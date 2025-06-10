@@ -79,6 +79,10 @@ export const CurrencyPayoutRoutesDropdown = () => {
     },
     EUR: {
       local: [{
+        rail: "SCT",
+        cutoffTime: "12:30",
+        deliveryTime: "Same business day"
+      }, {
         rail: "SCT Inst",
         cutoffTime: "Always open",
         deliveryTime: "Instant"
@@ -86,10 +90,6 @@ export const CurrencyPayoutRoutesDropdown = () => {
         rail: "T2",
         cutoffTime: "16:15",
         deliveryTime: "Within 5 minutes"
-      }, {
-        rail: "SCT",
-        cutoffTime: "12:30",
-        deliveryTime: "Same business day"
       }],
       international: [{
         rail: "SWIFT",
@@ -259,7 +259,7 @@ export const CurrencyPayoutRoutesDropdown = () => {
     }
   };
 
- const currencyCodes = Object.keys(paymentData);
+  const currencyCodes = Object.keys(paymentData);
 
   const currencyOptionsForSelect = [
     { value: "", label: "All currencies" },
@@ -293,7 +293,7 @@ export const CurrencyPayoutRoutesDropdown = () => {
 
   const selectedCurrencyData = selectedValue ? allCurrencyDetails.find(opt => opt.value === selectedValue) : null;
 
-  const hasAnyRoutesToDisplay = (selectedValue && selectedCurrencyData && selectedCurrencyData.routes && selectedCurrencyData.routes.length > 0) ||
+  const hasAnyRoutesToDisplay = (selectedValue && selectedCurrencyData && selectedCurrencyData.routes.length > 0) ||
     (!selectedValue && allCurrencyDetails.some(cd => cd.routes && cd.routes.length > 0));
 
   return (
@@ -315,69 +315,65 @@ export const CurrencyPayoutRoutesDropdown = () => {
       </select>
 
       <div className="currency-details-section mt-4">
-        {allCurrencyDetails.length > 0 ? (
-          <>
-            {hasAnyRoutesToDisplay && (
-              <div className="grid grid-cols-5 gap-x-3 items-baseline text-sm font-semibold py-2 border-b-2 border-gray-300 mb-3">
-                <div>Currency</div>
-                <div>Type</div>
-                <div>Name</div>
-                <div>Cutoff time (CET)</div>
-                <div>Delivery time (typical)</div>
-              </div>
-            )}
-
+        {allCurrencyDetails.length > 0 && hasAnyRoutesToDisplay ? (
+          <table className="w-full text-sm text-left border-collapse">
+            <thead className="text-sm font-semibold border-b-2 border-gray-300">
+              <tr>
+                <th className="py-2 px-1">Currency</th>
+                <th className="py-2 px-1">Type</th>
+                <th className="py-2 px-1">Name</th>
+                <th className="py-2 px-1">Cutoff time (CET)</th>
+                <th className="py-2 px-1">Delivery time (typical)</th>
+              </tr>
+            </thead>
+            
+            {/* SCENARIO 1: A single currency is selected */}
             {selectedValue && selectedCurrencyData ? (
-              <div key={selectedCurrencyData.label}>
-                {(!selectedCurrencyData.routes || selectedCurrencyData.routes.length === 0) ? (
-                  <p className="text-gray-500 italic py-2 text-center">
-                    No specific routes listed for {selectedCurrencyData.label}.
-                  </p>
+              <tbody>
+                {selectedCurrencyData.routes.length > 0 ? (
+                  selectedCurrencyData.routes.map((route, index) => (
+                    <tr key={`${selectedCurrencyData.label}-${route.rail}-${index}`} className="border-b border-gray-200">
+                      <td className="py-3 px-1">{selectedCurrencyData.label}</td>
+                      <td className="py-3 px-1">{route.type}</td>
+                      <td className="py-3 px-1">{route.rail}</td>
+                      <td className="py-3 px-1">{route.cutoffTime}</td>
+                      <td className="py-3 px-1">{route.deliveryTime}</td>
+                    </tr>
+                  ))
                 ) : (
-                  <ul className="list-none p-0">
-                    {selectedCurrencyData.routes.map((route, index) => (
-                      <li
-                        key={`${selectedCurrencyData.label}-${route.originalType}-${route.rail}-${index}`}
-                        className="currency-route-item grid grid-cols-5 gap-x-3 items-baseline text-sm py-3 border-b border-gray-200"
-                      >
-                        <div>{selectedCurrencyData.label}</div>
-                        <div>{route.type}</div>
-                        <div>{route.rail}</div>
-                        <div>{route.cutoffTime}</div>
-                        <div>{route.deliveryTime}</div>
-                      </li>
-                    ))}
-                  </ul>
+                  <tr>
+                    <td colSpan="5" className="text-gray-500 italic py-3 text-center">
+                      No specific routes listed for {selectedCurrencyData.label}.
+                    </td>
+                  </tr>
                 )}
-              </div>
+              </tbody>
             ) : (
-
+              /* SCENARIO 2: "All currencies" is selected */
+              /* We render a separate <tbody> for each currency to group its rows */
               allCurrencyDetails.map(currencyDetailItem => (
-                <div key={currencyDetailItem.label} className="mb-8">
-                  {(!currencyDetailItem.routes || currencyDetailItem.routes.length === 0) ? (
-                    <p className="text-gray-500 italic py-2">
-                      No specific routes listed for {currencyDetailItem.label}.
-                    </p>
+                <tbody key={currencyDetailItem.label} className="border-b-4 border-gray-300">
+                  {currencyDetailItem.routes.length > 0 ? (
+                    currencyDetailItem.routes.map((route, index) => (
+                      <tr key={`${currencyDetailItem.label}-${route.rail}-${index}`} className="border-b border-gray-200 last:border-b-0">
+                        <td className="py-3 px-1">{currencyDetailItem.label}</td>
+                        <td className="py-3 px-1">{route.type}</td>
+                        <td className="py-3 px-1">{route.rail}</td>
+                        <td className="py-3 px-1">{route.cutoffTime}</td>
+                        <td className="py-3 px-1">{route.deliveryTime}</td>
+                      </tr>
+                    ))
                   ) : (
-                    <ul className="list-none p-0">
-                      {currencyDetailItem.routes.map((route, index) => (
-                        <li
-                          key={`${currencyDetailItem.label}-${route.originalType}-${route.rail}-${index}`}
-                          className="currency-route-item grid grid-cols-5 gap-x-3 items-baseline text-sm py-3 border-b border-gray-200"
-                        >
-                          <div>{currencyDetailItem.label}</div>
-                          <div>{route.type}</div>
-                          <div>{route.rail}</div>
-                          <div>{route.cutoffTime}</div>
-                          <div>{route.deliveryTime}</div>
-                        </li>
-                      ))}
-                    </ul>
+                    <tr>
+                      <td colSpan="5" className="text-gray-500 italic py-3">
+                        No specific routes listed for {currencyDetailItem.label}.
+                      </td>
+                    </tr>
                   )}
-                </div>
+                </tbody>
               ))
             )}
-          </>
+          </table>
         ) : (
           <p>No currency data available.</p>
         )}
