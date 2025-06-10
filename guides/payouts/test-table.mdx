@@ -79,10 +79,6 @@ export const CurrencyPayoutRoutesDropdown = () => {
     },
     EUR: {
       local: [{
-        rail: "SCT",
-        cutoffTime: "12:30",
-        deliveryTime: "Same business day"
-      }, {
         rail: "SCT Inst",
         cutoffTime: "Always open",
         deliveryTime: "Instant"
@@ -90,6 +86,10 @@ export const CurrencyPayoutRoutesDropdown = () => {
         rail: "T2",
         cutoffTime: "16:15",
         deliveryTime: "Within 5 minutes"
+      }, {
+        rail: "SCT",
+        cutoffTime: "12:30",
+        deliveryTime: "Same business day"
       }],
       international: [{
         rail: "SWIFT",
@@ -259,24 +259,24 @@ export const CurrencyPayoutRoutesDropdown = () => {
     }
   };
 
-  const sortedCurrencyCodes = Object.keys(paymentData).sort();
+ const currencyCodes = Object.keys(paymentData);
 
   const currencyOptionsForSelect = [
     { value: "", label: "All currencies" },
-    ...sortedCurrencyCodes.map(code => ({
+    ...currencyCodes.map(code => ({
       value: code,
       label: code,
     }))
   ];
 
-  const allCurrencyDetails = sortedCurrencyCodes.map(code => {
+  const allCurrencyDetails = currencyCodes.map(code => {
     const currencyData = paymentData[code];
     const combinedRoutes = [];
-    (currencyData.international || []).forEach(route => {
-      combinedRoutes.push({ ...route, type: "Non-domestic", originalType: "international" });
-    });
     (currencyData.local || []).forEach(route => {
       combinedRoutes.push({ ...route, type: "Domestic", originalType: "local" });
+    });
+    (currencyData.international || []).forEach(route => {
+      combinedRoutes.push({ ...route, type: "Non-domestic", originalType: "international" });
     });
     return {
       value: code,
@@ -318,12 +318,12 @@ export const CurrencyPayoutRoutesDropdown = () => {
         {allCurrencyDetails.length > 0 ? (
           <>
             {hasAnyRoutesToDisplay && (
-              <div className="grid grid-cols-5 gap-x-3 items-baseline text-sm font-semibold text-gray-600 py-2 border-b-2 border-gray-300 mb-3">
+              <div className="grid grid-cols-5 gap-x-3 items-baseline text-sm font-semibold py-2 border-b-2 border-gray-300 mb-3">
                 <div>Currency</div>
                 <div>Type</div>
                 <div>Name</div>
-                <div>Cutoff Time</div>
-                <div>Delivery Time</div>
+                <div>Cutoff time (CET)</div>
+                <div>Delivery time (typical)</div>
               </div>
             )}
 
@@ -340,11 +340,11 @@ export const CurrencyPayoutRoutesDropdown = () => {
                         key={`${selectedCurrencyData.label}-${route.originalType}-${route.rail}-${index}`}
                         className="currency-route-item grid grid-cols-5 gap-x-3 items-baseline text-sm py-3 border-b border-gray-200"
                       >
-                        <div className="font-medium text-gray-800">{selectedCurrencyData.label}</div>
-                        <div className="text-gray-500">{route.type}</div>
-                        <div className="font-medium text-gray-800">{route.rail}</div>
-                        <div className="text-gray-700">{route.cutoffTime}</div>
-                        <div className="text-gray-700">{route.deliveryTime}</div>
+                        <div>{selectedCurrencyData.label}</div>
+                        <div>{route.type}</div>
+                        <div>{route.rail}</div>
+                        <div>{route.cutoffTime}</div>
+                        <div>{route.deliveryTime}</div>
                       </li>
                     ))}
                   </ul>
@@ -365,11 +365,11 @@ export const CurrencyPayoutRoutesDropdown = () => {
                           key={`${currencyDetailItem.label}-${route.originalType}-${route.rail}-${index}`}
                           className="currency-route-item grid grid-cols-5 gap-x-3 items-baseline text-sm py-3 border-b border-gray-200"
                         >
-                          <div className="font-medium text-gray-800">{currencyDetailItem.label}</div>
-                          <div className="text-gray-500">{route.type}</div>
-                          <div className="font-medium text-gray-800">{route.rail}</div>
-                          <div className="text-gray-700">{route.cutoffTime}</div>
-                          <div className="text-gray-700">{route.deliveryTime}</div>
+                          <div>{currencyDetailItem.label}</div>
+                          <div>{route.type}</div>
+                          <div>{route.rail}</div>
+                          <div>{route.cutoffTime}</div>
+                          <div>{route.deliveryTime}</div>
                         </li>
                       ))}
                     </ul>
