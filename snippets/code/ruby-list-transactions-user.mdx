@@ -11,18 +11,18 @@ end
 
 def listTransactionsUser(userId)
     begin
-        response = MangoPay::User.transactions(userId)
+        response = MangoPay::User.transactions(userId, {'ScaContext': 'USER_PRESENT'})
         puts response
         return response
     rescue MangoPay::ResponseError => error
-        puts "Failed to fetch Transactions: #{error.message}"
+        puts "Failed to fetch transactions for the user: #{error.message}"
         puts "Error details: #{error.details}"
         return false
     end
 end
 
 myUser = {
-    Id: '146476890'
+    Id: 'user_m_01JXJ256GTH5TKXF6RGVFYQVV7',
 }
 
 listTransactionsUser(myUser[:Id])  
