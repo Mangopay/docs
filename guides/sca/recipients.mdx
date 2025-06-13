@@ -69,31 +69,23 @@ A Recipient represents the beneficiary and the beneficiary account of a payout. 
 
 ### Payout methods
 
-Mangopay offers two payout methods: 
+You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
+
+The Recipients feature supports all currencies supported by Mangopay's payout capabilities: `AED`, `AUD`, `CAD`, `CHF`, `CNH`, `CZK`, `DKK`, `EUR`, `GBP`, `HKD`, `HUF`, `ILS`, `JPY`, `MXN`, `NOK`, `NZD`, `PLN`, `RON`, `SAR`, `SEK`, `SGD`, `TRY`, `USD`, `ZAR` 
+
+Depending on the `Country` value queried on [GET View payout methods](/api-reference/recipients/view-payout-methods), the API returns one (or both) of the `AvailablePayoutMethods` offered by Mangopay: 
 - `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 
 - `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` and destination `Country` of the payout. 
 
-You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
+Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. As described in the [steps below](#how-to-register-a-recipient-for-payouts), your integration should first retrieve dynamically the schema of the recipient, then validate the user's data, then register the recipient.
 
-Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. 
+Each recipient can be used for one combination of a payout method, currency, and country, which together determine the account details required.
 
 For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. 
 
-On international payouts, if a country uses IBAN then the `AccountNumber` is the local IBAN format and the returned BIC is generated from the IBAN. For countries that don't use IBAN, the `AccountNumber` format depends on the `Country` and the `BIC` is also required. So in the CAD to US example, the AccountNumber must be a US account identifier and the BIC is required.
+On international payouts, if a country uses IBAN then the `AccountNumber` is the local IBAN format and the returned BIC is generated from the IBAN. For countries that don't use IBAN, the `AccountNumber` format depends on the `Country` and the `BIC` is also required. So in the CAD to US example, the `AccountNumber` must be a US account identifier and the `BIC` is required.
 
-
-However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code. 
-
-Platforms should retrieve all Recipient schemas, including local and international, dynamically from the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema) endpoint:
-- `AUD` – Account number, branch-state-branch (BSB) number
-- `CAD` – Account number, institution number, branch code, bank name
-- `EUR` – IBAN
-- `GBP` – Account number, sort code
-- `HKD` – Account number, BIC, branch code
-- `SGD` – Account number, BIC
-- `USD` – Account number, ABA routing number
-
-Each recipient can be used for one combination of a payout method, currency, and country, which together determine the account details required.
+However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code.
 
 A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
 
