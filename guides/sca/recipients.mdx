@@ -63,6 +63,10 @@ A Recipient may be needed for a `PAYER` (or `OWNER`) in two specific pay-in scen
 
 This kind of recipient, with the `RecipientScope` value `PAYIN`, can be created for a user with the `UserCategory` `PAYER` or `OWNER`, and does not require SCA.
 
+For `PAYIN` recipients, the `PayoutMethod` needed is: 
+- For direct debit pay-ins, `LocalBankTransfer`
+- For refunds using payouts, either `LocalBankTransfer` or `InternationalBankTransfer` depending on where the two accounts involved in the initial transaction are registered (the account returned by Mangopay on the pay-in, and the user's bank from which they sent the funds)
+
 ### Recipient types
 
 A Recipient represents the beneficiary and the beneficiary account of a payout. A recipient can be an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address.
