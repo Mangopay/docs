@@ -22,6 +22,8 @@ import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import TagResponse from '/snippets/p-response/TagResponse.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
+import RedirectURLResponse from '/snippets/p-response/RedirectURLResponse.mdx';
 
 import ProfilingAttemptReference from '/snippets/p-body/ProfilingAttemptReference.mdx';
 import Phone2 from '/snippets/p-body/Phone2.mdx';
@@ -31,8 +33,14 @@ import Fees1 from '/snippets/p-body/Fees1.mdx';
 import DebitedFunds2 from '/snippets/p-body/DebitedFunds2.mdx';
 import AuthorId from '/snippets/p-body/AuthorId.mdx';
 import Tag from '/snippets/p-body/Tag.mdx';
+import ReturnURL6 from '/snippets/p-body/ReturnURL6.mdx';
 
 import RestCreateBizumPayinPhone from '/snippets/code/rest-create-bizum-payin-phone.mdx';
+import RestCreateBizumPayinRedirect from '/snippets/code/rest-create-bizum-payin-redirect.mdx';
+
+There are two Bizum flows, depending on the payload sent to this endpoint: 
+- **Phone** – If `Phone` is sent, the `ReturnURL` is not required and `RedirectURL` is ignored because no redirection is necessary: the user receives a push notification from the Bizum app asking them to authenticate.
+- **Redirect** – If `Phone` is not sent, then `ReturnURL` is required and you must redirect the user to the `RedirectURL` in the response so they can enter their phone number themselves.
 
 <Note>
 **Note – Timeout after 5 minutes** 
@@ -52,9 +60,9 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
 
 <CreditedWalletId />  
 
-<ReturnURL />  
-
 <StatementDescriptor />  
+
+<ReturnURL6 />  
 
 <Phone2 />  
 
@@ -100,12 +108,16 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
 
 <Phone2Response />
 
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
 <StatementDescriptorResponse />
 
 </Accordion>
 
 <ResponseExample>  
-```json 200 - Created  
+```json Phone
 {
     "Id": "payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -137,8 +149,42 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
     "StatementDescriptor": "Example123"
 }
 ```
+```json Redirect
+{
+    "Id": "payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1717166434,
+    "AuthorId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "CreditedUserId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+
+    "ExecutionDate": null,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01HYG6AM9V72R64QTBHJY705DF",
+    "PaymentType": "BIZUM",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://authman.sandbox.lp-pl.ppro.com/v0/pages/?redirection_token=eyJhbGciOiJIUzUxMiJ9.eyJzZXNzaW9uIjp7InIiOiJjaGFyZ2VfS0JYM1dsVksxUE9JTktGRTlaM2VvIn19.DKOyGX-fVCkPsIrag0dQ7LL-_M3a-l1issTKN52CJqqXmLyrdZSmaQYMdq2gHSyngRSjES6GqiLVeKGNrb-3lQ",
+    "ReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
+    "StatementDescriptor": "Example123"
+}
+```
 </ResponseExample>  
 
 <RequestExample>  
 <RestCreateBizumPayinPhone/>
+<RestCreateBizumPayinRedirect/>
 </RequestExample>
