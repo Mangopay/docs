@@ -1,0 +1,178 @@
+---
+title: 'View a PayIn (Bizum)'  
+api: 'GET /v2.01/{ClientId}/payins/{PayInId}'  
+---
+
+import Phone2Response from '/snippets/p-response/Phone2Response.mdx';
+
+import StatementDescriptorResponse from '/snippets/p-response/StatementDescriptorResponse.mdx';
+import ExecutionTypeResponse from '/snippets/p-response/ExecutionTypeResponse.mdx';
+import PaymentType17Response from '/snippets/p-response/PaymentType17Response.mdx';
+import CreditedUserIdResponse from '/snippets/p-response/CreditedUserIdResponse.mdx';
+import CreditedWalletIdResponse from '/snippets/p-response/CreditedWalletIdResponse.mdx';
+import NatureResponse from '/snippets/p-response/NatureResponse.mdx';
+import TypeResponse from '/snippets/p-response/TypeResponse.mdx';
+import ExecutionDateResponse from '/snippets/p-response/ExecutionDateResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import Status2Response from '/snippets/p-response/Status2Response.mdx';
+import Fees1Response from '/snippets/p-response/Fees1Response.mdx';
+import CreditedFunds2Response from '/snippets/p-response/CreditedFunds2Response.mdx';
+import DebitedFunds2Response from '/snippets/p-response/DebitedFunds2Response.mdx';
+import AuthorIdResponse from '/snippets/p-response/AuthorIdResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
+import TagResponse from '/snippets/p-response/TagResponse.mdx';
+import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import ReturnURLResponse from '/snippets/p-response/ReturnURLResponse.mdx';
+import RedirectURLResponse from '/snippets/p-response/RedirectURLResponse.mdx';
+
+import PayInId from '/snippets/p-path/PayInId.mdx';
+
+{/* // import PhpViewPayin from '/snippets/code/php-view-payin.mdx'; */}
+{/* // import NodeViewPayin from '/snippets/code/node-view-payin.mdx'; */}
+{/* // import RubyViewPayin from '/snippets/code/ruby-view-payin.mdx'; */}
+{/* // import JavaViewPayin from '/snippets/code/java-view-payin.mdx'; */}
+{/* // import PythonViewPayin from '/snippets/code/view-payin-python.mdx'; */}
+
+<Note>
+**Note – Pay-in data retained for 13 months**
+
+An API call to retrieve a pay-in whose `CreationDate` is older than 13 months may return 404 Not Found.
+
+For more information, see the <a href="/api-reference/overview/data-availability-periods">Data availability periods</a> article.
+</Note>
+
+
+### Path parameters  
+
+<PayInId />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200 - Succeeded" defaultOpen>  
+
+<IdResponse />  
+
+<TagResponse />  
+
+<CreationDateResponse />  
+
+<AuthorIdResponse />  
+
+<DebitedFunds2Response />  
+
+<CreditedFunds2Response />  
+
+<Fees1Response />  
+
+<Status2Response />  
+
+<ResultCodeResponse />  
+
+<ResultMessageResponse />  
+
+<ExecutionDateResponse />  
+
+<TypeResponse />  
+
+<NatureResponse />  
+
+<CreditedWalletIdResponse />  
+
+<CreditedUserIdResponse />  
+
+<PaymentType17Response />  
+
+<ExecutionTypeResponse />  
+
+<Phone2Response />
+
+<ReturnURLResponse />  
+
+<RedirectURLResponse />  
+
+<StatementDescriptorResponse />  
+
+</Accordion>
+
+</AccordionGroup>  
+
+<ResponseExample>  
+```json 200 - Phone
+{
+    "Id": "payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1717166434,
+    "AuthorId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "CreditedUserId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1717166562,
+    "Phone" : "+34700000000",
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01HYG6AM9V72R64QTBHJY705DF",
+    "PaymentType": "BIZUM",
+    "ExecutionType": "WEB",
+    "StatementDescriptor": "Example123"
+}
+```
+```json 200 - Redirect
+{
+    "Id": "payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1717166434,
+    "AuthorId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "CreditedUserId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Status": "SUCCEEDED",
+    "ResultCode": "000000",
+    "ResultMessage": "Success",
+    "ExecutionDate": 1717166562,
+    "Type": "PAYIN",
+    "Nature": "REGULAR",
+    "CreditedWalletId": "wlt_m_01HYG6AM9V72R64QTBHJY705DF",
+    "PaymentType": "BIZUM",
+    "ExecutionType": "WEB",
+    "RedirectURL": "https://authman.sandbox.lp-pl.ppro.com/v0/pages/?redirection_token=eyJhbGciOiJIUzUxMiJ9.eyJzZXNzaW9uIjp7InIiOiJjaGFyZ2VfS0JYM1dsVksxUE9JTktGRTlaM2VvIn19.DKOyGX-fVCkPsIrag0dQ7LL-_M3a-l1issTKN52CJqqXmLyrdZSmaQYMdq2gHSyngRSjES6GqiLVeKGNrb-3lQ",
+    "ReturnURL": "https://docs.mangopay.com/please-ignore?transactionId=payin_m_01HZ7HGSWAWWNS6NBTBPBZ6TNC",
+    "StatementDescriptor": "Example123"
+}
+```
+</ResponseExample>  
+
+<RequestExample>  
+  
+    {/* <PhpViewPayin />
+    <NodeViewPayin />
+    <RubyViewPayin />
+    <JavaViewPayin />
+    <PythonViewPayin /> */}
+
+</RequestExample>
