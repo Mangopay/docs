@@ -29,7 +29,7 @@ Bizum is a popular mobile payment method in Spain that integrates directly with 
         <tr>
             <th class="header">[Disputes](#disputes)</th>
             <td class="table-content">
-                Yes
+                Yes, up to 120 days
             </td>
             </tr>
         <tr>
@@ -79,7 +79,7 @@ When you receive the hook, call [GET View a PayIn (Bizum)](/api-reference/bizum/
 
 A Bizum pay-in can be disputed by the user through their issuing bank. When this happens, Mangopay creates a Dispute object that is `CONTESTABLE`. You can be notified of this via the `DISPUTE_CREATED` webhook [event type](/webhooks/event-types#disputes), and call [GET View a Dispute](/api-reference/disputes/view-dispute) for more information.
 
-A user can open a dispute up to 120 days after the pay-in's `Status` changed to `SUCCEEDED` (the `ExecutionDate`).
+A user can open a dispute up to **120 days** after the pay-in's `Status` changed to `SUCCEEDED` (the `ExecutionDate`).
 
 Once a dispute is open, your platform has **30 days** to submit evidence. Once submitted, Bizum arbitrates the outcome within 15 days.
 
@@ -90,84 +90,84 @@ The reasons below may be given for a dispute. Note that the actual `DisputeReaso
 <table>
 <thead>
 <tr>
-<th>
+<th class="header">
 Reason
 </th>
-<th>
+<th class="header">
 Description
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>
+<td class="table-content">
 Not received
 </td>
-<td>
+<td class="table-content">
 The service or product that should have been received in exchange for the payment has not been delivered to the user.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Defective
 </td>
-<td>
+<td class="table-content">
 The service or product delivered does not correspond to the description or is in defective condition.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Duplicated
 </td>
-<td>
+<td class="table-content">
 The transaction is duplicated.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Mismatched amounts
 </td>
-<td>
+<td class="table-content">
 There are discrepancies between the authorized amount and the amount actually transferred.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Refund not processed
 </td>
-<td>
+<td class="table-content">
 A refund was requested by the user but has not been received. 
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Already paid
 </td>
-<td>
+<td class="table-content">
 The service or product was paid through other payment methods.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Refund error
 </td>
-<td>
+<td class="table-content">
 A process error occurred in the case of a refund cancellation. For example, a user requested a refund and it was not processed correctly or was duplicated.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Unauthorized recurrence
 </td>
-<td>
+<td class="table-content">
 The user canceled the subscription or scheduled payments, but the platform continued charging the user's account despite the user's cancellation notice.
 </td>
 </tr>
 <tr>
-<td>
+<td class="table-content">
 Unrecognized, delayed, or amended
 </td>
-<td>
+<td class="table-content">
 This reason is used when a separate transaction or additional charge is made without the user's consent, exceeding the initial instruction.
 </td>
 </tr>
