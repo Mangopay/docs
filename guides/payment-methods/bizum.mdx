@@ -1,0 +1,99 @@
+---
+title: Bizum
+---
+
+## About
+
+Bizum is a popular mobile payment method in Spain that integrates directly with the user's banking app, enabling instant bank-to-bank transfers with just a phone number.
+
+<table>
+    <tbody>
+        <tr>
+            <th class="header">Region</th>
+            <td class="table-content">
+                Spain
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Currencies</th>
+            <td class="table-content">
+                EUR
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Refunds](/guides/refunds)</th>
+            <td class="table-content">
+                Yes, within 365 days
+            </td>
+            </tr>
+        <tr>
+            <th class="header">[Disputes](#disputes)</th>
+            <td class="table-content">
+                Yes
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Preauthorization</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+        <tr>
+            <th class="header">Recurring&nbsp;payments</th>
+            <td class="table-content">
+                No
+            </td>
+            </tr>
+    </tbody>
+</table>
+
+## How it works
+
+<Steps>
+<Step title="User chooses payment method">
+On your app or website, the user selects Bizum as the payment method.
+</Step>
+<Step title="Your platform initiates the pay-in">
+You create the payment request by calling the [POST Create a Bizum PayIn](/api-reference/bizum/create-bizum-payin) endpoint.
+
+If you send the user's mobile phone number in the `Phone` parameter, then they receive a push notification from their banking app to authenticate the payment. In this case, no redirection is necessary.
+
+If you don't have the user's phone number, you must specify a `ReturnURL` and then redirect the user on the `RedirectURL` in the API response so that they can enter their phone number on a hosted screen.
+</Step>
+<Step title="User authenticates payment">
+The user authenticates their payment in their banking app.
+</Step>
+<Step title="Your platform handles the outcome">
+The pay-in `Status` changes from `CREATED` to `SUCCEEDED` or `FAILED` to indicate the outcome. 
+
+You should also set up [hook notifications](/webhooks) for the relevant [event types](/webhooks/event-types):
+
+- `PAYIN_NORMAL_SUCCEEDED`
+- `PAYIN_NORMAL_FAILED`
+
+When you receive the hook, call [GET View a PayIn (Bizum)](/api-reference/bizum/view-payin-bizum) to confirm the outcome and, in case of failure, retrieve the `ResultCode` and `ResultMessage` for more information. 
+</Step>
+</Steps>
+
+## Disputes 
+
+A Bizum pay-in can be disputed by the user through their issuing bank. When this happens, Mangopay creates a Dispute object that is `CONTESTABLE`. You can be notified of this via the `DISPUTE_CREATED` webhook [event type](/webhooks/event-types#disputes), and call [GET View a Dispute](/api-reference/disputes/view-dispute) for more information.
+
+A user can open a dispute up to 120 days after the pay-in's `Status` changed to `SUCCEEDED` (the `ExecutionDate`).
+
+Once a dispute is open, your platform has **30 days** to submit evidence. Once submitted, Bizum arbitrates the outcome within 15 days.
+
+### Dispute reasons
+
+The following reasons may be given for a dispute:
+
+- The service or product that should have been received in exchange for the immediate transfer has not been delivered to the Customer.
+- The service or product delivered does not correspond to the description or is in defective condition.
+- The transaction is duplicated.
+- There are discrepancies between the authorized amount and the amount actually transferred.
+- The refund transaction has not been processed.
+- The service or product was paid through other payment methods.
+- Process error in the case of a refund cancellation. This reason may only be used for cases where a charge was made via the refund cancellation service.
+- The customer cancelled the subscription/recurrence, but the Beneficiary continued charging the Customer’s account with a recurring or periodic transaction despite the Customer’s cancellation notice.
+- Unrecognized delayed or amended charge: Used when a separate transaction or additional charge is made without the Customer’s consent, exceeding the initial instruction.
+- Unauthorized purchase transaction by the orderer (chargeback): Used only when an SCA exemption was requested by the Beneficiary (excluding MRT transactions).
