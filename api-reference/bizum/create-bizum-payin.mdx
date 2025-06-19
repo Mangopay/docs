@@ -39,7 +39,7 @@ import RestCreateBizumPayinPhone from '/snippets/code/rest-create-bizum-payin-ph
 import RestCreateBizumPayinRedirect from '/snippets/code/rest-create-bizum-payin-redirect.mdx';
 
 There are two [Bizum](/guides/payment-methods/bizum) flows, depending on the payload sent to this endpoint: 
-- **Phone** – If `Phone` is sent, the `ReturnURL` is not required and `RedirectURL` is ignored because no redirection is necessary: the user receives a push notification from the Bizum app asking them to authenticate.
+- **Phone** – If `Phone` is sent, the `ReturnURL` is ignored and `RedirectURL` is not returned because no redirection is necessary: the user receives a push notification from the Bizum app asking them to authenticate. In Sandbox, the `RedirectURL` is returned in all cases, because it is the only way to complete the transaction (see [testing](/testing/payment-methods#bizum)). 
 - **Redirect** – If `Phone` is not sent, then `ReturnURL` is required and you must redirect the user to the `RedirectURL` in the response so they can enter their phone number themselves.
 
 <Note>
@@ -70,7 +70,9 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
 
 ### Responses  
 
-<Accordion title="200 - Created">  
+<AccordionGroup>
+
+<Accordion title="200">  
 
 <IdResponse />  
 
@@ -116,6 +118,24 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
 
 </Accordion>
 
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400 - Phone number format error">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "7b5f232e-1802-4367-ab67-1914a4038339",
+    "Date": 1750326049,
+    "Type": "param_error",
+    "Errors": {
+        "Phone": "The field must match the regular expression '^(\\+?34)?[6-9][0-9]{8}$'."
+    }
+}
+```
+</Accordion>
+</AccordionGroup>
+
 <ResponseExample>  
 ```json Phone
 {
@@ -123,30 +143,30 @@ The payment session lasts for 5 minutes for both the phone and redirect flows, a
     "Tag": "Created using the Mangopay API Postman collection",
     "CreationDate": 1717166434,
     "AuthorId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
-    "CreditedUserId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
     "DebitedFunds": {
-        "Currency": "EUR",
+      "Currency": "EUR",
         "Amount": 100
     },
     "CreditedFunds": {
-        "Currency": "EUR",
+      "Currency": "EUR",
         "Amount": 100
     },
     "Fees": {
-        "Currency": "EUR",
+      "Currency": "EUR",
         "Amount": 0
     },
     "Status": "CREATED",
     "ResultCode": null,
     "ResultMessage": null,
     "ExecutionDate": null,
-    "Phone" : "+34700000000",
     "Type": "PAYIN",
     "Nature": "REGULAR",
     "CreditedWalletId": "wlt_m_01HYG6AM9V72R64QTBHJY705DF",
+    "CreditedUserId": "user_m_01HYE3F4EYHAMD7CX5K0Z0A5NF",
     "PaymentType": "BIZUM",
     "ExecutionType": "WEB",
-    "StatementDescriptor": "Example123"
+    "StatementDescriptor": "Example123",
+    "Phone" : "+34700000000"
 }
 ```
 ```json Redirect
