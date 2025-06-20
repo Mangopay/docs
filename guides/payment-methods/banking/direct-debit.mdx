@@ -269,9 +269,11 @@ Usually, late failures occur:
 <Note>
 **Note – Refunds not possible within 7 days**
 
-For direct debits, you must wait 7 calendar days before initiating a refund. This is because of the possibility that a late failure occurs, which would create a conflict on a pay-in that has already been refunded. 
+For direct debits, you must wait 7 full calendar days before initiating a refund. This is because of the possibility that a late failure occurs, which would create a conflict on a pay-in that has already been refunded. 
 
-If you attempt to initiate a refund within 7 calendar days of the pay-in's `CreationDate`, the refund fails with the error [001405](/errors/codes/001405). In Sandbox, you can avoid this limitation using the available [mock value for testing](/testing/payment-methods#direct-debit).
+A refund is possible from 00:00:01 UTC on the 8th day following the day of the pay-in's `CreationDate`, so if the pay-in was created on a Monday (at any time), the refund can be requested on the Tuesday of the following week. 
+
+If you attempt to initiate a refund within 7 full calendar days, the refund fails with the error [001405](/errors/codes/001405). In Sandbox, you can avoid this limitation using the available [mock value for testing](/testing/payment-methods#direct-debit).
 
 Refunds are possible for 13 months following the initiation transaction's `CreationDate`, after which time the initial transaction is [archived](/api-reference/overview/data-availability-periods) and a refund is no longer possible.
 </Note>
