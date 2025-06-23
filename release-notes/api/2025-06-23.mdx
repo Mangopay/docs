@@ -1,11 +1,47 @@
 ---
-title: 'API - June 18, 2025'  
+title: 'API - June 23, 2025'  
 description: '<small>&#8249; [All release notes](/release-notes)</small>'
 ---
 
 {/* <div class="release-notes-page"> */}
 
-<div class="pill pill-orange">Changed</div>
+## <span class="pill pill-green">Added</span>
+
+### Webhook event types for SCA enrollment
+
+Platforms can now be notified when an SCA enrollment session is successfully completed, expires, or fails from incorrect attempts for a factor.
+
+The following webhook [event types](/webhooks/event-types#mangopay-sca-enrollment) have been added: 
+- `SCA_ENROLLMENT_SUCCEEDED`
+- `SCA_ENROLLMENT_EXPIRED`
+- `SCA_ENROLLMENT_FAILED`
+
+<Note>
+**Note – Webhooks triggered by enrollment, not authentication**
+
+The SCA enrollment webhooks are triggered by any new enrollment (or re-enrollment) prompted by an API call, regardless of the endpoint that returned the SCA redirection link (users, recipients, transfers, wallets – see [full list of endpoints](/guides/sca/session#1-call-an-endpoint-that-triggers-sca-redirection)).
+
+The SCA enrollment webhooks are **not** triggered for any **authentication** challenges once the user is enrolled.
+</Note>
+
+## <span class="pill pill-green">Added</span>
+
+### Webhook event types for change of user category
+
+Platforms can now be notified when the `UserCategory` of a user changes, thanks to the new webhook [event types](/webhooks/event-types#user-category):
+- `USER_CATEGORY_UPDATED_TO_OWNER`
+- `USER_CATEGORY_UPDATED_TO_PAYER`
+- `USER_CATEGORY_UPDATED_TO_PLATFORM`
+
+Changing the user category to `PAYER` or `PLATFORM` is only possible by Mangopay. 
+
+Changing `OWNER` users to `PAYER` is sometimes performed by Mangopay, with prior communication to platforms, as part of ongoing monitoring and anti-fraud optimization for inactive accounts (for example). 
+
+Changing `OWNER` to `PLATFORM` is sometimes necessary depending on the platform's approved workflow (see [categories](/guides/users/categories#note-on-platform-category) for more details about the `PLATFORM` category).
+
+These events are only triggered when the value is changed; they are not triggered by user creation.
+
+## <span class="pill pill-orange">Changed</span>
 
 ### Rule preventing fake user names
 
@@ -56,15 +92,9 @@ The rule applies to the following endpoints
 - [POST Create a Legal User (legacy)](/api-reference/users/create-legal-user)
 - [PUT Update a Legal User (legacy)](/api-reference/users/update-legal-user)
 
-The introduction to user types has been updated with this information, along with example errors in the endpoints. 
+The [introduction to user types](/guides/users/types) has been updated with information about this rule, along with example errors in the endpoints. 
 
-<CardGroup cols={2}>
-<Card title="Guide" href="/guides/users/types">
-Read more about user types
-</Card>
-</CardGroup>
-
-<div class="pill pill-green">Added</div>
+## <span class="pill pill-green">Added</span>
 
 ### Error 002702 if transfer attempted to Payer
 
@@ -74,6 +104,6 @@ As part of the recently enforced restrictions on Payers, a new error has been ad
 
 This error occurs when a transfer is requested from an Owner to a Payer, because Payers are not allowed to receive funds from **other** users (whether Owner or Payer). However, Payers are allowed to transfer funds between wallets they own, as well as receive full and partial refunds for pay-in and transfers. 
 
-For more information, see the [restrictions on payers](/guides/users/categories/restrictions) article.
+This error complements the existing [002701](/errors/codes/002701), which occurs when a transfer is attempted by a Payer. For more information, see the [restrictions on payers](/guides/users/categories/restrictions) article.
 
 {/* </div> */}
