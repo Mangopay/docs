@@ -1,0 +1,79 @@
+---
+title: 'API - June 18, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+<div class="pill pill-orange">Changed</div>
+
+### Rule preventing fake user names
+
+Mangopay has implemented an anti-fraud rule in Production to prevent fictitious or fake values being used as **first name** and **last name** fields of User objects. 
+
+The rule aims to prevent misuse of Mangopay's system and applies regardless of whether `UserCategory` is set to `PAYER` or `OWNER`. The rule is only active in the Production environment, not Sandbox.
+
+The rule targets the following types of values:
+
+- Fictitious and fake names (examples: `Marilyn Monroe`, `Homer Simpson`)
+- Gibberish and random sequences (examples: `aeofinzef`, `ojenoiner`)
+- Keywords identified as not real names (examples: `test`, `undefined`, `unknown`)
+
+Calls including such data on POST and PUT endpoints now return the following 400 error:
+
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+
+This rule applies to the following fields:
+
+##### Natural users
+
+- `FirstName`
+- `LastName`
+
+##### Legal users
+
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.FirstName`
+- `LegalRepresentativeFirstName` (legacy object)
+- `LegalRepresentativeLastName` (legacy object)
+
+The rule applies to the following endpoints 
+
+- [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+- [POST Create a Natural User (legacy)](/api-reference/users/create-natural-user)
+- [PUT Update a Natural User (legacy)](/api-reference/users/update-natural-user)
+- [POST Create a Legal User (legacy)](/api-reference/users/create-legal-user)
+- [PUT Update a Legal User (legacy)](/api-reference/users/update-legal-user)
+
+The introduction to user types has been updated with this information, along with example errors in the endpoints. 
+
+<CardGroup cols={2}>
+<Card title="Guide" href="/guides/users/types">
+Read more about user types
+</Card>
+</CardGroup>
+
+<div class="pill pill-green">Added</div>
+
+### Error 002702 if transfer attempted to Payer
+
+As part of the recently enforced restrictions on Payers, a new error has been added on transfers: 
+
+- [002702](/errors/codes/002702) – Users with category PAYER cannot receive transfers from users with category OWNER.
+
+This error occurs when a transfer is requested from an Owner to a Payer, because Payers are not allowed to receive funds from **other** users (whether Owner or Payer). However, Payers are allowed to transfer funds between wallets they own, as well as receive full and partial refunds for pay-in and transfers. 
+
+For more information, see the [restrictions on payers](/guides/users/categories/restrictions) article.
+
+{/* </div> */}
