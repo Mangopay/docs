@@ -1,0 +1,67 @@
+---
+title: Update a Settlement
+api: PUT /v3.0/{ClientId}/payins/intents/settlements/{SettlementId}
+description: Re-upload a Mangopay-format settlement file to update an existing Settlement
+---
+
+Use this endpoint to send Mangopay CSV settlement files in Mangopay’s defined template. 
+
+You need to send one file per currency, as soon as it becomes available.
+
+<Warning>
+**Caution – Use settlement file example as template**
+
+You must follow the [specifications provided here](/guides/echo/mirakl#specifications-of-the-mangopay-format-settlement-file).
+
+Use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+
+There are no requirements for the **file name**: you can name your file how you like.
+</Warning>
+
+### Body parameters
+
+<ParamField body="file" type="csv" required>
+The settlement file, provided by the external PSP and formatted to comply with Mangopay's [settlement file structure](/guides/echo/mirakl#specifications-of-the-mangopay-format-settlement-file).
+</ParamField>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - OK" defaultOpen>
+
+This endpoint returns a JSON object containing details about the settlement (SettlementId, declared amount, settled amount, status, etc.)
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+<AccordionGroup>
+<Accordion title="415 - Unsupported Media Type">
+</Accordion>
+<Accordion title="500 - Internal Server Error">
+</Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```bash
+curl -X POST ".../v3.0/{clientId}/payins/intents/settlements" \
+-H "Authorization: Bearer token" \
+-H "Content-Type: multipart/form-data" \
+-F "file=@/example/file-path.csv"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+    "SettlementId": "int_stlmnt_019778c1-fe45-7864-8d2c-c2394e0f105c",
+    "Status": "UPLOADED",
+    "CreationDate": 1750077669,
+    "DeclaredIntentAmount": 0,
+    "ExternalProcessorFeesAmount": 0,
+    "ActualSettlementAmount": 0,
+    "FundsMissingAmount": 0
+}
+```
+</ResponseExample>
