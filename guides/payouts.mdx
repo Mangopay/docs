@@ -97,13 +97,16 @@ Mangopay does not impose a minimum amount on payouts. The minimum amount possibl
 
 The rail used by Mangopay for a payout request is determined by the `Currency` of the payout and the `Country` of the Recipient.
 
-Legacy bank accounts, created before the Recipient feature was released, were migrated to recipients and assigned a `Country`.
 
-### Obtain the payout method of a legacy bank account
+The Payout request's `BankAccountId` field can contain the `Id` of a Recipient or a legacy Bank Account. 
 
-The Payout request’s `BankAccountId` field can contain the `Id` of a Recipient or a legacy Bank Account. 
+### Migration of legacy bank accounts 
 
-To do so, specify the legacy `BankAccountId` as the `RecipientId` path parameter. For example, if the legacy Bank Account was `bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`, call the endpoint with that ID:
+Active legacy bank accounts, created before the Recipient feature was released, were migrated to recipients.
+
+#### Obtain Recipient data of an active legacy bank account
+
+To retrieve data of active legacy bank accounts you can use the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint and specify the legacy `BankAccountId` as the `RecipientId` path parameter. For example, if the legacy Bank Account was `bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`, call the endpoint with that ID:
 
 > **GET /v2.01/\{ClientId}/recipients/**`bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`
 
@@ -142,9 +145,9 @@ The API responds with a Recipient object containing the information of the legac
 }
 ```
 
-### Payout methods of migrated bank accounts
+#### Migration data mapping
 
-Legacy Bank Account objects had no currency property, and so they could be used for payouts in multiple currencies. The Recipients feature has a `Currency` for each Recipient to improve payout deliverability, meaning that the same real-life account can be registered multiple times.
+Legacy Bank Account objects had no currency property, and so they could be used for payouts in multiple currencies. The Recipients feature has a `Currency` for each Recipient to improve payout deliverability, meaning that the same real-life account can be registered multiple times (with different `PayoutMethod` values).
 
 When Mangopay migrated legacy Bank Accounts to Recipients, the following values were assigned:
 
@@ -160,9 +163,9 @@ When Mangopay migrated legacy Bank Accounts to Recipients, the following values 
 <tbody>
 <tr>
 <td class="table-content">`IBAN`</td>
-<td class="table-content">`LocalBankTransfer` if `BIC` indicates a SEPA country, `InternationalBankTransfer` if not</td>
-<td class="table-content">Based on the `BIC` (`EUR` if SEPA country)</td>
-<td class="table-content">Based on the `BIC`</td>
+<td class="table-content">`LocalBankTransfer` if `IBAN` indicates a SEPA country, `InternationalBankTransfer` if not</td>
+<td class="table-content">Based on the `IBAN` country (`EUR` if SEPA country or local non-EUR)</td>
+<td class="table-content">Based on the `IBAN`</td>
 </tr>
 <tr>
 <td class="table-content">`GB`</td>
@@ -190,6 +193,18 @@ When Mangopay migrated legacy Bank Accounts to Recipients, the following values 
 </tr>
 </tbody>
 </table>
+
+#### Migration of non-EUR accounts in SEPA countries
+
+The process that was followed for IBAN type bank accounts was: 
+1. Country code extracted from the `IBAN` (not the `BIC`)
+2. If IBAN country is in SEPA and the local currency is EUR, the Recipient was assigned:
+  - `PayoutMethodType` = `LocalBankTransfer`
+  - `Currency` = `EUR`
+3. If IBAN country is in SEPA and the local currency is not EUR (e.g. Denmark, Poland, etc), the Recipient was assigned:
+  - `PayoutMethodType` = `InternationalBankTransfer`
+  - `Currency` = Local currency based on predefined list (e.g. `DKK`, `PLN`, etc) 
+
 
 ## Related resources  
 
