@@ -37,7 +37,7 @@ Domestic payouts must be requested to a [Recipient](/api-reference/recipients/re
 
 ### Non-domestic
 
-Non-domestic rails rely on the global shared messaging service SWIFT to transfer funds. SWIFT transfers can take between 3 and 6 days to reach their destination.
+Non-domestic rails rely on the global shared messaging service SWIFT to transfer funds. SWIFT transfers can take between 3 and 5 days to reach their destination.
 
 Mangopay works with partner banks to send the funds to the user’s account. Depending on where the user’s account is registered, Mangopay’s partners may themselves need to rely on additional correspondent banks to enable the connection with the end user’s bank.
 
@@ -95,34 +95,13 @@ Mangopay does not impose a minimum amount on payouts. The minimum amount possibl
 
 ## How Mangopay routes funds
 
-The rail used by Mangopay for a payout request is determined by the `PayoutMethod` of the [Recipient](/api-reference/recipients/recipient-object) (or Bank Account) object specified in the `BankAccountId` of the in the [POST Create a Payout](/api-reference/payouts/create-payout) request.
+The rail used by Mangopay for a payout request is determined by the `Currency` of the payout and the `Country` of the Recipient.
 
-If the `PayoutMethod` is `LocalBankTransfer`, then the domestic rail is used; if it is `InternationalBankTransfer`, then the non-domestic rail is used – **even if the platform has access to the domestic rail.**
-
-Legacy bank accounts, created before the Recipient feature was released, were migrated to recipients and assigned a `PayoutMethod`. Platforms need to retrieve the Recipient’s payout method to know how a payout will be routed. 
-
-For EUR, platforms can choose between domestic rails when they request the payout, as [explained below]().
-
-<Warning>
-
-**Caution – Billing depends on Recipient payout method**
-
-Domestic and non-domestic payout rails have different pricing, and the choice of rail depends on the `PayoutMethod` of the Recipient or legacy Bank Account.
-
-Therefore, it is important that you specify the intended `Id` (Recipient or Bank Account) in your payout request in the `BankAccountId` field.
-
-For payouts to legacy Bank Accounts, it is also essential that you obtain the `PayoutMethod` that was assigned to the bank account during migration, as described below. 
-
-To use the same external account for another rail, you need to register it again as a new Recipient object.
-</Warning>
+Legacy bank accounts, created before the Recipient feature was released, were migrated to recipients and assigned a `Country`.
 
 ### Obtain the payout method of a legacy bank account
 
 The Payout request’s `BankAccountId` field can contain the `Id` of a Recipient or a legacy Bank Account. 
-
-All active legacy Bank Account objects were migrated to the Recipient feature, but legacy bank accounts didn’t have an associated payout method (or currency).
-
-This means that to know whether a payout to a legacy Bank Account will use the local or international rail, you must first retrieve the migrated Recipient from the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint.
 
 To do so, specify the legacy `BankAccountId` as the `RecipientId` path parameter. For example, if the legacy Bank Account was `bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`, call the endpoint with that ID:
 
@@ -165,7 +144,7 @@ The API responds with a Recipient object containing the information of the legac
 
 ### Payout methods of migrated bank accounts
 
-Legacy Bank Account objects had no currency property, and so they could be used for payouts in multiple currencies. The Recipients feature requires a `Currency` for each Recipient to improve payout deliverability, meaning that the same real-life account can be registered multiple times.
+Legacy Bank Account objects had no currency property, and so they could be used for payouts in multiple currencies. The Recipients feature has a `Currency` for each Recipient to improve payout deliverability, meaning that the same real-life account can be registered multiple times.
 
 When Mangopay migrated legacy Bank Accounts to Recipients, the following values were assigned:
 
