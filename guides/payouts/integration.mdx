@@ -9,7 +9,7 @@ import RestCreatePayoutPayinRefund from '/snippets/code/rest-create-payout-payin
 
 Mangopay's e-wallet system allows users of the Owner [category](/guides/users/categories) to hold funds in their wallets. To exceed the [KYC/KYB limits](/guides/users/limits) of the platform’s contract, the Owner user must also be [KYC/KYB verified](/guides/users/verification). For most platforms, this means the user needs to be verified to request a payout. 
 
-The basic flow for initiating a payout are as follows: 
+The basic flow for initiating a payout is as follows: 
 
 <Steps>
 <Step title="Ensure the Owner user is verified">
@@ -29,7 +29,7 @@ If the payout is in EUR, platforms can choose between SCT, SCT Inst, and T2 payo
 
 For T2 ([RTGS](/guides/payouts#real-time-gross-settlement-rtgs)), set the mode to `RTGS_PAYMENT`. 
 
-For SCT Inst, you are strongly recommended to check reachability beforehand, and you can choose to apply a fallback to SCT or not. See [initiate an SCT Inst payout](#initiate-an-sct-inst-payout) for more details.
+For SCT Inst, until acceptance is more widely supported, you are strongly recommended to check reachability beforehand. On the payout, you can choose to apply a fallback to SCT or not. See [initiate an SCT Inst payout](#initiate-an-sct-inst-payout) for more details.
 
 </Step>
 <Step title="Handle the outcome">
@@ -37,7 +37,7 @@ Once the payout request is successfully initiated, its status becomes `CREATED`.
 
 You should set up <a href="/webhooks">hook notifications</a> for the other payout <a href="/webhooks/event-types">event types</a> to be notified of its progress:
 
-- `PAYOUT_NORMAL_SUCCEEDED` – The payout payout is ready to be instructed by one of our providers and the wallet was debited. The payout `Status` changed to `SUCCEEDED`.
+- `PAYOUT_NORMAL_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The payout `Status` changed to `SUCCEEDED`.
 - `PAYOUT_NORMAL_FAILED`  – The payout request was not created in Mangopay’s system or was created then failed for other reasons (rejection due to invalid data, rejection for compliance or fraud reasons, rejection by the clearing system or by the recipient bank, etc). The payout `Status` changed to `FAILED`.
 
 The `SUCCEEDED` status indicates that Mangopay successfully processed the payout and sent the funds. There are some cases where the funds are returned by the receiving bank and Mangopay creates a payout refund (see [rejects and returns](/guides/payouts/rejects-returns)).
@@ -46,7 +46,9 @@ The `SUCCEEDED` status indicates that Mangopay successfully processed the payout
 
 ## Initiate an SCT Inst payout
 
-For local payouts in EUR, Mangopay offers a choice of payout routes 
+For local payouts in EUR, Mangopay offers a choice of payout routes.
+
+For SCT Inst, the flow is slightly different:
 
 <Steps>
 <Step title="Ensure the Owner user is verified">
@@ -60,7 +62,7 @@ The payout rail used is determined by the Recipient's `PayoutMethod` – [read m
 You may need to register the user's bank account again as another Recipient – [read more](/guides/sca/recipients#how-to-register-a-recipient-for-payouts).
 </Step>
 <Step title="Check reachability of the payout">
-Before initiating an instant payout request, you should always check the eligibility of the receiving bank and your payout request using the dedicated endpoint:
+Before initiating an instant payout request, we recommend you check the eligibility of the receiving bank and your payout request using the dedicated endpoint:
 - [POST Check Instant Payout eligibility](/api-reference/payouts/check-instant-payout-eligibility)
 
 In your request, set the `PayoutModeRequested` to `INSTANT_PAYMENT` and provide the same transaction amounts are other details that you intend to use for the payout.
@@ -88,7 +90,7 @@ There are two specific prerequisites that must be met for an SCT Inst request to
 </Step>
 <Step title="Configure your fallback and initiate payout">
 
-Mangopay offers a fallback to standard processing via the SEPA Credit Transfer scheme which your platform can choose to apply or not.
+Mangopay offers a fallback to standard processing via the SEPA Credit Transfer (SCT) scheme which your platform can choose to apply or not.
 
 On a request to [POST Create a Payout](/api-reference/payouts/create-payout), the  `PayoutModeRequested` property allows you to choose the desired value:
 
@@ -97,20 +99,20 @@ On a request to [POST Create a Payout](/api-reference/payouts/create-payout), th
 
 In response to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, for either of the instant payment `PayoutModeRequested` values above, the `ModeRequested` value is `INSTANT_PAYMENT`.
 
-The `ModeApplied` field indicates the mode ultimately applied to the request, but in the API response the temporary value `PENDING_RESPONSE` value is set. 
+The `ModeApplied` field indicates the mode ultimately applied to the request, but in the API response the temporary value `PENDING_RESPONSE` is set. 
 </Step>
 <Step title="Handle the outcome">
 
 Once the payout request is successfully initiated, its status becomes `CREATED`. This triggers a [webhook notification](/webhooks) for the event type `PAYOUT_NORMAL_CREATED` (regardless of the `PayoutModeRequested`). 
 
-An SCT Inst payout usually succeeds in within 10 seconds. 
+An SCT Inst payout usually succeeds within 10 seconds. 
 
 ##### Success
 
 A successful outcome is indicated by two webhook event types, which are both sent for SCT Inst:
 
-- `INSTANT_PAYOUT_SUCCEEDED` – The payout payout is ready to be instructed by one of our providers and the wallet was debited. The `ModeRequested` was `INSTANT_PAYMENT` or `INSTANT_PAYMENT_ONLY` and the payout was sent via SCT Inst. The `Status` changed to `SUCCEEDED` and `ModeApplied` is `INSTANT_PAYMENT`).
-- `PAYOUT_NORMAL_SUCCEEDED` – The payout payout is ready to be instructed by one of our providers and the wallet was debited. The payout `Status` changed to `SUCCEEDED`.
+- `INSTANT_PAYOUT_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The `ModeRequested` was `INSTANT_PAYMENT` or `INSTANT_PAYMENT_ONLY` and the payout was sent via SCT Inst. The `Status` changed to `SUCCEEDED` and `ModeApplied` is `INSTANT_PAYMENT`).
+- `PAYOUT_NORMAL_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The payout `Status` changed to `SUCCEEDED`.
 
 ##### Instant payout failed
 
