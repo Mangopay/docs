@@ -48,7 +48,7 @@ The `SUCCEEDED` status indicates that Mangopay successfully processed the payout
 
 For local payouts in EUR, Mangopay offers a choice of payout routes.
 
-For SCT Inst, the flow is slightly different:
+For SEPA Instant Credit Transfer (SCT Inst), the flow is slightly different:
 
 <Steps>
 <Step title="Ensure the Owner user is verified">
@@ -105,13 +105,13 @@ The `ModeApplied` field indicates the mode ultimately applied to the request, bu
 
 Once the payout request is successfully initiated, its status becomes `CREATED`. This triggers a [webhook notification](/webhooks) for the event type `PAYOUT_NORMAL_CREATED` (regardless of the `PayoutModeRequested`). 
 
-An SCT Inst payout usually succeeds within 10 seconds. 
+An SCT Inst payout is usually processed within 10 seconds. 
 
 ##### Success
 
 A successful outcome is indicated by two webhook event types, which are both sent for SCT Inst:
 
-- `INSTANT_PAYOUT_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The `ModeRequested` was `INSTANT_PAYMENT` or `INSTANT_PAYMENT_ONLY` and the payout was sent via SCT Inst. The `Status` changed to `SUCCEEDED` and `ModeApplied` is `INSTANT_PAYMENT`).
+- `INSTANT_PAYOUT_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The `ModeRequested` was `INSTANT_PAYMENT` or `INSTANT_PAYMENT_ONLY` and the payout was sent via SCT Inst. The `Status` changed to `SUCCEEDED` and `ModeApplied` is `INSTANT_PAYMENT`.
 - `PAYOUT_NORMAL_SUCCEEDED` – The payout is ready to be instructed by one of our providers and the wallet was debited. The payout `Status` changed to `SUCCEEDED`.
 
 ##### Instant payout failed
