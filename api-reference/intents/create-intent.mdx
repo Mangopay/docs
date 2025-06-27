@@ -11,22 +11,44 @@ import ExternalData_Intent_Request from '/snippets/p-body/ExternalData_Intent_Re
 import Buyer_Intent_Request from '/snippets/p-body/Buyer_Intent_Request.mdx';
 import LineItems_Intent_Request from '/snippets/p-body/LineItems_Intent_Request.mdx';
 
-
-
-
-### Query parameters
-
-### Path parameters
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx'
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx'
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx'
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx'
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx'
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx'
+import NextActions_Intent from '/snippets/p-response/NextActions_Intent.mdx'
+import ExternalData_Intent from '/snippets/p-response/ExternalData_Intent.mdx'
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx'
+import LineItems_Intent from '/snippets/p-response/LineItems_Intent.mdx'
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx'
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx'
 
 ### Body parameters
 
-
+<Amount_Intent_Request/>
+<Currency_Intent_Request/>
+<PlatformFeesAmount_Intent_Request/>
+<ExternalData_Intent_Request/>
+<Buyer_Intent_Request/>
+<LineItems_Intent_Request/>
 
 ### Responses
 
 <AccordionGroup>
 <Accordion title="200 - Response parameters">
-
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<NextActions_Intent/>
+<ExternalData_Intent/>
+<Buyer_Intent/>
+<LineItems_Intent/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
 </Accordion>
 </AccordionGroup>
 
@@ -40,12 +62,160 @@ import LineItems_Intent_Request from '/snippets/p-body/LineItems_Intent_Request.
 
 <ResponseExample>
 ```json
-
+{
+    "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
+    "Amount": 10000,
+    "AvailableAmountToSplit": 0,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "AUTHORIZED",
+    "NextActions": "CAPTURED, CANCELED",
+    "ExternalData": {
+        "ExternalProcessingDate": "01-10-2024",
+        "ExternalProviderReference": "Stripe-26dec3ae-5e92-4346-a02e-543c93b8fcb1",
+        "ExternalMerchantReference": "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "PAYPAL"
+    },
+    "Buyer": {
+        "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+    },
+    "LineItems": [
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JCGMCMQQYFBT1YGSPDDGEATY",
+                "WalletId": "wlt_m_01JCGMCS5AHZN117J4PE8BG2BQ",
+                "FeesAmount": 0,
+                "TransferDate": "13-11-2024"
+            },
+            "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
+            "Sku": "item-123456",
+            "Name": "item-name",
+            "Description": "item-description",
+            "Quantity": 1,
+            "UnitAmount": 7500,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "DIGITAL_GOODS",
+            "ShippingAddress": {
+                "AddressLine1": "Loop Street",
+                "AddressLine2": "Mangopay Ltd",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75009",
+                "Country": "FR"
+            },
+            "TotalLineItemAmount": 7500,
+            "CanceledAmount" : 0,
+            "CapturedAmount" : 0,
+            "RefundedAmount" : 0,
+            "DisputedAmount" : 0,
+            "SplitAmount" : 0
+        },
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JCGMCQ0FE3052HHFC5RV6C59",
+                "WalletId": "wlt_m_01JCGMCVY6ZCAMNS89CGZT7EDN",
+                "FeesAmount": 0,
+                "TransferDate": "13-11-2024"
+            },
+            "Id": "1f12c4d5-d6ea-40f2-ac8e-bb3c8770918c",
+            "Sku": "item-789",
+            "Name": "item-name2",
+            "Description": "item-description2",
+            "Quantity": 1,
+            "UnitAmount": 2500,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "PHYSICAL_GOODS",
+            "ShippingAddress": {
+                "AddressLine1": "Loop Street",
+                "AddressLine2": "Mangopay Ltd",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75009",
+                "Country": "FR"
+            },
+            "TotalLineItemAmount": 2500,
+            "CanceledAmount" : 0,
+            "CapturedAmount" : 0,
+            "RefundedAmount" : 0,
+            "DisputedAmount" : 0,
+            "SplitAmount" : 0
+        }
+    ],
+    "CreationDate": 1731430090,
+    "ExecutionDate": 1731430090
+}
 ```
 </ResponseExample>
 
 <RequestExample>
 ```json
-
+{
+    "Amount" : 10000,
+    "Currency" : "EUR",
+    "PlatformFeesAmount" : 0,
+    "ExternalData" : {
+        "ExternalProcessingDate" : "01-10-2024",
+        "ExternalProviderReference" : "Stripe-26dec3ae-5e92-4346-a02e-543c93b8fcb1",
+        "ExternalMerchantReference" : "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16",
+        "ExternalProviderName" : "Stripe",
+        "ExternalProviderPaymentMethod" : "PAYPAL"
+    },
+    "Buyer" : {
+        "Id" : "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+    },
+    "LineItems" : [
+        {
+            "Seller" : {
+                "AuthorId" : "user_m_01JCGMCMQQYFBT1YGSPDDGEATY",
+                "WalletId" : "wlt_m_01JCGMCS5AHZN117J4PE8BG2BQ",
+                "FeesAmount" : 0,
+                "TransferDate" : "13-11-2024"
+            },
+            "Sku" : "item-123456",
+            "Name" : "item-name",
+            "Description" : "item-description",
+            "Quantity" : 1,
+            "UnitAmount" : 7500,
+            "TaxAmount" : 0,
+            "DiscountAmount" : 0,
+            "Category" : "DIGITAL_GOODS",
+            "ShippingAddress" : {
+                "AddressLine1" : "Loop Street",
+                "AddressLine2" : "Mangopay Ltd",
+                "City" : "Paris",
+                "Region" : "Ile de France",
+                "PostalCode" : "75009",
+                "Country" : "FR"
+            }
+        },
+        {
+            "Seller" : {
+                "AuthorId" : "user_m_01JCGMCQ0FE3052HHFC5RV6C59",
+                "WalletId" : "wlt_m_01JCGMCVY6ZCAMNS89CGZT7EDN",
+                "FeesAmount" : 0,
+                "TransferDate" : "13-11-2024"
+            },
+            "Sku" : "item-789",
+            "Name" : "item-name2",
+            "Description" : "item-description2",
+            "Quantity" : 1,
+            "UnitAmount" : 2500,
+            "TaxAmount" : 0,
+            "DiscountAmount" : 0,
+            "Category" : "PHYSICAL_GOODS",
+            "ShippingAddress" : {
+                "AddressLine1" : "Loop Street",
+                "AddressLine2" : "Mangopay Ltd",
+                "City" : "Paris",
+                "Region" : "Ile de France",
+                "PostalCode" : "75009",
+                "Country" : "FR"
+            }
+        }
+    ]
+}
 ```  
 </RequestExample>

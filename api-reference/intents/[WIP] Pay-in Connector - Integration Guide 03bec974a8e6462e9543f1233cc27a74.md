@@ -618,11 +618,13 @@ Must be a date in the future |
 
 - **Full Capture**
   In this scenario, the capture is performed for the full amount specified in the original intent authorization. The following fields are derived from the created intent and therefore do not need to be provided again:
+
   - `Amount`
   - `Currency`
   - `LineItems`
-  If the authorization and capture occur simultaneously, it is assumed that the `ExternalData` remains unchanged from the intent authorization. If `ExternalData` is not explicitly provided at capture, the values from the created intent will be used.
-  In the case of a pre-authorization followed by a later capture—typically involving different provider references—we expect the `ExternalProcessingDate` and `ExternalProviderReference` fields to be included for reconciliation purposes.
+    If the authorization and capture occur simultaneously, it is assumed that the `ExternalData` remains unchanged from the intent authorization. If `ExternalData` is not explicitly provided at capture, the values from the created intent will be used.
+    In the case of a pre-authorization followed by a later capture—typically involving different provider references—we expect the `ExternalProcessingDate` and `ExternalProviderReference` fields to be included for reconciliation purposes.
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/captures
 
@@ -636,20 +638,23 @@ Must be a date in the future |
   	}
   }
   ```
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/captures
   ```
-  | Parameters     | Sub-Parameters | Format | Required | Description                                          |
-  | -------------- | -------------- | ------ | -------- | ---------------------------------------------------- |
-  | `ExternalData` |                | object | No       | Information about the external processed transaction |
-  May be left empty if the information is identical to that provided in the intent authorization (auth+capture) |
-  | | `ExternalProcessingDate` | date | No | The date at which the capture was created
-  Must be specified if authorization and capture not simultaneous |
-  | | `ExternalProviderReference` | string | No | The unique identifier of the capture at the provider level
-  Must be specified if authorization and capture not simultaneous |
-  | | `ExternalMerchantReference` | string | No | The unique identifier of the capture at the merchant level |
-  | | `ExternalProviderName` | string | No | The name of the external provider processing the capture |
-  | | `ExternalProviderPaymentMethod` | string | No | The name of the payment method used to process the capture |
+
+  | Parameters                                                                                                    | Sub-Parameters                  | Format | Required | Description                                                |
+  | ------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------ | -------- | ---------------------------------------------------------- |
+  | `ExternalData`                                                                                                |                                 | object | No       | Information about the external processed transaction       |
+  | May be left empty if the information is identical to that provided in the intent authorization (auth+capture) |
+  |                                                                                                               | `ExternalProcessingDate`        | date   | No       | The date at which the capture was created                  |
+  | Must be specified if authorization and capture not simultaneous                                               |
+  |                                                                                                               | `ExternalProviderReference`     | string | No       | The unique identifier of the capture at the provider level |
+  | Must be specified if authorization and capture not simultaneous                                               |
+  |                                                                                                               | `ExternalMerchantReference`     | string | No       | The unique identifier of the capture at the merchant level |
+  |                                                                                                               | `ExternalProviderName`          | string | No       | The name of the external provider processing the capture   |
+  |                                                                                                               | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the capture |
+
   ```jsx
   {
   	  "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
@@ -695,11 +700,14 @@ Must be a date in the future |
       "ExecutionDate": 1733329423
   }
   ```
+
 - **Partial Capture**
   In this scenario, the capture is only performed for a subset of the original `LineItems`. As with intent creation, the following must be explicitly provided and correctly calculated:
+
   - `Amount`
   - `LineItems`
   - `ExternalData`
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/captures
 
@@ -722,21 +730,23 @@ Must be a date in the future |
   	]
   }
   ```
-  | Parameters     | Sub-Parameters                  | Format | Required | Description                                                     |
-  | -------------- | ------------------------------- | ------ | -------- | --------------------------------------------------------------- |
-  | `Amount`       |                                 | string | Yes      | An amount of money in the smallest sub-division of the currency |
-  | `Currency`     |                                 | string | No       | The currency of the funds                                       |
-  | `PlatformFees` |                                 | string | No       | Information about the fees                                      |
-  | `ExternalData` |                                 | object | Yes      | Information about the external processed transaction            |
-  |                | `ExternalProcessingDate`        | date   | Yes      | The date at which the capture was created                       |
-  |                | `ExternalProviderReference`     | string | Yes      | The unique identifier of the capture at the provider level      |
-  |                | `ExternalMerchantReference`     | string | No       | The unique identifier of the capture at the merchant level      |
-  |                | `ExternalProviderName`          | string | No       | The name of the external provider processing the capture        |
-  |                | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the capture      |
-  | `LineItems`    |                                 | object | Yes      | Information about the items purchased in the transaction.       |
-  |                | `Id`                            | string | Yes      | The unique identifier of the LineItem in Mangopay ecosystem     |
-  |                | `Amount`                        | string | Yes      | The item total amount to be captured                            |
-  Must be equal to the total `Amount` amount |
+
+  | Parameters                                 | Sub-Parameters                  | Format | Required | Description                                                     |
+  | ------------------------------------------ | ------------------------------- | ------ | -------- | --------------------------------------------------------------- |
+  | `Amount`                                   |                                 | string | Yes      | An amount of money in the smallest sub-division of the currency |
+  | `Currency`                                 |                                 | string | No       | The currency of the funds                                       |
+  | `PlatformFees`                             |                                 | string | No       | Information about the fees                                      |
+  | `ExternalData`                             |                                 | object | Yes      | Information about the external processed transaction            |
+  |                                            | `ExternalProcessingDate`        | date   | Yes      | The date at which the capture was created                       |
+  |                                            | `ExternalProviderReference`     | string | Yes      | The unique identifier of the capture at the provider level      |
+  |                                            | `ExternalMerchantReference`     | string | No       | The unique identifier of the capture at the merchant level      |
+  |                                            | `ExternalProviderName`          | string | No       | The name of the external provider processing the capture        |
+  |                                            | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the capture      |
+  | `LineItems`                                |                                 | object | Yes      | Information about the items purchased in the transaction.       |
+  |                                            | `Id`                            | string | Yes      | The unique identifier of the LineItem in Mangopay ecosystem     |
+  |                                            | `Amount`                        | string | Yes      | The item total amount to be captured                            |
+  | Must be equal to the total `Amount` amount |
+
   ```jsx
   {
   	  "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
@@ -781,9 +791,11 @@ Must be a date in the future |
 
 - **Full Cancel**
   In this scenario, the cancellation is performed for the full amount specified in the original intent authorization. The following fields are derived from the created intent and therefore do not need to be provided again:
+
   - `Amount`
   - `Currency`
   - `LineItems`
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/cancel
 
@@ -797,6 +809,7 @@ Must be a date in the future |
   	},
   }
   ```
+
   | Parameters     | Sub-Parameters                  | Format | Required | Description                                               |
   | -------------- | ------------------------------- | ------ | -------- | --------------------------------------------------------- |
   | `ExternalData` |                                 | object | Yes      | Information about the external processed transaction      |
@@ -805,6 +818,7 @@ Must be a date in the future |
   |                | `ExternalMerchantReference`     | string | No       | The unique identifier of the cancel at the merchant level |
   |                | `ExternalProviderName`          | string | No       | The name of the external provider processing the cancel   |
   |                | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the cancel |
+
   ```jsx
   {
   	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
@@ -847,11 +861,14 @@ Must be a date in the future |
       "ExecutionDate": 1733329423
   }
   ```
+
 - **Partial Cancel**
   In this scenario, the cancellation is only performed for a subset of the original `LineItems`. As with intent creation, the following must be explicitly provided and correctly calculated:
+
   - `Amount`
   - `LineItems`
   - `ExternalData`
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/cancel
 
@@ -874,21 +891,23 @@ Must be a date in the future |
 
   }
   ```
-  | Parameters     | Sub-Parameters                  | Format | Required | Description                                                     |
-  | -------------- | ------------------------------- | ------ | -------- | --------------------------------------------------------------- |
-  | `Amount`       |                                 | string | Yes      | An amount of money in the smallest sub-division of the currency |
-  | `Currency`     |                                 | string | No       | The currency of the funds                                       |
-  | `PlatformFees` |                                 | string | No       | Information about the fees                                      |
-  | `ExternalData` |                                 | object | Yes      | Information about the external processed transaction            |
-  |                | `ExternalProcessingDate`        | date   | Yes      | The date at which the cancel was created                        |
-  |                | `ExternalProviderReference`     | string | Yes      | The unique identifier of the cancel at the provider level       |
-  |                | `ExternalMerchantReference`     | string | No       | The unique identifier of the cancel at the merchant level       |
-  |                | `ExternalProviderName`          | string | No       | The name of the external provider processing the cancel         |
-  |                | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the cancel       |
-  | `LineItems`    |                                 | object | Yes      | Information about the items canceled in the transaction.        |
-  |                | `Id`                            | string | yes      | The unique identifier of the LineItem in Mangopay ecosystem     |
-  |                | `Amount`                        | string | Yes      | The item total amount to be canceled                            |
-  Must be equal to the total `Amount` amount |
+
+  | Parameters                                 | Sub-Parameters                  | Format | Required | Description                                                     |
+  | ------------------------------------------ | ------------------------------- | ------ | -------- | --------------------------------------------------------------- |
+  | `Amount`                                   |                                 | string | Yes      | An amount of money in the smallest sub-division of the currency |
+  | `Currency`                                 |                                 | string | No       | The currency of the funds                                       |
+  | `PlatformFees`                             |                                 | string | No       | Information about the fees                                      |
+  | `ExternalData`                             |                                 | object | Yes      | Information about the external processed transaction            |
+  |                                            | `ExternalProcessingDate`        | date   | Yes      | The date at which the cancel was created                        |
+  |                                            | `ExternalProviderReference`     | string | Yes      | The unique identifier of the cancel at the provider level       |
+  |                                            | `ExternalMerchantReference`     | string | No       | The unique identifier of the cancel at the merchant level       |
+  |                                            | `ExternalProviderName`          | string | No       | The name of the external provider processing the cancel         |
+  |                                            | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the cancel       |
+  | `LineItems`                                |                                 | object | Yes      | Information about the items canceled in the transaction.        |
+  |                                            | `Id`                            | string | yes      | The unique identifier of the LineItem in Mangopay ecosystem     |
+  |                                            | `Amount`                        | string | Yes      | The item total amount to be canceled                            |
+  | Must be equal to the total `Amount` amount |
+
   ```jsx
   {
   	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
@@ -1135,9 +1154,11 @@ One valid value must be sent between `AuthorId` & `WalletId` |
 
 - **Full Refund**
   In this scenario, the refund is performed for the full amount available to be split. The following fields are derived from the intent and therefore do not need to be provided again:
+
   - `Amount`
   - `Currency`
   - `LineItems`
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/refunds
 
@@ -1151,15 +1172,17 @@ One valid value must be sent between `AuthorId` & `WalletId` |
   	}
   }
   ```
-  | Parameters     | Sub-Parameters              | Format | Required | Description                                               |
-  | -------------- | --------------------------- | ------ | -------- | --------------------------------------------------------- |
-  | `ExternalData` |                             | object | Yes      | Information about the external processed refund           |
-  |                | `ExternalProcessingDate`    | date   | Yes      | The date at which the refund was created                  |
-  |                | `ExternalProviderReference` | string | Yes      | The unique identifier of the refund at the provider level |
-  |                | `ExternalMerchantReference` | string | No       | The unique identifier of the refund at the merchant level |
-  |                | `ExternalProviderName`      | string | No       | The name of the external provider processing the refund   |
-  If provided but differs from the original intent, it will be ignored |
-  | | `ExternalProviderPaymentMethod` | string | No | The name of the payment method used to process the refund |
+
+  | Parameters                                                           | Sub-Parameters                  | Format | Required | Description                                               |
+  | -------------------------------------------------------------------- | ------------------------------- | ------ | -------- | --------------------------------------------------------- |
+  | `ExternalData`                                                       |                                 | object | Yes      | Information about the external processed refund           |
+  |                                                                      | `ExternalProcessingDate`        | date   | Yes      | The date at which the refund was created                  |
+  |                                                                      | `ExternalProviderReference`     | string | Yes      | The unique identifier of the refund at the provider level |
+  |                                                                      | `ExternalMerchantReference`     | string | No       | The unique identifier of the refund at the merchant level |
+  |                                                                      | `ExternalProviderName`          | string | No       | The name of the external provider processing the refund   |
+  | If provided but differs from the original intent, it will be ignored |
+  |                                                                      | `ExternalProviderPaymentMethod` | string | No       | The name of the payment method used to process the refund |
+
   ```jsx
   {
       "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
@@ -1206,11 +1229,14 @@ One valid value must be sent between `AuthorId` & `WalletId` |
       "ExecutionDate": 1731430322
   }
   ```
+
 - **Partial Refund**
   In this scenario, the refund is only performed for a subset of the captured `LineItems`. As with intent creation, the following must be explicitly provided and correctly calculated:
+
   - `Amount`
   - `LineItems`
   - `ExternalData`
+
   ```jsx
   POST ../V3.0/{clientId}/payins/intents/{intentId}/refunds
 
@@ -1233,22 +1259,24 @@ One valid value must be sent between `AuthorId` & `WalletId` |
   	]
   }
   ```
-  | Parameters | Sub-Parameters | Sub-Sub-Parameters | Format | Required | Description                                                     |
-  | ---------- | -------------- | ------------------ | ------ | -------- | --------------------------------------------------------------- |
-  | `Amount`   |                |                    | string | Yes      | An amount of money in the smallest sub-division of the currency |
-  The `Amount` must be lower or equal to the `AvailableAmountToSplit` |
-  | `Currency` | | | string | No | The currency of the funds |
-  | `PlatformFees` | | | string | No | Information about the fees |
-  | `ExternalData` | | | object | Yes | Information about the external processed refund |
-  | | `ExternalProcessingDate` | | date | Yes | The date at which the refund was created |
-  | | `ExternalProviderReference` | | string | Yes | The unique identifier of the refund at the provider level |
-  | | `ExternalMerchantReference` | | string | No | The unique identifier of the refund at the merchant level |
-  | | `ExternalProviderName` | | string | Yes | The name of the external provider processing the refund |
-  | | `ExternalProviderPaymentMethod` | | string | No | The name of the payment method used to process the refund |
-  | `LineItems` | | | object | Yes | Information about the items refunded |
-  | | `Id` | | string | Yes | The unique identifier of the item in Mangopay ecosystem |
-  | | `Amount` | | string | Yes | The item total amount to be refunded
-  Must be equal to the total `Amount` amount |
+
+  | Parameters                                                          | Sub-Parameters                  | Sub-Sub-Parameters | Format | Required | Description                                                     |
+  | ------------------------------------------------------------------- | ------------------------------- | ------------------ | ------ | -------- | --------------------------------------------------------------- |
+  | `Amount`                                                            |                                 |                    | string | Yes      | An amount of money in the smallest sub-division of the currency |
+  | The `Amount` must be lower or equal to the `AvailableAmountToSplit` |
+  | `Currency`                                                          |                                 |                    | string | No       | The currency of the funds                                       |
+  | `PlatformFees`                                                      |                                 |                    | string | No       | Information about the fees                                      |
+  | `ExternalData`                                                      |                                 |                    | object | Yes      | Information about the external processed refund                 |
+  |                                                                     | `ExternalProcessingDate`        |                    | date   | Yes      | The date at which the refund was created                        |
+  |                                                                     | `ExternalProviderReference`     |                    | string | Yes      | The unique identifier of the refund at the provider level       |
+  |                                                                     | `ExternalMerchantReference`     |                    | string | No       | The unique identifier of the refund at the merchant level       |
+  |                                                                     | `ExternalProviderName`          |                    | string | Yes      | The name of the external provider processing the refund         |
+  |                                                                     | `ExternalProviderPaymentMethod` |                    | string | No       | The name of the payment method used to process the refund       |
+  | `LineItems`                                                         |                                 |                    | object | Yes      | Information about the items refunded                            |
+  |                                                                     | `Id`                            |                    | string | Yes      | The unique identifier of the item in Mangopay ecosystem         |
+  |                                                                     | `Amount`                        |                    | string | Yes      | The item total amount to be refunded                            |
+  | Must be equal to the total `Amount` amount                          |
+
   ```jsx
    {
       "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
@@ -2024,6 +2052,7 @@ Must be a date in the future |
 ### Intents & Actions
 
 - **Intents**
+
   ```jsx
   POST ../v2.01/{clientId}/reporting/reports
 
@@ -2053,6 +2082,7 @@ Must be a date in the future |
   	]
   }
   ```
+
 - **Actions**
 
 ### Settlements
@@ -2063,9 +2093,12 @@ Must be a date in the future |
 
 - **Mirakl Connector**
 - **Platform operating 3P volumes**
+
   - **Standard sale fund allocation including 3P volume**
     _“A marketplace processes €500 payment volume via its external provider, allocating funds to sellers and the platform commission using splits”_
+
     - **Intent**
+
       ```jsx
       POST ../V3.0/{clientId}/payins/intents
 
@@ -2137,11 +2170,13 @@ Must be a date in the future |
           ]
       }
       ```
+
       ```jsx
       POST ../V3.0/{clientId}/payins/intents/{intentId}/captures
 
       {}
       ```
+
     - **Funds Reception**
       ```jsx
       curl -X POST ".../V3.0/{clientId}/payins/intents/settlements" \
@@ -2149,6 +2184,7 @@ Must be a date in the future |
       -F "file=@/17032025_generic_settlement_file.csv"
       ```
     - **Funds Split**
+
       ```jsx
       PUT ../V3.0/{clientId}/payins/intents/{intentId}/splits
 
@@ -2169,13 +2205,18 @@ Must be a date in the future |
           ]
       }
       ```
+
     - 🚧 **Split Execution**
+
       ```jsx
 
       ```
+
   - **Sales with refund adjustment fund allocation**
     _“A marketplace processes €500 payment volume and a €350 refund volume via its external provider, allocating funds to sellers and the platform commission using splits”_
+
     - **Intent**
+
       ```jsx
       POST ../V3.0/{clientId}/payins/intents
 
@@ -2247,11 +2288,13 @@ Must be a date in the future |
           ]
       }
       ```
+
       ```jsx
       POST ../V3.0/{clientId}/payins/intents/{intentId}/captures
 
       {}
       ```
+
     - **Funds Reception**
       ```jsx
       curl -X POST ".../V3.0/{clientId}/payins/intents/settlements" \
@@ -2259,6 +2302,7 @@ Must be a date in the future |
       -F "file=@/17032025_generic_settlement_file.csv"
       ```
     - **Funds Split**
+
       ```jsx
       PUT ../V3.0/{clientId}/payins/intents/{intentId}/splits
 
@@ -2279,8 +2323,11 @@ Must be a date in the future |
           ]
       }
       ```
+
     - **Refund Adjustment**
+
       - **Seller full refund coverage**
+
         ```jsx
         POST ../V3.0/{clientId}/payins/intents/{intentId}/refunds
 
@@ -2321,7 +2368,9 @@ Must be a date in the future |
             ]
         }
         ```
+
       - **Seller and platform refund coverage**
+
         ```jsx
         POST ../V3.0/{clientId}/payins/intents/{intentId}/refunds
 
@@ -2362,8 +2411,10 @@ Must be a date in the future |
             ]
         }
         ```
+
     - **🚧 Split Adjustement**
     - **🚧 Split Execution**
+
 - **Platform operating 1P volumes**
 - **Platform operating mixed volumes**
 - **Standard sale fund allocation including 1P volume**
