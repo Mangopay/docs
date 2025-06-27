@@ -71,7 +71,7 @@ Mangopay processes behavioral biometric data captured during SCA sessions solely
 
 <img height="512" width="100%" src="/images/screenshot_sca_email.png" />
 
-## Factors presented
+## Factors
 
 Mangopay provides the following authentication factors.
 
@@ -129,170 +129,6 @@ Mangopay provides the following authentication factors.
 </tr>
 </tbody>
 </table>
-
-## Orchestration
-
-### Enrollment
-
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#FFFFFF',
-      'primaryTextColor': '#2D0F37',
-      'primaryBorderColor': '#2D0F37',
-      'lineColor': '#2D0F37',
-      'secondaryColor': '#FFFFFF',
-      'tertiaryColor': '#FFFFFF',
-      'fontSize': '30px',
-      'fontFamily': 'Inter'
-    }
-  }
-}%%
-flowchart LR
-    n6["Offer passkey factor"] ==> n7(["User enrolls passkey?"])
-    n8["User confirms email"] ==> n11["User enrolls PIN"]
-    n11 ==> n13(["END"])
-    n14(["START"]) ==> n4(["Device supports WebAuth?"])
-    n12["User confirms email"] ==> n15["User enrolls PIN"]
-    n15 ==> n16["User enrolls OTP SMS"]
-    n16 ==> n13
-    n4 == Yes ==> n6
-    n4 == No ==> n8
-    n7 == No ==> n8
-    n7 == Yes ==> n12
-
-    n6@{ shape: rect}
-    n8@{ shape: rect}
-
-    style n4 stroke-width:3.5px
-    style n6 stroke-width:3.5px
-    style n7 stroke-width:3.5px
-    style n8 stroke-width:3.5px
-    style n11 stroke-width:3.5px
-    style n12 stroke-width:3.5px
-    style n13 stroke-width:3.5px
-    style n14 stroke-width:3.5px
-    style n15 stroke-width:3.5px
-    style n16 stroke-width:3.5px
-```
-
-### Authentication
-
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#FFFFFF',
-      'primaryTextColor': '#2D0F37',
-      'primaryBorderColor': '#2D0F37',
-      'lineColor': '#2D0F37',
-      'secondaryColor': '#FFFFFF',
-      'tertiaryColor': '#FFFFFF',
-      'fontSize': '30px',
-      'fontFamily': 'Inter'
-    }
-  }
-}%%
-flowchart LR
-    n6["Offer passkey factor"] ==> n7(["User auths passkey?"])
-    n14(["START"]) ==> n4(["Passkey enrolled?"])
-    n4 == Yes ===> n6
-    n4 == No ===> n17["User confirms email"]
-    n7 == YES ===> n13(["SUCCESS"])
-    n17 ==> n18(["User wants to change PIN?"])
-    n18 == No ==> n22["User confirms existing PIN"]
-    n19(["Email step successful?"]) == Yes ===> n13
-    n20["User auths existing OTP SMS"] ==> n13
-    n22 ==> n19
-    n18 == Yes ===> n23["User enrolls new PIN"]
-    n23 ==> n20
-    n7 == No ==> n17
-    n19 == No ==> n28(["User wants to change phone number?"])
-    n28 == Yes ==> n29["User enrolls new OTP SMS "]
-    n29 ==> n13
-    n28 == No ==> n20
-
-    n6@{ shape: rect}
-
-    style n4 stroke-width:3.5px
-    style n6 stroke-width:3.5px
-    style n7 stroke-width:3.5px
-    style n13 stroke-width:3.5px
-    style n14 stroke-width:3.5px
-    style n17 stroke-width:3.5px
-    style n18 stroke-width:3.5px
-    style n19 stroke-width:3.5px
-    style n20 stroke-width:3.5px
-    style n22 stroke-width:3.5px
-    style n23 stroke-width:3.5px
-    style n28 stroke-width:3.5px
-    style n29 stroke-width:3.5px
-```
-
-### Re-enrollment via API
-
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#FFFFFF',
-      'primaryTextColor': '#2D0F37',
-      'primaryBorderColor': '#2D0F37',
-      'lineColor': '#2D0F37',
-      'secondaryColor': '#FFFFFF',
-      'tertiaryColor': '#FFFFFF',
-      'fontSize': '30px',
-      'fontFamily': 'Inter'
-    }
-  }
-}%%
-flowchart LR
-    n6["Offer passkey factor"] ==> n7(["User auths passkey?"])
-    n14(["START"]) ==> n30["PhoneNumber or Email modified via API"]
-    n4(["Passkey enrolled?"]) == Yes ===> n6
-    n4 == No ===> n17["User confirms email"]
-    n22["User auths PIN"] ==> n32["User auths (new/unmodified) OTP SMS"]
-    n30 ==> n4
-    n7 == Yes ==> n31["User confirms email"]
-    n17 ==> n22
-    n32 ==> n13(["SUCCESS"])
-    n7 == No ==> n17
-    n31 ==> n33(["Which data updated?"])
-    n33 == Email only ==> n13
-    n33 == Phone number (with or without email) ==> n34["User auths new OTP SMS"]
-    n34 ==> n13
-
-    n6@{ shape: rect}
-    n30@{ shape: rect}
-
-    style n4 stroke-width:3.5px
-    style n6 stroke-width:3.5px
-    style n7 stroke-width:3.5px
-    style n13 stroke-width:3.5px
-    style n14 stroke-width:3.5px
-    style n17 stroke-width:3.5px
-    style n22 stroke-width:3.5px
-    style n30 stroke-width:3.5px
-    style n31 stroke-width:3.5px
-    style n32 stroke-width:3.5px
-    style n33 stroke-width:3.5px
-    style n34 stroke-width:3.5px
-```
-
-
-#### Logic governing optional trusted devices
-
-Defining a trusted device using a WebAuthn passkey is optional. 
-
-If the user chooses to enroll a trusted device, then only the PIN is enrolled as the second factor.
-
-If the user chooses to authenticate using a trusted device, then the passkey alone satisfies SCA because it is a combination of two factors.
-
-If at either point the uses skips the use of a trusted device, then the PIN and OTP are both used. Skipping the passkey is possible during authentication even if a device is already enrolled because the user may not be using their trusted device.
 
 ### Passkey 
 
@@ -408,3 +244,208 @@ The phone number provided or confirmed by the user during the SCA session is not
 Changing the `PhoneNumber` or `LegalRepresentative.PhoneNumber` data in the API object triggers SCA re-enrollment ([read more](/guides/sca/users#re-enroll-an-enrolled-owner)).
 </Note>
 
+
+## Factor orchestration
+
+The SCA session is orchestrated to optimize the enrollment and authentication experience for users. 
+
+Mangopay aims to encourage users to choose more secure factors, such as the WebAuthn passkey, but reverts to other factors if the user skips this option. In all cases, the session meets SCA requirements and is highly secure, including if the user chooses to re-enroll a factor during the session.
+
+The diagrams below describe the different possible flows and all options available to the user to skip or re-enroll factors.
+
+<Note>
+**Note – Email confirmation** 
+
+Email confirmation is required in all flows, with the exception of authentication via passkey (email is still required during passkey enrollment).
+
+Once the email confirmation is validated as a factor, the enrollment and authentication flows will modify to adopt it. 
+
+The email address used is the `Email` for Natural users and the `LegalRepresentative.Email` for legal users. The address cannot be changed by the user during the session; it can only be changed via API, which triggers the re-enrollment flow below.
+</Note>
+
+### Initial enrollment
+
+When the user is redirect to a Mangopay SCA session for the first time: 
+
+- Mangopay analyzes their device to see if it supports WebAuthn passkey.
+- Even if the device is compatible, the passkey can be skipped and is the only factor that can be.
+- If passkey enrolled (not skipped), then the PIN and email are used as a backup.
+
+<Check>
+**Best practice – Encourage users to enroll and use passkey**
+
+Mangopay has integrated it to be a combined possession (of the device) and inherence or knowledge type (depending on the devices authentication. Furthermore, the email confirmation step is not required on authentication (it is still required for enrollment or re-enrollment).
+
+The WebAuthn passkey represents one of the most secure web-based authentication methods and we strong encourage your users to adopt it.
+</Check>
+
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '30px',
+      'fontFamily': 'Inter'
+    }
+  }
+}%%
+flowchart LR
+    n6["Offer passkey factor"] --> n7(["User enrolls passkey?"])
+    n8["User confirms email"] --> n11["User enrolls  PIN"]
+    n14(["START"]) --> n4(["Device supports WebAuth?"])
+    n12["User confirms email"] --> n15["User enrolls PIN"]
+    n15 --> n16["User enrolls  OTP SMS"]
+    n16 --> n13(["END"])
+    n4 -- No --> n12
+    n4 -- Yes --> n6
+    n7 -- No --> n12
+    n11 --> n13
+    n7 -- Yes --> n8
+
+    n6@{ shape: rect}
+    n8@{ shape: rect}
+
+    style n4 stroke-width:3.5px
+    style n6 stroke-width:3.5px
+    style n7 stroke-width:3.5px
+    style n8 stroke-width:3.5px
+    style n11 stroke-width:3.5px
+    style n12 stroke-width:3.5px
+    style n13 stroke-width:3.5px
+    style n14 stroke-width:3.5px
+    style n15 stroke-width:3.5px
+    style n16 stroke-width:3.5px
+```
+
+### Authentication
+
+When the user is prompted to authenticate: 
+
+- The passkey is the only factor that can be skipped (even if it is enrolled, as the user may not be on their enrolled device). If it is enrolled and then skipped, then the PIN is used.
+- The user can opt to change re-enroll either the PIN or the OTP SMS during an authentication session. The other is used to authenticate the one that is changed.
+- The user cannot modify their email address (only possible via API, see below).
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '30px',
+      'fontFamily': 'Inter'
+    }
+  }
+}%%
+flowchart LR
+    n6["Offer passkey factor"] --> n7(["User auths  passkey?"])
+    n14(["START"]) --> n4(["Passkey enrolled?"])
+    n4 -- Yes ---> n6
+    n4 -- No ---> n17["User confirms  email"]
+    n7 -- YES ---> n13(["SUCCESS"])
+    n17 --> n18(["User wants to change PIN?"])
+    n18 -- No --> n22["User auths  existing PIN"]
+    n19(["Email step successful?"]) -- Yes ---> n13
+    n20["User auths existing OTP SMS"] --> n13
+    n22 --> n19
+    n18 -- Yes ---> n23["User enrolls  new PIN"]
+    n23 --> n20
+    n7 -- No --> n17
+    n19 -- No --> n28(["User wants to change phone number?"])
+    n28 -- Yes --> n29["User enrolls new OTP SMS"]
+    n29 --> n13
+    n28 -- No --> n20
+
+    n6@{ shape: rect}
+
+    style n4 stroke-width:3.5px
+    style n6 stroke-width:3.5px
+    style n7 stroke-width:3.5px
+    style n13 stroke-width:3.5px
+    style n14 stroke-width:3.5px
+    style n17 stroke-width:3.5px
+    style n18 stroke-width:3.5px
+    style n19 stroke-width:3.5px
+    style n20 stroke-width:3.5px
+    style n22 stroke-width:3.5px
+    style n23 stroke-width:3.5px
+    style n28 stroke-width:3.5px
+    style n29 stroke-width:3.5px
+```
+
+### Re-enrollment via API
+
+The email cannot be changed by the user during the SCA session; it can only be changed via the API. The phone number can be changed by the user during the SCA session and if it is, then the data is **not** updated in the API. 
+
+The diagram below shows the re-enrollment flow in the case of phone number or email change via API (the authentication flow above shows phone number change in the session).
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '30px',
+      'fontFamily': 'Inter'
+    }
+  }
+}%%
+flowchart LR
+    n6["Offer passkey factor"] ==> n7(["User auths passkey?"])
+    n14(["START"]) ==> n30["PhoneNumber or Email modified via API"]
+    n4(["Passkey enrolled?"]) == Yes ===> n6
+    n4 == No ===> n17["User confirms email"]
+    n22["User auths PIN"] ==> n32["User auths (new/unmodified) OTP SMS"]
+    n30 ==> n4
+    n7 == Yes ==> n31["User confirms email"]
+    n17 ==> n22
+    n32 ==> n13(["SUCCESS"])
+    n7 == No ==> n17
+    n31 ==> n33(["Which data updated?"])
+    n33 == Email only ==> n13
+    n33 == Phone number (with or without email) ==> n34["User auths new OTP SMS"]
+    n34 ==> n13
+
+    n6@{ shape: rect}
+    n30@{ shape: rect}
+
+    style n4 stroke-width:3.5px
+    style n6 stroke-width:3.5px
+    style n7 stroke-width:3.5px
+    style n13 stroke-width:3.5px
+    style n14 stroke-width:3.5px
+    style n17 stroke-width:3.5px
+    style n22 stroke-width:3.5px
+    style n30 stroke-width:3.5px
+    style n31 stroke-width:3.5px
+    style n32 stroke-width:3.5px
+    style n33 stroke-width:3.5px
+    style n34 stroke-width:3.5px
+```
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="Guide"
+  href="/guides/sca/session"
+>
+Read about how to redirect a user for the SCA session
+</Card>
+</CardGroup>
