@@ -130,9 +130,9 @@ Mangopay provides the following authentication factors.
 </tbody>
 </table>
 
-### Orchestration
+## Orchestration
 
-
+### Enrollment
 
 ```mermaid
 %%{
@@ -151,19 +151,21 @@ Mangopay provides the following authentication factors.
   }
 }%%
 flowchart LR
-    n6["Offer passkey <br>factor"] ==> n7(["User enrolls <br>passkey?"])
-    n8["User confirms <br>email"] ==> n11["User enrolls <br>PIN"]
+    n6["Offer passkey factor"] ==> n7(["User enrolls passkey?"])
+    n8["User confirms email"] ==> n11["User enrolls PIN"]
     n11 ==> n13(["END"])
-    n14(["START"]) ==> n4(["Device supports <br>WebAuth?"])
-    n12["User confirms <br>email"] ==> n15["User enrolls <br>PIN"]
-    n15 ==> n16["User enrolls <br>OTP SMS"]
+    n14(["START"]) ==> n4(["Device supports WebAuth?"])
+    n12["User confirms email"] ==> n15["User enrolls PIN"]
+    n15 ==> n16["User enrolls OTP SMS"]
     n16 ==> n13
-    n4 ==  No  ===> n8 
-    n4 ==  Yes  ===> n6
-    n7 ==  No  ===> n8 
-    n7 ==  Yes  ===> n12
+    n4 == Yes ==> n6
+    n4 == No ==> n8
+    n7 == No ==> n8
+    n7 == Yes ==> n12
+
     n6@{ shape: rect}
     n8@{ shape: rect}
+
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -175,6 +177,112 @@ flowchart LR
     style n15 stroke-width:3.5px
     style n16 stroke-width:3.5px
 ```
+
+### Authentication
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '30px',
+      'fontFamily': 'Inter'
+    }
+  }
+}%%
+flowchart LR
+    n6["Offer passkey factor"] ==> n7(["User auths passkey?"])
+    n14(["START"]) ==> n4(["Passkey enrolled?"])
+    n4 == Yes ===> n6
+    n4 == No ===> n17["User confirms email"]
+    n7 == YES ===> n13(["SUCCESS"])
+    n17 ==> n18(["User wants to change PIN?"])
+    n18 == No ==> n22["User confirms existing PIN"]
+    n19(["Email step successful?"]) == Yes ===> n13
+    n20["User auths existing OTP SMS"] ==> n13
+    n22 ==> n19
+    n18 == Yes ===> n23["User enrolls new PIN"]
+    n23 ==> n20
+    n7 == No ==> n17
+    n19 == No ==> n28(["User wants to change phone number?"])
+    n28 == Yes ==> n29["User enrolls new OTP SMS "]
+    n29 ==> n13
+    n28 == No ==> n20
+
+    n6@{ shape: rect}
+
+    style n4 stroke-width:3.5px
+    style n6 stroke-width:3.5px
+    style n7 stroke-width:3.5px
+    style n13 stroke-width:3.5px
+    style n14 stroke-width:3.5px
+    style n17 stroke-width:3.5px
+    style n18 stroke-width:3.5px
+    style n19 stroke-width:3.5px
+    style n20 stroke-width:3.5px
+    style n22 stroke-width:3.5px
+    style n23 stroke-width:3.5px
+    style n28 stroke-width:3.5px
+    style n29 stroke-width:3.5px
+```
+
+### Re-enrollment via API
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '30px',
+      'fontFamily': 'Inter'
+    }
+  }
+}%%
+flowchart LR
+    n6["Offer passkey factor"] ==> n7(["User auths passkey?"])
+    n14(["START"]) ==> n30["PhoneNumber or Email modified via API"]
+    n4(["Passkey enrolled?"]) == Yes ===> n6
+    n4 == No ===> n17["User confirms email"]
+    n22["User auths PIN"] ==> n32["User auths (new/unmodified) OTP SMS"]
+    n30 ==> n4
+    n7 == Yes ==> n31["User confirms email"]
+    n17 ==> n22
+    n32 ==> n13(["SUCCESS"])
+    n7 == No ==> n17
+    n31 ==> n33(["Which data updated?"])
+    n33 == Email only ==> n13
+    n33 == Phone number (with or without email) ==> n34["User auths new OTP SMS"]
+    n34 ==> n13
+
+    n6@{ shape: rect}
+    n30@{ shape: rect}
+
+    style n4 stroke-width:3.5px
+    style n6 stroke-width:3.5px
+    style n7 stroke-width:3.5px
+    style n13 stroke-width:3.5px
+    style n14 stroke-width:3.5px
+    style n17 stroke-width:3.5px
+    style n22 stroke-width:3.5px
+    style n30 stroke-width:3.5px
+    style n31 stroke-width:3.5px
+    style n32 stroke-width:3.5px
+    style n33 stroke-width:3.5px
+    style n34 stroke-width:3.5px
+```
+
 
 #### Logic governing optional trusted devices
 
