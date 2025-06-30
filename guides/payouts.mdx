@@ -12,7 +12,7 @@ import Aml from '/snippets/glossary/aml.mdx';
   
 A payout is the process of withdrawing funds from the Mangopay environment to an external bank account opened in the name of the Mangopay Account holder.
 
-The user’s external bank account must be registered in advance of the payout request as a [Recipient](/guides/sca/recipients).
+The user's external bank account must be registered in advance of the payout request as a [Recipient](/guides/sca/recipients).
 
 The Natural User or Legal User registered with Mangopay must have:
 
@@ -39,7 +39,7 @@ Domestic payouts must be requested to a [Recipient](/api-reference/recipients/re
 
 Non-domestic rails rely on shared messaging services such as SWIFT to transfer funds. SWIFT processing times depend on a number of factors including cutoff times and correspondent banks. SWIFT payments can arrive same day, they are frequently next day but can also take several days.
 
-Mangopay works with partner banks to send the funds to the user’s account. Depending on where the user’s account is registered, Mangopay’s partners may themselves need to rely on additional correspondent banks to enable the connection with the end user’s bank.
+Mangopay works with partner banks to send the funds to the user's account. Depending on where the user's account is registered, Mangopay's partners may themselves need to rely on additional correspondent banks to enable the connection with the end user's bank.
 
 Non-domestic payouts are requested to a [Recipient](/api-reference/recipients/recipient-object) with the `PayoutMethod` of `InternationalBankTransfer`.
 
@@ -51,11 +51,17 @@ The table below shows all local and international payout rails offered by Mangop
 
 ### Delivery times
 
-Standard payouts are processed by Mangopay as quickly as possible. Some payouts are subject to manual review by Mangopay’s teams for reasons of risk management or AML/CFT - these may take longer.
+The delivery times shown in the table above are typical for the rail used. Some payouts are subject to manual review by Mangopay's teams for reasons of risk management or AML/CFT - these payouts may take longer than shown.
 
-Payouts created before the cutoff times outlined above are transferred to the user’s bank account within the corresponding processing times. Payouts created after the cutoff are processed next working day – meaning Monday to Friday excluding weekends and [public holidays](/support/public-holidays).
+Payouts created before the cutoff times outlined below are transferred to the user's bank account within the corresponding processing times. Payouts created after the cutoff are processed next working day – meaning Monday to Friday excluding weekends and [public holidays](/support/public-holidays).
 
 Some SWIFT payouts are sent the day after the cutoff, and therefore delivery can take a day longer. These routes are marked **+1** in the table above.
+
+<Note>
+**Note – Timings displayed are indicative**
+
+The delivery times shown on this page are indicative. For all schemes, the actual delivery time of an specific individual payout depends on various factors, many of which are out of Mangopay's control.
+</Note>
 
 ### Instant schemes
 
@@ -71,11 +77,11 @@ In the SEPA zone, platforms can take advantage of a choice of schemes (SCT, SCT 
 
 ### Real-time gross settlement (RTGS)
 
-For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone’s T2 scheme (formerly called TARGET2). This functionality was previously known as Express Payouts.
+For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2). This functionality was previously known as Express Payouts.
 
 To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
 
-Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next working day. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year’s Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
+Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next working day. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
 
 ### Cost-bearing for international payouts
 
