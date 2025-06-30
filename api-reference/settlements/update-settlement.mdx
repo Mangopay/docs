@@ -1,27 +1,29 @@
 ---
 title: Update a Settlement
-api: PUT /v3.0/{ClientId}/payins/intents/settlements/{SettlementId}
-description: Re-upload a Mangopay-format settlement file to update an existing Settlement
+api: PUT /v3.0/{ClientId}/payins/intents/settlements/{SettlementId} 
+description: Update a Settlement by uploading an additional file
 ---
 
-Use this endpoint to send Mangopay CSV settlement files in Mangopay’s defined template. 
+import SettlementId_Settlement from '/snippets/p-response/SettlementId_Settlement.mdx';
+import Status_Settlement from '/snippets/p-response/Status_Settlement.mdx';
+import CreationDate_Settlement from '/snippets/p-response/CreationDate_Settlement.mdx';
+import DeclaredIntentAmount_Settlement from '/snippets/p-response/DeclaredIntentAmount_Settlement.mdx';
+import ExternalProcessorFeesAmount_Settlement from '/snippets/p-response/ExternalProcessorFeesAmount_Settlement.mdx';
+import ActualSettlementAmount_Settlement from '/snippets/p-response/ActualSettlementAmount_Settlement.mdx';
+import FundsMissingAmount_Settlement from '/snippets/p-response/FundsMissingAmount_Settlement.mdx';
 
-You need to send one file per currency, as soon as it becomes available.
+import SettlementId_SettlementId_Path from '/snippets/p-path/SettlementId_SettlementId_Path.mdx';
 
-<Warning>
-**Caution – Use settlement file example as template**
+{/* Use this endpoint to send another Mangopay-format CSV file to modify the data in an existing Settlement. */}
 
-You must follow the [specifications provided here](/guides/echo/mirakl#specifications-of-the-mangopay-format-settlement-file).
+### Path parameters
 
-Use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
-
-There are no requirements for the **file name**: you can name your file how you like.
-</Warning>
+<SettlementId_SettlementId_Path/>
 
 ### Body parameters
 
 <ParamField body="file" type="csv" required>
-The settlement file, provided by the external PSP and formatted to comply with Mangopay's [settlement file structure](/guides/echo/mirakl#specifications-of-the-mangopay-format-settlement-file).
+The settlement file, provided by the external PSP and formatted to comply with Mangopay's [settlement file structure](/guides/echo/settlement-file).
 </ParamField>
 
 ### Responses
@@ -29,7 +31,13 @@ The settlement file, provided by the external PSP and formatted to comply with M
 <AccordionGroup>
 <Accordion title="200 - OK" defaultOpen>
 
-This endpoint returns a JSON object containing details about the settlement (SettlementId, declared amount, settled amount, status, etc.)
+<SettlementId_Settlement/>
+<Status_Settlement/>
+<CreationDate_Settlement/>
+<DeclaredIntentAmount_Settlement/>
+<ExternalProcessorFeesAmount_Settlement/>
+<ActualSettlementAmount_Settlement/>
+<FundsMissingAmount_Settlement/>
 
 </Accordion>
 </AccordionGroup>
@@ -45,7 +53,7 @@ This endpoint returns a JSON object containing details about the settlement (Set
 
 <RequestExample>
 ```bash
-curl -X POST ".../v3.0/{clientId}/payins/intents/settlements" \
+curl -X PUT ".../v3.0/{ClientId}/payins/intents/settlements/{SettlementId}"" \
 -H "Authorization: Bearer token" \
 -H "Content-Type: multipart/form-data" \
 -F "file=@/example/file-path.csv"

@@ -1,0 +1,353 @@
+---
+title: Settlement file format requirements
+---
+
+This page describes the Mangopay format requirements of the CSV settlement file that your platform must upload to the [POST Create a Settlement](/api-reference/settlements/create-settlement) endpoint.
+
+The CSV file contains: 
+- Transaction data – Header columns and a row for each transaction included in the settlement file
+- A single empty row (string of commas)
+- Footer rows – Summary data with header rows and a single value for each
+
+<Warning>
+**Caution – Mandatory fields must not be empty**
+
+All mandatory fields must be present and not empty in every row or the file will be rejected. The parser identifies columns by their headers, not their position.
+
+Optional fields (transaction data or summary footer) can be empty.
+</Warning>
+
+### Example template
+
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+
+## File requirements 
+
+- File type: `.csv`
+- Delimiter: Comma `,`
+- Max. file size: TBD
+
+There are no requirements for the **file name** – you can name your file how you like.
+
+## Mandatory fields
+
+<table>
+<thead>
+<tr>
+<th class="header">`ExternalTransactionStatus`</th>
+<th class="header">Description</th>
+<th class="header">`ExternalTransactionType`</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`SETTLED`</td>
+<td class="table-content">Payment successfully processed; funds are expected to be received</td>
+<td class="table-content">`PAYMENT`</td>
+</tr>
+<tr>
+<td class="table-content">`REFUNDED`</td>
+<td class="table-content">Refund fully processed; funds have been returned to the consumer</td>
+<td class="table-content">`REFUND`</td>
+</tr>
+<tr>
+<td class="table-content">`REFUND_REVERSED`</td>
+<td class="table-content">Refund processed but reversed; funds have been returned to the merchant</td>
+<td class="table-content">`REFUND`</td>
+</tr>
+<tr>
+<td class="table-content">`DISPUTED`</td>
+<td class="table-content">Funds deduced due to a dispute; not available for settlement</td>
+<td class="table-content">`DISPUTE`</td>
+</tr>
+<tr>
+<td class="table-content">`DEFENDED`</td>
+<td class="table-content">Funds temporarily returned to the merchant as part of the dispute defense process</td>
+<td class="table-content">`DISPUTE`</td>
+</tr>
+<tr>
+<td class="table-content">`DISPUTED_WON`</td>
+<td class="table-content">Dispute resolved in favor of the merchant</td>
+<td class="table-content">`DISPUTE`</td>
+</tr>
+<tr>
+<td class="table-content">`DISPUTED_LOST`</td>
+<td class="table-content">Dispute resolved against the merchant; funds permanently withdrawn</td>
+<td class="table-content">`DISPUTE`</td>
+</tr>
+</tbody>
+</table>
+
+### Columns (mandatory)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column Name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`ExternalProviderReference`
+</td>
+<td class="table-content">
+The unique identifier of a transaction at the acquirer level
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`6TU984332A894613W`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalTransactionType`
+</td>
+<td class="table-content">
+The type of transaction
+- `PAYMENT`
+- `REFUND`
+- `DISPUTE`
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`PAYMENT`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalTransactionStatus`
+</td>
+<td class="table-content">
+The status of the transaction in Mangopay format
+- `SETTLED`
+- `REFUNDED`
+- `REFUND_REVERSED`
+- `DISPUTED`
+- `DEFENDED`
+- `DISPUTED_WON`
+- `DISPUTED_LOST`
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`SETTLED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProcessingDate`
+</td>
+<td class="table-content">
+The date at which the transaction was created
+</td>
+<td class="table-content">
+date (DD-MM-YYYY)
+</td>
+<td class="table-content">
+`19-06-2025`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`Amount`
+</td>
+<td class="table-content">
+The amount of the transaction in minor unit
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`50000` (500)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`Currency`
+</td>
+<td class="table-content">
+The currency of the transaction
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`EUR`
+</td>
+</tr>
+</tbody>
+</table>
+
+### Footer rows (mandatory)
+
+<table>
+<thead>
+<tr>
+<th class="header">Footer Line Name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`SettlementDate`
+</td>
+<td class="table-content">
+The creation date of the settlement from the provider
+</td>
+<td class="table-content">
+date (DD-MM-YYYY)
+</td>
+<td class="table-content">
+`19-06-2025`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProviderName`
+</td>
+<td class="table-content">
+The name of the third-party provider that generated the settlement file
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`PAYPAL`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`TotalSettlementFeesAmount`
+</td>
+<td class="table-content">
+The total fee amount withheld by the external provider from the settlement in minor unit.
+This amount should match the sum of all ExternalProviderFees values across the file, if they are provided
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`500`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`TotalSettlementAmount`
+</td>
+<td class="table-content">
+Net settlement amount in minor unit
+SUM(LinesAmount) - TotalSettlementFeesAmount
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`50000`
+</td>
+</tr>
+</tbody>
+</table>
+
+## Optional fields
+
+### Columns (optional)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column Name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`IntentId`
+</td>
+<td class="table-content">
+The unique identifier of the intent in Mangopay ecosystem
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`int_01978259-e06b-758c-8cd5-888cee9dd669`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalInitialReference`
+</td>
+<td class="table-content">
+The unique identifier of the original transaction at the acquirer’s level.
+
+Required only when `ExternalTransactionType` is `REFUND` or `DISPUTE`
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`6TU984332A894617S`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProviderFees`
+</td>
+<td class="table-content">
+The fee amount withheld by the external provider for the transaction in minor unit
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`150`
+</td>
+</tr>
+</tbody>
+</table>
+
+### Footer rows (optional)
+
+<table>
+<thead>
+<tr>
+<th class="header">Footer Line Name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`SettlementCurrency`
+</td>
+<td class="table-content">
+The settlement currency
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`EUR`
+</td>
+</tr>
+</tbody>
+</table>
+
+
