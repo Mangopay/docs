@@ -70,44 +70,39 @@ In case of a `FAILED` status, you can use the <a href="/api-reference/payouts/vi
 You can find all you need to test payouts in Sandbox in the Testing payouts article.  
 </Note>  
 
-## Prerequisites  
+### Instant schemes
 
-### User verification  
+Mangopay provides a number of instant local schemes:
 
-Mangopay has legal obligations to verify the identity of users who wish to make payouts. Therefore, payouts can only be performed to bank accounts whose owner (as defined by the Bank Account object's User) is verified.   
+- SEPA Instant Credit Transfer for EUR payouts to EUR Recipients in SEPA countries
+- Faster Payments System (FPS) for GBP payouts to local GB Recipients
+- RIX-INST for SEK payouts to local SE recipients
 
-If the user is not verified, the payout `Status` will automatically be set to `FAILED` after being processed by Mangopay. This processing usually takes a few seconds, but can be longer due to the amount or supplementary fraud checks.  
+These typically allow payouts to be processed within 10 seconds (the `Status` changes from `CREATED` to `SUCCEEDED`) but there can be a delay in some circumstances. 
 
-<Note>  
-**Note - Payout `Status` may remain `CREATED`** 
-  
-In the production environment, a payout can remain with the `CREATED` status for longer than expected. This may be due to an uploaded KYC document still pending processing for the corresponding user.  
-</Note>  
+In the SEPA zone, platforms can take advantage of a choice of schemes (SCT, SCT Inst, and T2), and so you need to use the `PayoutModeRequested` parameter to specify the scheme for each payout request. Mangopay also offers a fallback mechanism for SCT Inst to be processed as SCT if the instant request fails. See [initiate an SCT Inst payout](/guides/payouts/integration#initiate-an-sct-inst-payout) for details.
 
-In addition, you should pay special attention to the identities of the payout author and bank account owner. Indeed, when the payout author is different from the bank account owner, the Payout `AuthorId` value must be different from the Bank Account `UserId` value as well. Otherwise, Mangopay’s Compliance team will reject the payout.  
+### Real-time gross settlement (RTGS)
 
-### Bank accounts  
+For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2). This functionality was previously known as Express Payouts.
 
-Different information is required for bank accounts in different countries. This is managed by the Bank Account `Type` parameter, which determines the information that needs to be provided via the dedicated endpoint. The values are:
-- `IBAN` – For accounts registered in countries that use IBAN (including the UK when the payout currency is **not** GBP)
-- `US` – For accounts registered in the United States
-- `CA` – For accounts registered in Canada
-- `GB` – For accounts registered in the United Kingdom **only when** the payout currency is GBP (for other payout currencies, use the `IBAN` type)
-- `OTHER` – For accounts registered in countries that do not use IBAN (and are not the US, Canada, or the UK)
+To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
 
-The country of registration of a bank account is not linked to its currency.  
+Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next working day. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
 
-<Warning>  
-**Caution - Creating the wrong type can lead to processing delays** 
-  
-Failure to use the correct type can lead to processing delays. Use the dedicated types for US, CA, and GB. Only use OTHER if the country isn’t one of these and doesn’t use IBAN.  
-</Warning>  
+### Fees for international payouts
 
-For USD and CAD payouts made by a natural user, the Address of the author must be provided.  
+For SWIFT payouts, Mangopay can enable platforms to shoulder the full cost of any processing fees that may arise from correspondent banks. This allows the beneficiary to receive the full amount of the payout.
 
-For payments to GB accounts, the `OwnerName` must match either the `FirstName` and `LastName` of the corresponding natural user, or the ` Name` of the corresponding legal user.  
+When activated, cost-bearing uses the OUR configuration of [SWIFT international bank wires](/guides/glossary#international-bank-wires) instead of the SHA option used as standard for international payouts. The fees borne by the platform are recuperated by Mangopay during the usual billing cycle.
 
-#### Country restrictions  
+This feature is available for USD international payouts, and can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+
+In future, Mangopay plans to offer this cost-bearing feature on SWIFT payouts in currencies other than USD. 
+
+## Other payout considerations
+
+### Country restrictions
 
 Due to <Aml content="AML" /> policy, we don’t accept the creation of bank accounts and payouts to some countries. Please refer to the <a href="/guides/users/country-restrictions">Country restrictions</a> article for more information.  
 
