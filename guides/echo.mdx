@@ -1,0 +1,40 @@
+---
+title: Mangopay Echo
+---
+
+## Provide settlement files to Mangopay
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition, whether the platform uses the Mirakl Connector or not.
+
+For Mirakl Connector platforms, the payment intent declarations are created automatically by the connector, but the settlement data must be provided by the platform.
+</Info>
+
+Mangopay Echo needs settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
+
+<Note>
+**Note – Process and send the settlement data as soon as it becomes available** 
+
+You should follow the process below as soon as settlement files become available from your PSP. In many cases this means daily.
+</Note>
+
+To provide your settlement data to Mangopay, you need to: 
+
+<Steps>
+<Step title="Extract the relevant data from your PSP's files">
+Extract the mandatory data points required by [Mangopay's format](/guides/echo/settlement-file) from your PSP's settlement files.
+</Step>
+<Step title="Create a CSV according to Mangopay's format">
+Generate a CSV file conforming to Mangopay's format that contains the extracted data. You can use the [example template](/guides/echo/settlement-file#example-template) to help you. 
+
+Each file must contain only a single currency.
+</Step>
+<Step title="Send the file via the dedicated API endpoint">
+Upload the file using the dedicated [POST Create a Settlement](/api-reference/settlements/create-settlement) endpoint.
+
+In response, the API creates the Settlement object with `SettlementId` and other summary data about the status and amounts.
+</Step>
+{/* <Step title="Handle unprocessed data (if required)">
+In case any data from your settlement could not be processed for some reason, you may need to reprocess transactions. The nature of this post-processing is still in development.
+</Step> */}
+</Steps>
