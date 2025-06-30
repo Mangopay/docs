@@ -4,16 +4,24 @@ api: POST /v3.0/{ClientId}/payins/intents/settlements
 description: Upload a Mangopay-format settlement file for a single currency to create a Settlement
 ---
 
-Use this endpoint to send Mangopay CSV settlement files in Mangopay's defined template. 
+import SettlementId_Settlement from '/snippets/p-response/SettlementId_Settlement.mdx';
+import Status_Settlement from '/snippets/p-response/Status_Settlement.mdx';
+import CreationDate_Settlement from '/snippets/p-response/CreationDate_Settlement.mdx';
+import DeclaredIntentAmount_Settlement from '/snippets/p-response/DeclaredIntentAmount_Settlement.mdx';
+import ExternalProcessorFeesAmount_Settlement from '/snippets/p-response/ExternalProcessorFeesAmount_Settlement.mdx';
+import ActualSettlementAmount_Settlement from '/snippets/p-response/ActualSettlementAmount_Settlement.mdx';
+import FundsMissingAmount_Settlement from '/snippets/p-response/FundsMissingAmount_Settlement.mdx';
 
-You need to send one file per currency, as soon as it becomes available.
+Use this endpoint to send Mangopay CSV settlement files in Mangopay’s defined template. 
+
+You need to send one file per currency, as soon as it becomes available. Read more about [providing settlement files to Mangoapy](/guides/echo#provide-settlement-files-to-mangopay).
 
 <Warning>
 **Caution – Use settlement file example as template**
 
-You must follow the [specifications provided here](/guides/echo/mirakl#specifications-of-the-mangopay-format-settlement-file).
+You must follow the [specifications provided here](/guides/echo/settlement-file).
 
-Use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+Use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
 
 There are no requirements for the **file name**: you can name your file how you like.
 </Warning>
@@ -29,7 +37,13 @@ The settlement file, provided by the external PSP and formatted to comply with M
 <AccordionGroup>
 <Accordion title="200 - OK" defaultOpen>
 
-This endpoint returns a JSON object containing details about the settlement (SettlementId, declared amount, settled amount, status, etc.)
+<SettlementId_Settlement/>
+<Status_Settlement/>
+<CreationDate_Settlement/>
+<DeclaredIntentAmount_Settlement/>
+<ExternalProcessorFeesAmount_Settlement/>
+<ActualSettlementAmount_Settlement/>
+<FundsMissingAmount_Settlement/>
 
 </Accordion>
 </AccordionGroup>
