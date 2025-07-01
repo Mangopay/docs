@@ -130,6 +130,16 @@ Mangopay provides the following authentication factors.
 </tbody>
 </table>
 
+#### Logic governing optional trusted devices
+
+Defining a trusted device using a WebAuthn passkey is optional. 
+
+If the user chooses to enroll a trusted device, then only the PIN is enrolled as the second factor.
+
+If the user chooses to authenticate using a trusted device, then the passkey alone satisfies SCA because it is a combination of two factors.
+
+If at either point the uses skips the use of a trusted device, then the PIN and OTP are both used. Skipping the passkey is possible during authentication even if a device is already enrolled because the user may not be using their trusted device.
+
 ### Passkey 
 
 The passkey factor relies on the Web Authentication, or WebAuthn, standard to create a set of two passkeys (or credentials): 
@@ -244,7 +254,6 @@ The phone number provided or confirmed by the user during the SCA session is not
 Changing the `PhoneNumber` or `LegalRepresentative.PhoneNumber` data in the API object triggers SCA re-enrollment ([read more](/guides/sca/users#re-enroll-an-enrolled-owner)).
 </Note>
 
-
 ## Factor orchestration
 
 The SCA session is orchestrated to optimize the enrollment and authentication experience for users. 
@@ -310,10 +319,8 @@ flowchart LR
     n7  == No  ==> n12
     n11  ==> n13
     n7  == Yes  ==> n8
-
     n6@{ shape: rect}
     n8@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -356,10 +363,8 @@ flowchart LR
     n7  == No  ==> n12
     n11  ==> n13
     n7  == Yes  ==> n8
-
     n6@{ shape: rect}
     n8@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -418,9 +423,7 @@ flowchart LR
     n28  == Yes  ==> n29["User enrolls new OTP SMS"]
     n29  ==> n13
     n28  == No  ==> n20
-
     n6@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -472,9 +475,7 @@ flowchart LR
     n28  == Yes  ==> n29["User enrolls new OTP SMS"]
     n29  ==> n13
     n28  == No  ==> n20
-
     n6@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -530,10 +531,8 @@ flowchart LR
     n33 == Email only ==> n13
     n33 == Phone number (with or without email) ==> n34["User auths new OTP SMS"]
     n34 ==> n13
-
     n6@{ shape: rect}
     n30@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px
@@ -581,10 +580,8 @@ flowchart LR
     n33 == Email only ==> n13
     n33 == Phone number (with or without email) ==> n34["User auths new OTP SMS"]
     n34 ==> n13
-
     n6@{ shape: rect}
     n30@{ shape: rect}
-
     style n4 stroke-width:3.5px
     style n6 stroke-width:3.5px
     style n7 stroke-width:3.5px

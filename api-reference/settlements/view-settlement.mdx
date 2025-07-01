@@ -1,7 +1,7 @@
 ---
 title: View a Settlement
-api: GET /v3.0/{ClientId}/payins/intents/settlements/{SettlementId} 
-description: Retrieve a Settlement
+api: GET v3.0/{ClientId}/payins/intents/settlements/{settlementId}
+description: Retrieve the settlement data generated from file upload
 ---
 
 import SettlementId_Settlement from '/snippets/p-response/SettlementId_Settlement.mdx';
@@ -13,6 +13,10 @@ import ActualSettlementAmount_Settlement from '/snippets/p-response/ActualSettle
 import FundsMissingAmount_Settlement from '/snippets/p-response/FundsMissingAmount_Settlement.mdx';
 
 import SettlementId_SettlementId_Path from '/snippets/p-path/SettlementId_SettlementId_Path.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+{/* Use this endpoint to send another Mangopay-format CSV file to modify the data in an existing Settlement. */}
 
 ### Path parameters
 
@@ -34,28 +38,30 @@ import SettlementId_SettlementId_Path from '/snippets/p-path/SettlementId_Settle
 </Accordion>
 </AccordionGroup>
 
----
+{/* <AccordionGroup>
+<Accordion title="400 - ">
+```json
 
-<AccordionGroup>
-</AccordionGroup>
-
-<RequestExample>
-```bash
-curl -X GET ".../v3.0/{ClientId}/payins/intents/settlements/{SettlementId}"" \
--H "Authorization: Bearer token" \
 ```
-</RequestExample>
+</Accordion>
+</AccordionGroup> */}
 
 <ResponseExample>
-```json 200
+```json
 {
-    "SettlementId": "int_stlmnt_019778c1-fe45-7864-8d2c-c2394e0f105c",
-    "Status": "UPLOADED",
-    "CreationDate": 1750077669,
-    "DeclaredIntentAmount": 0,
-    "ExternalProcessorFeesAmount": 0,
-    "ActualSettlementAmount": 0,
+    "SettlementId": "int_stlmnt_01975582-2b19-7699-aaf3-a8167936254f",
+    "Status": "RECONCILED",
+    "CreationDate": 1749486283,
+    "SettlementDate": "2025-06-09",
+    "ExternalProviderName": "Stripe",
+    "DeclaredIntentAmount": 10500,
+    "ExternalProcessorFeesAmount": 500,
+    "ActualSettlementAmount": 10000,
     "FundsMissingAmount": 0
 }
 ```
 </ResponseExample>
+
+<RequestExample>
+<RestGetNoBody/>
+</RequestExample>
