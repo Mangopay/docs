@@ -6,36 +6,61 @@ Thanks to Mangopay's flexible wallet system, platforms are able to use third-par
 
 Mangopay Echo is a unified solution for platforms to declare payments not acquired by Mangopay but which then transit the Mangopay environment as part of the workflow. This allows payments to be correctly reconciled against the funds that are received on the platform's escrow wallet.
 
-The funds acquired by third-party PSPs can be of two kinds:
+## Intents and actions
 
-1. First-party (1P) flows, meaning that your platform sells directly to the user on your website
-2. Third-party (3P) flows, meaning that your platform acts as an intermediary between the seller and buyer
+Mangopay Echo allows your platform to compliantly declare transactions acquired by third-party PSPs as **Intents**. The Intent API object represents a payment authorization processed by a third-party PSP, and can subsequently be used to track the full lifecycle of the transaction.
 
-Mangopay Echo allows your platform to compliantly declare these transactions as **Intents**. The Intent API object represents a payment authorization processed by a third-party PSP.
+The Intent includes the following data: 
+- Payment authorization – Amount, currency, date, payment method
+- External provider – Provider name, unique identifier of the transaction, date
+- Buyer – The Mangopay User who made the payment on the third-party system (optional)
+- LineItems – A list of items purchased by the buyer. Each line item identifies the Seller (Mangopay user or wallet) and the item purchased (amount, SKU, etc.). It also tracks the amount of the line item that is subsequently captured, refunded, disputed, and so on.
 
-An Intent is an API object which contains data about the transaction made via a third-party system:
-- Payment data – Amount, currency, date, payment method
-- External provider data – Provider name, unique identifier of the transaction, date
-- Buyer – The Mangopay User who made the payment on the third-party system
-- LineItems – A list of items purchased by the Sellers
+Once the Intent is created, your platform can perform actions on it to mirror the payment's lifecycle with the external provider. 
+- **Capture** – The payment is processed against the authorization and the funds are acquired. A Capture can be for the full Intent amount and all line items, or partial for one or more line items. 
+- **Cancel** – The payment authorization is canceled and not captured. A Cancel can be for the full Intent amount or partial for one or more line items.
+- **Refund** – The captured payment is refunded to the buyer (fully or partially). If the refund is returned to the merchant (that is, your platform), because it could not be processed for some reason, the refund is **reversed**. 
+- **Dispute** – The captured payment is disputed by the buyer. The Intent Dispute is contested and won or lost by your platform with your external provider, and the outcome is reflected in Mangopay Echo.
 
-Once created, subsequent actions can be tracked to follow the payment's lifecycle: 
-- Capture – The payment is processed against the authorization and the funds are acquired. A Capture can be for the full Intent or partial for one or more line items. 
-- Cancel – The payment authorization is canceled and not captured. A Cancel can be for the full Intent amount or partial for one or more line items.
-- Refund – The captured payment is refunded to the buyer (fully or partially). If the refund is returned to the merchant (that is, your platform), because it could not be processed for some reason, the refund is **reversed**. 
+Once the Intent's line items are captured (full or partial), the funds can be **split** and transferred to the Seller. 
 
-Your platform can use Mangopay Echo to work with one or more [external providers](/guides/echo/supported-providers), and integrating Echo is necessary whether or not you also acquire funds with Mangopay via Mangopay pay-ins.
+### Flow types
 
+The funds acquired by third-party PSPs can be of two kinds, and a single Intent can combine Line Items of the different flows:
 
-## Provide settlement files to Mangopay
+#### First-party flows (1P)
+First-party (1P) flows refer to transactions where your platform sells directly to the user on your website: an e-commerce transaction. In a 1P scenario, your platform operator is the beneficiary of the transaction.
+
+For a 1P Line Item, your platform is the line item's `Seller`: your `ClientId` is the `AuthorId`, and your Fees Wallet is the `WalletId`.
+
+#### Third-party flows (3P)
+Third-party flows refer to transactions where your platform acts as an intermediary between the buyer and a seller. In a 3P scenario, the Seller is the beneficiary. 
+
+For a 3P line item, The seller on your platform is the line item's `Seller`: their `UserId` is the `AuthorId` and their wallet is the `WalletId`.
+
+## Mirakl Connector
+
+Some platforms acquiring with a third-party PSP are also using Mangopay's Mirakl Connector to synchronize their sellers and payouts.
+
+Mangopay's Mirakl Connector handles the integration of Echo for you for 3P flows. However, if you also process 1P payments, which are not captured by the Mirakl Connector, then you need to declare Intents for only the 1P flows you acquire with another PSP.
+
+Mirakl Connector platforms also need to process and send settlement files to Mangopay for all transactions, 3P and 1P, as described below. Furthermore, you need to create and integrate Mirakl Custom Fields on your Mirakl API calls, as described in the [dedicated Mirakl Connector guide](/guides/echo/mirakl).
+
+## Settlement files
+
+When your third-party PSP settles the transaction with your platform, they provide settlement files for reconciliation purposes. 
+
+Mangopay Echo needs settlement data to be able to reconcile the funds entering the Mangopay environment with the payment Intents that your platform previously declared.
+
+To do so, you need to format a new CSV file according to Mangopay's format and send it via the API, as described below.
+
+### Provide settlement files to Mangopay
 
 <Info>
 **Applies to:** Any platform using a third-party PSP for funds acquisition, whether the platform uses the Mirakl Connector or not.
 
 For Mirakl Connector platforms, the payment intent declarations are created automatically by the connector, but the settlement data must be provided by the platform.
 </Info>
-
-Mangopay Echo needs settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
 
 <Note>
 **Note – Process and send the settlement data as soon as it becomes available** 
@@ -63,3 +88,4 @@ In response, the API creates the Settlement object with `SettlementId` and other
 In case any data from your settlement could not be processed for some reason, you may need to reprocess transactions. The nature of this post-processing is still in development.
 </Step> */}
 </Steps>
+
