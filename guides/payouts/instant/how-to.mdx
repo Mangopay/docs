@@ -1,0 +1,547 @@
+---
+title: 'How to process an Instant Payout'
+sidebarTitle: How to
+'og:description': 'Step-by-step guide to processing instant payouts: checking bank reachability, sending funds in seconds, and handling fallbacks to standard payouts.'
+---
+## Introduction  
+
+This how-to guide will show you how to successfully process an instant payout.  
+
+<Info>
+**Prerequisites**
+- A `ClientId` and an API key – if you don't have these, <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get access to the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>
+- A <a href="/guides/users/verification">verified Owner user</a> for which to make the payout
+- Sufficient funds in the user’s wallet so that the payout can succeed
+
+</Info>
+
+Mangopay provides two modes to wire funds outside the Mangopay environment:  
+- Standard - A bank wire with a processing time of about 48 hours.  
+- Instant Payout - A bank wire with a processing time of about 10 seconds (subject to prerequisites).  
+
+<Note>  
+**Note - Instant payouts are subject to prerequisites** 
+- The instant payout feature is activated for your platform (contact the Support team <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to do so).  
+- The payout must be in euros.  
+- The receiving bank must be in the SEPA zone.  
+
+See the <a href="/guides/payouts/instant">Instant payout</a> article to learn more about the prerequisites.  
+</Note>
+
+## 1. Create the user’s Bank Account  
+
+Create the Bank Account object to which the funds are going to be credited with the Instant Payout.  
+
+Note that:  
+- You need to use the `UserId` of a verified user as a path parameter for the next steps to be successful.  
+- You can use Mangopay’s IBAN bank account available in the <a href="/testing/payouts">Testing payouts</a> article.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/bankaccounts/iban](/api-reference/bank-accounts/create-iban-bank-account)
+
+<CodeGroup>  
+
+```json REST
+{
+    "OwnerAddress":{
+        "AddressLine1":"Rue des plantes",
+        "AddressLine2":"The Oasis",
+        "City":"Paris",
+        "Region":"Ile de France",
+        "PostalCode":"75001",
+        "Country":"FR"
+    },
+    "IBAN":"FR7630004000031234567890143",
+    "BIC":"BNPAFRPP",
+    "OwnerName":"John Doe",
+    "Tag":"custom meta"
+}
+```  
+
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+
+    $bankAccount = new \MangoPay\BankAccount();
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Address line 1';
+    $address->AddressLine2 = 'Address line 2';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'Region';
+
+    $details = new \MangoPay\BankAccountDetailsIBAN();
+    $details->IBAN = 'FR7630004000031234567890143';
+    $details->BIC = 'BNPAFRPP';
+
+    $bankAccount->OwnerAddress = $address;
+    $bankAccount->OwnerName = 'Alex Smith';
+    $bankAccount->Tag = 'Created using Mangopay PHP SDK';
+    $bankAccount->Type = 'IBAN';
+    $bankAccount->Details = $details;
+
+    $response = $api->Users->CreateBankAccount($userId, $bankAccount);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let user = {
+  Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  Address: {
+    AddressLine1: 'Edgewood Road',
+    AddressLine2: null,
+    City: 'Little Rock',
+    Region: 'IDF',
+    PostalCode: '75000',
+    Country: 'FR',
+  },
+  FirstName: 'John',
+  LastName: 'Doe',
+}
+
+let bankAccount = {
+  Type: 'IBAN',
+  OwnerName: user.FirstName + '' + user.LastName,
+  OwnerAddress: user.Address,
+  IBAN: 'FR7630004000031234567890143',
+  BIC: 'BNPAFRPP',
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createBankAccount = async (userId, bankAccount) => {
+  return await mangopay.Users.createBankAccount(userId, bankAccount)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createBankAccount(user.Id, bankAccount)
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createIbanBankAccount(userId, ibanBankAccountObject)
+    begin
+        response = MangoPay::BankAccount.create(userId, ibanBankAccountObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create bank account: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+    Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR'
+}
+
+myIbanBankAccount = {
+    Type: 'IBAN',
+    OwnerName: 'Alex Smith',
+    OwnerAddress: {
+        AddressLine1: 'Edgewood Road',
+        AddressLine2: 'Address line 2',
+        City: 'Little Rock',
+        Region: 'IDF',
+        PostalCode: '75000',
+        Country: 'FR'
+    },
+    IBAN: 'FR7630004000031234567890143',
+    BIC: 'BNPAFRPP',
+    Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createIbanBankAccount(myUser[:Id], myIbanBankAccount)
+```  
+
+```python Python 
+from pprint import pprint
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import NaturalUser, BankAccount
+from mangopay.utils import Address
+
+
+natural_user = NaturalUser.get('user_m_01HQK25M6KVHKDV0S36JY9NRKR')
+
+iban_bank_account = BankAccount(
+    user_id = natural_user.id,
+    owner_name = f'{natural_user.first_name} {natural_user.last_name}',
+    owner_address = Address(
+        address_line_1 = natural_user.address.address_line_1,
+        address_line_2 = natural_user.address.address_line_2,
+        city = natural_user.address.city,
+        region = natural_user.address.region,
+        postal_code = natural_user.address.postal_code,
+        country = natural_user.address.country,
+    ),
+    iban = 'FR7630004000031234567890143',
+    bic = 'BNPAFRPP',
+    type = 'IBAN',
+    tag = 'Created using the Mangopay Python SDK'
+)
+
+create_iban_bank_account = iban_bank_account.save()
+
+pprint(create_iban_bank_account)  
+```
+</CodeGroup>  
+
+Keep the resulting BankAccountId that will be necessary to make the payout.  
+
+## 2. Check if the Bank Account is reachable for an Instant Payout (recommended)  
+
+Call the dedicated endpoint to check whether or not the destination bank is eligible for instant payout. Eligible banks participate in the SEPA Instant Credit Transfer scheme of the European Payments Council (EPC).   
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payouts/reachability](/api-reference/payouts/check-instant-payout-eligibility)
+
+<CodeGroup>
+```json REST
+{
+    "PayoutModeRequested":"INSTANT_PAYMENT",
+    "AuthorId":"user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "DebitedWalletId":"wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
+    "BankAccountId":"bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE"
+}
+```  
+
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def checkReachability(payoutObject)
+    begin
+        response = MangoPay::PayOut::InstantPayoutEligibility::Reachability.create(payoutObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to check reachability: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  WalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T'
+}
+
+myBankAccount = {
+  Id: 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE'
+}
+
+myPayout = {
+  DebitedWalletId: myUser[:WalletId],
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount[:Id],
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'INSTANT_PAYMENT',
+  AuthorId: myUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay Ruby SDK'
+}
+
+checkReachability(myPayout)  
+```
+</CodeGroup>
+
+
+If the `IsReachable` parameter value is `true` in the response, you can go ahead with the instant payout.  
+```json API response
+{
+    "InstantPayout": {
+        "IsReachable": true,
+        "UnreachableReason": null
+    }
+}
+```  
+
+## 3. Create the Instant Payout  
+
+In order to make an instant payment, the `PayoutModeRequested` parameter must be set to either:  
+- `INSTANT_PAYMENT` - The payment will fall back to the STANDARD mode if any of the prerequisites are not met or if another problem occurs.  
+- `INSTANT_PAYMENT_ONLY` - There is no fallback if the prerequisites are not met or another problem occurs: the wallet is automatically refunded and the payout is not completed.  
+
+> [**POST** /v2.01/&lcub;ClientId&rcub;/payouts/bankwire](/api-reference/payouts/create-payout)
+
+<CodeGroup>  
+```json REST
+{
+    "AuthorId":"user_m_01HQK25M6KVHKDV0S36JY9NRKR",
+    "DebitedFunds":{
+        "Currency":"EUR",
+        "Amount":1200
+    },
+    "Fees":{
+        "Currency":"EUR",
+        "Amount":12
+    },
+    "DebitedWalletId":"wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T",
+    "BankAccountId":"bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE",
+    "PayoutModeRequested":"INSTANT_PAYMENT"
+}
+```  
+```php PHP 
+<?php 
+
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $payout = new \MangoPay\PayOut();
+
+    $payout->Tag = 'Created with Mangopay PHP SDK';
+    $payout->AuthorId = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR';
+    $payout->DebitedFunds = new \MangoPay\Money();
+    $payout->DebitedFunds->Currency = 'EUR';
+    $payout->DebitedFunds->Amount = 1000;
+    $payout->Fees = new \MangoPay\Money();
+    $payout->Fees->Currency = 'EUR';
+    $payout->Fees->Amount = 0;
+    $payout->DebitedWalletId = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T';
+
+    $payout->PayoutPaymentDetails = new \MangoPay\PayOutPaymentDetailsBankWire();
+    $payout->PayoutPaymentDetails->BankAccountId = 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE';
+    $payout->PayoutPaymentDetails->BankWireRef = 'MangopayPHP';
+
+    $payout->MeanOfPaymentDetails = $payout->PayoutPaymentDetails;
+    
+    $payout->PaymentType = \MangoPay\PayOutPaymentType::BankWire;
+    $payout->PayoutModeRequested = 'STANDARD';
+
+    $response = $api->PayOuts->Create($payout);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}  
+```
+
+```javascript NodeJS 
+const mangopayInstance = require('mangopay2-nodejs-sdk')
+const mangopay = new mangopayInstance({
+  clientId: 'your-client-id',
+  clientApiKey: 'your-api-key',
+})
+
+let myUser = {
+  Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  WalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T',
+}
+
+let myBankAccount = {
+  Id: 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE',
+}
+
+let myPayout = {
+  DebitedWalletId: myUser.WalletId,
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount.Id,
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'INSTANT_PAYMENT',
+  AuthorId: myUser.Id,
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 12,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay NodeJS SDK',
+}
+
+const createPayout = async (payout) => {
+  return await mangopay.PayOuts.create(payout)
+    .then((response) => {
+      console.info(response)
+      return response
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+createPayout(myPayout)
+```  
+
+```ruby Ruby 
+require 'mangopay'
+
+MangoPay.configure do |client|
+    client.preproduction = true
+    client.client_id = 'your-client-id'
+    client.client_apiKey = 'your-api-key'
+    client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createPayout(payoutObject)
+    begin
+        response = MangoPay::PayOut::BankWire.create(payoutObject)
+        puts response
+        return response
+    rescue MangoPay::ResponseError => error
+        puts "Failed to create payout: #{error.message}"
+        puts "Error details: #{error.details}"
+        return false
+    end
+end
+
+myUser = {
+  Id: 'user_m_01HQK25M6KVHKDV0S36JY9NRKR',
+  WalletId: 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T'
+}
+
+myBankAccount = {
+  Id: 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE'
+}
+
+myPayout = {
+  DebitedWalletId: myUser[:WalletId],
+  PaymentType: 'BANK_WIRE',
+  BankAccountId: myBankAccount[:Id],
+  BankWireRef: 'Mangopay Ref',
+  PayoutModeRequested: 'STANDARD',
+  AuthorId: myUser[:Id],
+  DebitedFunds: {
+    Currency: 'EUR',
+    Amount: 1200,
+  },
+  Fees: {
+    Currency: 'EUR',
+    Amount: 0,
+  },
+  Tag: 'Created using Mangopay Ruby SDK'
+}
+
+createPayout(myPayout)  
+```
+
+```python Python 
+from pprint import pprint
+import mangopay
+
+mangopay.client_id='your-client-id'
+mangopay.apikey='your-api-key'
+
+from mangopay.api import APIRequest
+handler = APIRequest(sandbox=True)
+
+from mangopay.resources import BankWirePayOut
+from mangopay.utils import Money
+
+natural_user_id = 'user_m_01HQK25M6KVHKDV0S36JY9NRKR'
+natural_user_wallet_id = 'wlt_m_01HT2J9Q2M6GMFW4Z7GYBAFJ4T'
+
+payout = BankWirePayOut(
+    author_id = natural_user_id,
+    debited_funds = Money(amount=200, currency='EUR'),
+    fees = Money(amount=0, currency='EUR'),
+    debited_wallet_id = natural_user_wallet_id,
+    bank_account_id = 'bankacc_m_01HTJ7P7Y8K9DS5SZ08MDQRHHE',
+    tag = 'Created using Mangopay Python SDK'
+)
+
+create_payout = payout.save()
+
+pprint(create_payout)
+```
+</CodeGroup>  
+
+## 4. Indicate if the Payout has fallbacked (recommended)  
+
+It may happen that due to unmet prerequisites or processing issues the instant payout falls back to a regular payout.  
+
+To communicate to your end user whether the payout was instantaneous or reverted to standard, you may take advantage of:  
+- The <a href="/api-reference/payouts/view-payout-check-mode-applied">View a Payout and check mode applied</a> endpoint  
+- The INSTANT_PAYOUT_FALLBACKED <a href="/webhooks/event-types">event type</a> for webhooks
+
+## Related resources  
+
+<CardGroup col={2}> 
+  <Card title="Guide" href="/guides/payouts">Learn more about payouts</Card>  
+
+  <Card title="Endpoint" href="/api-reference/payouts/payout-object">The Payout object</Card>  
+
+  <Card title="Webhooks" href="/webhooks">Hook notifications</Card>
+</CardGroup>
