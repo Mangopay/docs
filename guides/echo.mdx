@@ -16,7 +16,7 @@ The Intent includes the following data:
 - Buyer – The Mangopay User who made the payment on the third-party system (optional)
 - LineItems – A list of items purchased by the buyer. Each line item identifies the Seller (Mangopay user or wallet) and the item purchased (amount, SKU, etc.). It also tracks the amount of the line item that is subsequently captured, refunded, disputed, and so on.
 
-Once the Intent is created, your platform can perform actions on it to mirror the payment's lifecycle with the external provider. 
+Once the Intent is created using the [POST Create an Intent](/api-reference/intents/create-intent) endpoint, your platform can perform actions against it to mirror the payment's lifecycle with the external provider:
 - **Capture** – The payment is processed against the authorization and the funds are acquired. A Capture can be for the full Intent amount and all line items, or partial for one or more line items. 
 - **Cancel** – The payment authorization is canceled and not captured. A Cancel can be for the full Intent amount or partial for one or more line items.
 - **Refund** – The captured payment is refunded to the buyer (fully or partially). If the refund is returned to the merchant (that is, your platform), because it could not be processed for some reason, the refund is **reversed**. 
@@ -89,3 +89,35 @@ In case any data from your settlement could not be processed for some reason, yo
 </Step> */}
 </Steps>
 
+## Echo endpoints
+
+### Intent endpoints 
+
+<CardGroup>
+<Card title="POST Create an Intent" href="/api-reference/intents/create-intent">
+Declare a transaction authorization processed by a third-party PSP
+</Card>
+<Card title="POST Capture an Intent" href="api-reference/intents/capture-intent">
+Declare the full or partial capture of an authorization processed by a third-party PSP
+</Card>
+<Card title="PUT Cancel an Intent" href="api-reference/intents/cancel-intent">
+Declare the full or partial cancellation of a payment authorization processed by a third-party PSP
+</Card>
+<Card title="GET View an Intent" href="api-reference/intents/view-intent">
+Retrieve the declaration of a transaction processed by a third-party PSP
+</Card>
+</CardGroup>
+
+### Settlement endpoints
+
+<CardGroup>
+<Card title="POST Create a Settlement" href="/api-reference/settlements/create-settlement">
+Upload a Mangopay-format settlement file for a single currency to be reconciled with Intents
+</Card>
+<Card title="PUT Update a Settlement" href="api-reference/settlements/update-settlement">
+Upload an additional file to update the Settlement
+</Card>
+<Card title="GET View a Settlement" href="api-reference/settlements/view-settlement">
+Retrieve the Settlement details generated from file upload
+</Card>
+</CardGroup>
