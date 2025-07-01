@@ -4,24 +4,71 @@ api: POST v3.0/{ClientId}/payins/intents/{IntentId}/captures
 description: Declare cancellation of all or part of a payment processed by a third-party PSP
 ---
 
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
+import ExternalData_Cancel from '/snippets/p-response/ExternalData_Cancel.mdx';
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx';
+import LineItems_Intent_Actions from '/snippets/p-response/LineItems_Intent_Actions.mdx';
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
 
+import Amount_Cancel_Request from '/snippets/p-body/Amount_Cancel_Request.mdx';
+import PlatformFeesAmount_Intent_Request from '/snippets/p-body/PlatformFeesAmount_Intent_Request.mdx';
+import ExternalData_Cancel_Request from '/snippets/p-body/ExternalData_Cancel_Request.mdx';
+import LineItems_Cancel_Request from '/snippets/p-body/LineItems_Cancel_Request.mdx';
 
+import IntentId_Path from '/snippets/p-path/IntentId_Path.mdx';
 
+You can use this endpoint to cancel all or part of an Intent.
 
-
-### Query parameters
+<Tabs>
+<Tab title="Full cancellation">
+The full `Amount` of the intent is canceled (all line items). The `ExternalData` references are/or date must be provided as cancellation was necessarily a different action taken via the third-party PSP.
+</Tab>
+Required: 
+- `ExternalData.ExternalProcessingDate`
+- `ExternalData.ExternalProviderReference`
+<Tab title="¨Partial cancellation">
+Part of the original Intent `Amount` is canceled, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The cancellation `Amount` must equal the sum of its line items.
+  - Required: 
+    - `Amount`
+    - `ExternalData.ExternalProcessingDate`
+    - `ExternalData.ExternalProviderReference`
+    - `LintItems.Id`
+    - `LintItems.Amount`
+</Tab>
+</Tabs>
 
 ### Path parameters
 
+<IntentId_Path/>
+
 ### Body parameters
 
-
+<Amount_Cancel_Request/>
+<PlatformFeesAmount_Intent_Request/>
+<ExternalData_Cancel_Request/>
+<LineItems_Cancel_Request/>
 
 ### Responses
 
 <AccordionGroup>
 <Accordion title="200 - Response parameters">
-
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<ExternalData_Cancel/>
+<Buyer_Intent/>
+<LineItems_Intent_Actions/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
 </Accordion>
 </AccordionGroup>
 
@@ -34,13 +81,113 @@ description: Declare cancellation of all or part of a payment processed by a thi
 </AccordionGroup> */}
 
 <ResponseExample>
-```json
-
+```json Full cancel
+{
+	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
+    "Amount": 10000,
+    "AvailableAmountToSplit": 0,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "CANCELED",
+    "ExternalData": {
+        "ExternalProcessingDate": "03-10-2024",
+        "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+        "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "PAYPAL"
+    },
+    "Buyer": {
+        "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+    },
+    "LineItems": [
+      {
+		    "Id" : "1f395091-6b27-440f-8d38-39832cf1cfc9",
+		    "TotalLineItemAmount" : 7500,
+		    "CanceledAmount" : 7500,
+		    "CapturedAmount" : 0,
+        "RefundedAmount" : 0,
+        "DisputedAmount" : 0,
+        "SplitAmount": 0
+	    },
+	    {
+		    "Id" : "1f12c4d5-d6ea-40f2-ac8e-bb3c8770918c",
+		    "TotalLineItemAmount" : 2500,
+		    "CanceledAmount" : 2500,
+		    "CapturedAmount" : 0,
+        "RefundedAmount" : 0,
+        "DisputedAmount" : 0,
+        "SplitAmount": 0
+	    },
+    ],
+    "CreationDate": 1733329398,
+    "ExecutionDate": 1733329423
+}
+```
+```json Partial cancel
+{
+	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
+    "Amount": 10000,
+    "AvailableAmountToSplit": 0,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "CANCELED",
+    "ExternalData": {
+        "ExternalProcessingDate": "03-10-2024",
+        "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+        "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "PAYPAL"
+    },
+    "Buyer": {
+        "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+    },
+    "LineItems": [
+      {
+		    "Id" : "1f395091-6b27-440f-8d38-39832cf1cfc9",
+		    "TotalLineItemAmount" : 7500,
+		    "CanceledAmount" : 7500,
+		    "CapturedAmount" : 0,
+        "RefundedAmount" : 0,
+        "DisputedAmount" : 0,
+        "SplitAmount": 0
+	    }
+    ],
+    "CreationDate": 1733329398,
+    "ExecutionDate": 1733329423
+}
 ```
 </ResponseExample>
 
 <RequestExample>
-```json
-
+```json Full cancel
+{
+	"ExternalData" : {
+		"ExternalProcessingDate" : "03-10-2024",
+		"ExternalProviderReference" : "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+		"ExternalMerchantReference" : "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+		"ExternalProviderName" : "Stripe",
+		"ExternalProviderPaymentMethod" : "PAYPAL"
+	},
+}
+```  
+```json Partial cancel
+{
+	  "Amount" : 7500,
+    "Currency" : "EUR",
+    "PlatformFeesAmount" : 0,
+    "ExternalData": {
+	    "ExternalProcessingDate": "03-10-2024",
+      "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+      "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+      "ExternalProviderName": "Stripe",
+      "ExternalProviderPaymentMethod": "PAYPAL"
+    },
+    "LineItems": [
+       {
+         "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
+         "Amount": 7500
+       }
+         
+}
 ```  
 </RequestExample>
