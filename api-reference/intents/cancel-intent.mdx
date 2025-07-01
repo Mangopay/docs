@@ -32,21 +32,14 @@ You can use this endpoint to cancel all or part of an Intent.
 <Tabs>
 <Tab title="Full cancellation">
 The full `Amount` of the intent is canceled (all line items). The `ExternalData` references are/or date must be provided as cancellation was necessarily a different action taken via the third-party PSP.
-Required: 
-- `ExternalData.ExternalProcessingDate`
-- `ExternalData.ExternalProviderReference`
-</Tab>
-<Tab title="¨Partial cancellation">
-Part of the original Intent `Amount` is canceled, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The cancellation `Amount` must equal the sum of its line items.
-  - Required: 
-    - `Amount`
-    - `ExternalData.ExternalProcessingDate`
-    - `ExternalData.ExternalProviderReference`
-    - `LintItems.Id`
-    - `LintItems.Amount`
-</Tab>
-</Tabs>
 
+### Body parameters
+
+<ExternalData_Cancel_Request/>
+
+</Tab>
+<Tab title="Partial cancellation">
+Part of the original Intent `Amount` is canceled, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The cancellation `Amount` must equal the sum of its line items.
 
 ### Body parameters
 
@@ -54,6 +47,9 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
 <PlatformFeesAmount_Intent_Request/>
 <ExternalData_Cancel_Request/>
 <LineItems_Cancel_Request/>
+
+</Tab>
+</Tabs>
 
 ### Responses
 
@@ -92,7 +88,7 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
 <ResponseExample>
 ```json Full cancel
 {
-	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
+    "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
     "Amount": 10000,
     "AvailableAmountToSplit": 0,
     "Currency": "EUR",
@@ -109,24 +105,24 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
         "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
     },
     "LineItems": [
-      {
-		    "Id" : "1f395091-6b27-440f-8d38-39832cf1cfc9",
-		    "TotalLineItemAmount" : 7500,
-		    "CanceledAmount" : 7500,
-		    "CapturedAmount" : 0,
-        "RefundedAmount" : 0,
-        "DisputedAmount" : 0,
-        "SplitAmount": 0
-	    },
-	    {
-		    "Id" : "1f12c4d5-d6ea-40f2-ac8e-bb3c8770918c",
-		    "TotalLineItemAmount" : 2500,
-		    "CanceledAmount" : 2500,
-		    "CapturedAmount" : 0,
-        "RefundedAmount" : 0,
-        "DisputedAmount" : 0,
-        "SplitAmount": 0
-	    },
+        {
+            "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
+            "TotalLineItemAmount": 7500,
+            "CanceledAmount": 7500,
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        },
+        {
+            "Id": "1f12c4d5-d6ea-40f2-ac8e-bb3c8770918c",
+            "TotalLineItemAmount": 2500,
+            "CanceledAmount": 2500,
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        },
     ],
     "CreationDate": 1733329398,
     "ExecutionDate": 1733329423
@@ -134,7 +130,7 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
 ```
 ```json Partial cancel
 {
-	  "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
+    "Id": "409f8d2e-9eba-48f9-8a52-dc9bda4d9041",
     "Amount": 10000,
     "AvailableAmountToSplit": 0,
     "Currency": "EUR",
@@ -151,15 +147,15 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
         "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
     },
     "LineItems": [
-      {
-		    "Id" : "1f395091-6b27-440f-8d38-39832cf1cfc9",
-		    "TotalLineItemAmount" : 7500,
-		    "CanceledAmount" : 7500,
-		    "CapturedAmount" : 0,
-        "RefundedAmount" : 0,
-        "DisputedAmount" : 0,
-        "SplitAmount": 0
-	    }
+        {
+            "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
+            "TotalLineItemAmount": 7500,
+            "CanceledAmount": 7500,
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        }
     ],
     "CreationDate": 1733329398,
     "ExecutionDate": 1733329423
@@ -170,33 +166,33 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
 <RequestExample>
 ```json Full cancel
 {
-	"ExternalData" : {
-		"ExternalProcessingDate" : "03-10-2024",
-		"ExternalProviderReference" : "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
-		"ExternalMerchantReference" : "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
-		"ExternalProviderName" : "Stripe",
-		"ExternalProviderPaymentMethod" : "PAYPAL"
-	},
+    "ExternalData": {
+        "ExternalProcessingDate": "03-10-2024",
+        "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+        "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "PAYPAL"
+    }
 }
 ```  
 ```json Partial cancel
 {
-	  "Amount" : 7500,
-    "Currency" : "EUR",
-    "PlatformFeesAmount" : 0,
+    "Amount": 7500,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
     "ExternalData": {
-	    "ExternalProcessingDate": "03-10-2024",
-      "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
-      "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
-      "ExternalProviderName": "Stripe",
-      "ExternalProviderPaymentMethod": "PAYPAL"
+        "ExternalProcessingDate": "03-10-2024",
+        "ExternalProviderReference": "cancel-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7",
+        "ExternalMerchantReference": "cancel-order-1d1d3c30-5f0f-4cda-ad0d-7ab3c315de3d",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "PAYPAL"
     },
     "LineItems": [
-       {
-         "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
-         "Amount": 7500
-       }
-         
+        {
+            "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
+            "Amount": 7500
+        }
+    ]
 }
 ```  
 </RequestExample>
