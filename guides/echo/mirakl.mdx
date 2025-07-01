@@ -103,7 +103,7 @@ There are no requirements for the ***Label***, which is your custom display name
 </tr>
 <tr>
 <td class="table-content">`mgp-external-provider-payment-method`</td>
-<td class="table-content">The name of the payment method used to process the transaction.</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods) used to process the transaction.</td>
 <td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/echo/supported-payment-methods).</td>
 </tr>
 </tbody>
@@ -226,34 +226,207 @@ The rest of this page provides information on the actions that your platform wil
 **Actionable:** When the Mangopay Echo launches (Production: June 2025)
 </Info>
 
-If your platform is using a third-party PSP for funds acquisition, you also need to send settlement data to Mangopay for reconciliation. 
+<Note>
+**Note – Beta documentation for communication purposes only, subject to minor change**
 
-The payment intent declarations are created automatically by the Mirakl Connector, but the settlement data must be provided by the platform.
+The information provided below aims to prepare you as much as possible for your integration of **Mangopay Echo**.
 
-To do this, your platform needs to send CSV files to a dedicated endpoint as soon as they become available. Read more about the process and requirements in the guide: 
+We are providing as much information as possible in the interests of transparency to help ease this transition. There may be minor changes in some details as final developments are completed. and approach the launch.
+</Note>
 
-<CardGroup col={2}>
-  <Card
-    title="Guide"
-    href="/guides/echo#provide-settlement-files-to-mangopay"
-  >
-    Read how to provide settlement files to Mangopay
-  </Card>
-</CardGroup>
+Mangopay Echo will need settlement data to be able to reconcile the funds entering the Mangopay environment with the payment intents that were previously declared.
 
-## Related resources
+For Mirakl Connector platforms, the payment intent declarations will be created automatically by the connector, but the settlement data must be provided by the platform.
 
-<CardGroup col={2}>
-  <Card
-    title="Guide"
-    href="/guides/echo"
-  >
-    Read about Echo integration
-  </Card>
-  <Card
-    title="Endpoints"
-    href="/api-reference/settlements/create-settlement"
-  >
-    POST Create a Settlement
-  </Card>
-</CardGroup>
+### Process
+
+<Note>
+**Note – Process and send the settlement as soon as it becomes available** 
+
+You should follow the process below as soon as settlement files become available from your PSP. In many cases this means daily.
+</Note>
+
+To provide your settlement data to Mangopay, you need to: 
+
+<Steps>
+<Step title="Extract the relevant data from your PSP's files">
+Extract the data points required by [Mangopay's format](#specifications-of-the-Mangopay-format-settlement-file) from your PSP's settlement files.
+</Step>
+<Step title="Create a CSV according to Mangopay's format">
+Generate a CSV file conforming to Mangopay's format that contains the extracted data.
+
+Each file must contain only a single currency.
+</Step>
+<Step title="Send the file via the dedicated API endpoint">
+Upload the file using the dedicated API endpoint (released as part of Echo).
+
+> ##### POST Upload a settlement file
+```bash
+# Note: Beta doc given for communication purposes only
+curl -X POST ".../v2.01/{ClientId}/payins/intents/settlements" \
+-H "Authorization: Bearer token" \
+-F "file=@/example/file-path.csv"
+```
+
+In response, the API will return a JSON object containing `SettlementId`, declared amount, settled amount, status, etc.
+</Step>
+{/* <Step title="Handle unprocessed data (if required)">
+In case any data from your settlement could not be processed for some reason, you may need to reprocess transactions. The nature of this post-processing is still in development.
+</Step> */}
+</Steps>
+
+### Example settlement file in Mangopay format
+
+<Info>
+**Beta documentation subject to minor change**
+
+The information provided below aims to prepare you as much as possible for your future integration. There may be minor changes in some details as final developments are completed.
+</Info>
+
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File_Mirakl.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 4 transactions. Remove the example data lines before generating your own file. 
+
+There are no requirements for the **file name** – you can name your file how you like.
+
+### Specifications of the Mangopay-format settlement file
+
+<Info>
+**Beta documentation subject to minor change**
+
+The information provided below aims to prepare you as much as possible for your future integration. There may be minor changes in some details as final developments are completed.
+</Info>
+
+Columns per transaction included in the settlement file:
+
+<table>
+<thead>
+<tr>
+<th class="header">Column label</th>
+<th class="header">Necessity</th>
+<th class="header">Format</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ExternalProviderReference</td>
+<td class="table-content">Required</td>
+<td class="table-content">String</td>
+<td class="table-content">The unique identifier (ID) of the transaction as recognized within your PSP’s system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProcessingDate</td>
+<td class="table-content">Required</td>
+<td class="table-content">ISO 8601 date time in UTC (YYYY-MM-DDTHH:MM:SSZ)</td>
+<td class="table-content">
+The date the transaction was processed and executed in your PSP’s system.
+</td>
+</tr>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Required</td>
+<td class="table-content">String</td>
+<td class="table-content">Your platform’s Client ID as recognized within Mangopay’s system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalTransactionType</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">
+The type of the transaction:
+- PAYMENT – The payment operation to authorize and capture funds.
+- REFUND – The reversal of a payment.
+- DISPUTE – The operation created when a chargeback occurs.
+</td>
+</tr>
+<tr>
+<td class="table-content">ExternalPaymentMethod</td>
+<td class="table-content">Optional</td>
+<td class="table-content">Enum</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods). If the payment method is not supported, this optional field can be left blank.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalTransactionStatus</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">
+The status of the transaction: 
+- SETTLED – Payment successfully processed: funds are expected to be received.
+- REFUNDED – Refund fully processed: funds have been returned to the end user.
+- REFUND_REVERSED – Refund processed but reversed: funds have been returned to your platform.
+- DISPUTED – Funds deducted due to a dispute and not available for settlement.
+- DEFENDED – Funds temporarily returned to your platform as part of the dispute contest process.
+- DISPUTED_WON – Dispute resolved in favor of your platform.
+- DISPUTED_LOST – Dispute resolved against your platform: funds permanently withdrawn.
+</td>
+</tr>
+<tr>
+<td class="table-content">Amount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The amount debited from your end user as recorded by your PSP's system.</td>
+</tr>
+<tr>
+<td class="table-content">Currency</td>
+<td class="table-content">Required</td>
+<td class="table-content">Three-letter ISO 4217 code</td>
+<td class="table-content">The currency used to process the transaction and debit your end user in your PSP's system.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalInitialReference</td>
+<td class="table-content">Required if ExternalTransactionType is REFUND or DISPUTE</td>
+<td class="table-content">String</td>
+<td class="table-content">The unique identifier (ID) of the initial transaction in the case of a refund or dispute.</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProviderFees</td>
+<td class="table-content">Optional</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The amount debited from the transaction as commission by your PSP's system.</td>
+</tr>
+</tbody>
+</table>
+
+Rows of summary data under the columns, preceded by a single empty row: 
+
+<table>
+<thead>
+<tr>
+<th class="header">Row label</th>
+<th class="header">Necessity</th>
+<th class="header">Format</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">SettlementDate</td>
+<td class="table-content">Required</td>
+<td class="table-content">ISO 8601 date in UTC (YYYY-MM-DD)</td>
+<td class="table-content">The date the provider processed the settlement</td>
+</tr>
+<tr>
+<td class="table-content">ExternalProviderName</td>
+<td class="table-content">Required</td>
+<td class="table-content">Enum</td>
+<td class="table-content">The name of the [supported external providers](/guides/echo/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">TotalSettlementFeesAmount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The total amount of the fees withdrawn from the total amount settled</td>
+</tr>
+<tr>
+<td class="table-content">TotalSettlementAmount</td>
+<td class="table-content">Required</td>
+<td class="table-content">Integer (minor unit of currency)</td>
+<td class="table-content">The total amount your PSP confirmed as sent to your platform's external bank account.</td>
+</tr>
+<tr>
+<td class="table-content">SettlementCurrency</td>
+<td class="table-content">Required</td>
+<td class="table-content">Three-letter ISO 4217 code</td>
+<td class="table-content">The currency of the settlement file. Each file should contain a single currency.</td>
+</tr>
+</tbody>
+</table>
