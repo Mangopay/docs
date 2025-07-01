@@ -1,297 +1,203 @@
 ---
-title: Overview
-sidebarTitle: Overview
+title: Introduction
+sidebarTitle: Introduction
 'og:title': 'Payouts - Mangopay docs'  
-'og:description': 'How your users can get paid with Mangopay: processing times - including instant payouts in a matter of seconds - plus prerequisites and resolving issues.'  
+'og:description': 'How your users can get paid with Mangopay: payout rails available and cutoff and delivery times.'
 ---
-  
+
+import {Dropdown_Currency_PayoutRails} from '/snippets/components/Dropdown_Currency_PayoutRails.mdx';
+
 import WorkingDay from '/snippets/glossary/working-day.mdx';
 import Aml from '/snippets/glossary/aml.mdx';
 
-import RestCreatePayoutPayinRefund from '/snippets/code/rest-create-payout-payin-refund.mdx';
-  
+A payout is the process of withdrawing funds from the Mangopay environment to an external bank account opened in the name of the Mangopay Account holder.
 
-A payout is the process of withdrawing funds from the Mangopay environment to an external bank account opened in the name of the Mangopay account holder.  
+The user's external bank account must be registered in advance of the payout request as a [Recipient](/guides/sca/recipients).
 
-As detailed in the prerequisites below, the user must be verified (their `KYCLevel` must be `REGULAR`) and the bank account must be valid and in their name.  
+The Natural User or Legal User registered with Mangopay must have:
 
-## How Mangopay sends funds
+- The `UserCategory` of `OWNER` (see [categories](/guides/users/categories))
+- The necessary [KYC/KYB verification](/guides/users/verification) depending on the [limits applicable to your platform](/guides/users/limits) (for example, they must have `KYCLevel` of `REGULAR` for payment services platforms).
 
-How Mangopay sends a payout is determined by:  
+## Payout rails
 
-##### 1. The user’s bank account and its type  
+Mangopay offers a wide range of payout routes for local and international bank wire transfers.
 
-Bank accounts in the API have a different `Type` depending on the country of registration of the account, and different information is required for each to reflect local formats (see [bank accounts](#bank-accounts) prerequisites below).  
+Payout routes, also called rails, refer to the infrastructure and technology that facilitate the transfer of funds between bank accounts.
 
-The country of registration of a bank account is not linked to its currency. For example, a EUR payout to an account registered in the US requires a US-type account. A CAD payout to an account registered in Italy requires an IBAN-type account.  
+The payout rails available to your platform depend on your contract – contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to discuss activation of a local payout rail for your users. 
 
-##### 2. The currency of the payout  
+### Domestic
 
-Mangopay can send payouts in a wide range of currencies – see the <a href="/guides/currencies">currencies</a> page for details.
+Domestic rails rely on local networks used within a country or region. Because both banks are in the same jurisdiction and use the same local networks, the funds can generally be sent much more quickly and cheaply.
 
-Receiving banks can be anywhere in the world. The currency of the payout combines with the account type to determine whether the bank wire is sent locally or internationally, which impacts processing times and costs.
+Sending a domestic payout requires Mangopay to hold and send funds from an account in the same jurisdiction as the user.
 
-For more information, see the <a href="/guides/glossary#bank-wire">bank wire</a> glossary definition.
+Domestic payouts must be requested to a [Recipient](/api-reference/recipients/recipient-object) with the `PayoutMethod` of `LocalBankTransfer`. 
 
-##### 3. The mode requested by the platform (if EUR in SEPA)  
+### Non-domestic
 
-By default, the standard mode is used to make payout requests: 
-- **Standard** – Sent via the relevant route for the currency and destination account, which determine the [processing times and cutoffs](/guides/payouts#cutoffs-and-processing-times) that apply. If a request is received after the cutoff, it is processed the next working day.
+Non-domestic rails rely on shared messaging services such as SWIFT to transfer funds. SWIFT processing times depend on a number of factors including cutoff times and correspondent banks. SWIFT payments can arrive same day, they are frequently next day but can also take several days.
 
-If the payout is in EUR in the SEPA zone, Mangopay offers two other modes which platforms can specify in their requests to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint: 
-- **Instant payment** – Sent via the SEPA Instant Credit Transfer scheme, meaning funds are processed within 10 seconds. There is a fallback mechanism that platforms can use to revert to standard mode in case of an issue or not. For more details, see the [instant payout](/guides/payouts/instant) guide.
-- **Real-time gross settlement (RTGS)** – Sent via the Eurozone’s RTGS scheme, T2, meaning funds are usually processed within 5 minutes. If the request is received after the applicable cutoff (16:15 CET), it is processed the next working day (from 07:00 CET). For more details, see [RTGS](#real-time-gross-settlement-rtgs) below.
+Mangopay works with partner banks to send the funds to the user's account. Depending on where the user's account is registered, Mangopay's partners may themselves need to rely on additional correspondent banks to enable the connection with the end user's bank.
 
+Non-domestic payouts are requested to a [Recipient](/api-reference/recipients/recipient-object) with the `PayoutMethod` of `InternationalBankTransfer`.
 
-## Basic flow  
+## All payout rails by currency
 
-Mangopay’s e-wallet system allows users of the Owner <a href="/guides/users/categories">category</a> to hold funds in their wallets. The user must be <a href="/guides/users/verification">verified</a> to withdraw funds to their bank account as a payout.  
+The table below shows all local and international payout rails offered by Mangopay – contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to discuss activation.
 
-The flow is as follows:  
-- Ensure the Owner user is verified (`KYCLevel` is `REGULAR`)  
-- Create a Bank Account to register their bank account  
-- Create a Payout to request that Mangopay wire the funds  
+<Dropdown_Currency_PayoutRails/>
 
-<a href="/api-reference/payouts" class="btn Secondary normal">See payouts endpoints</a>  
+### Delivery times
 
-Once the payout is successfully requested, its status becomes `CREATED`.  
+The delivery times shown in the table above are typical for the rail used. Some payouts are subject to manual review by Mangopay's teams for reasons of risk management or AML/CFT - these payouts may take longer than shown.
 
-You should set up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a> to be notified of its progress:  
-- PAYOUT_NORMAL_SUCCEEDED
-- PAYOUT_NORMAL_FAILED  
+Payouts created before the cutoff times outlined below are transferred to the user's bank account within the corresponding processing times. Payouts created after the cutoff are processed next working day – meaning Monday to Friday excluding weekends and [public holidays](/support/public-holidays).
 
-The `SUCCEEDED` status indicates that Mangopay successfully processed the payout and sent the funds. There are some cases where the funds are returned by the receiving bank and Mangopay creates a payout refund (see below).  
+Some SWIFT payouts are sent the day after the cutoff, and therefore delivery can take a day longer. These routes are marked **+1** in the table above.
 
-In case of a `FAILED` status, you can use the <a href="/api-reference/payouts/view-payout">GET View a Payout</a> endpoint to see more information, particularly the `ResultCode` and `ResultMessage`. For more information on specific errors, see <a href="/errors/codes">Error codes</a>.
+<Note>
+**Note – Timings displayed are indicative**
 
-<Note>  
-**Note - Testing payouts** 
-  
-You can find all you need to test payouts in Sandbox in the Testing payouts article.  
-</Note>  
+The delivery times shown on this page are indicative. For all schemes, the actual delivery time of an specific individual payout depends on various factors, many of which are out of Mangopay's control.
+</Note>
 
 ### Instant schemes
 
 Mangopay provides a number of instant local schemes:
-
 - SEPA Instant Credit Transfer for EUR payouts to EUR Recipients in SEPA countries
 - Faster Payments System (FPS) for GBP payouts to local GB Recipients
 - RIX-INST for SEK payouts to local SE recipients
-
 These typically allow payouts to be processed within 10 seconds (the `Status` changes from `CREATED` to `SUCCEEDED`) but there can be a delay in some circumstances. 
-
 In the SEPA zone, platforms can take advantage of a choice of schemes (SCT, SCT Inst, and T2), and so you need to use the `PayoutModeRequested` parameter to specify the scheme for each payout request. Mangopay also offers a fallback mechanism for SCT Inst to be processed as SCT if the instant request fails. See [initiate an SCT Inst payout](/guides/payouts/integration#initiate-an-sct-inst-payout) for details.
-
 ### Real-time gross settlement (RTGS)
-
 For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2). This functionality was previously known as Express Payouts.
-
 To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
-
 Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next working day. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
-
 ### Fees for international payouts
-
 For SWIFT payouts, Mangopay can enable platforms to shoulder the full cost of any processing fees that may arise from correspondent banks. This allows the beneficiary to receive the full amount of the payout.
-
 When activated, cost-bearing uses the OUR configuration of [SWIFT international bank wires](/guides/glossary#international-bank-wires) instead of the SHA option used as standard for international payouts. The fees borne by the platform are recuperated by Mangopay during the usual billing cycle.
-
 This feature is available for USD international payouts, and can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
-
 In future, Mangopay plans to offer this cost-bearing feature on SWIFT payouts in currencies other than USD. 
-
 ## Other payout considerations
 
 ### Country restrictions
 
-Due to <Aml content="AML" /> policy, we don’t accept the creation of bank accounts and payouts to some countries. Please refer to the <a href="/guides/users/country-restrictions">Country restrictions</a> article for more information.  
+Due to AML policy, Mangopay doesn't allow payouts to some countries – see the [country restrictions](/guides/users/country-restrictions) article for more information.
 
-### Minimum amount  
+### Minimum amount
 
-Mangopay does not impose a minimum amount on payouts. The minimum amount possible is dictated by the rules of the underlying scheme used to send the payout. For example, the SEPA Credit Transfer (SCT) scheme accepts a minimum amount of EUR 0.01, and the Faster Payments System (FPS) in the UK allows GBP 0.01. Other schemes may impose different minimum amounts.
+Mangopay does not impose a minimum amount on payouts. The minimum amount possible is dictated by the rules of the underlying scheme used to send the payout. For example, the SEPA Credit Transfer (SCT) scheme accepts a minimum amount of EUR 0.01 (`Amount` value `1`), and the Faster Payments System (FPS) in the UK allows GBP 0.01 (`Amount` value `1`). Other schemes may impose different minimum amounts.
 
-## Standard payout processing  
+## How Mangopay routes funds
 
-#### Cutoffs and processing times  
+The rail used by Mangopay for a payout request is determined by the `Currency` of the payout and the `Country` of the Recipient.
 
-Standard payouts are processed by Mangopay as quickly as possible. Some payouts are subject to manual review by Mangopay’s teams for reasons of risk management or AML/CFT - these may take longer.  
 
-Payouts created before the cutoff times outlined below are transferred to the user’s bank account within the corresponding processing times. Payouts created after the cutoff are processed next <WorkingDay content="working day" />.   
+The Payout request's `BankAccountId` field can contain the `Id` of a Recipient or a legacy Bank Account. 
 
-Cutoffs and processing times vary between currencies and target bank account types:
+### Migration of legacy bank accounts 
+
+Active legacy bank accounts, created before the Recipient feature was released, were migrated to recipients.
+
+#### Obtain Recipient data of an active legacy bank account
+
+To retrieve data of active legacy bank accounts you can use the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint and specify the legacy `BankAccountId` as the `RecipientId` path parameter. For example, if the legacy Bank Account was `bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`, call the endpoint with that ID:
+
+> **GET /v2.01/\{ClientId}/recipients/**`bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G`
+
+The API responds with a Recipient object containing the information of the legacy Bank Account:
+
+##### API response
+```json
+{
+    "Id": "bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G",
+    "Status": "ACTIVE",
+    "CreationDate": 1731578464,
+    "DisplayName": null,
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+    "Tag": null,
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "Alex",
+        "LastName": "Smith",
+        "Address": {
+            "AddressLine1": "1 rue de Rivoli",
+            "City": "Paris",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630004000031234567890143",
+            "BIC": "BNPAFRPP"
+        }
+    }
+}
+```
+
+#### Migration data mapping
+
+Legacy Bank Account objects had no currency property, and so they could be used for payouts in multiple currencies. The Recipients feature has a `Currency` for each Recipient to improve payout deliverability, meaning that the same real-life account can be registered multiple times (with different `PayoutMethod` values).
+
+When Mangopay migrated legacy Bank Accounts to Recipients, the following values were assigned:
 
 <table>
-    <thead>
-        <tr>
-            <th class="header">Currency</th>
-            <th class="header">Bank account type</th>
-            <th class="header">Cutoff</th>
-            <th class="header">Processing time</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="table-content">EUR</td>
-            <td class="table-content">All types</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">2 working days</td>
-        </tr>
-        <tr>
-            <td class="table-content">GBP</td>
-            <td class="table-content">GB</td>
-            <td class="table-content">N/A</td>
-            <td class="table-content">~10 seconds up to 2 hours</td>
-        </tr>
-        <tr>
-            <td class="table-content">GBP</td>
-            <td class="table-content">IBAN</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">2 – 5 working days</td>
-        </tr>
-        <tr>
-            <td class="table-content">USD</td>
-            <td class="table-content">US</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">1 working day</td>
-        </tr>
-        <tr>
-            <td class="table-content">USD</td>
-            <td class="table-content">OTHER</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">2 – 5 working days</td>
-        </tr>
-        <tr>
-            <td class="table-content">CAD</td>
-            <td class="table-content">CA</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">1 – 2 working days</td>
-        </tr>
-        <tr>
-            <td class="table-content">DKK</td>
-            <td class="table-content">IBAN</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">2 working days</td>
-        </tr>
-        <tr>
-            <td class="table-content">Other</td>
-            <td class="table-content">All types</td>
-            <td class="table-content">15:30 CET</td>
-            <td class="table-content">2 – 5 working days</td>
-        </tr>
-    </tbody>
+<thead>
+<tr>
+<th class="header">Bank Account `Type`</th>
+<th class="header">Recipient `PayoutMethod`</th>
+<th class="header">Recipient `Currency`</th>
+<th class="header">Recipient `Country`</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`IBAN`</td>
+<td class="table-content">`LocalBankTransfer` if `IBAN` indicates a SEPA country, `InternationalBankTransfer` if not</td>
+<td class="table-content">Based on the `IBAN` country (`EUR` if SEPA country or local non-EUR)</td>
+<td class="table-content">Based on the `IBAN`</td>
+</tr>
+<tr>
+<td class="table-content">`GB`</td>
+<td class="table-content">`LocalBankTransfer`</td>
+<td class="table-content">`GBP`</td>
+<td class="table-content">`GB`</td>
+</tr>
+<tr>
+<td class="table-content">`US`</td>
+<td class="table-content">`LocalBankTransfer`</td>
+<td class="table-content">`USD`</td>
+<td class="table-content">`US`</td>
+</tr>
+<tr>
+<td class="table-content">`CA`</td>
+<td class="table-content">`LocalBankTransfer`</td>
+<td class="table-content">`CAD`</td>
+<td class="table-content">`CA`</td>
+</tr>
+<tr>
+<td class="table-content">`OTHER`</td>
+<td class="table-content">`InternationalBankTransfer`</td>
+<td class="table-content">Based on the `BIC`</td>
+<td class="table-content">Based on the `BIC`</td>
+</tr>
+</tbody>
 </table>
 
-Standard payouts are not processed on the [public holidays](/support/public-holidays#France) listed in France. 
+#### Migration of non-EUR accounts in SEPA countries
 
-#### Faster Payment System in the UK  
-
-For GBP payouts to GB bank accounts, Mangopay sends them automatically via the Faster Payment System (FPS).  
-
-The payout is usually processed in a matter of seconds (the `Status` changes from `CREATED` to `SUCCEEDED`) but there can be a delay of up to two hours. The service is available 24/7, 365 days of the year, so there is no cutoff for processing.  
-
-#### Cost-bearing for international USD payouts
-
-For USD payouts sent internationally (that is, not to US-type bank accounts), Mangopay can enable platforms to shoulder the full cost of any processing fees that may arise from correspondent banks. This allows the beneficiary to receive the full amount of USD international payouts.
-
-When activated, cost-bearing uses the OUR configuration of <a href="/guides/glossary#international-bank-wires">SWIFT international bank wires</a> instead of the SHA option used as standard for international payouts. The fees borne by the platform are recuperated by Mangopay during the usual billing cycle.
-
-Please note that this setting can only be applied to **all** international USD payouts and is not available on a payout-by-payout basis. A contractual amendment is also required. To activate this option for your platform, contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>. 
-
-## Real-time gross settlement (RTGS)
-
-For high-value EUR payouts in the SEPA zone, Mangopay offers real-time gross settlement (RTGS) via the Eurozone's T2 scheme (formerly called TARGET2). There is no minimum amount for payouts that can be sent via RTGS, and this functionality was previously known as Express Payouts.
-
-To request RTGS, set the `PayoutModeRequested` to `RTGS_PAYMENT` in calls to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
-
-Funds are usually processed within 5 minutes. The T2 scheme is open 07:00 – 16:15 CET, 5 days a week. Payout requests received outside these hours are processed the next weekday. The T2 scheme is closed at weekends and on the following days if they fall on a weekday: 1 January (New Year's Day), Good Friday, Easter Monday, 1 May (Labour Day), 25 December (Christmas Day), 26 December.
-
-## Refunds using payouts
-
-A [Refund](/api-reference/refunds/refund-object) object cannot be created to reimburse the initial pay-in on two [payment methods](/guides/payment-methods): 
-- [Bank wire pay-in](/api-reference/bank-wire-payins/bank-wire-payin-object)
-- [Pay-in to virtual IBAN](/api-reference/banking-aliases/external-instruction-bank-wire-payin-object)
-
-In these cases, a payout must be used instead, as described below.
-
-<Note>
-**Note – Refunds using payouts via the Dashboard**
-
-The Mangopay Dashboard allows you to initiate refunds using payouts for bank wire and virtual IBAN pay-ins. To do so, use the ***Refund*** button on the pay-in details screen.
-</Note>
-
-### Initiate a refund using a payout via API
-
-<Steps>
-<Step title="Register the bank account (if not already registered)">
-Create the [Recipient](/api-reference/recipients/recipient-object) or [Bank Account](/api-reference/bank-accounts/bank-account-object) object needed for a payout.
-
-If using recipients, the `RecipientScope` can be `PAYIN` if the user is a `PAYER`, as this type does not require SCA.
-
-<Warning>
-**Caution – Account number must match pay-in**
-
-The destination bank account registered for the payout must be the same as the one debited during the pay-in (the account numbers must match).
-
-For a pay-in to virtual IBAN, the account number is returned in the `DebitedBankAccount` when you call [GET View a PayIn (External Instruction)](/api-reference/virtual-accounts/view-payin-external-instruction). For a bank wire pay-in, the account number may be available in the returned `TransactionDetails`. Otherwise, you need to obtain the correct account number from the user.
-</Warning>
-
-</Step>
-<Step title="Initiate the payout">
-For the payout to be correctly processed as a reimbursement, you must reference the initial transaction in the payout request.
-
-Request the payout by calling [POST Create a Payout](/api-reference/payouts/create-payout). In your request, use the `PaymentRef` body parameter: 
-- Set the `ReasonType` value to `PAYIN_REFUND` to indicate that the payout is serving as a refund
-- Provide the `Id` of the initial pay-in as the `ReferenceId` value
-
-A full example request is provided below.
-</Step>
-</Steps>
-
-### Example API request
-
-The payout request body below, to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, shows the `PaymentRef` object containing the `PAYIN_REFUND` value and initial pay-in `Id` as the `ReferenceId`
-
-<RestCreatePayoutPayinRefund/>
-
-### Conditions and possibilities
-
-Note the following conditions and possibilities for `PAYIN_REFUND` payouts: 
-
-- The `ReferenceId` value must be the `Id` of a pay-in that was successful (it's `Status` is `SUCCEEDED`)
-- The `Fees` value can't be negative, meaning that you can't reimburse any fees taken on the initial bank wire pay-in
-- You can create multiple payouts that reference the same pay-in `Id`
-
-If a payout containing a `PAYIN_REFUND` reference is returned, it follows the same process as other payouts.
-
-## Payout returns  
-
-Successful payouts (i.e. with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
-
-In this scenario, Mangopay creates a Refund object for the payout so that the funds can be returned to the wallet.
-
-Set up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a> to be notified of this:  
-- PAYOUT_REFUND_CREATED  
-- PAYOUT_REFUND_SUCCEEDED  
-- PAYOUT_REFUND_FAILED  
-
-You can use the [GET View a Refund endpoint](/api-reference/refunds/view-refund) to see details of the payout return.
-
-Additional information regarding the return can be found in the `RefundReason` object returned by the API.  
-
-Possible `RefundReasonType` are:
-- BANKACCOUNT_INCORRECT  
-- BANKACCOUNT_HAS_BEEN_CLOSED  
-- OWNER_DOT_NOT_MATCH_BANKACCOUNT  
-- WITHDRAWAL_IMPOSSIBLE_ON_SAVINGS_ACCOUNTS  
-
-The refund reason type may be accompanied by a custom message in the `RefundReasonMessage` parameter.  
-
-## Related resources  
-
-<CardGroup cols={2}>
-    <Card title="Endpoint" href="/api-reference/payouts/payout-object">The Payout object</Card>  
-
-    <Card title="How to" href="/guides/payouts/instant/how-to">Learn how to process an Instant Payout</Card>  
-
-    <Card title="Testing" href="/testing/payouts">Learn about testing payouts</Card>
-</CardGroup>
+The process that was followed for IBAN type bank accounts was: 
+1. Country code extracted from the `IBAN` (not the `BIC`)
+2. If IBAN country is in SEPA and the local currency is EUR, the Recipient was assigned:
+  - `PayoutMethodType` = `LocalBankTransfer`
+  - `Currency` = `EUR`
+3. If IBAN country is in SEPA and the local currency is not EUR (e.g. Denmark, Poland, etc), the Recipient was assigned:
+  - `PayoutMethodType` = `InternationalBankTransfer`
+  - `Currency` = Local currency based on predefined list (e.g. `DKK`, `PLN`, etc) 
