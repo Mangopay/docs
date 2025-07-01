@@ -18,7 +18,7 @@ import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
 import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
 
 import Amount_Capture_Request from '/snippets/p-body/Amount_Capture_Request.mdx';
-import Currency_Intent_Request from '/snippets/p-body/Currency_Intent_Request.mdx';
+// import Currency_Intent_Request from '/snippets/p-body/Currency_Intent_Request.mdx';
 import PlatformFeesAmount_Intent_Request from '/snippets/p-body/PlatformFeesAmount_Intent_Request.mdx';
 import ExternalData_Capture_Request from '/snippets/p-body/ExternalData_Capture_Request.mdx';
 import LineItems_Capture_Request from '/snippets/p-body/LineItems_Capture_Request.mdx';
@@ -26,16 +26,25 @@ import LineItems_Capture_Request from '/snippets/p-body/LineItems_Capture_Reques
 import IntentId_Path from '/snippets/p-path/IntentId_Path.mdx';
 
 You can use this endpoint in three capture scenarios requiring three difference request bodies.
-- **Full simultaneous capture** – The full intent is captured and the `ExternalData` is the same as the Intent (same provider references). 
-  - Required: 
-    - Call with no request body.
-- **Full separate capture** – The `ExternalData` references are/or date are different from the Intent (for example, a capture following preauthorization). 
-  - Required: 
-    - `ExternalData.ExternalProcessingDate`
-    - `ExternalData.ExternalProviderReference`
-  - Optional:
-    - `ExternalProviderPaymentMethod`
-- **Partial capture** – The `ExternalData` references are/or date are different from the Intent and the Capture is for part of the full Intent amount. 
+
+<Tabs>
+<Tab title="Full simultaneous capture">
+The full `Amount` of the intent is captured (all line items) and the `ExternalData` is the same as the Intent (same date and provider references).
+
+Required: Call with no request body.
+</Tab>
+<Tab title="Full separate capture">
+The full `Amount` of the intent is captured (all line items) but the `ExternalData` references are/or date are different from the Intent (for example, a capture following preauthorization).
+
+Required: 
+- `ExternalData.ExternalProcessingDate`
+- `ExternalData.ExternalProviderReference`
+
+Optional:
+- `ExternalProviderPaymentMethod`
+</Tab>
+<Tab title="¨Partial capture">
+Part of the original Intent `Amount` is captured, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The Capture `Amount` must equal the sum of its line items.
   - Required: 
     - `Amount`
     - `ExternalData.ExternalProcessingDate`
@@ -44,6 +53,8 @@ You can use this endpoint in three capture scenarios requiring three difference 
     - `LintItems.Amount`
   - Optional:
     - `ExternalProviderPaymentMethod`
+</Tab>
+</Tabs>
 
 ### Path parameters
 
@@ -56,7 +67,6 @@ You can use this endpoint in three capture scenarios requiring three difference 
 <PlatformFeesAmount_Intent_Request/>
 <ExternalData_Capture_Request/>
 <LineItems_Capture_Request/>
-
 
 ### Responses
 
