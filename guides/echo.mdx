@@ -2,6 +2,31 @@
 title: Mangopay Echo
 ---
 
+Thanks to Mangopay's flexible wallet system, platforms are able to use third-party acquirers instead of Mangopay pay-ins and then benefit from Mangopay's wallet and payout capabilities. 
+
+Mangopay Echo is a unified solution for platforms to declare payments not acquired by Mangopay but which then transit the Mangopay environment as part of the workflow. This allows payments to be correctly reconciled against the funds that are received on the platform's escrow wallet.
+
+The funds acquired by third-party PSPs can be of two kinds:
+
+1. First-party (1P) flows, meaning that your platform sells directly to the user on your website
+2. Third-party (3P) flows, meaning that your platform acts as an intermediary between the seller and buyer
+
+Mangopay Echo allows your platform to compliantly declare these transactions as **Intents**. The Intent API object represents a payment authorization processed by a third-party PSP.
+
+An Intent is an API object which contains data about the transaction made via a third-party system:
+- Payment data – Amount, currency, date, payment method
+- External provider data – Provider name, unique identifier of the transaction, date
+- Buyer – The Mangopay User who made the payment on the third-party system
+- LineItems – A list of items purchased by the Sellers
+
+Once created, subsequent actions can be tracked to follow the payment's lifecycle: 
+- Capture – The payment is processed against the authorization and the funds are acquired. A Capture can be for the full Intent or partial for one or more line items. 
+- Cancel – The payment authorization is canceled and not captured. A Cancel can be for the full Intent amount or partial for one or more line items.
+- Refund – The captured payment is refunded to the buyer (fully or partially). If the refund is returned to the merchant (that is, your platform), because it could not be processed for some reason, the refund is **reversed**. 
+
+Your platform can use Mangopay Echo to work with one or more [external providers](/guides/echo/supported-providers), and integrating Echo is necessary whether or not you also acquire funds with Mangopay via Mangopay pay-ins.
+
+
 ## Provide settlement files to Mangopay
 
 <Info>
