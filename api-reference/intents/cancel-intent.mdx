@@ -1,7 +1,7 @@
 ---
-title: Cancel an Intent (fully or partially)
+title: Cancel an Intent
 api: POST v3.0/{ClientId}/payins/intents/{IntentId}/captures
-description: Declare cancellation of all or part of a payment processed by a third-party PSP
+description: Declare cancellation of all or part of a payment authorization processed by a third-party PSP
 ---
 
 import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
@@ -28,10 +28,10 @@ You can use this endpoint to cancel all or part of an Intent.
 <Tabs>
 <Tab title="Full cancellation">
 The full `Amount` of the intent is canceled (all line items). The `ExternalData` references are/or date must be provided as cancellation was necessarily a different action taken via the third-party PSP.
-</Tab>
 Required: 
 - `ExternalData.ExternalProcessingDate`
 - `ExternalData.ExternalProviderReference`
+</Tab>
 <Tab title="¨Partial cancellation">
 Part of the original Intent `Amount` is canceled, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The cancellation `Amount` must equal the sum of its line items.
   - Required: 
@@ -72,13 +72,21 @@ Part of the original Intent `Amount` is canceled, meaning one or more line items
 </Accordion>
 </AccordionGroup>
 
-{/* <AccordionGroup>
-<Accordion title="400 - ">
+<AccordionGroup>
+<Accordion title="400 - Cancel not allowed in NextActions">
 ```json
-
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "38cafec3-937a-410b-8c08-b389b8a63ac3",
+    "Date": 1751331207,
+    "Type": "param_error",
+    "Errors": {
+        "Status": "Echo Intent with id={int_0197c379-056a-7ff7-82dd-e982198056f0} can not be CANCELED, because of nextActions={REFUNDED, DISPUTED}"
+    }
+}
 ```
 </Accordion>
-</AccordionGroup> */}
+</AccordionGroup>
 
 <ResponseExample>
 ```json Full cancel
