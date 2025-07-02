@@ -83,7 +83,6 @@ The User has been unblocked by Mangopay and can now make payouts or send or rece
 
 ### User account
 
-
 <table>
 <tr>
 <th class="header">Resource</th>
@@ -98,8 +97,6 @@ The User has been unblocked by Mangopay and can now make payouts or send or rece
 <td class="table-content">[SCA](/guides/sca/users)</td>
 </tr>
 </table>
-
-#### Mangopay SCA on Owners
 
 <table>
 <tr>
@@ -146,6 +143,128 @@ The User (Owner or Payer) was permanently closed and their `UserStatus` changed 
 The User was closed either by the platform, using the dedicated endpoint for [Natural](/api-reference/users/close-natural-user) or [Legal](/api-reference/users/close-legal-user) users, or by Mangopay as per the terms and conditions.
 
 A user can only be closed if all the wallets they hold are empty.
+</td>
+</tr>
+</table>
+
+### Mangopay SCA enrollment
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`UserId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a User (SCA)](/api-reference/users/view-user-sca)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[SCA](/guides/sca)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`SCA_ENROLLMENT_SUCCEEDED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The user enrolled in Mangopay's SCA feature successfully.
+
+This event is triggered by any new enrollment (or re-enrollment) prompted by an API call, regardless of the endpoint that returned the SCA redirection link (users, recipients, transfers, wallets – see [full list of endpoints](/guides/sca/session#1-call-an-endpoint-that-triggers-sca-redirection)).
+
+This event is not triggered by authentication challenges once the user is enrolled.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`SCA_ENROLLMENT_EXPIRED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The SCA enrollment session expired after 10 minutes before the user completed all steps to enroll all factors. To retry the enrollment, call another API [endpoint that triggers SCA](/guides/sca/session#1-call-an-endpoint-that-triggers-sca-redirection).
+
+This event is not triggered by authentication challenges once the user is enrolled.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`SCA_ENROLLMENT_FAILED`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The user attempt enrollment but reached the maximum number of retries for one of the factors. To retry the enrollment, call another API [endpoint that triggers SCA](/guides/sca/session#1-call-an-endpoint-that-triggers-sca-redirection).
+
+This event is not triggered by authentication challenges once the user is enrolled.
+</td>
+</tr>
+</table>
+
+### User category
+
+<table>
+<tr>
+<th class="header">Resource</th>
+<td class="table-content">`UserId`</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View a User (SCA)](/api-reference/users/view-user-sca)</td>
+</tr>
+<tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Categories](/guides/users/categories)</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`USER_CATEGORY_UPDATED_TO_OWNER`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The existing user's `UserCategory` was changed to `OWNER`.
+
+This event is not triggered if `OWNER` is set at user creation. This event usually coincides with SCA, triggering `USER_ACCOUNT_VALIDATION_ASKED`. 
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`USER_CATEGORY_UPDATED_TO_PAYER`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The existing user's `UserCategory` was changed to `PAYER`. Re-categorization from `OWNER` to `PAYER` is only possible by Mangopay.
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<th class="header">Event type</th>
+<td class="table-content">`USER_CATEGORY_UPDATED_TO_PLATFORM`</td>
+</tr>
+<tr>
+<th class="header">Description</th>
+<td class="table-content">
+The existing user's `UserCategory` was changed to `PLATFORM`. Categorization as `PLATFORM` is only possible by Mangopay.
 </td>
 </tr>
 </table>
@@ -1691,7 +1810,7 @@ The Payout transaction has been successfully processed.
 </tr>
 <tr>
 <th class="header">Related&nbsp;guides</th>
-<td class="table-content">[Instant payouts](/guides/payouts/instant)</td>
+<td class="table-content">[Initiate an SCT Inst payout](/guides/payouts/integration#initiate-an-sct-inst-payout)</td>
 </tr>
 </table>
 

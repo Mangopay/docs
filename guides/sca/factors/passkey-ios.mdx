@@ -82,7 +82,7 @@ struct ContentView: View {
             return
         }
 
-        // Parse the URL into components to extract query parameters
+        // Parse the URL into components to extract query parameter
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
             print("Invalid URL components")
             return
@@ -93,17 +93,15 @@ struct ContentView: View {
             return
         }
 
-        // Extract authentication status from query parameters
+        // Extract authentication status from query parameter
         let controlStatusValue = queryItems.first(where: { $0.name == "controlStatus" })?.value ?? ""
-        let actionStatusValue = queryItems.first(where: { $0.name == "actionStatus" })?.value ?? ""
 
         // Check if authentication was successful
-        if controlStatusValue == "VALIDATED" &&
-           actionStatusValue == "SUCCEEDED" {
-            print("Action succeeded")
+        if controlStatusValue == "VALIDATED" {
+            print("SCA succeeded")
         } else {
             // Handle authentication failure or unexpected status
-            print("Action Failed : \(queryItems)")
+            print("SCA failed : \(queryItems)")
         }
     }
 }

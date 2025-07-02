@@ -25,13 +25,13 @@ description: '<small>&#8249; [All error codes](/errors/codes#refunds)</small>'
 
 ### Causes
 
-This error is triggered on a [pay-in refund](/api-reference/refunds/create-refund-payin) if the initial pay-in's `PaymentType` is `DIRECT_DEBIT` and its `CreationDate` was in the last 7 days.
+This error is triggered on a [pay-in refund](/api-reference/refunds/create-refund-payin) if the initial pay-in's `PaymentType` is `DIRECT_DEBIT` and its `CreationDate` was in the last 7 full calendar days.
 
 This limitation exists because of the possibility of [late failures](/guides/payment-methods/banking/direct-debit##late-failures%2C-chargebacks-and-refunds) on direct debit pay-ins, which may occur on a successful pay-in. 
 
 ### What to do
 
-Platforms must wait 7 calendar days before initiating refunds for direct debit pay-ins.
+Platforms must wait until the 8th day following the day of the pay-in's `CreationDate` before initiating a refund for a direct debit pay-in.
 
 ### Testing
 

@@ -36,11 +36,11 @@ All new bank account registrations for Owners require SCA. New account registrat
 
 #### Migration of existing active bank accounts 
 
-Your platform's existing active bank accounts in Production are being migrated to the Recipients service and will be available in the coming weeks. Once completed, calls to [GET List Recipients for a User](/api-reference/recipients/list-recipients-user) will contain legacy bank accounts under their corresponding Recipient schema.
+Your platform's existing active bank accounts in Production have been migrated to the Recipients service and are available via the Recipient endpoints. For more information, see [migration of legacy bank accounts](/guides/payouts#migration-of-legacy-bank-accounts).
 
-The `BankAccountId` of active bank accounts will remain the same (and be returned in the `RecipientId` field).
+The `BankAccountId` of active bank accounts remains the same (and be returned in the `RecipientId` field).
 
-All active legacy bank accounts will be migrated, including those used for direct debits and pay-in refunds (see [pay-in scope](#pay-in) below).
+All active legacy bank accounts have been migrated, including those used for direct debits and pay-in refunds (see [pay-in scope](#pay-in) below).
 
 ### Recipient scopes
 
@@ -59,7 +59,7 @@ A recipient with the `PAYOUT` scope can also be used for the pay-in use cases of
 A Recipient may be needed for a `PAYER` (or `OWNER`) in two specific pay-in scenarios that are out of scope of Mangopay's SCA feature:
 
 - Direct debit pay-ins (SEPA and Bacs)
-- Pay-in refunds that technically use payouts (specifying the `PAYIN_REFUND` reference of the initial pay-in, [read more](/guides/payouts#refunds-using-payouts))
+- Pay-in refunds that technically use payouts (specifying the `PAYIN_REFUND` reference of the initial pay-in, [read more](/guides/payouts/integration#refunds-using-payouts))
 
 This kind of recipient, with the `RecipientScope` value `PAYIN`, can be created for a user with the `UserCategory` `PAYER` or `OWNER`, and does not require SCA.
 
@@ -145,7 +145,7 @@ The **201 - Created** response from the API shows the recipient's `Status` as `P
 Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
 </Step>
 <Step title="Confirm the outcome">
-When the user is returned after the SCA session, you can check the status of the indicative `controlStatus` and `actionStatus` query parameters. 
+When the user is returned after the SCA session, you can check the status of the indicative `controlStatus` query parameter.
 
 The Recipient `Status` is `PENDING` until the user authenticates successfully, at which point it changes to `ACTIVE`. 
 
@@ -153,7 +153,7 @@ Set up a webhook for the `RECIPIENT_ACTIVE` event type to be notified of this.
 
 Call the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint to check its status. 
 
-If SCA is not successfully completed, the status changes to `CANCELED`. To retry SCA, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
+If SCA is not successfully completed, the status changes to `CANCELED`. To retry SCA, create a new Recipient by calling the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
 </Step>
 </Steps>
 
@@ -171,7 +171,7 @@ When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by 
 
 Payouts can only be requested against a Recipient that has:
 - `Status` value `ACTIVE`
-- `RecipientScope` value `PAYOUT` (but the `PAYIN` value is allowed if the payout is [serving as a refund](/guides/payouts#refunds-using-payouts) and specifies a `PaymentRef`)
+- `RecipientScope` value `PAYOUT` (but the `PAYIN` value is allowed if the payout is [serving as a refund](/guides/payouts/integration#refunds-using-payouts) and specifies a `PaymentRef`)
 
 If you attempt a payout to a Recipient that is `PENDING` (for example, if SCA is in progress) or `CANCELED` (if SCA is not successful), then the Recipient ID is not considered valid and a 400 error is returned:
 

@@ -281,7 +281,7 @@ When testing direct debit mandates and pay-ins, you can set a specific value for
 
 #### Direct debit refunds
 
-It is not possible to initiate a refund for direct debit pay-ins within 7 days of the pay-in's `CreationDate` (to avoid a conflict with possible late failures).
+It is not possible to initiate a refund for a direct debit pay-in until the 8th day following the day of the pay-in's `CreationDate` (to avoid a conflict with possible late failures).
 
 On [POST Create a Refund](/api-reference/refunds/create-refund-payin) you can set the `Tag` to the mock value `ignore_mindate` to ignore the minimum date restriction and test refunds within 7 days. Note that you can only create a refund if the pay-in `Status` is `SUCCEEDED`, which you can achieve with the `Successful` mock value above.
 
@@ -297,6 +297,12 @@ To test Apple Pay, [create a sandbox Apple ID](https://developer.apple.com/help/
 To test Bancontact pay-ins on web, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios.
 
 For mobile, the `DeepLinkURL` returned by the API in Sandbox is a placeholder. Bancontact doesn’t provide a testing environment, so the only way to complete the payment in Sandbox is by using Mangopay’s web-based simulator, accessible via the `RedirectURL` value.
+
+### Bizum 
+
+The only way to test Bizum is via Mangopay's simulator. To test Bizum, follow the `RedirectURL` in the API response to access Mangopay’s simulator. The simulator gives options to test successful and failed payment scenarios. 
+
+In Sandbox, the `RedirectURL` is returned in all cases, because it is the only way to complete the transaction. In Production, the `RedirectURL` is not returned if `Phone` is sent.
 
 ### BLIK
 

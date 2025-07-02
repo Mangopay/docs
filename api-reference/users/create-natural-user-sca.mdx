@@ -156,48 +156,57 @@ Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it
 </AccordionGroup>
 
 <AccordionGroup>
-
-    <Accordion title="400 - Restricted country as Nationality value">
-        ```json  
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "49616dff-19d6-4bec-b82e-0daf09529f52#1676551648",
-            "Date": 1676551649.0,
-            "errors": {
-                "Nationality": "The Nationality used is blocked"
-            }
-        }  
-        ```  
-
-    </Accordion>
-    <Accordion title="400 - Invalid email">
-        ```json 
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
-            "Date": 1690291065.0,
-            "errors": {
-                "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
-            }
-        }  
-        ```  
-
-    </Accordion>
-    <Accordion title="403 - TermsAndConditionsAccepted must be true if OWNER">
-        ```json 
-        {
-          "Message": "User must accept the terms and conditions before account creation or modification.",
-          "Type": "user_hasnt_accepted_terms_and_conditions",
-          "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
-          "Date": 1730810728,
-          "errors": null
-        }  
-        ```
-    </Accordion>
-
-</AccordionGroup>  
+<Accordion title="400 - First name or last name identified as fake">
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+Read more about Mangopay's [AML rule preventing fake names](/guides/users/types#rule-preventing-fake-user-names) **&rarr;**
+</Accordion>
+<Accordion title="400 - Invalid email">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+        "Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
+    }
+}  
+```
+</Accordion>
+<Accordion title="400 - Restricted country">
+```json  
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "31746ec8-51e6-4cd3-bf35-339b6646f3f4#1750669238",
+    "Date": 1750669239,
+    "errors": {
+        "CountryOfResidence": "The CountryOfResidence used is blocked"
+    }
+}
+```
+Read more about [country restrictions](/guides/users/country-restrictions) **&rarr;**
+</Accordion>
+<Accordion title="403 - TermsAndConditionsAccepted must be true if OWNER">
+```json 
+{
+    "Message": "User must accept the terms and conditions before account creation or modification.",
+    "Type": "user_hasnt_accepted_terms_and_conditions",
+    "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
+    "Date": 1730810728,
+    "errors": null
+}  
+```
+</Accordion>
+</AccordionGroup>
 
 <ResponseExample>  
 ```json REST - Payer
