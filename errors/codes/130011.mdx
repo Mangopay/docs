@@ -4,33 +4,33 @@ description: '<small>&#8249; [All error codes](/errors/codes#instant-payouts)</s
 ---
   
 <table>
-    <tbody>
-        <tr>
-            <th class="header"><strong>Error message</strong></th>
-            <td class="table-content">Manual review required - not compatible with payout mode requested</td>
-        </tr>
-        <tr>
-            <th class="header"><strong>Description</strong></th>
-            <td class="table-content">A manual review is required for this payout, so the `INSTANT_PAYMENT_ONLY` value for `PayoutModeRequested` cannot be processed.</td>
-        </tr>
-        <tr>
-            <th class="header"><strong>Categories</strong></th>
-            <td class="table-content">  
+<tbody>
+<tr>
+<th class="header"><strong>Error message</strong></th>
+<td class="table-content">Manual review required - not compatible with payout mode requested</td>
+</tr>
+<tr>
+<th class="header"><strong>Description</strong></th>
+<td class="table-content">A manual review is required for this payout, so the instant payout could not be processed.</td>
+</tr>
+<tr>
+<th class="header"><strong>Categories</strong></th>
+<td class="table-content">  
 <div class="label">Payout</div>  
 <div class="label">Instant payment</div>
 </td>
-        </tr>
-    </tbody>
+</tr>
+</tbody>
 </table>  
 
 #### Causes  
 
-Some payouts are subject to manual review by Mangopay’s teams for reasons of risk management or AML/CFT.   
+Some payouts are subject to manual review by Mangopay's teams for reasons of risk management or AML/CFT.   
 
-This error occurs when a manual review is required on an instant payout requested with `INSTANT_PAYMENT_ONLY` as the value for `PayoutModeRequested`.  
+This error ùay occur when a manual review is required on a EUR instant payout via SCT Inst, regardless of whether the fallback to SCT was requested or not.
 
-The mode has no fallback to standard processing to enable the review, so an error is returned.  
+This error may occur for payouts with the `PayoutModeRequested` of both `INSTANT_PAYMENT` (with fallback) and `INSTANT_PAYMENT_ONLY` (without fallback).
 
 #### What to do  
 
-Create the payout request again with the `PayoutModeRequested` as `STANDARD` or `INSTANT_PAYMENT` (which falls back to `STANDARD` in case of manual review). This will enable the manual review to be performed by Mangopay’s team. 
+For both payout modes, if the payout's `Status` is `FAILED` then you need to create another payout with the `PayoutModeRequest` set to `STANDARD` so that the manual review can be performed by Mangopay's teams.
