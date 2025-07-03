@@ -66,7 +66,7 @@ On GB virtual accounts and banking aliases (`Country` is `GB`), users can make p
 
 As a payment method, virtual accounts allow a user to wire funds directly to their wallet. You should create the account first before inviting the user to wire the funds.
 
-### Creating the account
+### Set up the account
 
 The steps to set up the virtual account are: 
 
@@ -104,7 +104,7 @@ You should also set up the other [webhooks](#webhooks) for the other [status cha
 </Step>
 </Steps>
 
-### Payment flow
+### Collect payments
 
 Once the Virtual Account is set up and its `Status` is `Active`, the user can wire funds to it.
 
@@ -121,7 +121,7 @@ The payment flow is as follows:
       
       You must always ensure the account is `ACTIVE` before inviting a payment, otherwise the funds will be returned.
 
-      See also the note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts.
+      See also the note about delayed [UK CoP recognition](#set-up-the-account) for `GB` accounts.
     </Warning>
   </Step>
   <Step title="You present the payment details to the user">
@@ -143,7 +143,7 @@ The payment flow is as follows:
 
     You can be notified of this by setting up a <a href="/webhooks">webhook</a> for the `PAYIN_NORMAL_SUCCEEDED` event type.
 
-    You can then use the <a href="/api-reference/banking-aliases/view-payin-banking-alias">GET View a PayIn</a> endpoint to get the custom `WireReference` you provided to the user, as well as confirm the amount and status.
+    You can then use the <a href="/api-reference/virtual-accounts/view-payin-external-instruction">GET View a PayIn</a> endpoint to get the custom `WireReference` you provided to the user, as well as confirm the amount and status.
 
     The pay-in's `BankingAliasId` contains the unique identifier of the Virtual Account. 
   </Step>
@@ -153,7 +153,7 @@ The payment flow is as follows:
 
 The `Status` of the Virtual Account can have the following values:  
 - `PENDING` – The account creation request is being processed and full account details may not yet be returned. Any funds sent to the account are returned (if account details exist). `PENDING` can transition to `ACTIVE` or `FAILED`.
-- `ACTIVE` – The account is active and can receive funds (see note about delayed [UK CoP recognition](#creating-the-account) for `GB` accounts). `ACTIVE` can transition to `BLOCKED` or `CLOSED`. 
+- `ACTIVE` – The account is active and can receive funds (see note about delayed [UK CoP recognition](#set-up-the-account) for `GB` accounts). `ACTIVE` can transition to `BLOCKED` or `CLOSED`. 
 - `BLOCKED` – The account is blocked and is not active. Any funds sent to the account are returned. This temporary status may be used during processes relating to user verification or fraud screening. `BLOCKED` can transition to `ACTIVE` or `CLOSED`.
 - `CLOSED` – The account has been deactivated and is closed. Any funds sent to the account are returned. This is a final state.
 - `FAILED` – The account creation request failed or was rejected. This final state is rare. Any funds sent to the account are returned (if account details exist). Depending on when the failure occurred, the following fields may be `null`:
