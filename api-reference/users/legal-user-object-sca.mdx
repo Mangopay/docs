@@ -47,6 +47,14 @@ The changes to the Legal User object are:
 - New response parameter `PendingUserAction.RedirectUrl` containing the SCA session URL to which the individual must be redirected (after adding an encoded `returnUrl` query parameter)
 - New `LegalRepresentative` object to group parameters related to the declared legal representative. This object includes the new `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry`, which may be used to pre-populate the user's phone number in the SCA session
 
+<Warning>
+**Caution – Legal representative's email required**
+
+For Owners, the `LegalRepresentative.Email` address is required for SCA to build a [behavioral biometrics profile](/guides/sca/factors#email-confirmation-behavioral-biometrics) and as a backup communication channel.
+
+Prior to SCA, it was possible to create a Legal `OWNER` without the `LegalRepresentativeEmail`, so this data may be missing. Calling the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint without this data will return an error.
+</Warning>
+
 <CodeGroup>
 ```json v2.01 – Non-SCA 
 {
