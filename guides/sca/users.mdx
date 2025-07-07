@@ -27,7 +27,7 @@ For the other Legal user types (Business, Partnership, Organization), Mangopay i
 Until then, if `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`, then the SCA-enabled user endpoints do not return the SCA redirection link.
 
 <Note>
-**Note – Integration the new endpoints for all Legal User types**
+**Note – Integrate the new endpoints for all Legal User types**
 
 Your platform should still implement the new endpoints and SCA redirection logic if you only have Legal Users whose `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`.
 
@@ -42,16 +42,24 @@ Existing users will not be immediately restricted by the introduction of SCA ([s
 
 For existing Natural users and `SOLETRADER` users (see note on [legal users](#legal-user-integration)), SCA redirection will be triggered in the following scenarios:
 
-- For existing `PAYER` users, when you change their category to `OWNER` using [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user) (available now)
+- For existing `PAYER` users, when you change their category to `OWNER` using [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
 - For existing `OWNER` users, when you:
-    - Enroll them proactively using [POST Enroll a User](/api-reference/users/enroll-user) (available now)
-    - Register a [Recipient](/guides/sca/recipients) (bank/payment account) for them (when SCA feature launched)
-    - Request a [user-initiated transfer](/guides/sca/transfers) for them to another `OWNER` (when SCA feature launched)
-    - Request to access their [wallet balance or transaction history](/guides/sca/wallets) (when SCA feature launched)
+    - Enroll them proactively using [POST Enroll a User](/api-reference/users/enroll-user)
+    - Register a [Recipient](/guides/sca/recipients) (bank/payment account) for them
+    - Request a [user-initiated transfer](/guides/sca/transfers) for them to another `OWNER`
+    - Request to access their [wallet balance or transaction history](/guides/sca/wallets)
 
 Mangopay's SCA session allows the user to enroll or authenticate as required.
 
 We recommend inviting your active Owner users to enroll when they interact with your platform, which you can do using the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
+
+<Note>
+**Note – Legal representative's email required**
+
+The `LegalRepresentative.Email` address is required for SCA to build a [behavioral biometrics profile](/guides/sca/factors#email-confirmation-behavioral-biometrics) and as a backup communication channel.
+
+Prior to SCA, it was possible to create a Legal `OWNER` without the `LegalRepresentativeEmail`. So you may need to obtain this data for your existing legal users to enroll them in SCA.
+</Note>
 
 Mangopay may be required to start introducing consequences on users if they haven't enrolled in SCA, but this will be done with sufficient notice to platforms. You will also be informed of the consequences of non-enrollment, which may include removing certain permissions, blocking the account, reverting the category to `PAYER`, or closing the account.
 
