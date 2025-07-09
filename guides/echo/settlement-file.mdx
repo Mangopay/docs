@@ -31,59 +31,12 @@ There are no requirements for the **file name** – you can name your file how y
 
 ## Mandatory fields
 
-<table>
-<thead>
-<tr>
-<th class="header">`ExternalTransactionStatus`</th>
-<th class="header">Description</th>
-<th class="header">`ExternalTransactionType`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="table-content">`SETTLED`</td>
-<td class="table-content">Payment successfully processed; funds are expected to be received</td>
-<td class="table-content">`PAYMENT`</td>
-</tr>
-<tr>
-<td class="table-content">`REFUNDED`</td>
-<td class="table-content">Refund fully processed; funds have been returned to the consumer</td>
-<td class="table-content">`REFUND`</td>
-</tr>
-<tr>
-<td class="table-content">`REFUND_REVERSED`</td>
-<td class="table-content">Refund processed but reversed; funds have been returned to the merchant</td>
-<td class="table-content">`REFUND`</td>
-</tr>
-<tr>
-<td class="table-content">`DISPUTED`</td>
-<td class="table-content">Funds deduced due to a dispute; not available for settlement</td>
-<td class="table-content">`DISPUTE`</td>
-</tr>
-<tr>
-<td class="table-content">`DEFENDED`</td>
-<td class="table-content">Funds temporarily returned to the merchant as part of the dispute defense process</td>
-<td class="table-content">`DISPUTE`</td>
-</tr>
-<tr>
-<td class="table-content">`DISPUTED_WON`</td>
-<td class="table-content">Dispute resolved in favor of the merchant</td>
-<td class="table-content">`DISPUTE`</td>
-</tr>
-<tr>
-<td class="table-content">`DISPUTED_LOST`</td>
-<td class="table-content">Dispute resolved against the merchant; funds permanently withdrawn</td>
-<td class="table-content">`DISPUTE`</td>
-</tr>
-</tbody>
-</table>
-
 ### Columns (mandatory)
 
 <table>
 <thead>
 <tr>
-<th class="header">Column Name</th>
+<th class="header">Column name</th>
 <th class="header">Description</th>
 <th class="header">Format</th>
 <th class="header">Example</th>
@@ -95,13 +48,13 @@ There are no requirements for the **file name** – you can name your file how y
 `ExternalProviderReference`
 </td>
 <td class="table-content">
-The unique identifier of a transaction at the acquirer level
+The unique identifier of the transaction at the provider level.
 </td>
 <td class="table-content">
 string
 </td>
 <td class="table-content">
-`6TU984332A894613W`
+`auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a`
 </td>
 </tr>
 <tr>
@@ -109,7 +62,7 @@ string
 `ExternalTransactionType`
 </td>
 <td class="table-content">
-The type of transaction
+The type of transaction using Mangopay's accepted values:
 - `PAYMENT`
 - `REFUND`
 - `DISPUTE`
@@ -126,14 +79,14 @@ string
 `ExternalTransactionStatus`
 </td>
 <td class="table-content">
-The status of the transaction in Mangopay format
-- `SETTLED`
-- `REFUNDED`
-- `REFUND_REVERSED`
-- `DISPUTED`
-- `DEFENDED`
-- `DISPUTED_WON`
-- `DISPUTED_LOST`
+The status of the transaction using Mangopay's accepted values:
+- `SETTLED` – Payment successfully processed: funds are expected to be received.
+- `REFUNDED` – Refund fully processed: funds were returned to the buyer.
+- `REFUND_REVERSED` – Refund processed but reversed: funds were returned to the platform.
+- `DISPUTED` – Funds deducted due to a dispute: not available for settlement.
+- `DEFENDED` – Funds temporarily returned to the platform as part of the dispute defense process.
+- `DISPUTED_WON` – Dispute resolved in favor of the platform.
+- `DISPUTED_LOST` – Dispute resolved against the platform: funds permanently withdrawn to buyer.
 </td>
 <td class="table-content">
 string
@@ -147,7 +100,7 @@ string
 `ExternalProcessingDate`
 </td>
 <td class="table-content">
-The date at which the transaction was created
+The date on which the transaction was created.
 </td>
 <td class="table-content">
 date (DD-MM-YYYY)
@@ -161,7 +114,7 @@ date (DD-MM-YYYY)
 `Amount`
 </td>
 <td class="table-content">
-The amount of the transaction in minor unit
+The amount of the transaction in the currency's minor unit.
 </td>
 <td class="table-content">
 string
@@ -192,7 +145,7 @@ string
 <table>
 <thead>
 <tr>
-<th class="header">Footer Line Name</th>
+<th class="header">Footer row name</th>
 <th class="header">Description</th>
 <th class="header">Format</th>
 <th class="header">Example</th>
@@ -204,7 +157,7 @@ string
 `SettlementDate`
 </td>
 <td class="table-content">
-The creation date of the settlement from the provider
+The creation date of the settlement from the provider.
 </td>
 <td class="table-content">
 date (DD-MM-YYYY)
@@ -224,7 +177,7 @@ The name of the third-party provider that generated the settlement file
 string
 </td>
 <td class="table-content">
-`PAYPAL`
+`Stripe`
 </td>
 </tr>
 <tr>
@@ -232,8 +185,7 @@ string
 `TotalSettlementFeesAmount`
 </td>
 <td class="table-content">
-The total fee amount withheld by the external provider from the settlement in minor unit.
-This amount should match the sum of all ExternalProviderFees values across the file, if they are provided
+The total amount of fees taken by the provider from the settlement in the currency's minor unit. This amount match the sum of all `ExternalProviderFees` values in the file, if they are provided.
 </td>
 <td class="table-content">
 string
@@ -247,8 +199,7 @@ string
 `TotalSettlementAmount`
 </td>
 <td class="table-content">
-Net settlement amount in minor unit
-SUM(LinesAmount) - TotalSettlementFeesAmount
+Net settlement amount in the currency's minor unit, which must be the sum of the `Amount` values of all transaction lines, minus the `TotalSettlementFeesAmount`.
 </td>
 <td class="table-content">
 string
@@ -267,7 +218,7 @@ string
 <table>
 <thead>
 <tr>
-<th class="header">Column Name</th>
+<th class="header">Column name</th>
 <th class="header">Description</th>
 <th class="header">Format</th>
 <th class="header">Example</th>
@@ -279,7 +230,7 @@ string
 `IntentId`
 </td>
 <td class="table-content">
-The unique identifier of the intent in Mangopay ecosystem
+The unique identifier of the Intent in Mangopay's ecosystem.
 </td>
 <td class="table-content">
 string
