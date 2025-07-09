@@ -52,100 +52,107 @@ import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx'
 </Accordion>
 </AccordionGroup>
 
-{/* <AccordionGroup>
-<Accordion title="400 - ">
+<AccordionGroup>
+<Accordion title="400 - Intent Amount must equal sum of line items' ">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "21d7dbc4-beea-4ad2-9f2a-471d683c25b5",
+    "Date": 1752053748,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "The total intent amount does not match the sum of the declared LineItem amounts"
+    }
+}
+```
+</Accordion>
+{/* <Accordion title="400 - ">
 ```json
 
 ```
-</Accordion>
-</AccordionGroup> */}
+</Accordion> */}
+</AccordionGroup>
 
 <ResponseExample>
 ```json
 {
-    "Id": "f18d6512-8aaa-4502-8986-4abd0a87fe18",
-    "Amount": 10000,
+    "Id": "int_0197eebf-21fd-73c7-85ef-8193b4cf427d",
+    "Amount": 20000,
     "AvailableAmountToSplit": 0,
     "Currency": "EUR",
     "PlatformFeesAmount": 0,
     "Status": "AUTHORIZED",
-    "NextActions": "CAPTURED, CANCELED",
+    "NextActions": "CAPTURED, PARTIALLY_CAPTURED, CANCELED",
     "ExternalData": {
-        "ExternalProcessingDate": "01-10-2024",
-        "ExternalProviderReference": "Stripe-26dec3ae-5e92-4346-a02e-543c93b8fcb1",
-        "ExternalMerchantReference": "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16",
+        "ExternalProcessingDate": 1752057185,
+        "ExternalProviderReference": "auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a",
+        "ExternalMerchantReference": "order-420bbe60-7f62-4e53-9d64-7cb5188c507f",
         "ExternalProviderName": "Stripe",
-        "ExternalProviderPaymentMethod": "PAYPAL"
+        "ExternalProviderPaymentMethod": "MASTERCARD"
     },
     "Buyer": {
-        "Id": "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
     },
     "LineItems": [
         {
             "Seller": {
-                "AuthorId": "user_m_01JCGMCMQQYFBT1YGSPDDGEATY",
-                "WalletId": "wlt_m_01JCGMCS5AHZN117J4PE8BG2BQ",
-                "FeesAmount": 0,
-                "TransferDate": "13-11-2024"
+                "AuthorId": "user_m_01JZJ42M48CGJ19F2FS5WWKBNH",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
             },
-            "Id": "1f395091-6b27-440f-8d38-39832cf1cfc9",
-            "Sku": "item-123456",
-            "Name": "item-name",
-            "Description": "item-description",
-            "Quantity": 1,
-            "UnitAmount": 7500,
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427e",
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
             "TaxAmount": 0,
-            "DiscountAmount": 0,
-            "Category": "DIGITAL_GOODS",
+            "DiscountAmount": 2000,
+            "Category": "Example category",
             "ShippingAddress": {
-                "AddressLine1": "Loop Street",
-                "AddressLine2": "Mangopay Ltd",
+                "AddressLine1": "2226 Balistreri Roads",
                 "City": "Paris",
                 "Region": "Ile de France",
-                "PostalCode": "75009",
+                "PostalCode": "75001",
                 "Country": "FR"
             },
-            "TotalLineItemAmount": 7500,
-            "CanceledAmount" : 0,
-            "CapturedAmount" : 0,
-            "RefundedAmount" : 0,
-            "DisputedAmount" : 0,
-            "SplitAmount" : 0
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
         },
         {
             "Seller": {
-                "AuthorId": "user_m_01JCGMCQ0FE3052HHFC5RV6C59",
-                "WalletId": "wlt_m_01JCGMCVY6ZCAMNS89CGZT7EDN",
-                "FeesAmount": 0,
-                "TransferDate": "13-11-2024"
+                "AuthorId": "user_m_01JZAXD3C31Y543SRKNCVK3V5N",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
             },
-            "Id": "1f12c4d5-d6ea-40f2-ac8e-bb3c8770918c",
-            "Sku": "item-789",
-            "Name": "item-name2",
-            "Description": "item-description2",
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427f",
+            "Sku": "example-item-456",
+            "Name": "Example item name",
+            "Description": "Example item description",
             "Quantity": 1,
-            "UnitAmount": 2500,
+            "UnitAmount": 10000,
             "TaxAmount": 0,
             "DiscountAmount": 0,
-            "Category": "PHYSICAL_GOODS",
+            "Category": "Example category",
             "ShippingAddress": {
-                "AddressLine1": "Loop Street",
-                "AddressLine2": "Mangopay Ltd",
+                "AddressLine1": "771 Koch Mews",
                 "City": "Paris",
                 "Region": "Ile de France",
-                "PostalCode": "75009",
+                "PostalCode": "75001",
                 "Country": "FR"
             },
-            "TotalLineItemAmount": 2500,
-            "CanceledAmount" : 0,
-            "CapturedAmount" : 0,
-            "RefundedAmount" : 0,
-            "DisputedAmount" : 0,
-            "SplitAmount" : 0
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
         }
     ],
-    "CreationDate": 1731430090,
-    "ExecutionDate": 1731430090
+    "CreationDate": 1752057192,
+    "ExecutionDate": 1752057192
 }
 ```
 </ResponseExample>
@@ -153,69 +160,67 @@ import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx'
 <RequestExample>
 ```json
 {
-    "Amount" : 10000,
-    "Currency" : "EUR",
-    "PlatformFeesAmount" : 0,
-    "ExternalData" : {
-        "ExternalProcessingDate" : "01-10-2024",
-        "ExternalProviderReference" : "Stripe-26dec3ae-5e92-4346-a02e-543c93b8fcb1",
-        "ExternalMerchantReference" : "Order-xyz-35e8490e-2ec9-4c82-978e-c712a3f5ba16",
-        "ExternalProviderName" : "Stripe",
-        "ExternalProviderPaymentMethod" : "PAYPAL"
+    "Amount": 20000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057185,
+        "ExternalProviderReference": "auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a",
+        "ExternalMerchantReference": "order-420bbe60-7f62-4e53-9d64-7cb5188c507f",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
     },
-    "Buyer" : {
-        "Id" : "user_m_01JCGBN7B7QG2YZ8ARA5J8WYMW"
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
     },
-    "LineItems" : [
+    "LineItems": [
         {
-            "Seller" : {
-                "AuthorId" : "user_m_01JCGMCMQQYFBT1YGSPDDGEATY",
-                "WalletId" : "wlt_m_01JCGMCS5AHZN117J4PE8BG2BQ",
-                "FeesAmount" : 0,
-                "TransferDate" : "13-11-2024"
+            "Seller": {
+                "AuthorId": "user_m_01JZJ42M48CGJ19F2FS5WWKBNH",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
             },
-            "Sku" : "item-123456",
-            "Name" : "item-name",
-            "Description" : "item-description",
-            "Quantity" : 1,
-            "UnitAmount" : 7500,
-            "TaxAmount" : 0,
-            "DiscountAmount" : 0,
-            "Category" : "DIGITAL_GOODS",
-            "ShippingAddress" : {
-                "AddressLine1" : "Loop Street",
-                "AddressLine2" : "Mangopay Ltd",
-                "City" : "Paris",
-                "Region" : "Ile de France",
-                "PostalCode" : "75009",
-                "Country" : "FR"
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 2000,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "2226 Balistreri Roads",
+                "AddressLine2": null,
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
             }
         },
         {
-            "Seller" : {
-                "AuthorId" : "user_m_01JCGMCQ0FE3052HHFC5RV6C59",
-                "WalletId" : "wlt_m_01JCGMCVY6ZCAMNS89CGZT7EDN",
-                "FeesAmount" : 0,
-                "TransferDate" : "13-11-2024"
+            "Seller": {
+                "AuthorId": "user_m_01JZAXD3C31Y543SRKNCVK3V5N",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
             },
-            "Sku" : "item-789",
-            "Name" : "item-name2",
-            "Description" : "item-description2",
-            "Quantity" : 1,
-            "UnitAmount" : 2500,
-            "TaxAmount" : 0,
-            "DiscountAmount" : 0,
-            "Category" : "PHYSICAL_GOODS",
-            "ShippingAddress" : {
-                "AddressLine1" : "Loop Street",
-                "AddressLine2" : "Mangopay Ltd",
-                "City" : "Paris",
-                "Region" : "Ile de France",
-                "PostalCode" : "75009",
-                "Country" : "FR"
+            "Sku": "example-item-456",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 1,
+            "UnitAmount": 10000,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "771 Koch Mews",
+                "AddressLine2": null,
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
             }
         }
     ]
 }
-```  
+```
 </RequestExample>

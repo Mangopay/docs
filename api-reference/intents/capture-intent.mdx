@@ -49,7 +49,7 @@ The full `Amount` of the intent is captured (all line items) but the `ExternalDa
 
 </Tab>
 <Tab title="Partial capture">
-Part of the original Intent `Amount` is captured, meaning one or more line items but not all. The `ExternalData` references are/or date are different from the Intent. The Capture `Amount` must equal the sum of its line items.
+Part of the original Intent `Amount` is captured from one or more line items. The `ExternalData` references are/or date are different from the Intent. The Capture `Amount` must equal the sum of the `Amount` values captured for all line items.
 
 ### Body parameters
 
@@ -81,18 +81,44 @@ Part of the original Intent `Amount` is captured, meaning one or more line items
 </Accordion>
 </AccordionGroup>
 
-{/* <AccordionGroup>
-<Accordion title="400 - ">
+<AccordionGroup>
+<Accordion title="400 - Amount must equal LineItems amounts">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "538f0981-b975-4790-8a20-748a8afe8719",
+    "Date": 1752063380,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "The total intent amount does not match the sum of the declared LineItem amounts"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - Capture Amount for a line item can't exceed authorized amount for the same line item">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "19232364-0772-4ba2-bb7d-5ac6aa1ea385",
+    "Date": 1752064526,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "Capture not possible: current captured amount [10000] plus capture amount [5000] exceeds the Intent.LineItemId=[int_li_0197ef2e-88f7-7bcc-8937-207a5e5f483a] with amount [10000]"
+    }
+}
+```
+</Accordion>
+{/* <Accordion title="400 - ">
 ```json
 
 ```
-</Accordion>
-</AccordionGroup> */}
+</Accordion> */}
+</AccordionGroup>
 
 <ResponseExample>
 ```json Full, simultaneous
 {
-    "Id": "int_0197c2e6-184f-7085-9a8c-b8f08ccabd7f",
+    "Id": "int_0197ef1e-e53d-7e81-b648-b27b13a98ba9",
     "Amount": 20000,
     "AvailableAmountToSplit": 20000,
     "Currency": "EUR",
@@ -100,43 +126,43 @@ Part of the original Intent `Amount` is captured, meaning one or more line items
     "Status": "CAPTURED",
     "NextActions": "REFUNDED, DISPUTED",
     "ExternalData": {
-        "ExternalProcessingDate": "23-04-2025",
-        "ExternalProviderReference": "stripe-d60564f2-2460-48f1-9da5-a395836d8ec7",
-        "ExternalMerchantReference": "order-c707aff8-cb56-43a2-b3e0-05ca9a1938b6",
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "auth-stripe-d400210c-a4d9-4ce2-bfb1-9cf21cde5a80",
+        "ExternalMerchantReference": "order-8db7e398-f460-43c8-91ef-19d76d54dbf6",
         "ExternalProviderName": "Stripe",
         "ExternalProviderPaymentMethod": "MASTERCARD"
     },
     "Buyer": {
-        "Id": "user_m_01JYE6509CD7EA92STCNK9QV1A"
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
     },
     "Capture": {
-        "Id": "int_capture_0197c2e6-3324-7c59-bc38-b5380b96323c"
+        "Id": "int_capture_0197ef1e-fc77-7e14-97f8-96a38847e375"
     },
     "LineItems": [
         {
-            "Id": "int_li_0197c2e6-184f-7085-9a8c-b8f08ccabd80",
-            "TotalLineItemAmount": 7500,
-            "CapturedAmount": 7500,
+            "Id": "int_li_0197ef1e-e53f-7864-aa28-eaef2cc7170f",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         },
         {
-            "Id": "int_li_0197c2e6-184f-7085-9a8c-b8f08ccabd81",
-            "TotalLineItemAmount": 12500,
-            "CapturedAmount": 12500,
+            "Id": "int_li_0197ef1e-e53f-7864-aa28-eaef2cc71710",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         }
     ],
-    "CreationDate": 1751321548,
-    "ExecutionDate": 1751321555
+    "CreationDate": 1752063468,
+    "ExecutionDate": 1752063474
 }
 ```
-```json Full, separate
+```json Full, delayed
 {
-    "Id": "int_0197c2e7-29a0-71ee-9d2b-d70b7c3302be",
+    "Id": "int_0197ef23-8cf3-755e-8527-62243565e69d",
     "Amount": 20000,
     "AvailableAmountToSplit": 20000,
     "Currency": "EUR",
@@ -144,82 +170,82 @@ Part of the original Intent `Amount` is captured, meaning one or more line items
     "Status": "CAPTURED",
     "NextActions": "REFUNDED, DISPUTED",
     "ExternalData": {
-        "ExternalProcessingDate": "27-05-2025",
-        "ExternalProviderReference": "capture-stripe-32e2e3c6-c2bf-469d-8609-ff9c79716bcf",
-        "ExternalMerchantReference": "capture-order-47972706-ddf1-47ea-9471-967fab2c6019",
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-4680fa21-e6fd-48e0-8303-fcf6b8f43fb1",
+        "ExternalMerchantReference": "capture-order-31701b2e-3a15-4ae8-8ca5-b381b0ede3dd",
         "ExternalProviderName": "Stripe",
         "ExternalProviderPaymentMethod": "MASTERCARD"
     },
     "Buyer": {
-        "Id": "user_m_01JYE6509CD7EA92STCNK9QV1A"
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
     },
     "Capture": {
-        "Id": "int_capture_0197c2e7-37b4-708d-a4d7-06e8a26651ec"
+        "Id": "int_capture_0197ef23-97ad-7e72-b72e-5a7abb79319e"
     },
     "LineItems": [
         {
-            "Id": "int_li_0197c2e7-29a1-780f-a12a-74780b40fdb4",
-            "TotalLineItemAmount": 7500,
-            "CapturedAmount": 7500,
+            "Id": "int_li_0197ef23-8cf5-788d-9d45-f36184eb937a",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         },
         {
-            "Id": "int_li_0197c2e7-29a1-780f-a12a-74780b40fdb5",
-            "TotalLineItemAmount": 12500,
-            "CapturedAmount": 12500,
+            "Id": "int_li_0197ef23-8cf5-788d-9d45-f36184eb937b",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         }
     ],
-    "CreationDate": 1751321618,
-    "ExecutionDate": 1751321622
+    "CreationDate": 1752063773,
+    "ExecutionDate": 1752063776
 }
 ```
 ```json Partial
 {
-    "Id": "int_0197c2e4-18a6-75ee-8c35-7079dcd64373",
+    "Id": "int_0197eecb-7d9e-7e57-8825-0511f8e956ae",
     "Amount": 20000,
-    "AvailableAmountToSplit": 7500,
+    "AvailableAmountToSplit": 10000,
     "Currency": "EUR",
     "PlatformFeesAmount": 0,
     "Status": "PARTIALLY_CAPTURED",
     "NextActions": "REFUNDED, DISPUTED, PARTIALLY_CAPTURED, CAPTURED",
     "ExternalData": {
-        "ExternalProcessingDate": "27-05-2025",
-        "ExternalProviderReference": "capture-stripe-601c450b-ecfa-4387-8628-3f86fa0bbae9",
-        "ExternalMerchantReference": "capture-order-5a2d115b-d6df-443b-98e2-be59f75a3e62",
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-55f66004-6538-4d31-90fa-e6394c7e25ac",
+        "ExternalMerchantReference": "capture-order-e22f01ad-8370-47f0-a028-186c4e144295",
         "ExternalProviderName": "Stripe",
         "ExternalProviderPaymentMethod": "MASTERCARD"
     },
     "Buyer": {
-        "Id": "user_m_01JYE6509CD7EA92STCNK9QV1A"
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
     },
     "Capture": {
-        "Id": "int_capture_0197c2e4-30b5-78a5-8f2f-ac320b597429"
+        "Id": "int_capture_0197ef1e-94fe-7c62-a8df-eb29551623aa"
     },
     "LineItems": [
         {
-            "Id": "int_li_0197c2e4-18a7-7368-bbb7-1fec36267665",
-            "TotalLineItemAmount": 7500,
-            "CapturedAmount": 7500,
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43793",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 5000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         },
         {
-            "Id": "int_li_0197c2e4-18a7-7368-bbb7-1fec36267666",
-            "TotalLineItemAmount": 12500,
-            "CapturedAmount": 0,
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43794",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 5000,
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0
         }
     ],
-    "CreationDate": 1751321417,
-    "ExecutionDate": 1751321424
+    "CreationDate": 1752058002,
+    "ExecutionDate": 1752063448
 }
 ```  
 </ResponseExample>
@@ -228,12 +254,12 @@ Part of the original Intent `Amount` is captured, meaning one or more line items
 ```json Full, simultaneous
 // No request body
 ```
-```json Full, separate
+```json Full, delayed
 {
     "ExternalData": {
-        "ExternalProcessingDate": "27-05-2025",
-        "ExternalProviderReference": "capture-stripe-f82d4792-7f3e-4816-9978-d5258e249fbd",
-        "ExternalMerchantReference": "capture-order-e31ee47f-4241-4482-801f-416f665439c8",
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-4680fa21-e6fd-48e0-8303-fcf6b8f43fb1",
+        "ExternalMerchantReference": "capture-order-31701b2e-3a15-4ae8-8ca5-b381b0ede3dd",
         "ExternalProviderName": "Stripe",
         "ExternalProviderPaymentMethod": "MASTERCARD"
     }
@@ -241,22 +267,26 @@ Part of the original Intent `Amount` is captured, meaning one or more line items
 ```
 ```json Partial
 {
-	"Amount" : 7500,
-	"Currency" : "EUR",
-	"PlatformFeesAmount" : 0,
-    "ExternalData" : {
-		"ExternalProcessingDate" : "27-05-2025",
-		"ExternalProviderReference": "capture-stripe-601c450b-ecfa-4387-8628-3f86fa0bbae9",
-    "ExternalMerchantReference": "capture-order-5a2d115b-d6df-443b-98e2-be59f75a3e62",
-		"ExternalProviderName" : "Stripe",
-		"ExternalProviderPaymentMethod" : "MASTERCARD"
-	},
-	"LineItems" : [
-		{
-			"Id" : "int_li_0197c2e4-18a7-7368-bbb7-1fec36267665",
-			"Amount" : 7500
-		}
-	]
+    "Amount": 10000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-55f66004-6538-4d31-90fa-e6394c7e25ac",
+        "ExternalMerchantReference": "capture-order-e22f01ad-8370-47f0-a028-186c4e144295",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "LineItems": [
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43793",
+            "Amount": 5000
+        },
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43794",
+            "Amount": 5000
+        }
+    ]
 }
 ```
 </RequestExample>
