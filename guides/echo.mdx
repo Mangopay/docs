@@ -58,12 +58,18 @@ The funds acquired by third-party PSPs can be of two kinds, and a single Intent 
 #### First-party flows (1P)
 First-party (1P) flows refer to transactions where your platform sells directly to the user on your website: an e-commerce transaction. In a 1P scenario, your platform operator is the beneficiary of the transaction.
 
-For a 1P Line Item, your platform is the line item's `Seller`: your `ClientId` is the `AuthorId`, and your Fees Wallet is the `WalletId`.
+For a 1P Line Item, your platform is the line item's `Seller`:
+- The `AuthorId` is your `ClientId`
+- The `WalletId` is either: 
+  - Your Fees Wallet (`FEES_CCY` where CCY is the currency code)
+  - Or, in Mirakl Connector setups, your dedicated Commission Wallet `Id`
 
 #### Third-party flows (3P)
 Third-party flows refer to transactions where your platform acts as an intermediary between the buyer and a seller. In a 3P scenario, the Seller is the beneficiary. 
 
-For a 3P line item, The seller on your platform is the line item's `Seller`: their `UserId` is the `AuthorId` and their wallet is the `WalletId`.
+For a 3P line item, the seller on your platform is the line item's `Seller`: 
+- The `AuthorId` is their User `Id`
+- The `WalletId` is their Wallet `Id`
 
 ## Mirakl Connector
 
@@ -123,6 +129,9 @@ In case any data from your settlement could not be processed for some reason, yo
 <CardGroup cols={1}>
 <Card title="POST Create an Intent" href="/api-reference/intents/create-intent">
 Declare a transaction authorization processed by a third-party PSP
+</Card>
+<Card title="PUT Update an Intent" href="/api-reference/intents/update-intent">
+Update details of a declared transaction authorization processed by a third-party PSP
 </Card>
 <Card title="POST Capture an Intent" href="/api-reference/intents/capture-intent">
 Declare the full or partial capture of an authorization processed by a third-party PSP
