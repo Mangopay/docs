@@ -1,10 +1,10 @@
 <ResponseField name="Status" type="string">
 The status of the Settlement:
 - `UPLOAD` – Settlement file received, reconciliation in progress.
-- `CREATED` – Settlement file parsed, all lines contains issues, a new file can be uploaded via PUT method.
-- `FAILED` – Settlement file rejected due to a technical error (format, timeout).
-- `PENDING_FUNDS_RECEPTION` – Settlement file parsed with some lines successfully reconciled.
+- `CREATED` – Settlement file parsed but reconciliation not possible for any lines. Upload a new file using [PUT Update a Settlement](/api-reference/settlements/update-settlement).
+- `FAILED` – Settlement file rejected due to a technical error (e.g. format, timeout).
+- `PENDING_FUNDS_RECEPTION` – Settlement file parsed and some lines successfully reconciled.
 - `RECONCILED` – Full settlement amount received (`ActualSettlementAmount`).
-- `INSUFFICIENT_FUNDS` – Partial amount received. FundsMissing shows the shortfall.
-- `EXCESS_FUNDS` – Amount received exceed expected; reconciliation marked as complete.
+- `INSUFFICIENT_FUNDS` – Partial amount received: `FundsMissingAmount` shows the shortfall.
+- `EXCESS_FUNDS` – Amount received exceeds expected amount: reconciliation marked as complete.
 </ResponseField>
