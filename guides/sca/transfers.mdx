@@ -27,8 +27,8 @@ On the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoi
 
 The `ScaContext` parameter has the values:
 
-- `USER_PRESENT` – The user is initiating the transfer and is actively present. SCA is required unless an exemption can be applied by Mangopay. Platforms are not able to request specific exemptions.
-- `USER_NOT_PRESENT`– No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
+- `USER_PRESENT` – The user is initiating the transfer and is actively present. The platform must [redirect the user](/guides/sca/session) for SCA using the `PendingUserAction.RedirectUrl` returned, unless an exemption can be applied by Mangopay such as on low-amount and low-risk transfers. Platforms are not able to request specific exemptions ([read more](/guides/sca#exemptions-on-actions)).
+- `USER_NOT_PRESENT` – No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
 
 To begin with, the parameter is technically **optional** and its default value if not sent is `null`, which has the same meaning as `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt. 
 
