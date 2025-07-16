@@ -3,33 +3,6 @@ title: Mangopay Echo
 sidebarTitle: Overview
 ---
 
-{/* docs.json */}
-
-{/* 
-          {
-            "group": "Echo",
-            "pages": [
-              {
-                "group": "Intents",
-                "pages": [
-                  "api-reference/intents/create-intent",
-                  "api-reference/intents/create-intent-capture",
-                  "api-reference/intents/create-intent-cancel",
-                  "api-reference/intents/view-intent"
-                ]
-              },
-              {
-                "group": "Settlements",
-                "pages": [
-                  "api-reference/settlements/create-settlement",
-                  "api-reference/settlements/update-settlement",
-                  "api-reference/settlements/view-settlement"
-                ]
-              }
-            ]
-          },
-*/}
-
 Thanks to Mangopay's flexible wallet system, platforms are able to use third-party acquirers instead of Mangopay pay-ins and then benefit from Mangopay's wallet and payout capabilities.
 
 Mangopay Echo is a unified solution for platforms to declare payments not acquired by Mangopay but which then transit the Mangopay environment as part of the workflow. This allows payments to be correctly reconciled against the funds that are received on the platform's escrow wallet.
@@ -122,7 +95,7 @@ In Echo, the future transfer of funds to seller's Mangopay wallet is called a **
 
 To create a Split (**3**), call the endpoint: 
 
-> **PUT Create a Split of an Intent** (in development)
+> [POST Create a Split of an Intent](/api-reference/intents/create-intent-split)
 
 <Note>
 **Note – Split creation timing depends on your workflow**
@@ -148,7 +121,7 @@ For some payment methods, particularly those involving bank wire transfers, it c
 
 ### Intent Dispute
 
-The payment can be subject to a chargeback or dispute initiated by the buyer. Your platform needs to track this eventuality in an Intent Dispute, which can be won or lost. The Intent Dispute also caters for a defended state, which is where the funds are temporarily returned to your platform while the disputed is contested.
+The payment can be subject to a chargeback or dispute initiated by the buyer. Your platform needs to track this eventuality in an Intent Dispute, which can be won or lost. If your provider returns the funds to you temporarily while it is defended, you can reflect this status change in the Intent Dispute, but there is no movement of funds on Echo's side until the outcome of the dispute.
 
 ## Send settlement files to Mangopay
 
@@ -178,7 +151,7 @@ In your workflow, the funds acquired by your third-party PSP arrive in the Mango
 
 In most cases, this payment is handled by your PSP. In some cases, your platform makes the payment. 
 
-Once the funds arrive, the Settlement `Status` changes to `RECONCILED`. 
+Once the funds arrive, the Settlement `Status` changes to `RECONCILED`. If the funds which arrive on the wallet do not cover the amount declared in Intents and Settlements, the Status changes to `INSUFFICIENT_FUNDS`. 
 
 ## Release split transfers to sellers
 
