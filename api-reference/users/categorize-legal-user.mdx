@@ -42,11 +42,13 @@ import RestCategorizeLegalUser from '/snippets/code/rest-categorize-legal-user.m
 
 This endpoint allows you to transition a user whose `UserCategory` is `PAYER` into an `OWNER` by providing the required information and redirecting them on the `PendingUserAction.RedirectUrl` response value to complete SCA enrollment.
 
+The `RedirectUrl` is currently only returned if `LegalPersonType` is `SOLETRADER`, but the endpoint should be integrated for the other types.
+
 Optionally, you can update the `LegalRepresentative.Email` and provide or update the `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry` before SCA redirection.
 
 If the user's `UserCategory` is already `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
 
-[Read more about SCA redirection](/guides/users/sca/session) **&rarr;**
+[Read more about SCA redirection](/guides/sca/session) **&rarr;**
 
 <Note>
 **Note – Country-based restrictions apply to users**
@@ -119,6 +121,19 @@ Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it
 </AccordionGroup>  
 
 <AccordionGroup>
+<Accordion title="400 - LegalRepresentative.Email required">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "939c4b8c-3e82-4012-a5bd-a3aa2727432a",
+    "Date": 1751881519.0,
+    "errors": {
+        "LegalRepresentative.Email": "'Email' must not be empty."
+    }
+}
+```
+</Accordion>
 <Accordion title="400 - Endpoint not allowed if category already OWNER">
 ```Json
 {

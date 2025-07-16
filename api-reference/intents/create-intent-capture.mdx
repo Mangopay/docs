@@ -1,0 +1,303 @@
+---
+title: Create a Capture of an Intent
+api: POST /v3.0/{ClientId}/payins/intents/{IntentId}/captures
+description: Declare the full or partial capture of an authorization processed by a third-party PSP
+---
+
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
+import NextActions_Intent from '/snippets/p-response/NextActions_Intent.mdx';
+import ExternalData_Capture from '/snippets/p-response/ExternalData_Capture.mdx';
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx';
+import LineItems_Intent_Actions from '/snippets/p-response/LineItems_Intent_Actions.mdx';
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
+
+import Amount_Capture_Request from '/snippets/p-body/Amount_Capture_Request.mdx';
+import PlatformFeesAmount_Intent_Request from '/snippets/p-body/PlatformFeesAmount_Intent_Request.mdx';
+import ExternalData_Capture_Request from '/snippets/p-body/ExternalData_Capture_Request.mdx';
+import LineItems_Capture_Request from '/snippets/p-body/LineItems_Capture_Request.mdx';
+
+import IntentId_Path from '/snippets/p-path/IntentId_Path.mdx';
+
+You can use this endpoint in three capture scenarios requiring three difference request bodies.
+
+### Path parameters
+
+<IntentId_Path/>
+
+<Tabs>
+<Tab title="Full simultaneous capture">
+The full `Amount` of the intent is captured (all line items) and the `ExternalData` is the same as the Intent (same provider references and date).
+
+### Body parameters
+
+No request body for full simultaneous capture.
+
+</Tab>
+<Tab title="Full separate capture">
+The full `Amount` of the intent is captured (all line items) but the `ExternalData` references and date are different from the Intent (for example, a capture following preauthorization).
+
+### Body parameters
+
+<ExternalData_Capture_Request/>
+
+</Tab>
+<Tab title="Partial capture">
+Part of the original Intent `Amount` is captured from one or more line items. Any amount can be captured from any line item(s). The `ExternalData` references and date are different from the Intent. The Capture `Amount` must equal the sum of the `Amount` values captured for all line items.
+
+### Body parameters
+
+<Amount_Capture_Request/>
+<PlatformFeesAmount_Intent_Request/>
+<ExternalData_Capture_Request/>
+<LineItems_Capture_Request/>
+
+</Tab>
+</Tabs>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters">
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<NextActions_Intent/>
+<ExternalData_Capture/>
+<Buyer_Intent/>
+<LineItems_Intent_Actions/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400 - Amount must equal LineItems amounts">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "538f0981-b975-4790-8a20-748a8afe8719",
+    "Date": 1752063380,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "The total intent amount does not match the sum of the declared LineItem amounts"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - Capture Amount for a line item can't exceed authorized amount for the same line item">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "19232364-0772-4ba2-bb7d-5ac6aa1ea385",
+    "Date": 1752064526,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "Capture not possible: current captured amount [10000] plus capture amount [5000] exceeds the Intent.LineItemId=[int_li_0197ef2e-88f7-7bcc-8937-207a5e5f483a] with amount [10000]"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - Partial capture already done so full capture not allowed">
+```json
+{
+    "Message": "Action on the Intent resource is not permitted",
+    "Id": "51a50212-30d5-4761-a2c7-f92aca09d697",
+    "Date": 1750257386,
+    "Type": "invalid_action",
+    "Errors": {
+        "Capture": "A partial operation was found, please include instructions in the request body"
+    }
+}
+```
+</Accordion>
+{/* <Accordion title="400 - ">
+```json
+
+```
+</Accordion> */}
+</AccordionGroup>
+
+<ResponseExample>
+```json Full, simultaneous
+{
+    "Id": "int_0197ef1e-e53d-7e81-b648-b27b13a98ba9",
+    "Amount": 20000,
+    "AvailableAmountToSplit": 20000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "CAPTURED",
+    "NextActions": "REFUNDED, DISPUTED",
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "auth-stripe-d400210c-a4d9-4ce2-bfb1-9cf21cde5a80",
+        "ExternalMerchantReference": "order-8db7e398-f460-43c8-91ef-19d76d54dbf6",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "Capture": {
+        "Id": "int_capture_0197ef1e-fc77-7e14-97f8-96a38847e375"
+    },
+    "LineItems": [
+        {
+            "Id": "int_li_0197ef1e-e53f-7864-aa28-eaef2cc7170f",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        },
+        {
+            "Id": "int_li_0197ef1e-e53f-7864-aa28-eaef2cc71710",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        }
+    ],
+    "CreationDate": 1752063468,
+    "ExecutionDate": 1752063474
+}
+```
+```json Full, delayed
+{
+    "Id": "int_0197ef23-8cf3-755e-8527-62243565e69d",
+    "Amount": 20000,
+    "AvailableAmountToSplit": 20000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "CAPTURED",
+    "NextActions": "REFUNDED, DISPUTED",
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-4680fa21-e6fd-48e0-8303-fcf6b8f43fb1",
+        "ExternalMerchantReference": "capture-order-31701b2e-3a15-4ae8-8ca5-b381b0ede3dd",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "Capture": {
+        "Id": "int_capture_0197ef23-97ad-7e72-b72e-5a7abb79319e"
+    },
+    "LineItems": [
+        {
+            "Id": "int_li_0197ef23-8cf5-788d-9d45-f36184eb937a",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        },
+        {
+            "Id": "int_li_0197ef23-8cf5-788d-9d45-f36184eb937b",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        }
+    ],
+    "CreationDate": 1752063773,
+    "ExecutionDate": 1752063776
+}
+```
+```json Partial
+{
+    "Id": "int_0197eecb-7d9e-7e57-8825-0511f8e956ae",
+    "Amount": 20000,
+    "AvailableAmountToSplit": 10000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "PARTIALLY_CAPTURED",
+    "NextActions": "REFUNDED, DISPUTED, PARTIALLY_CAPTURED, CAPTURED",
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-55f66004-6538-4d31-90fa-e6394c7e25ac",
+        "ExternalMerchantReference": "capture-order-e22f01ad-8370-47f0-a028-186c4e144295",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "Capture": {
+        "Id": "int_capture_0197ef1e-94fe-7c62-a8df-eb29551623aa"
+    },
+    "LineItems": [
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43793",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 5000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        },
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43794",
+            "TotalLineItemAmount": 10000,
+            "CapturedAmount": 5000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0
+        }
+    ],
+    "CreationDate": 1752058002,
+    "ExecutionDate": 1752063448
+}
+```  
+</ResponseExample>
+
+<RequestExample>
+```json Full, simultaneous
+// No request body
+```
+```json Full, delayed
+{
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-4680fa21-e6fd-48e0-8303-fcf6b8f43fb1",
+        "ExternalMerchantReference": "capture-order-31701b2e-3a15-4ae8-8ca5-b381b0ede3dd",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    }
+}
+```
+```json Partial
+{
+    "Amount": 10000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057968,
+        "ExternalProviderReference": "capture-stripe-55f66004-6538-4d31-90fa-e6394c7e25ac",
+        "ExternalMerchantReference": "capture-order-e22f01ad-8370-47f0-a028-186c4e144295",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "LineItems": [
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43793",
+            "Amount": 5000
+        },
+        {
+            "Id": "int_li_0197eecb-7d9f-79fe-9eef-6375bba43794",
+            "Amount": 5000
+        }
+    ]
+}
+```
+</RequestExample>

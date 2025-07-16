@@ -6,43 +6,33 @@ const mangopay = new mangopayInstance({
   clientApiKey: 'your-api-key',
 })
 
-let myUser = {
-  Id: '146476890',
-  WalletId: '148968396',
-}
-
-let myCreditedUser = {
-  Id: '174796429 ',
-  WalletId: '174796439',
-}
-
 let myTransfer = {
-  AuthorId: myUser.Id,
-  Tag: 'Created using Mangopay NodeJS SDK',
-  CreditedUserId: myCreditedUser.Id,
+  ScaContext: "USER_PRESENT",
+  AuthorId: "user_m_01JYEJ86451TKDK9BZAXRT4RTS",
+  Tag: "Created using Mangopay NodeJS SDK",
   DebitedFunds: {
-    Currency: 'EUR',
-    Amount: 12,
+    Currency: "EUR",
+    Amount: 5000,
   },
   Fees: {
-    Currency: 'EUR',
+    Currency: "EUR",
     Amount: 0,
   },
-  DebitedWalletId: myUser.WalletId,
-  CreditedWalletId: myCreditedUser.WalletId,
-}
+  DebitedWalletId: "wlt_m_01JYEJCS18438SEW2773PSNWCV",
+  CreditedWalletId: "wlt_m_01JY53GESY8V2HBV7EBD6J8FKX",
+};
 
 const createTransfer = async (transfer) => {
   return await mangopay.Transfers.create(transfer)
     .then((response) => {
-      console.info(response)
-      return response
+      console.info(response);
+      return response;
     })
     .catch((err) => {
-      console.log(err)
-      return false
-    })
-}
+      console.log(err);
+      return false;
+    });
+};
 
-createTransfer(myTransfer)  
+createTransfer(myTransfer);
 ```

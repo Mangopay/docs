@@ -4,27 +4,31 @@ sidebarTitle: Types
 'og:description': 'How your user community maps on to Mangopay’s user types, from private individuals to businesses, as well as non-profits and sole proprietors.'  
 ---
 
-Your platform has a community of users. If you are going to process payments for these users with Mangopay, they need to be created as users via the API.  
+Your platform has a community of users. If you are going to process payments with Mangopay for these users, your system needs to register them as users via the API.  
 
 Processing payments for your platform is a highly regulated activity. Mangopay has a legal obligation to:  
-- Establish the identity of your users  
-- Verify their identity if they wish to pay money out to their bank account  
+- Establish the identity of your users
+- Verify their identity if they wish to exceed [KYC/KYB limits](/guides/users/limits), such as to pay money out to their bank account
 
-The obligations for users depend on who they are and what actions they are going to want to carry out on your platform. For this reason, Mangopay has created a system of user types and categories.  
+The obligations for users depend on who they are and what actions they are going to want to carry out on your platform. For this reason, Mangopay has created a system of user types and [categories](/guides/users/categories).
 
 ## Types  
 
 Mangopay provides payment services to platforms that serve both consumers and businesses. Therefore, there are two types of user:  
-- Natural users, for individuals (i.e., natural persons) over the age of 18  
-- Legal users, for entities like companies, organizations, and sole proprietors (i.e., legal persons)  
+- Natural users, for individuals (i.e., natural persons) over the age of 18
+- Legal users, for entities like companies, organizations, and sole proprietors (i.e., legal persons)
 
-Legal entities are defined and governed by the national legislation where they are based. To simplify this, Mangopay differentiates 4 types of legal user:  
+In the API, natural and legal users are registered on different endpoints. In the User object, the `PersonType` property has the values `NATURAL` or `LEGAL`.
+
+Legal entities are defined and governed by the national legislation where they are based. To simplify this, Mangopay differentiates 4 types of legal user:
 - Business, like a company or corporation  
 - Partnership, which is usually an association of sole proprietors  
 - Organization, for non-profits and similar  
 - Soletrader, which is a sole proprietor  
 
-To find out more details about which local entities are considered as which type, see the Requirements for legal users.  
+In the API, the type of Legal User is set in the `LegalPersonType` property, which has the values `BUSINESS`, `ORGANIZATION`, `PARTNERSHIP`, `SOLETRADER`. 
+
+The legal structure of your user's business or legal entity determines the type they need in Mangopay's system. Legal structures differ by country: the list of legal structures per country grouped under each type is listed in the [local KYB](/guides/users/verification/requirements/kyb-local) page.
 
 <Warning>  
 **Caution - Partnership type is only for specific structures** 
@@ -34,5 +38,62 @@ The partnership type is designed for a specific kind of legal entity which typic
 Only the following are considered under the Partnership type:  
 - Gesellschaft bürgerlichen Rechts (GbR) in Germany 
  
-If the legal entity is not one of those specified above, even if the local legal name includes the notion of a 'partnership', it should be considered a Business. Incorrect submission as a Partnership will result in verification refusal and a request to recategorize the entity.  
+If the legal entity is not one of those specified above, even if the local legal name includes the notion of a 'partnership', it should be considered a Business. Incorrect submission as a Partnership will result in verification refusal and a request to re-categorize the entity.  
 </Warning>
+
+### Natural persons
+
+A natural person, or individual, can be registered with Mangopay as:
+- A natural user
+- The declared legal representative of legal users 
+
+#### Rule preventing fake user names 
+
+The identity information of individuals registered with Mangopay must be correct even if they are only making pay-ins on your platform (and so [categorized](/guides/users/categories) as `PAYERS`).
+
+Mangopay operates an anti-fraud rule in the Production environment to prevent fictitious or fake values being used as the **first name** and **last name** of these individuals.
+
+The rule aims to prevent misuse of Mangopay's system and applies to all types of user and both categories (`PAYER` and `OWNER`). The rule is only active in the Production environment, not Sandbox.
+
+The rule targets the following types of values:
+
+- Fictitious and fake names (examples: `Marilyn Monroe`, `Homer Simpson`)
+- Gibberish and random sequences (examples: `aeofinzef`, `ojenoiner`)
+- Keywords identified as not real names (examples: `test`, `undefined`, `unknown`)
+
+Calls including such data on POST and PUT endpoints return the following 400 error:
+
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+
+This rule applies to the following fields:
+
+##### Natural users
+
+- `FirstName`
+- `LastName`
+
+##### Legal users
+
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.FirstName`
+- `LegalRepresentativeFirstName` (legacy object)
+- `LegalRepresentativeLastName` (legacy object)
+
+The rule applies to the following endpoints 
+
+- [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+- [POST Create a Natural User (legacy)](/api-reference/users/create-natural-user)
+- [PUT Update a Natural User (legacy)](/api-reference/users/update-natural-user)
+- [POST Create a Legal User (legacy)](/api-reference/users/create-legal-user)
+- [PUT Update a Legal User (legacy)](/api-reference/users/update-legal-user)

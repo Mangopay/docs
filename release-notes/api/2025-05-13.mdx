@@ -1,0 +1,48 @@
+---
+title: 'API - May 13, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+### Hosted KYC/KYB verification solution
+
+Mangopay's new hosted KYC/KYB verification solution is generally available for all platforms (previously in beta). 
+
+Thanks to the Mangopay-hosted web session, end users can complete all the necessary steps for their KYC/KYB verification in one smooth experience. 
+
+For Natural users, the solution guides them through a live photo ID check. For Soletrader and Business users, the solution uses business data to perform a lookup in the relevant national registry, helping streamline the process. Read more in the dedicated guide:
+
+<Card title="Guide" href="/guides/users/verification/hosted">
+Learn about Mangopay's hosted KYC/KYB solution
+</Card>
+
+<Note>
+**Note – Activation required**
+
+To activate the hosted KYC/KYB verification feature for your platform, get in touch <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Note>
+
+The following endpoints have been added, which enable your platform to initiate and manage hosted sessions:
+<CardGroup cols={1}>
+<Card title="POST Create an IDV Session" href="/api-reference/idv-sessions/create-idv-session">
+Initiate a hosted KYC/KYB session and get the unique link for the frontend experience
+</Card>
+<Card title="GET View an IDV Session" href="/api-reference/idv-sessions/view-idv-session">
+See details of a hosted KYC/KYB session, outcome of checks, and verified data
+</Card>
+<Card title="GET List IDV Session for a User" href="/api-reference/idv-sessions/list-idv-sessions-user">
+Retrieve key details of all hosted KYC/KYC sessions attempted for a user
+</Card>
+</CardGroup>
+
+The following webhooks [event types](/webhooks/event-types) have been added: 
+
+- `IDENTITY_VERIFICATION_VALIDATED` – The IDV Session’s `Status` changed to `VALIDATED` and the User became KYC/KYB verified.
+- `IDENTITY_VERIFICATION_FAILED` – The IDV Session’s `Status` changed to `REFUSED` and the User was not KYC/KYB verified.
+- `IDENTITY_VERIFICATION_INCONCLUSIVE` – The IDV Session’s `Status` changed to `REVIEW` and the session is under manual review by Mangopay’s teams before an outcome can be given.
+- `IDENTITY_VERIFICATION_OUTDATED` – The IDV Session’s `Status` changed to `OUTDATED` indicating that the user’s KYC/KYB verification status was downgraded. To regain KYC/KYB verified status, the user must complete a new IDV Session successfully.
+
+</div>

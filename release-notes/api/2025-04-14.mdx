@@ -1,0 +1,37 @@
+---
+title: 'API - Apr 14, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'  
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+## Endpoints to close user accounts
+
+Platforms can close Mangopay Accounts thanks to the two new endpoints:
+- [DELETE Close a Natural User](/api-reference/users/close-natural-user)
+- [DELETE Close a Legal User](/api-reference/users/close-legal-user)
+
+This endpoint allows your platform to close a Mangopay Account, as per Mangopay's <a href="https://mangopay.com/terms-and-conditions" target="_blank">terms and conditions</a>, in the event that the agreement between the user and the platform comes to an end.
+
+Closing a user is irreversible and immediate, and can only be done if all their wallets are empty.
+
+Once a user is closed, they are unable to take actions or use Mangopay services. 
+
+Prevented actions return the following 400 response if `UserStatus` is `CLOSED`: 
+```json 400 
+{
+    "Message": "User closed: No action can be performed",
+    "Type": "user_closed",
+    "Id": "553d1f4a-8df9-4a5f-ab76-66ea235b5e85#1744650845",
+    "Date": 1744650846,
+    "errors": null
+}
+```
+
+Two new `ResultCode` errors have been added for cases where a transfer is requested to or from a wallet owned by a closed user: 
+- [002601](/errors/codes/002601) - User owning debited wallet is closed and cannot transfer to another wallet
+- [002602](/errors/codes/002602) - User owning credited wallet is closed and and cannot receive funds from another wallet
+
+</div>

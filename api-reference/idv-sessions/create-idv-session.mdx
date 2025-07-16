@@ -1,12 +1,14 @@
 ---
 title: 'Create an IDV Session'
 api: 'POST /v2.01/{ClientId}/users/{UserId}/identity-verifications'
-description: 'Start an identity verification session and get a link for the hosted experience'
+description: 'Initiate a hosted KYC/KYB session and get the unique link for the frontend experience'
 ---
 
 import UserId from '/snippets/p-path/UserId.mdx';
+
 import ReturnURL4 from '/snippets/p-body/ReturnURL4.mdx';
-import Tag3 from '/snippets/p-body/Tag3.mdx';
+import Tag7 from '/snippets/p-body/Tag7.mdx';
+
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
@@ -17,13 +19,18 @@ import ReturnURL3Response from '/snippets/p-response/ReturnURL3Response.mdx';
 import RestCreateIdvSession from '/snippets/code/rest-create-idv-session.mdx';
 
 <Note>
+**Note – Activation required**
+
+The hosted KYC/KYB verification feature must be activated by Mangopay. Contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> to get started.
+</Note>
+
+<Note>
 **Note – Available for Natural, Soletrader, and Business**
 
 An IDV Session can only be created for Natural and Legal Users whose `UserCategory` is `OWNER`. 
 
 For Legal users, the feature is only available for `LegalPersonType` values `BUSINESS` and `SOLETRADER`.
 </Note>
-
 
 ### Path parameters
 
@@ -33,13 +40,13 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
 
 <ReturnURL4 />
 
-<Tag3 />
+<Tag7 />
 
 ### Responses
 
 <AccordionGroup>
 
-<Accordion title="200">
+<Accordion title="200 - Response parameters">
 
 <IdResponse />
 
@@ -59,6 +66,31 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
 
 <AccordionGroup>
 
+<Accordion title="403 - Feature not activated">
+```json 
+{
+    "type": "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+    "title": "Forbidden",
+    "status": 403,
+    "traceId": "00-046605fe21abece0903b78483c6dc5dd-099f889c8e09309c-01"
+}
+```
+</Accordion>
+
+<Accordion title="400 - User ID not valid">
+```json
+{
+    "Message": "Missing or incorrect required parameter",
+    "Type": "param_error",
+    "Id": "6b5b73cd-6d4c-4ea5-8859-9447dfe2c5b2",
+    "Date": 1746458497.0,
+    "errors": {
+        "UserId": "UserId is not valid"
+    }
+}
+```
+</Accordion>
+
 <Accordion title="400 - User must be OWNER">
 ```json
 {
@@ -66,6 +98,27 @@ For Legal users, the feature is only available for `LegalPersonType` values `BUS
     "Type": "invalid_action",
     "Id": "49377b80-01b4-4b68-ba8b-99920aaf47a9",
     "Date": 1736344654.0,
+    "errors": null
+}
+```
+</Accordion>
+
+<Accordion title="400 - Legal user must be BUSINESS or SOLETRADER">
+```json ORGANIZATION 
+{
+    "Message": "The LegalUserType ORGANIZATION is not currently supported in the identity verification process. An event will be skipped. PartnerId: {ClientId}/ UserExternalId: {UserId}",
+    "Type": "invalid_action",
+    "Id": "6e42d540-efea-4fcc-9a85-fd1f5a09bc03",
+    "Date": 1746447478.0,
+    "errors": null
+}
+```
+```json PARTNERSHIP
+{
+    "Message": "The LegalUserType PARTNERSHIP is not currently supported in the identity verification process. An event will be skipped. PartnerId: {ClientId}/ UserExternalId: {UserId}",
+    "Type": "invalid_action",
+    "Id": "58148aa4-57bb-4d61-94e6-c1450116606e",
+    "Date": 1746458611.0,
     "errors": null
 }
 ```

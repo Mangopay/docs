@@ -1,0 +1,327 @@
+---
+title: Settlement file format requirements
+---
+
+This page describes the Mangopay format requirements of the CSV settlement file that your platform must upload to the [POST Create a Settlement](/api-reference/settlements/create-settlement) endpoint.
+
+The CSV file contains: 
+- Transaction data – Header columns and a row for each transaction included in the settlement file
+- A single empty row (string of commas)
+- Footer rows – Summary data with header rows and a single value for each
+
+<Warning>
+**Caution – Mandatory fields must not be empty**
+
+All mandatory fields must be present and not empty in every row or the file will be rejected. The parser identifies columns by their headers, not their position.
+
+Optional fields (transaction data or summary footer) can be empty.
+</Warning>
+
+### Example template
+
+You can use this [example CSV file](https://raw.githubusercontent.com/Mangopay/docs/refs/heads/main/guides/echo/Example_Mangopay_Settlement_File.csv) (right click and ***Save as...***), which contains the correct column and row labels and example data for 3 transactions. Remove the example data lines before generating your own file. 
+
+## File requirements 
+
+- File type: `.csv`
+- Delimiter: Comma `,`
+- Max. file size: TBD
+
+There are no requirements for the **file name** – you can name your file how you like.
+
+## Mandatory fields
+
+### Columns (mandatory)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`ExternalProviderReference`
+</td>
+<td class="table-content">
+The unique identifier of the transaction at the provider level.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalTransactionType`
+</td>
+<td class="table-content">
+The type of transaction using Mangopay's accepted values:
+- `PAYMENT`
+- `REFUND`
+- `DISPUTE`
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`PAYMENT`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalTransactionStatus`
+</td>
+<td class="table-content">
+The status of the transaction. The accepted values listed can only apply to the `ExternalTransactionType` mentioned:
+- `SETTLED` – `PAYMENT` successfully processed: funds are expected to be received.
+- `REFUNDED` – `REFUND` fully processed: funds were returned to the buyer.
+- `REFUND_REVERSED` – `REFUND` processed but reversed: funds were returned to the platform.
+- `DISPUTED` – Funds deducted due to a `DISPUTE`: not available for settlement.
+- `DEFENDED` – Funds temporarily returned to the platform as part of the `DISPUTE` defense process.
+- `DISPUTED_WON` – `DISPUTE` resolved in favor of the platform.
+- `DISPUTED_LOST` – `DISPUTE` resolved against the platform: funds permanently withdrawn to buyer.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`SETTLED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProcessingDate`
+</td>
+<td class="table-content">
+The date on which the transaction was created.
+</td>
+<td class="table-content">
+date (DD-MM-YYYY)
+</td>
+<td class="table-content">
+`19-06-2025`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`Amount`
+</td>
+<td class="table-content">
+The amount of the transaction in the currency's minor unit.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`50000` (500)
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`Currency`
+</td>
+<td class="table-content">
+The currency of the transaction.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`EUR`
+</td>
+</tr>
+</tbody>
+</table>
+
+### Footer rows (mandatory)
+
+<table>
+<thead>
+<tr>
+<th class="header">Footer row name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`SettlementDate`
+</td>
+<td class="table-content">
+The creation date of the settlement from the provider.
+</td>
+<td class="table-content">
+date (DD-MM-YYYY)
+</td>
+<td class="table-content">
+`19-06-2025`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProviderName`
+</td>
+<td class="table-content">
+The name of the third-party PSP.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`Stripe`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`TotalSettlementFeesAmount`
+</td>
+<td class="table-content">
+The total amount of fees taken by the provider from the settlement in the currency's minor unit. This amount match the sum of all `ExternalProviderFees` values in the file, if they are provided.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`500`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`TotalSettlementAmount`
+</td>
+<td class="table-content">
+Net settlement amount in the currency's minor unit, which must be the sum of the `Amount` values of all transaction lines, minus the `TotalSettlementFeesAmount`.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`50000`
+</td>
+</tr>
+</tbody>
+</table>
+
+## Optional fields
+
+### Columns (optional)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`IntentId`
+</td>
+<td class="table-content">
+The unique identifier of the associated Intent in Mangopay's ecosystem.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`int_01978259-e06b-758c-8cd5-888cee9dd669`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalPaymentMethod`
+</td>
+<td class="table-content">
+The [supported payment method](/guides/echo/supported-payment-methods) used to process the transaction.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`int_01978259-e06b-758c-8cd5-888cee9dd669`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalInitialReference`
+</td>
+<td class="table-content">
+The unique identifier of the original transaction authorization or capture at the acquirer's level.
+
+Required only when `ExternalTransactionType` is `REFUND` or `DISPUTE`.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`capture-stripe-d5fad854-117c-4b1a-bf15-d8e2846749c7`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`ExternalProviderFees`
+</td>
+<td class="table-content">
+The amount of fees deducted by the provider from the transaction `Amount` in the currency's minor unit.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`150`
+</td>
+</tr>
+</tbody>
+</table>
+
+### Footer rows (optional)
+
+<table>
+<thead>
+<tr>
+<th class="header">Footer line name</th>
+<th class="header">Description</th>
+<th class="header">Format</th>
+<th class="header">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`SettlementCurrency`
+</td>
+<td class="table-content">
+The currency of the settlement file.
+</td>
+<td class="table-content">
+string
+</td>
+<td class="table-content">
+`EUR`
+</td>
+</tr>
+</tbody>
+</table>
+
+## Related resources
+
+<CardGroup col={2}> 
+<Card title="Guides" href="/guides/echo">
+Read more about Mangopay Echo
+</Card>
+<Card title="Endpoints" href="/api-reference/settlements/create-settlement">
+POST Create a Settlement
+</Card>
+</CardGroup>

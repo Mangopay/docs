@@ -1,0 +1,75 @@
+---
+title: Update a Settlement
+api: PUT /v3.0/{ClientId}/payins/intents/settlements/{SettlementId} 
+description: Update a Settlement by uploading an additional file
+---
+
+import SettlementId_Settlement from '/snippets/p-response/SettlementId_Settlement.mdx';
+import Status_Settlement from '/snippets/p-response/Status_Settlement.mdx';
+import CreationDate_Settlement from '/snippets/p-response/CreationDate_Settlement.mdx';
+import DeclaredIntentAmount_Settlement from '/snippets/p-response/DeclaredIntentAmount_Settlement.mdx';
+import ExternalProcessorFeesAmount_Settlement from '/snippets/p-response/ExternalProcessorFeesAmount_Settlement.mdx';
+import ActualSettlementAmount_Settlement from '/snippets/p-response/ActualSettlementAmount_Settlement.mdx';
+import FundsMissingAmount_Settlement from '/snippets/p-response/FundsMissingAmount_Settlement.mdx';
+
+import SettlementId_SettlementId_Path from '/snippets/p-path/SettlementId_SettlementId_Path.mdx';
+
+{/* Use this endpoint to send another Mangopay-format CSV file to modify the data in an existing Settlement. */}
+
+### Path parameters
+
+<SettlementId_SettlementId_Path/>
+
+### Body parameters
+
+<ParamField body="file" type="csv" required>
+The settlement file, provided by the external PSP and formatted to comply with Mangopay's [settlement file structure](/guides/echo/settlement-file).
+</ParamField>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - OK" defaultOpen>
+
+<SettlementId_Settlement/>
+<Status_Settlement/>
+<CreationDate_Settlement/>
+<DeclaredIntentAmount_Settlement/>
+<ExternalProcessorFeesAmount_Settlement/>
+<ActualSettlementAmount_Settlement/>
+<FundsMissingAmount_Settlement/>
+
+</Accordion>
+</AccordionGroup>
+
+---
+
+{/* <AccordionGroup>
+<Accordion title="415 - Unsupported Media Type">
+</Accordion>
+<Accordion title="500 - Internal Server Error">
+</Accordion>
+</AccordionGroup> */}
+
+<RequestExample>
+```bash
+curl -X PUT ".../v3.0/{ClientId}/payins/intents/settlements/{SettlementId}"" \
+-H "Authorization: Bearer token" \
+-H "Content-Type: multipart/form-data" \
+-F "file=@/example/file-path.csv"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+    "SettlementId": "int_stlmnt_019778c1-fe45-7864-8d2c-c2394e0f105c",
+    "Status": "UPLOADED",
+    "CreationDate": 1750077669,
+    "DeclaredIntentAmount": 0,
+    "ExternalProcessorFeesAmount": 0,
+    "ActualSettlementAmount": 0,
+    "FundsMissingAmount": 0
+}
+```
+</ResponseExample>

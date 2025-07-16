@@ -1,0 +1,253 @@
+---
+title: Mangopay Echo integration for Mirakl Connector platforms
+description: Guide for platforms using the Mirakl Connector to prepare for the launch of Mangopay Echo
+---
+
+Platforms are able to use third-party acquirers along with Mangopay pay-ins and then benefit from Mangopay's wallet and payout capabilities. 
+
+Mangopay is developing a new pay-in connector called **Mangopay Echo** to provide better transparency on funds acquired by other PSPs but which then transit the Mangopay environment. 
+
+The Mirakl Connector, which your platform is using, will take care of the Mangopay Echo functionality for all Mirakl Orders, regardless of whether the payments are processed by a third-party PSP or by Mangopay. However, we require you to enrich Mirakl Orders with some data so they can be processed.
+
+Furthermore, we require certain actions from all platforms using third-party acquirer PSPs, including those using the Mirakl Connector. 
+
+{/* For Mirakl Connector platforms also processing first-party payments for the sale of their own goods, we will require integration of Mangopay Echo to declare these direct payments. This is because these payments are not visible in Mirakl and therefore not handled by the Mirakl Connector. */}
+
+While developments of Mangopay Echo are being finalized, certain actions can be started on your side.
+
+## Confirm your PSP provides settlement files
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition (whether the platform uses the Mirakl Connector or not)
+</Info>
+
+Settlement data consists of:
+
+- **A list of transactions** and details for each: type (e.g. payment, refund, chargeback), identifiers, amounts, date, status information, etc.
+- **Summary data** relating to the settlement of those transactions: date of settlement, total amount sent to your platform, total amount of commission retained by the PSP, etc.
+
+Many PSPs provide daily settlement files, but it is possible that your provider doesn't. In this case, you need to request that they start making files available to you, ideally daily.
+
+<Check>
+**Best practice – Request settlement files as soon as possible (if not already provided)**
+
+If your PSP doesn't provide settlement files today, you need to request that they do as soon as possible.
+
+This data is essential for regulatory compliance and Mangopay relies on your partner PSP to provide you the files.
+</Check>
+
+## Enrich Mirakl Connector integration
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition and using the Mirakl Connector
+</Info>
+
+<Note>
+**Note – If using multi-capture, use order line custom fields**
+
+The connector supports single capture (one capture per `commercial_order`) and multi-capture (one capture per `logistic_order` or multiple captures per `logistic_order`). 
+
+If you use multiple captures per `logistic_order`, use **order line custom fields** (`order_line_additional_fields`) instead of order custom fields.
+</Note>
+
+### 1. Create custom Order fields in the Mirakl Dashboard
+
+Mirakl allows its operators to create custom data fields (for Stores, Orders, etc.) for specific business needs.
+
+Mangopay's Mirakl Connector relies on these custom fields to standardize the transactional data that is not always present in Orders. Without these fields, Mangopay Echo can't declare external payments (called Intents in the Echo solution) or reconcile and release funds.
+
+#### How to create fields
+
+To create custom fields in the Mirakl Dashboard:
+
+1. Navigate to ***Settings*** in the sidebar menu.
+2. Select the entity: ***Orders***
+3. Go to the ***Custom fields*** tab.
+4. Click ***Create custom field*** and fill in the required details such as ***Label***, ***Code***, ***Type***, and ***Description***. 
+
+Follow the specifications in the table below exactly. 
+
+For the Mirakl settings not mentioned below we recommend:
+
+- ***Store account permissions***: ***Invisible*** or ***Read only***
+- ***Required field***: No
+
+There are no requirements for the ***Label***, which is your custom display name.
+
+#### Fields to create
+
+<table>
+<thead>
+<tr>
+<th class="header">Code</th>
+<th class="header">Description</th>
+<th class="header">Type (Mirakl Dashboard)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`mgp-external-provider-name`</td>
+<td class="table-content">The name of the external provider processing the transaction.</td>
+<td class="table-content">***Single values list*** containing the relevant value(s) exactly as they appear in the [supported external providers](/guides/echo/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-processing-date`</td>
+<td class="table-content">The date at which the transaction was created.</td>
+<td class="table-content">***Date (ISO 8601 format)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-reference`</td>
+<td class="table-content">The unique identifier of the transaction at the provider level.</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-merchant-reference`</td>
+<td class="table-content">The unique identifier of the transaction at the merchant level.</td>
+<td class="table-content">***Text (Max: 2000 char.)***</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-payment-method`</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods) used to process the transaction.</td>
+<td class="table-content">***Single values list*** containing the relevant values exactly as they appear in the [supported payment methods](/guides/echo/supported-payment-methods).</td>
+</tr>
+</tbody>
+</table>
+
+<Check>
+**Best practice – Use list values not text strings**
+
+The data values sent in `mgp-external-provider-name` and `mgp-external-provider-payment-method` must match the supported enum values linked above.
+
+Therefore, it is better to use the Mirakl ***Single values list*** format with the specified values rather than free text. In the Mirakl API this format is `LIST` with `accepted_values`.
+
+Note that the payment method is not required by Mangopay, so if you make it required on Mirakl then all values must be in the supported values.
+</Check>
+
+### 2. Integrate the custom Order fields into your Mirakl API calls
+
+Now that the fields have been created, you need to integrate them on your calls to the Mirakl API for Orders.
+
+The following fields are required for correct processing by Mangopay Echo:
+
+<table>
+<thead>
+<tr>
+<th class="header">Field</th>
+<th class="header">Required</th>
+<th class="header">Expected values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`mgp-external-provider-name`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">One of the [supported external providers](/guides/echo/supported-providers).</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-processing-date`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">ISO 8601 date time in UTC (YYYY-MM-DDTHH:MM:SSZ)</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-reference`</td>
+<td class="table-content">Yes</td>
+<td class="table-content">String</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-merchant-reference`</td>
+<td class="table-content">No</td>
+<td class="table-content">String</td>
+</tr>
+<tr>
+<td class="table-content">`mgp-external-provider-payment-method`</td>
+<td class="table-content">No</td>
+<td class="table-content">One of the [supported payment methods](/guides/echo/supported-payment-methods). If the payment method is not supported, this field can be left blank (provided you created it as not required).</td>
+</tr>
+</tbody>
+</table>
+
+You can send the data on the Mirakl endpoints:
+
+- **OR01** when you create an Order – this is recommended
+- **OR31** by editing an existing Order, if the data becomes available after creation
+
+<Note>
+**Note – Incomplete custom fields blocks release of funds**
+
+You should provide the custom field data as early as possible in the flow.
+
+With this information, the Mirakl Connector calls the Mangopay API to declare the order details to Mangopay based on the Mirakl Order status. It creates, captures and refunds Intents. 
+
+Without this custom field data, the Mirakl Connector cannot reconcile the Order and its settlement with Intents, preventing the release of funds to the seller.
+</Note>
+
+#### Example of custom fields in Mirakl API call
+```json
+...
+    "order_additional_fields": [
+        {
+            "code": "mgp-external-provider-name",
+            "type": "LIST",
+            "value": "ADYEN"
+        },
+        {
+            "code": "mgp-external-processing-date",
+            "type": "DATE",
+            "value": "2013-10-21T13:28:06.419Z"
+        },
+        {
+            "code": "mgp-external-provider-reference",
+            "type": "STRING",
+            "value": "b8fd937e-f1ce-4ad7-9744-59797957beeb"
+        },
+        {
+            "code": "mgp-external-merchant-reference",
+            "type": "STRING",
+            "value": "6f9b2ec2-d51e-4193-ac78-a18589f7d8af"
+        },
+        {
+            "code": "mgp-external-provider-payment-method",
+            "type": "LIST",
+            "value": "VISA"
+        }
+    ]
+...
+```
+
+## Provide settlement files to Mangopay
+
+<Info>
+**Applies to:** Any platform using a third-party PSP for funds acquisition (whether the platform uses the Mirakl Connector or not)
+</Info>
+
+If your platform is using a third-party PSP for funds acquisition, you also need to send settlement data to Mangopay for reconciliation. 
+
+The payment intent declarations are created automatically by the Mirakl Connector, but the settlement data must be provided by the platform.
+
+To do this, your platform needs to send CSV files to a dedicated endpoint as soon as they become available. Read more about the process and requirements in the guide: 
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/echo#provide-settlement-files-to-mangopay"
+  >
+    Read how to provide settlement files to Mangopay
+  </Card>
+</CardGroup>
+
+## Related resources
+
+<CardGroup col={2}>
+  <Card
+    title="Guide"
+    href="/guides/echo"
+  >
+    Read about Echo integration
+  </Card>
+  <Card
+    title="Endpoints"
+    href="/api-reference/settlements/create-settlement"
+  >
+    POST Create a Settlement
+  </Card>
+</CardGroup>

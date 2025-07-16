@@ -1,0 +1,30 @@
+<ParamField body="Filters" type="object">
+Possible values: `Currency`, `UserId`, `WalletId`
+
+The filers to apply. 
+
+If the `ReportType` is `COLLECTED_FEES`, only the `Currency` filter can be used. If the currency is not specified, the report contains data on all currencies. 
+
+If the `ReportType` is `USER_WALLET_TRANSACTIONS`, each filter can be used on its own or in combination, in which case the report data satisfies both filters.
+- `UserId` and `Currency` – Report contains all transactions (credited or debited) in the currency where UserId is the AuthorId
+- `UserId` and `WalletId` – Report contains all transactions (credited or debited) in all currencies where the UserId is specified as the `DebitedWalletId` or `CreditedWalletId`. If the `WalletId` is not a wallet owned by the `UserId`, then the report will be empty.
+ 
+The `Currency` and `WalletId` cannot be used together.
+
+If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
+
+**Caution:** The `WalletId` and `UserId` values are not validated before the request is launched, so if both are used but don't correspond (the user doesn't own the wallet), then the report will be empty.
+
+<Expandable title="properties" defaultOpen>
+<ParamField body="Currency" type="string">
+The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
+</ParamField>
+<ParamField body="UserId" type="string">
+The unique identifier of the user referenced as the `AuthorId` or `CreditedUserId` of the transaction.
+</ParamField>
+<ParamField body="WalletId" type="string">
+The unique identifier of the wallet referenced as the `DebitedWalletId` or `CreditedWalletId` of the transaction.
+</ParamField>
+</Expandable>
+
+</ParamField>

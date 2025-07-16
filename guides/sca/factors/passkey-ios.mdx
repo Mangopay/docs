@@ -1,0 +1,130 @@
+---
+title: WebAuthn passkey on iOS
+sidebarTitle: WebAuthn on iOS
+description: Integrate Mangopay's passkey factor in iOS apps
+---
+
+This guide provides an overview of how to get started integrating the WebAuthn passkey factor in iOS apps, for secure web-based authentication.
+
+On iOS, `ASWebAuthenticationSession` enables SwiftUI apps to authenticate users via a web service, presenting a secure and user-friendly popup browser for login flows.
+
+## Setup
+
+1. Import the required frameworks: 
+- `AuthenticationServices`
+- `SwiftUI`
+2. Define your backend authentication URL and a custom URL scheme for callback handling.
+
+## Full code example
+
+```swift
+import AuthenticationServices
+import SwiftUI
+
+// MARK: - Configuration Constants
+
+let const_baseUrl = "https://example.com" // Set your backend authentication URL here
+let const_scheme = "mgpsca" // Your custom URL scheme
+let const_returnParam = "&returnUrl=\(const_scheme)://auth" // Return URL for backend to redirect after authentication
+
+struct ContentView: View {
+    @State private var asPresentationContext: PresentationContextProvider? = nil
+
+    /// Starts the web authentication session
+    func startAuthentication() {
+        let strUrl = const_baseUrl + const_returnParam
+        guard let authURL = URL(string: strUrl) else {
+            print("Invalid URL")
+            return
+        }
+        let callbackScheme = const_scheme
+
+        let authSession = ASWebAuthenticationSession(
+            url: authURL,
+            callbackURLScheme: callbackScheme
+        ) { callbackURL, error in
+            // This closure is called when authentication completes or fails
+
+            if let error = error {
+                // Handle authentication error (e.g., user cancelled, network error)
+                print("Authentication failed with error: \(error.localizedDescription)")
+                return
+            }
+
+            guard let callbackURL = callbackURL else {
+                // No callback URL means authentication did not complete
+                print("No callback URL received")
+                return
+            }
+
+            // Handle the callback URL received from the authentication flow
+            handleIncomingURL(callbackURL)
+        }
+
+        // Provide presentation context so the session knows where to present the web browser
+        asPresentationContext = PresentationContextProvider()
+        authSession.presentationContextProvider = asPresentationContext
+
+        // Use ephemeral session to avoid sharing cookies with Safari (incognito-like)(no Pop-up)
+        authSession.prefersEphemeralWebBrowserSession = true
+
+        // Start the authentication session
+        authSession.start()
+    }
+
+    /// Handles the URL returned from the authentication flow
+    func handleIncomingURL(_ url: URL) {
+        print("Incoming URL: \(url)")
+
+        // Ensure the URL uses the expected custom scheme
+        guard let scheme = url.scheme, scheme == const_scheme else {
+            print("Invalid URL scheme")
+            return
+        }
+
+        // Parse the URL into components to extract query parameter
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            print("Invalid URL components")
+            return
+        }
+
+        guard let queryItems = components.queryItems else {
+            print("No query items found")
+            return
+        }
+
+        // Extract authentication status from query parameter
+        let controlStatusValue = queryItems.first(where: { $0.name == "controlStatus" })?.value ?? ""
+
+        // Check if authentication was successful
+        if controlStatusValue == "VALIDATED" {
+            print("SCA succeeded")
+        } else {
+            // Handle authentication failure or unexpected status
+            print("SCA failed : \(queryItems)")
+        }
+    }
+}
+
+// MARK: - Presentation Context Provider for ASWebAuthenticationSession
+
+/// Provides the presentation anchor (window) for ASWebAuthenticationSession
+class PresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            return window
+        }
+        return ASPresentationAnchor()
+    }
+}
+```
+
+## Notes
+
+- Replace `const_baseUrl` with your backend authentication URL.
+- The session uses `prefersEphemeralWebBrowserSession = true` to avoid sharing cookies or data with Safari and popups.
+
+## Troubleshooting
+
+- Ensure the callback URL scheme matches your app's registered scheme.

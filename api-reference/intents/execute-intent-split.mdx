@@ -1,0 +1,85 @@
+---
+title: Execute a Split of an Intent
+api: POST /v3.0/{ClientId}/payins/intents/{IntentId}/splits/{SplitId}/execute
+description: Release the funds of a Split to the wallet of the seller of the Intent line item.
+---
+
+import SplitId_Path from '/snippets/p-path/SplitId_Path.mdx';
+import IntentId_Path from '/snippets/p-path/IntentId_Path.mdx';
+
+import Id_Splits from '/snippets/p-response/Id_Splits.mdx';
+import LineItemId_Splits from '/snippets/p-response/LineItemId_Splits.mdx';
+import SellerId_Splits from '/snippets/p-response/SellerId_Splits.mdx';
+import WalletId_Splits from '/snippets/p-response/WalletId_Splits.mdx';
+import SplitAmount_Splits from '/snippets/p-response/SplitAmount_Splits.mdx';
+import FeesAmount_Splits from '/snippets/p-response/FeesAmount_Splits.mdx';
+import TransferDate_Splits from '/snippets/p-response/TransferDate_Splits.mdx';
+import Description_Splits from '/snippets/p-response/Description_Splits.mdx';
+import Status_Splits from '/snippets/p-response/Status_Splits.mdx';
+
+### Path parameters
+
+<IntentId_Path/>
+<SplitId_Path/>
+
+### Body parameters
+
+No request body to execute Split.
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters" defaultOpen>
+<Id_Splits/>
+<LineItemId_Splits/>
+<SellerId_Splits/>
+<WalletId_Splits/>
+<SplitAmount_Splits/>
+<FeesAmount_Splits/>
+<TransferDate_Splits/>
+<Description_Splits/>
+<Status_Splits/>
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+{/* <Accordion title="400 - ">
+```json
+
+```
+</Accordion> */}
+{/* <Accordion title="400 - Split Status must be AVAILABLE or REJECTED">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "948c9c7c-aca7-4d30-829b-fab065bd1fcd",
+    "Date": 1752655104,
+    "Type": "param_error",
+    "Errors": {
+        "Split": "Execute split requires a status in [AVAILABLE, REJECTED]. Split [int_split_01981253-4911-7149-bf1a-5a114a1f7bd5] currently has a status of CREATED."
+    }
+}
+``` */}
+</Accordion>
+</AccordionGroup>
+
+<ResponseExample>
+```json
+{
+    "Id": "int_split_0197f979-46a1-7810-adfc-a4bcdd7a9315",
+    "LineItemId": "int_li_0197f975-63f9-7cb9-b906-43671509eb34",
+    "SellerId": "user_m_01JZWQAGPP1ZQR39QTH2TCP587",
+    "WalletId": "wlt_m_01JZWQAJN34AGPDRTP9KHBYNYX",
+    "SplitAmount": 8000,
+    "FeesAmount": 0,
+    "Description": "Example description of the Split",
+    "Status": "PENDING"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```json
+// No request body
+```
+</RequestExample>

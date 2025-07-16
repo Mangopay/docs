@@ -10,7 +10,6 @@ import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import Tag2Response from '/snippets/p-response/Tag2Response.mdx';
 import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import WalletId1Response from '/snippets/p-response/WalletId1Response.mdx';
-import CreditedUserId5Response from '/snippets/p-response/CreditedUserId5Response.mdx';
 import VirtualAccountPurposeResponse from '/snippets/p-response/VirtualAccountPurposeResponse.mdx';
 import Country_VirtualAccountResponse from '/snippets/p-response/Country_VirtualAccountResponse.mdx';
 import Status_VirtualAccountResponse from '/snippets/p-response/Status_VirtualAccountResponse.mdx';
@@ -19,6 +18,8 @@ import AccountOwnerResponse from '/snippets/p-response/AccountOwnerResponse.mdx'
 import LocalAccountDetails_VirtualAccountResponse from '/snippets/p-response/LocalAccountDetails_VirtualAccountResponse.mdx';
 import InternationalAccountDetails_VirtualAccountResponse from '/snippets/p-response/InternationalAccountDetails_VirtualAccountResponse.mdx';
 import CapabilitiesResponse from '/snippets/p-response/CapabilitiesResponse.mdx';
+import ResultCodeResponse from '/snippets/p-response/ResultCodeResponse.mdx';
+import ResultMessageResponse from '/snippets/p-response/ResultMessageResponse.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 import PhpViewVirtualAccount from '/snippets/code/php-view-virtual-account.mdx';
@@ -42,7 +43,6 @@ import RubyViewVirtualAccount from '/snippets/code/ruby-view-virtual-account.mdx
 <Tag2Response />
 <CreationDateResponse />
 <WalletId1Response />
-<CreditedUserId5Response />
 <VirtualAccountPurposeResponse />
 <Country_VirtualAccountResponse />
 <Status_VirtualAccountResponse />
@@ -51,73 +51,57 @@ import RubyViewVirtualAccount from '/snippets/code/ruby-view-virtual-account.mdx
 <LocalAccountDetails_VirtualAccountResponse />
 <InternationalAccountDetails_VirtualAccountResponse />
 <CapabilitiesResponse />
+<ResultCodeResponse />
+<ResultMessageResponse />
 
 </Accordion>
 
 </AccordionGroup>
 
-Functional errors (`ResultCode`) are possible on a 200 response. <a href="/guides/payment-methods/banking/virtual-account#errors">Read more</a> **&rarr;**
+Functional errors (`ResultCode`) are possible on a 200 response. <a href="/guides/payment-methods/banking/virtual-iban#functional-errors">Read more</a> **&rarr;**
 
 ---
 
-
-### Related resources
-
-<CardGroup cols={2}>
-<Card
-  title="Guide"
-  href="/guides/payment-methods/banking/virtual-account"
->
-Learn more about virtual accounts
-</Card>
-<Card
-  title="Virtual Account object"
-  href="/api-reference/virtual-accounts/virtual-account-object"
->
-Read about the Virtual Account API endpoints
-</Card>
-</CardGroup>
-
-
 <ResponseExample>
-````json 200 - ACTIVE
+````json GB - ACTIVE
 {
     "Id": "wltbank_m_01J7NCAT73Q15SVSM9S6Z36GRZ",
     "Tag": "Created using Mangopay API Postman Collection",
     "CreationDate": 1726220691,
     "WalletId": "wlt_m_01J7NC9YKP3NB1PADF4SHZY712",
-    "CreditedUserId": "user_m_01J7KACBPAV7XAF8AH9BDCJPRS",
     "VirtualAccountPurpose": "COLLECTION",
     "Country": "GB",
     "Status": "ACTIVE",
     "Active": true,
-    "AccountOwner": "Mangopay SA (for ACME Platform)",
+    "AccountOwner": "MGP PlatformTradingName",
     "LocalAccountDetails": {
         "Address": {
-            "StreetName": "2, Avenue Amélie",
-            "PostCode": "L-1125",
-            "TownName": "Luxembourg",
+            "StreetName": "68 King William Street",
+            "PostCode": "EC4N 7HR",
+            "TownName": "London",
             "CountrySubDivision": null,
-            "Country": "Luxembourg"
+            "Country": "GB"
         },
         "Account": {
             "SortCode": "608382",
-            "AccountNumber": "21762697"
-        }
+            "AccountNumber": "22276063"
+        },
+        "BankName": "Banking Circle S.A. UK Branch"
     },
     "InternationalAccountDetails": [
         {
             "Address": {
-                "StreetName": "2, Avenue Amélie",
-                "PostCode": "L-1125",
-                "TownName": "Luxembourg",
+                "StreetName": "68 King William Street",
+                "PostCode": "EC4N 7HR",
+                "TownName": "London",
                 "CountrySubDivision": null,
-                "Country": "Luxembourg"
+                "Country": "GB"
             },
             "Account": {
-                "Iban": "GB62SAPY60838221762697",
-                "Bic": null
-            }
+              "Iban": "GB92SAPY60838222276063",
+                "Bic": "SAPYGB2L"
+            },
+            "BankName": "Banking Circle S.A. UK Branch"
         }
     ],
     "Capabilities": {
@@ -126,47 +110,127 @@ Read about the Virtual Account API endpoints
         "Currencies": [
             "GBP"
         ]
-    }
+    },
+    "ResultCode": "000000",
+    "ResultMessage": "Success"
 }
 ````
-````json 200 - BLOCKED
+```json US - PENDING
+{
+    "Id": "wltbank_01JXHN5VAKFY4NJN2CZSS6QR91",
+    "Tag": "Created using Mangopay API Postman collection",
+    "CreationDate": 1749718068,
+    "WalletId": "wlt_m_01JXHN5Q9QDBWH372HT0HWZ6JZ",
+    "VirtualAccountPurpose": "COLLECTION",
+    "Country": "US",
+    "Active": false,
+    "Status": "PENDING",
+    "AccountOwner": "MGP PlatformTradingName",
+    "LocalAccountDetails": {
+        "Address": {
+            "StreetName": "5 Penn Plaza, 14th Floor",
+            "PostCode": "NY 10001",
+            "TownName": "New York",
+            "CountrySubDivision": "NY",
+            "Country": "US"
+        },
+        "Account": {
+            "AccountNumber": null,
+            "AchNumber": null,
+            "FedWireNumber": null,
+            "AccountType": "CHECKING"
+        },
+        "BankName": "Community Federal Savings Bank"
+    },
+    "InternationalAccountDetails": null,
+    "Capabilities": {
+        "LocalPayinAvailable": true,
+        "InternationalPayinAvailable": false,
+        "Currencies": [
+            "USD"
+        ]
+    },
+    "ResultCode": null,
+    "ResultMessage": null
+}
+```
+```json CA - PENDING
+{
+    "Id": "wltbank_01JXHMQ77MSJ4ZPYS8BT2KY3H8",
+    "Tag": "Created using Mangopay API Postman collection",
+    "CreationDate": 1749717589,
+    "WalletId": "wlt_m_01JXHMPZS9Q98JZ9S8GD9GMTJF",
+    "VirtualAccountPurpose": "COLLECTION",
+    "Country": "CA",
+    "Active": false,
+    "Status": "PENDING",
+    "AccountOwner": "MGP PlatformTradingName",
+    "LocalAccountDetails": {
+        "Address": {
+            "StreetName": "736 Meridian Road N.E",
+            "PostCode": null,
+            "TownName": "Calgary",
+            "CountrySubDivision": "Alberta",
+            "Country": "CA"
+        },
+        "Account": {
+            "BranchCode": null,
+            "InstitutionNumber": null,
+            "AccountNumber": null
+        },
+        "BankName": "Digital Commerce Bank"
+    },
+    "InternationalAccountDetails": null,
+    "Capabilities": {
+        "LocalPayinAvailable": true,
+        "InternationalPayinAvailable": false,
+        "Currencies": [
+            "CAD"
+        ]
+    },
+    "ResultCode": null,
+    "ResultMessage": null
+}
+```
+````json GB - BLOCKED
 {
     "Id": "wltbank_m_01J7NCAT73Q15SVSM9S6Z36GRZ",
     "Tag": "Created using Mangopay API Postman Collection",
     "CreationDate": 1726220691,
     "WalletId": "wlt_m_01J7NC9YKP3NB1PADF4SHZY712",
-    "CreditedUserId": "user_m_01J7KACBPAV7XAF8AH9BDCJPRS",
     "VirtualAccountPurpose": "COLLECTION",
     "Country": "GB",
     "Status": "BLOCKED",
     "Active": false,
-    "AccountOwner": "Mangopay SA (for ACME Platform)",
+    "AccountOwner": "MGP PlatformTradingName",
     "LocalAccountDetails": {
         "Address": {
-            "StreetName": "2, Avenue Amélie",
-            "PostCode": "L-1125",
-            "TownName": "Luxembourg",
+            "StreetName": "68 King William Street",
+            "PostCode": "EC4N 7HR",
+            "TownName": "London",
             "CountrySubDivision": null,
-            "Country": "Luxembourg"
+            "Country": "GB"
         },
         "Account": {
             "SortCode": "608382",
-            "AccountNumber": "21762697"
-        }
+            "AccountNumber": "22276063"
+        },
+        "BankName": "Banking Circle S.A. UK Branch"
     },
     "InternationalAccountDetails": [
         {
             "Address": {
-                "StreetName": "2, Avenue Amélie",
-                "PostCode": "L-1125",
-                "TownName": "Luxembourg",
+                "StreetName": "68 King William Street",
+                "PostCode": "EC4N 7HR",
+                "TownName": "London",
                 "CountrySubDivision": null,
-                "Country": "Luxembourg"
+                "Country": "GB"
             },
             "Account": {
-                "Iban": "GB62SAPY60838221762697",
-                "Bic": null
-            }
+              "Iban": "GB92SAPY60838222276063",
+                "Bic": "SAPYGB2L"
+            },
+            "BankName": "Banking Circle S.A. UK Branch"
         }
     ],
     "Capabilities": {
@@ -175,16 +239,17 @@ Read about the Virtual Account API endpoints
         "Currencies": [
             "GBP"
         ]
-    }
+    },
+    "ResultCode": "000000",
+    "ResultMessage": "Success"
 }
 ````
-````json 200 - FAILED
+````json LU - FAILED
 {
     "Id": "wltbank_m_01JAGT8JC4DG0NQS7CPHNMK36N",
     "Tag": "Created using Mangopay API Postman Collection",
     "CreationDate": 1729288751,
     "WalletId": "wlt_m_01JAGT85WNAAQ3R782XJNKGZY3",
-    "CreditedUserId": null,
     "VirtualAccountPurpose": null,
     "Country": "LU",
     "Status": "FAILED",
@@ -201,7 +266,8 @@ Read about the Virtual Account API endpoints
         "Account": {
             "Iban": null,
             "Bic": null
-        }
+        },
+        "BankName": null
     },
     "InternationalAccountDetails": [
         {
@@ -215,7 +281,8 @@ Read about the Virtual Account API endpoints
             "Account": {
                 "Iban": null,
                 "Bic": null
-            }
+            },
+        "BankName": null
         }
     ],
     "Capabilities": {
@@ -224,7 +291,9 @@ Read about the Virtual Account API endpoints
         "Currencies": [
             "EUR"
         ]
-    }
+    },
+    "ResultCode": null,
+    "ResultMessage": null
 }
 ````
 </ResponseExample>

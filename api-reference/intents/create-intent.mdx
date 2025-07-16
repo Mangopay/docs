@@ -1,0 +1,226 @@
+---
+title: Create an Intent
+api: POST /v3.0/{ClientId}/payins/intents
+description: Declare a transaction authorization processed by a third-party PSP
+---
+
+import Amount_Intent_Request from '/snippets/p-body/Amount_Intent_Request.mdx';
+import Currency_Intent_Request from '/snippets/p-body/Currency_Intent_Request.mdx';
+import PlatformFeesAmount_Intent_Request from '/snippets/p-body/PlatformFeesAmount_Intent_Request.mdx';
+import ExternalData_Intent_Request from '/snippets/p-body/ExternalData_Intent_Request.mdx';
+import Buyer_Intent_Request from '/snippets/p-body/Buyer_Intent_Request.mdx';
+import LineItems_Intent_Request from '/snippets/p-body/LineItems_Intent_Request.mdx';
+
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
+import NextActions_Intent from '/snippets/p-response/NextActions_Intent.mdx';
+import ExternalData_Intent from '/snippets/p-response/ExternalData_Intent.mdx';
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx';
+import LineItems_Intent from '/snippets/p-response/LineItems_Intent.mdx';
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
+
+### Body parameters
+
+<Amount_Intent_Request/>
+<Currency_Intent_Request/>
+<PlatformFeesAmount_Intent_Request/>
+<ExternalData_Intent_Request/>
+<Buyer_Intent_Request/>
+<LineItems_Intent_Request/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters">
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<NextActions_Intent/>
+<ExternalData_Intent/>
+<Buyer_Intent/>
+<LineItems_Intent/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400 - Intent Amount must equal sum of line items' ">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "21d7dbc4-beea-4ad2-9f2a-471d683c25b5",
+    "Date": 1752053748,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "The total intent amount does not match the sum of the declared LineItem amounts"
+    }
+}
+```
+</Accordion>
+{/* <Accordion title="400 - ">
+```json
+
+```
+</Accordion> */}
+</AccordionGroup>
+
+<ResponseExample>
+```json
+{
+    "Id": "int_0197eebf-21fd-73c7-85ef-8193b4cf427d",
+    "Amount": 20000,
+    "AvailableAmountToSplit": 0,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "AUTHORIZED",
+    "NextActions": "CAPTURED, PARTIALLY_CAPTURED, CANCELED",
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057185,
+        "ExternalProviderReference": "auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a",
+        "ExternalMerchantReference": "order-420bbe60-7f62-4e53-9d64-7cb5188c507f",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "LineItems": [
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZJ42M48CGJ19F2FS5WWKBNH",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427e",
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 2000,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "2226 Balistreri Roads",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
+        },
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZAXD3C31Y543SRKNCVK3V5N",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427f",
+            "Sku": "example-item-456",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 1,
+            "UnitAmount": 10000,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "771 Koch Mews",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
+        }
+    ],
+    "CreationDate": 1752057192,
+    "ExecutionDate": 1752057192
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```json
+{
+    "Amount": 20000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "ExternalData": {
+        "ExternalProcessingDate": 1752057185,
+        "ExternalProviderReference": "auth-stripe-633781e6-bb10-4484-8a29-ff6da7d7464a",
+        "ExternalMerchantReference": "order-420bbe60-7f62-4e53-9d64-7cb5188c507f",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "LineItems": [
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZJ42M48CGJ19F2FS5WWKBNH",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
+            },
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 2000,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "2226 Balistreri Roads",
+                "AddressLine2": null,
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            }
+        },
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZAXD3C31Y543SRKNCVK3V5N",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
+            },
+            "Sku": "example-item-456",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 1,
+            "UnitAmount": 10000,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "771 Koch Mews",
+                "AddressLine2": null,
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            }
+        }
+    ]
+}
+```
+</RequestExample>

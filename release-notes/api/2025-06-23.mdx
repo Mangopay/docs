@@ -1,0 +1,109 @@
+---
+title: 'API - June 23, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+## <span class="pill pill-green">Added</span>
+
+### Webhook event types for SCA enrollment
+
+Platforms can now be notified when an [SCA](/guides/sca) enrollment session is successfully completed, expires, or fails from incorrect attempts for a factor.
+
+The following webhook [event types](/webhooks/event-types#mangopay-sca-enrollment) have been added: 
+- `SCA_ENROLLMENT_SUCCEEDED`
+- `SCA_ENROLLMENT_EXPIRED`
+- `SCA_ENROLLMENT_FAILED`
+
+<Note>
+**Note – Webhooks triggered by enrollment, not authentication**
+
+The SCA enrollment webhooks are triggered by any new enrollment (or re-enrollment) prompted by an API call, regardless of the endpoint that returned the SCA redirection link (users, recipients, transfers, wallets – see [full list of endpoints](/guides/sca/session#1-call-an-endpoint-that-triggers-sca-redirection)).
+
+The SCA enrollment webhooks are **not** triggered for any **authentication** challenges once the user is enrolled.
+</Note>
+
+## <span class="pill pill-green">Added</span>
+
+### Webhook event types for change of user category
+
+Platforms can now be notified when the `UserCategory` of a user changes, thanks to the new webhook [event types](/webhooks/event-types#user-category):
+- `USER_CATEGORY_UPDATED_TO_OWNER`
+- `USER_CATEGORY_UPDATED_TO_PAYER`
+- `USER_CATEGORY_UPDATED_TO_PLATFORM`
+
+Changing the user category to `PAYER` or `PLATFORM` is only possible by Mangopay. 
+
+Changing `OWNER` users to `PAYER` is sometimes performed by Mangopay, with prior communication to platforms, as part of ongoing monitoring and anti-fraud optimization for inactive accounts (for example). 
+
+Changing `OWNER` to `PLATFORM` is sometimes necessary depending on the platform's approved workflow (see [categories](/guides/users/categories#note-on-platform-category) for more details about the `PLATFORM` category).
+
+These events are only triggered when the value is changed; they are not triggered by user creation.
+
+## <span class="pill pill-orange">Changed</span>
+
+### Rule preventing fake user names
+
+Mangopay has implemented an anti-fraud rule in Production to prevent fictitious or fake values being used as **first name** and **last name** fields of User objects. 
+
+The rule aims to prevent misuse of Mangopay's system and applies regardless of whether `UserCategory` is set to `PAYER` or `OWNER`. The rule is only active in the Production environment, not Sandbox.
+
+The rule targets the following types of values:
+
+- Fictitious and fake names (examples: `Marilyn Monroe`, `Homer Simpson`)
+- Gibberish and random sequences (examples: `aeofinzef`, `ojenoiner`)
+- Keywords identified as not real names (examples: `test`, `undefined`, `unknown`)
+
+Calls including such data on POST and PUT endpoints now return the following 400 error:
+
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+
+This rule applies to the following fields:
+
+##### Natural users
+
+- `FirstName`
+- `LastName`
+
+##### Legal users
+
+- `LegalRepresentative.FirstName`
+- `LegalRepresentative.FirstName`
+- `LegalRepresentativeFirstName` (legacy object)
+- `LegalRepresentativeLastName` (legacy object)
+
+The rule applies to the following endpoints 
+
+- [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+- [POST Create a Natural User (legacy)](/api-reference/users/create-natural-user)
+- [PUT Update a Natural User (legacy)](/api-reference/users/update-natural-user)
+- [POST Create a Legal User (legacy)](/api-reference/users/create-legal-user)
+- [PUT Update a Legal User (legacy)](/api-reference/users/update-legal-user)
+
+The [introduction to user types](/guides/users/types) has been updated with information about this rule, along with example errors in the endpoints. 
+
+## <span class="pill pill-green">Added</span>
+
+### Error 002702 if transfer attempted to Payer
+
+As part of the recently enforced restrictions on Payers, a new error has been added on transfers: 
+
+- [002702](/errors/codes/002702) – Users with category PAYER cannot receive transfers from users with category OWNER.
+
+This error occurs when a transfer is requested from an Owner to a Payer, because Payers are not allowed to receive funds from **other** users (whether Owner or Payer). However, Payers are allowed to transfer funds between wallets they own, as well as receive full and partial refunds for pay-in and transfers. 
+
+This error complements the existing [002701](/errors/codes/002701), which occurs when a transfer is attempted by a Payer. For more information, see the [restrictions on payers](/guides/users/categories/restrictions) article.
+
+{/* </div> */}

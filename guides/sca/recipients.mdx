@@ -1,0 +1,221 @@
+---
+title: SCA on recipients (bank accounts)
+sidebarTitle: SCA on recipients
+description: Read about Mangopay's new Recipients feature, replacing bank accounts
+---
+
+## Introduction
+
+Mangopay is releasing a new version of the Bank Account object called Recipients.
+
+When a Mangopay Account holder (`OWNER`) registers an external bank or payment account, the account holder must authenticate using SCA.
+
+As well as supporting SCA, Recipients enable faster and more reliable local and international payouts.
+
+The new set of Recipient endpoints replaces the legacy [Bank Account](/api-reference/bank-accounts/bank-account-object) endpoints, including bank account types.
+
+In the Recipients feature, each local and international account has a specified data schema which your platform has to retrieve in advance of requesting the details from the user. Once you have the user’s details, you are also able to check that they are valid before creating the Recipient.
+
+In this way, the Recipients feature helps ensure that payouts are delivered effectively.
+
+### Action required 
+
+Integrate Recipients for new bank account registrations, including SCA redirection for Owners (if `RecipientScope` is `PAYOUT`, see below).
+
+SCA redirection is required each time a user registers a new recipient bank account, even if they are registering them one after another.
+
+All payout currencies are available in Recipients in Production and Sandbox.
+
+<Note>
+**Note – ScaContext not available on Recipients**
+
+The ScaContext parameter which is available for existing integrations on transfers and wallet access does not exist on Recipients. 
+
+All new bank account registrations for Owners require SCA. New account registrations for Payers, for direct debit pay-ins and some refunds, can be implemented without SCA thanks to the pay-in [recipient scope](#pay-in). 
+</Note>
+
+#### Migration of existing active bank accounts 
+
+Your platform's existing active bank accounts in Production have been migrated to the Recipients service and are available via the Recipient endpoints. For more information, see [migration of legacy bank accounts](/guides/payouts#migration-of-legacy-bank-accounts).
+
+The `BankAccountId` of active bank accounts remains the same (and be returned in the `RecipientId` field).
+
+All active legacy bank accounts have been migrated, including those used for direct debits and pay-in refunds (see [pay-in scope](#pay-in) below).
+
+### Recipient scopes
+
+#### Payout
+
+By default, the Recipient is considered to be for use with payouts. This is indicated by the `RecipientScope` parameter which has the default value `PAYOUT`. 
+
+This kind of recipient can only be registered by an `OWNER` user and can be used for payouts. SCA is always required when the Recipient is created, so the API call returns the `PendingUserAction.RedirectUrl` and the individual must authenticate on the Mangopay-hosted webpage.
+
+Because the Recipient registration was authenticated with SCA, it can be considered a trusted beneficiary for future payouts. This allows the payout to be initiated without SCA, but the usual KYC verification requirements apply.
+
+A recipient with the `PAYOUT` scope can also be used for the pay-in use cases of the `PAYIN` scope (direct debits and refunds, described below), but not the other way around.
+
+#### Pay-in
+
+A Recipient may be needed for a `PAYER` (or `OWNER`) in two specific pay-in scenarios that are out of scope of Mangopay's SCA feature:
+
+- Direct debit pay-ins (SEPA and Bacs)
+- Pay-in refunds that technically use payouts (specifying the `PAYIN_REFUND` reference of the initial pay-in, [read more](/guides/payouts/integration#refunds-using-payouts))
+
+This kind of recipient, with the `RecipientScope` value `PAYIN`, can be created for a user with the `UserCategory` `PAYER` or `OWNER`, and does not require SCA.
+
+### Recipient types
+
+A Recipient represents the beneficiary and the beneficiary account of a payout. A recipient can be an **individual** or a **business**, indicated by the `RecipientType`. For individuals, the first and last name and address are required; for businesses, the business name and address.
+
+### Payout methods
+
+You can call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout method is available for a given country and currency.
+
+The Recipients feature supports all currencies supported by Mangopay's payout capabilities: `AED`, `AUD`, `CAD`, `CHF`, `CNH`, `CZK`, `DKK`, `EUR`, `GBP`, `HKD`, `HUF`, `ILS`, `JPY`, `MXN`, `NOK`, `NZD`, `PLN`, `RON`, `SAR`, `SEK`, `SGD`, `TRY`, `USD`, `ZAR` 
+
+Depending on the `Country` value queried on [GET View payout methods](/api-reference/recipients/view-payout-methods), the API returns one (or both) of the `AvailablePayoutMethods` offered by Mangopay: 
+- `InternationalBankTransfer` – A bank wire sent via the global messaging network SWIFT. 
+- `LocalBankTransfer` – A bank wire sent via a national domestic route. The account details required for local payouts change depending on the `Currency` and destination `Country` of the payout. 
+
+Based on the payout method, you can register the user's bank account as a Recipient to receive payouts. As described in the [steps below](#how-to-register-a-recipient-for-payouts), your integration should first retrieve dynamically the schema of the recipient, then validate the user's data, then register the recipient.
+
+Each recipient can be used for one combination of a payout method, currency, and country, which together determine the account details required.
+
+For example, if the user's account is registered in the US and the payout currency is CAD, then they need a recipient with the `InternationalBankTransfer` payout method type, because that is the available payout method for that route. 
+
+On international payouts, if a country uses IBAN then the `AccountNumber` is the local IBAN format and the returned BIC is generated from the IBAN. For countries that don't use IBAN, the `AccountNumber` format depends on the `Country` and the `BIC` is also required. So in the CAD to US example, the `AccountNumber` must be a US account identifier and the `BIC` is required.
+
+However, if the user's bank account is registered in the UK and the payout currency is GBP, then they need a recipient with the `LocalBankTransfer` payout method type. In this case, registering the recipient requires the UK account number and sort code.
+
+A user's real bank account can therefore be registered more than once, for example in one recipient in the local format and another in the international format.
+
+## Testing
+
+### SCA triggers in Sandbox 
+
+In Sandbox, SCA is triggered on [POST Create a Recipient](/api-reference/recipients/create-recipient) when all of the following are true: 
+- `RecipientScope` is `PAYOUT` (or not sent)
+- The user's type is Natural or Soletrader
+- The user is an `OWNER` (which is necessary for the `RecipientScope` `PAYOUT`)
+
+In Sandbox, SCA is not triggered if any of the following are true: 
+- `RecipientScope` is `PAYIN`
+- The Legal user's `LegalPersonType` is `BUSINESS`, `ORGANIZATION`, or `PARTNERSHIP`
+- The user is a `PAYER`
+
+### Postman 
+
+In the <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/47sedyl" target="_blank">Recipients folder</a> of the Mangopay API Postman collection you'll find all Recipients endpoints, including some examples to get you started in different currencies, countries, and payout and pay-in scopes. 
+
+See the [Postman](/postman) guide for details on how to fork the collection and set up your environment with your `ClientId` and API key.
+
+## How to register a recipient for payouts
+
+To register a recipient for payouts for an `OWNER` user, follow the steps below. In the payout scenario described below, `RecipientScope` is `PAYOUT` (by default) and therefore SCA is required.
+
+<Steps>
+<Step title="View available payout methods">
+Call the [GET View payout methods](/api-reference/recipients/view-payout-methods) endpoint to find out which payout methods are available to your platform in each currency and destination country.
+</Step>
+<Step title="Fetch the data schema">
+
+Call the [GET View the schema for a Recipient](/api-reference/recipients/view-recipient-schema) endpoint to know the data required to create the recipient based on the country, currency, and payout method.
+<Check>
+**Best practice – Retrieve schema before requesting user data**
+
+The schema for a recipient may change, so you should integrate dynamic retrieval of all fields (account details, holder data, etc) before presenting them to the user.
+</Check>
+</Step>
+<Step title="Validate the user's recipient data">
+Check that the user's data is valid by submitting it to the [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) endpoint.
+
+A **200 - OK** response indicates that the format is correct against the schema and that the data is valid. If one or more data field does not conform to the schema, then a 400 error is returned listing the errors.
+<Check>
+**Best practice – Validate data before creation**
+
+You are strongly recommended to validate the recipient data before creating it. This helps avoid payouts being rejected and optimizes deliverability.
+</Check>
+</Step>
+<Step title="Create the recipient">
+Once validated, call the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint with the same request body to register the account details. 
+
+The **201 - Created** response from the API shows the recipient's `Status` as `PENDING` and contains the `PendingUserAction.RedirectUrl` you need for the next step. 
+</Step>
+<Step title="Redirect the user to the SCA session">
+Define a URL to which the user will be redirected after the SCA session. Encode the URL and append it to the `RedirectUrl` value as the `returnUrl` query parameter (for details see [How to redirect a user for an SCA session (Step 2 onwards)](/guides/sca/session#2-retrieve-the-sca-redirecturl)). Then, redirect the user.
+</Step>
+<Step title="Confirm the outcome">
+When the user is returned after the SCA session, you can check the status of the indicative `controlStatus` query parameter.
+
+The Recipient `Status` is `PENDING` until the user authenticates successfully, at which point it changes to `ACTIVE`. 
+
+Set up a webhook for the `RECIPIENT_ACTIVE` event type to be notified of this.
+
+Call the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint to check its status. 
+
+If SCA is not successfully completed, the status changes to `CANCELED`. To retry SCA, create a new Recipient by calling the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint again to obtain another `RedirectUrl` for a new SCA session.
+</Step>
+</Steps>
+
+## How to initiate a payout
+
+<Note>
+**Note – Legacy bank accounts can continue to be used for payouts**
+
+Existing active bank accounts are compatible with the Recipients feature and can continue to be used for payouts.
+
+Once Recipients is fully live in Production in May 2025, existing bank accounts will also be available via the Recipient endpoints, such as [GET View a Recipient](/api-reference/recipients/view-recipient).
+</Note>
+
+When the `Status` of a Recipient is `ACTIVE`, you can request a payout to it by calling the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint and entering the `Id` of the Recipient as the `BankAccountId`. 
+
+Payouts can only be requested against a Recipient that has:
+- `Status` value `ACTIVE`
+- `RecipientScope` value `PAYOUT` (but the `PAYIN` value is allowed if the payout is [serving as a refund](/guides/payouts/integration#refunds-using-payouts) and specifies a `PaymentRef`)
+
+If you attempt a payout to a Recipient that is `PENDING` (for example, if SCA is in progress) or `CANCELED` (if SCA is not successful), then the Recipient ID is not considered valid and a 400 error is returned:
+
+```json
+{
+    "Id": "0602decd-c7e4-4870-a103-1ac242b23467#1739868259",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1739868260,
+    "errors": {
+        "BankAccountId": "The value rec_01JM1X5ZF868NYBZDF9MCB6VWE is not valid"
+    }
+}
+```
+
+If you attempt a payout to a Recipient that is `DEACTIVATED`, the payout is created with `FAILED` status and the `ResultCode` [121006](/errors/codes/121006) (The associated bank account is not active).
+
+## Status and webhooks
+
+The `Status` of the Recipient can have the following values.
+
+- `PENDING` – When a Recipient is first created, it has the `PENDING` status. The user must complete SCA before the recipient can become `ACTIVE` and be used.
+- `CANCELED` – If SCA is not successfully completed, the Recipient status changes to `CANCELED` and is permanently disabled. To retry the registration of the recipient, create another recipient to retrieve another `PendingUserAction.RedirectUrl`.
+- `ACTIVE` – SCA was successful and the Recipient was created successfully. Payouts can only be requested to a Recipient that is `ACTIVE`.
+- `DEACTIVATED` – The recipient has been permanently disabled and can no longer be used for payouts. You can deactivate a Recipient using the [PUT Deactivate a Recipient](/api-reference/recipients/deactivate-recipient) endpoint.
+
+The following event types are available for [webhook notifications](/webhooks):
+- `RECIPIENT_ACTIVE`
+- `RECIPIENT_CANCELED`
+- `RECIPIENT_DEACTIVATED`
+
+## Related resources
+
+<CardGroup cols={2}>
+<Card
+  title="Endpoints"
+  href="/api-reference/recipients/recipient-object"
+>
+See the Recipient object and endpoints
+</Card>
+<Card
+  title="Guide"
+  href="/guides/sca/session"
+>
+Read more about redirecting for SCA in each SCA-scenario
+</Card>
+</CardGroup>

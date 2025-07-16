@@ -2,30 +2,30 @@
 title: 'Authentication'
 'og:description': 'Understand how to authenticate calls to the Mangopay API using OAuth 2.0, including a step-by-step guide, examples, and best practices.'
 ---
-
 ## Introduction  
 
 The Mangopay REST API uses the OAuth 2.0 authentication protocol to provide secure access to resources.   
 
-<Note>  
+<Warning>
+**Caution – API security practices** 
+
+- Overuse of the OAuth token endpoint is a security risk and may result in rate limiting or blocking actions from Mangopay. You must ensure you use your authentication token for the full duration of its lifetime for all subsequent calls (and not renew it every call, see [Step 2](#2-use-the-bearer-token-for-its-full-lifetime) below).
+- HTTPS is mandatory for production environments  
+- You must call the API from your server. Calling the API from the browser is a security risk and is not supported by Mangopay.
+</Warning>
+
+<Note>
 **Note – SDKs handle authentication automatically** 
   
 For SDKs, the authentication is handled automatically after the initialization, relying on the OAuth 2.0 protocol. See the <a href="#sdk-authentication">SDK authentication</a> section for more details.  
-</Note>  
-
-<Warning>  
-**Caution – API security practices** 
-  
-- HTTPS is mandatory for production environments  
-- You must call the API from your server. Calling the API from the browser is a security risk and is not supported by Mangopay.
-</Warning>  
+</Note>
 
 ## OAuth 2.0 authentication  
 
 The OAuth 2.0 method of authentication consists in generating a temporary authentication token, called a Bearer token. This can then be used as tokenized credentials until it expires, at which point a new token must be generated. The logic is as follows:   
-- Generate a Bearer token  
-- Use the Bearer token until it expires  
-- Generate a new one before expiry  
+1. [Generate a Bearer token](#1-generate-a-bearer-token)
+2. [Use the Bearer token for its full lifetime](#2-use-the-bearer-token-for-its-full-lifetime)
+3. [Generate a new one before expiry](#3-generate-a-new-token-before-expiry)
 
 Since you only send your API key to generate the token, this industry-standard method ensures a high level of security.  
 
@@ -37,15 +37,31 @@ To generate your authentication token, call the endpoint below using Basic Acces
 
 #### A. Combine your `ClientId` and API key into a string separated by a colon  
 
-> `ClientId`:`ApiKey`  
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+`ClientId`:`ApiKey`
+</td>
+</tr>
+</tbody>
+</table> 
 
 #### B. Encode the string in Base64  
 
 Once encoded, the string looks something like this:  
 
-> RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu  
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu
+</td>
+</tr>
+</tbody>
+</table> 
 
-#### C. Call the OAuth token endpoint  
+#### C. Call the OAuth token endpoint
 
 Use the encoded string, preceded by “Basic” and a space, as your Authorization header. Unlike most other calls to the API, this endpoint supports Basic Access authentication and accepts the `x-www-form-urlencoded` Content-Type.
 
@@ -53,30 +69,39 @@ Use the encoded string, preceded by “Basic” and a space, as your Authorizati
     <tbody>
         <tr>
             <th class="header">Endpoint</th>
-            <td class="table-content">POST   `/v2.01/oauth/token` </td>
+            <td class="table-content">POST `/v2.01/oauth/token`</td>
         </tr>
         <tr>
             <th class="header">Authorization</th>
-            <td class="table-content">Basic RXhhbXBsZU...J1aVBqbVFu  </td>
+            <td class="table-content">Basic&nbsp;RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu</td>
         </tr>
         <tr>
             <th class="header">Content-Type</th>
             <td class="table-content">application/x-www-form-urlencoded</td>
         </tr>
         <tr>
-            <th class="header">Request body</th>
+            <th class="header">Request&nbsp;body</th>
             <td class="table-content">grant_type=client_credentials</td>
         </tr>
     </tbody>
 </table>
 
-```json API response
+{/* ```bash Request example
+curl --request POST \
+  --url https://api.sandbox.mangopay.com/v2.01/oauth/token \
+  --header 'Authorization: Basic RXhhbXBsZUNsaWVudElkOlBFQkIwVkRoRkVOZkVoWFRVeW9yVFlqNmhDVm1xTDBIUmJ3WTRnNU4xN3J1aVBqbVFu' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'grant_type=client_credentials'
+``` */}
+
+```json Response example
 {
     "access_token": "094696b3724d4aa5a182eac360dcd537",
     "token_type": "bearer",
     "expires_in": 1199
 }
 ```
+
 <table>
     <thead>
         <tr>
@@ -96,7 +121,7 @@ Use the encoded string, preceded by “Basic” and a space, as your Authorizati
         <tr>
             <td class="table-content">`expires_in`</td>
             <td class="table-content"> 
-            The number of seconds until the `access_token` expires and a new token will need to be generated.
+            The number of seconds until the `access_token` expires and a new token needs to be generated.
 
             **Default values:** 3600 (in Production), 1200 (in Sandbox)
 
@@ -106,11 +131,11 @@ Use the encoded string, preceded by “Basic” and a space, as your Authorizati
     </tbody>
 </table>
 
-### 2. Use your Bearer token until it expires  
+### 2. Use the Bearer token for its full lifetime
 
-Now that you have your Bearer `access_token`, you can use it to access Mangopay API resources until it expires.  
+Now that you have your Bearer `access_token`, you can use it to authenticate **all other API calls** for the `expires_in` duration. 
 
-Use the token, preceded by “Bearer” and a space, as the Authorization header in your requests:  
+To do so, add it to the Authorization header of your requests, preceded by "Bearer" and a space:
 
 <table class="header-column">
     <tr>
@@ -119,15 +144,23 @@ Use the token, preceded by “Bearer” and a space, as the Authorization header
     </tr>
 </table>
 
+#### Overuse of OAuth token endpoint
+
+<Warning>
+**Caution – Use token for its full lifetime**
+
+Overuse of the OAuth token endpoint is a security and performance risk and may result in rate limiting or blocking actions from Mangopay.
+
+You must use the token on all other API calls until a new token is needed. Requesting a new token too often results in unnecessary API calls and can put avoidable strain on your server and Mangopay's.
+
+Base your integration dynamically on the `expires_in` and do not hard-code the default value. We recommend triggering a new OAuth token call **30 seconds** before the `expires_in` value.
+</Warning>
+
 ### 3. Generate a new token before expiry  
 
-Before your token expires, generate a new one with the OAuth token endpoint as described above.   
+Shortly before your token expires (we recommend 30 seconds), generate a new one with the OAuth token endpoint as described in [Step 1C](#c-call-the-oauth-token-endpoint) above.
 
-<Check>  
-**Best practice – Only generate new tokens when the last one expires** 
-  
-There is no need to generate a different token for every call you make – only before the previous one expires.  
-</Check>  
+## HTTP errors
 
 Once the token expires (that is, the `expires_in` seconds value elapses), then it is no longer valid and calls made with it will return the following HTTP 401 error:   
 ```json 401 - Authorization credentials not valid
@@ -148,20 +181,19 @@ If your authentication is misconfigured and causes repeated access attempts with
 
 ## SDK authentication  
 
-With our official SDKs, you don’t have to worry about the logic behind the authentication to Mangopay: you just need to set your credentials after the SDK initialization.  
+With our official SDKs, you don't have to worry about the logic behind the authentication to Mangopay: you just need to set your credentials after the SDK initialization.  
 
 The authentication is then handled automatically, relying on OAuth 2.0 to provide a secure connection to Mangopay.  
 
 Please find below examples of how to set your credentials after the SDK initialization to authenticate:  
 <CodeGroup>  
-
-```php
+```php PHP
 $api = new MangoPay\MangoPayApi();
 $api->Config->ClientId = 'your-client-id';
 $api->Config->ClientPassword = 'your-client-api-key;
 ```  
 
-```nodejs
+```nodejs Node.js
 const mangopay = require('mangopay2-nodejs-sdk');
 
 let mangopayApi = new mangopay({
@@ -171,7 +203,7 @@ let mangopayApi = new mangopay({
 });
 ```  
 
-```ruby
+```ruby Ruby
 require 'mangopay'
 
 MangoPay.configure do |client|
@@ -182,7 +214,7 @@ MangoPay.configure do |client|
 end
 ```  
 
-```java
+```java Java
     import com.mangopay.MangoPayApi;
 
     MangoPayApi api = new MangoPayApi();
@@ -191,7 +223,7 @@ end
     api.getConfig().setClientPassword("your-api-key");
 ```  
 
-```.net
+```.net .Net
 MangoPayApi api = new MangoPayApi();
 
 api.Config.ClientId = "your-client-id";

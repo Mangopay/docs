@@ -1,0 +1,31 @@
+```php PHP
+<?php
+    require_once 'vendor/autoload.php';
+
+    use Symfony\Component\Console\Logger\ConsoleLogger;
+    use Symfony\Component\Console\Output\ConsoleOutput;
+
+    use MangoPay\MangoPayApi;
+    use MangoPay\Libraries\ResponseException as MGPResponseException;
+    use MangoPay\Libraries\Exception as MGPException;
+    
+    $api = new MangoPayApi();
+    
+    $api->Config->ClientId = 'your-mangopay-client-id';
+    $api->Config->ClientPassword = 'your-mangopay-api-key';
+    $api->Config->TemporaryFolder = 'tmp/';
+
+
+
+    try {
+        $userId = 'user_m_01JXHJMQP46F0BB2FT93PQRFE1';
+        
+        $response = $api->Users->Enroll($userId);
+    
+        print_r($response);
+    } catch(MGPResponseException $e) {
+        print_r($e);
+    } catch(MGPException $e) {
+        print_r($e);
+    }
+```

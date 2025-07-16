@@ -1,21 +1,56 @@
 ---
 title: Restrictions on Payer users
+sidebarTitle: Restrictions on Payers
 ---
 
-Mangopay is updating its rules on the Payer category of users to enhance security for your platform and comply with regulatory requirements. These changes aim to provide a safer experience for all users.
+## Introduction
 
-This page outlines the rules that are being enforced. It aims to provide a description of what's changing.
+Mangopay is updating its rules on the Payer category of users to enhance security for your platform and comply with regulatory requirements.
+
+These changes aim to provide a safer experience for all users.
+
+This page outlines the rules that are being enforced to bring consistency with the user categorization that is already in place.
+
+### Categories
 
 The rules are based on Mangopay's user categories: Payer and Owner.
 
-All users – Natural and Legal (of all types) – must be categorized into one of two groups:
+Your platform categorizes all users – Natural and Legal (of all types) – into one of two groups:
 
 - **Payer** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `PAYER`. The Payer category of user only requires basic information (e.g. name, email address). The Payer category is designed to register individuals or businesses making pay-ins on your platform using a Mangopay [payment method](/guides/payment-methods).
 - **Owner** – A [Natural User](/api-reference/users/create-natural-user) or [Legal User](/api-reference/users/create-legal-user) whose `UserCategory` is `OWNER`. The Owner category of user requires more detailed information (e.g. date of birth, country of residence), and requires the user to accept Mangopay [terms and conditions](/guides/users/terms). The Owner category is designed to register and identify individuals and businesses that are receiving funds from other users, and who can request [KYC verification](/guides/users/verification) and, once verified successfully, [payouts](/guides/payouts) to an external bank account.
 
 An Owner can do everything a Payer can do. Once a user is an Owner, they cannot revert back to the Payer category.
 
-## UserCategory parameter is mandatory on POST and PUT calls
+### Note about PLATFORM category 
+There is a third value for `UserCategory`, `PLATFORM`, which represents the platform integrating Mangopay in their app or website. Depending on the platform's implementation, this value may be assigned to a single user by Mangopay as part of the approved and validated workflow.
+
+The `PLATFORM` value:
+- Can only be applied by Mangopay 
+- Is generally only applied to one user per platform (one per `ClientId`), but more than one is possible
+- Requires the user to have `UserCategory` of `OWNER` and be KYC verified (`KYCLevel` is `REGULAR`)
+
+The `PLATFORM` category of user is not affected by the rules being applied to the `PAYER` category.
+
+If your platform has a user that should be categorized as the `PLATFORM` but isn't, then please contact Support <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+
+In addition to the `PLATFORM` user, there are other approved and validated users in place for technical in certain approved workflows. These technical users should not be affected by the restrictions being introduced for `PAYER` users, either because they do not breach them or because they are categorized as `OWNER`. If your platform has any queries about technical users, please contact Support <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+
+## What your platform needs to do
+
+The restrictions being introduced aim to comply with regulations and provide a safer experience for all your users. 
+
+All platforms should review and familiarize themselves with the restrictions below.
+
+You may be required to change your integration to align with the restrictions, but the exact steps required will likely depend on your existing integration.
+
+In many cases, you may need to categorize a set of users as `OWNER`. SCA is being introduced on the act of categorizing a `PAYER` as an `OWNER`, as described in [SCA on Users](/guides/sca/users). However, it is still possible to categorize users as `OWNER` via the legacy endpoint and via the Dashboard. In this case, the `OWNER` must later be [enrolled in SCA separately](/guides/sca/users#enroll-an-existing-owner).
+
+In other cases, a more significant change in your integration may be required to align your usage with the restrictions below. We invite you to familiarize yourself with the features impacted by the rules below, consulting the rest of our documentation for the current integration standards. Please contact Support <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> if you require confirmation on any matter or have a query.
+
+## Restrictions being introduced
+
+### UserCategory parameter is mandatory on POST and PUT calls
 
 The `UserCategory` parameter is required on all API calls to create (POST) or update (PUT) a user. While Mangopay policy already requires categorization, the change is being enforced technically.
 
@@ -35,24 +70,29 @@ API calls to the POST or PUT endpoints that don't contain `UserCategory` will re
 ```
 </Accordion>
 
-## Transfers can't be credited to wallets owned by Payers
+### Transfers can't be credited to wallets owned by Payers
 
-Payers are not allowed to receive transfers except when:
+Users with `UserCategory` of `PAYER` are not allowed to receive transfers from **other** `PAYER` or `OWNER` users. However, `PAYER` users **are** permitted to transfer funds between wallets belonging to them. `PAYER` users can also receive full and partial transfer refunds (as well as full and partial pay-in refunds).
 
-1. The credited and debited wallets belong to the same user (the Payer)
-2. The transfer is debited from a technical user, specified by Mangopay with the `UserCategory` value `PLATFORM`
+Requests to [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint where the owner of the `CreditedWalletId` is a `PAYER` (and not also the owner of the `DebitedWalletId`) will fail with the `ResultCode` [002701](/errors/codes/002701).
 
-Otherwise a request to [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint will result in a failed transfer with the result code `002701`.
+### Payouts can't be debited from wallets owned by Payers
 
-## Payouts can't be debited from wallets owned by Payers
+Payouts can't be debited from wallets owned by Payers except when the `PaymentRef` parameter is provided on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, with the `ReasonType` set to `PAYIN_REFUND` and the `Id` of the initial pay-in as the `ReferenceId`. For more information, see [Refunds using payouts](/guides/payouts/integration#refunds-using-payouts).
 
-Payouts can't be debited from wallets owned by Payers except when the `PaymentRef` parameter is provided on the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint, with the `ReasonType` set to `PAYIN_REFUND` and the `Id` of the initial pay-in as the `ReferenceId`. For more information, see [Refunds using payouts](/guides/payouts#refunds-using-payouts).
+Otherwise a request to [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will result in a failed payout with the `ResultCode` [002701](/errors/codes/002701).
 
-Otherwise a request to [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will result in a failed payout with the result code `002701`.
-
-## KYC Documents and UBO declarations can't be submitted for Payers
+### KYC Documents and UBO declarations can't be submitted for Payers
 
 Payers are not able to request KYC [verification](/guides/users/verification) (by submitting one or more [KYC Documents](/api-reference/kyc-documents/kyc-document-object)). For Payers, a request to [PUT Submit a KYC Document](/api-reference/kyc-documents/submit-kyc-document) will result in the document `Status` being set to `REFUSED` and a `KYC_FAILED` event.
+
+<Note>
+**Note – If a KYC document is requested for a Payer, they will be able to send it**
+
+Mangopay conducts routine pay-in screening for anti-fraud purposes as part of it's regulatory obligations as an [EMI](/guides/glossary#electronic-money-institution-emi).
+
+In some cases, Mangopay may request an ID document or proof of address from a Payer as part of this process, which must be submitted as a KYC document via the API or Dashboard. If this happens, there will be no restriction for the Payer to submit the document.
+</Note>
 
 Payers are not able to declare beneficial owners in a [UBO Declaration](/api-reference/ubo-declarations/ubo-declaration-object). If the user is a Payer, the [POST Create a UBO Declaration](/api-reference/ubo-declarations/create-ubo-declaration) endpoint will return an error:
 

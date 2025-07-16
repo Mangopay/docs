@@ -1,0 +1,152 @@
+---
+title: The Intent object
+---
+
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
+import NextActions_Intent from '/snippets/p-response/NextActions_Intent.mdx';
+import ExternalData_Intent from '/snippets/p-response/ExternalData_Intent.mdx';
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx';
+import LineItems_Intent from '/snippets/p-response/LineItems_Intent.mdx';
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
+import Captures_Intent from '/snippets/p-response/Captures_Intent.mdx';
+import Refunds_Intent from '/snippets/p-response/Refunds_Intent.mdx';
+import Disputes_Intent from '/snippets/p-response/Disputes_Intent.mdx';
+import Splits_Intent from '/snippets/p-response/Splits_Intent.mdx';
+import SettlementId_Intent from '/snippets/p-response/SettlementId_Intent.mdx';
+
+The Intent object represents the declaration of a payment authorization made via a third-party PSP. 
+
+[Read more about Mangopay Echo](/guides/echo) **&rarr;**
+
+### Attributes 
+
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<NextActions_Intent/>
+<ExternalData_Intent/>
+<Buyer_Intent/>
+<LineItems_Intent/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
+<Captures_Intent/>
+<Refunds_Intent/>
+<Disputes_Intent/>
+<Splits_Intent/>
+<SettlementId_Intent/>
+
+<Panel>
+```json Intent object example
+{
+    "Id": "int_01980d51-ee76-7841-a98f-009e98d2def2",
+    "Amount": 20000,
+    "AvailableAmountToSplit": 20000,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "CAPTURED",
+    "NextActions": "REFUND, DISPUTE",
+    "ExternalData": {
+        "ExternalProcessingDate": 1752439988,
+        "ExternalProviderReference": "auth-stripe-da46c083-ef83-438d-ae4f-d8d2cf0cbca0",
+        "ExternalMerchantReference": "order-7f3234ad-f0c5-4a66-98ac-83e37cada65b",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "LineItems": [
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZWV35ZQZF8T9BYQ3494N4R7",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070d",
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 2000,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "00920 Bahringer Fields",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
+        },
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZT2D6QQMS45JDR213A3FWF8",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070e",
+            "Sku": "example-item-456",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 1,
+            "UnitAmount": 10000,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "5997 Miller Oval",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 10000,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
+        }
+    ],
+    "Captures": [
+        {
+            "Id": "int_capture_01980d51-faba-764a-b95f-deba3a1128be",
+            "Amount": 20000,
+            "Status": "SETTLED_NOT_PAID",
+            "LineItems": [
+                {
+                    "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070d",
+                    "Amount": 10000
+                },
+                {
+                    "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070e",
+                    "Amount": 10000
+                }
+            ],
+            "CreationDate": 1752570133,
+            "ExecutionDate": 1752570982
+        }
+    ],
+    "Refunds": [],
+    "Disputes": [],
+    "Splits": [],
+    "CreationDate": 1752570130,
+    "ExecutionDate": 1752570133,
+    "SettlementId": "int_stlmnt_01980d5e-dea1-7828-b7ba-bf1772d6abf2"
+}
+```
+</Panel>

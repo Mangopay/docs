@@ -176,50 +176,84 @@ Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it
 </AccordionGroup> 
 
 <AccordionGroup>  
+<Accordion title="400 - Platform can't change OWNER to PAYER">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
+    "Date": 1707907057.0,
+    "errors": {
+        "UserCategory": "A User OWNER can't be modified to a user PAYER"
+    }
+}  
+```  
+</Accordion>
+<Accordion title="400 - First name or last name identified as fake">
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+Read more about Mangopay's [AML rule preventing fake names](/guides/users/types#rule-preventing-fake-user-names) **&rarr;**
+</Accordion>
+<Accordion title="400 - Invalid email">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+        "LegalRepresentative.Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
+    }
+}  
+```  
+</Accordion>
+<Accordion title="400 - Restricted country">
+```json  
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "733c8dbc-2770-4cc4-80d4-63d684cff38c#1750669115",
+    "Date": 1750669116,
+    "errors": {
+        "HeadquartersAddress.Country": "The HeadquartersAddress.Country used is blocked"
+    }
+}
+```
+Read more about [country restrictions](/guides/users/country-restrictions) **&rarr;**
+</Accordion>
+<Accordion title="400 - Terms and conditions acceptance can't be revoked">
+    ```json
+    {
+        "Message": "The user cannot revoke the terms and conditions acceptance",
+        "Type": "invalid_action",
+        "Id": "5d0f2332-3808-4235-ab62-2ebac79f213c",
+        "Date": 1690290952.0,
+        "errors": null
+    }  
+    ```  
 
-    <Accordion title="400 - Owner can't become Payer">
-        ```json  
-        {
-            "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
-            "Type": "param_error",
-            "Id": "2633f582-b269-499f-bef0-8ae378b3be35",
-            "Date": 1707907057.0,
-            "errors": {
-                "UserCategory": "A User OWNER can't be modified to a user PAYER"
-            }
-        }  
-        ```  
+</Accordion>
+<Accordion title="403 - TermsAndConditionsAccepted must be true if OWNER">
+    ```json 
+    {
+      "Message": "User must accept the terms and conditions before account creation or modification.",
+      "Type": "user_hasnt_accepted_terms_and_conditions",
+      "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
+      "Date": 1730810728,
+      "errors": null
+    }  
+    ```
+</Accordion>
+</AccordionGroup>
 
-    </Accordion>
-
-    <Accordion title="400 - Terms and conditions acceptance can't be revoked">
-        ```json
-        {
-            "Message": "The user cannot revoke the terms and conditions acceptance",
-            "Type": "invalid_action",
-            "Id": "5d0f2332-3808-4235-ab62-2ebac79f213c",
-            "Date": 1690290952.0,
-            "errors": null
-        }  
-        ```  
-
-    </Accordion>
-    <Accordion title="403 - Owners must accept T&Cs">
-        ```json 
-        {
-          "Message": "User must accept the terms and conditions before account creation or modification.",
-          "Type": "user_hasnt_accepted_terms_and_conditions",
-          "Id": "dbbc752b-6f9f-4248-a4bb-04ee0ba7b4b7",
-          "Date": 1730810728,
-          "errors": null
-        }  
-        ```
-    </Accordion>
-
-</AccordionGroup>  
-
-<ResponseExample>  
-
+<ResponseExample>
 ```json REST - Payer  
 {
     "HeadquartersAddress": {

@@ -1,0 +1,80 @@
+---
+title: '001405'  
+description: '<small>&#8249; [All error codes](/errors/codes#refunds)</small>'
+---
+  
+<table>
+    <tbody>
+        <tr>
+            <th class="header"><strong>Error message</strong></th>
+            <td class="table-content">The initial transaction occured less than 7 days ago</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Description</strong></th>
+            <td class="table-content">A direct debit pay-in cannot be refunded within 7 calendar days of the pay-in `CreationDate`.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Categories</strong></th>
+            <td class="table-content">  
+<div class="label">Refund</div>
+<div class="label">Direct debit</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+### Causes
+
+This error is triggered on a [pay-in refund](/api-reference/refunds/create-refund-payin) if the initial pay-in's `PaymentType` is `DIRECT_DEBIT` and its `CreationDate` was in the last 7 full calendar days.
+
+This limitation exists because of the possibility of [late failures](/guides/payment-methods/banking/direct-debit##late-failures%2C-chargebacks-and-refunds) on direct debit pay-ins, which may occur on a successful pay-in. 
+
+### What to do
+
+Platforms must wait until the 8th day following the day of the pay-in's `CreationDate` before initiating a refund for a direct debit pay-in.
+
+### Testing
+
+In a testing scenario, platforms can use the [mock available](/testing/payment-methods#direct-debit-refunds) to avoid having to wait 7 days before initiating the refund.
+
+### Example
+
+The [Refund](/api-reference/refunds/refund-object) object with this error:
+
+```json
+{
+    "Id": "refund_m_01JP04JY9EN05G6SJJ0ZCM1PFG",
+    "Tag": "Custom meta",
+    "CreationDate": 1741605536,
+    "AuthorId": "user_m_01JP04K4CZ3WQQZYZK3Z604RQT",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 5700
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 5350
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": -350
+    },
+    "Status": "FAILED",
+    "ResultCode": "001405",
+    "ResultMessage": "The initial transaction occured less than 7 ago",
+    "ExecutionDate": null,
+    "Type": "PAYOUT",
+    "Nature": "REFUND",
+    "InitialTransactionId": "payin_m_01JP04NBJKBMPAZ0GQENNYJPJG",
+    "InitialTransactionType": "PAYIN",
+    "InitialTransactionNature": "REGULAR",
+    "DebitedWalletId": "wlt_m_01JP04NHXNQS04N7SQR36YPFN5",
+    "CreditedWalletId": null,
+    "RefundReason": {
+        "RefundReasonMessage": null,
+        "RefundReasonType": "INITIALIZED_BY_CLIENT"
+    },
+    "StatementDescriptor": null
+}
+```

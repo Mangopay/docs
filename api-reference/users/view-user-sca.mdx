@@ -40,8 +40,13 @@ import FirstName1Response from '/snippets/p-response/FirstName1Response.mdx';
 import Address3Response from '/snippets/p-response/Address3Response.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+import NodeViewUserSca from '/snippets/code/node-get-user-sca.mdx';
 
 import UserId from '/snippets/p-path/UserId.mdx';
+
+This endpoint returns the same data as the legacy [GET View a User](/api-reference/users/view-user), including the new `PENDING_USER_ACTION` value for `UserStatus`, with two minor changes: 
+- The `PendingUserAction` field, which is always `null` on this endpoint
+- For Legal users, the `LegalRepresentative` object, which contains the data for the legal representative
 
 <Note>
 **Note – `RedirectUrl` not available on this endpoint**
@@ -51,7 +56,7 @@ The `RedirectUrl` is only returned on API calls that trigger SCA.
 To obtain a new session link for an Owner, call the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint.
 </Note>
 
-[Read more about SCA](/guides/users/sca) **&rarr;**
+[Read more](/guides/sca/users#view-and-list-users) **&rarr;**
 
 ### Path parameters  
 
@@ -195,7 +200,6 @@ To obtain a new session link for an Owner, call the [POST Enroll a User in SCA](
     "UserStatus": "ACTIVE"
 }
 ```  
-
 ```json 200 - Natural Owner pending SCA
 {
     "FirstName": "Ruby",
@@ -331,4 +335,5 @@ To obtain a new session link for an Owner, call the [POST Enroll a User in SCA](
 
 <RequestExample>  
 <RestGetNoBody/>
+<NodeViewUserSca/>
 </RequestExample>

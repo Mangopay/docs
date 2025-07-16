@@ -1,32 +1,95 @@
 ---
-title: 'Hook notifications'  
-'og:description': 'Understand how webhook notifications work with the Mangopay API, with an example format and notes on retries.'  
+title: Webhook notifications
 ---
 
-## Introduction
+## Format
 
-Mangopay provides a webhook feature to submit notifications to other applications whenever a specific event occurs.  
+Mangopay provides a webhook feature to submit notifications to other applications whenever a specific event occurs for a specific API object.
 
-When creating the <a href="/api-reference/webhooks/hook-object">Hook object</a> for an event type, you define the URL to which the notification is sent.  
+The notification is a GET HTTP call with query parameters in the format:
 
-<a href="/webhooks/event-types">List of event types</a> &rarr;
+<table><tbody><tr>
+<td class="table-content no-borders">
+https<span>://www</span>.example.com?EventType=`EventType`&RessourceId=`Id`&Date=`Date`
+</td>
+</tr></tbody></table>
 
-The hook notification has the following format:
+Mangopay webhooks rely on the [Hook](/api-reference/webhooks/hook-object) object of the API. The available `EventType` values are listed in the [event types list](/webhooks/event-types). 
 
-> https<span>://www</span>.example.com?EventType=`EventType`&RessourceId=`ResourceId`&Date=`Date`
+The value of the (misspelled) `RessourceId` parameter is the unique identifier of the corresponding API object on which the event occurred. For example, for the `EventType` value `PAYIN_NORMAL_SUCCEEDED`, the `RessourceId` value is the `Id` of the specific pay-in (the `PayInId`).
 
-Doing a GET call on the `ResourceId` allows you to check that the event is still relevant and ensure that the hook is authentic.  
+The `Date` value the a Unix timestamp (UTC) of the date and time the event took place.
 
-<Note>  
+## How it works
+
+To set up a webhook, you can use the API or the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a> (***Developers*** > ***Webhooks***).
+
+<Steps>
+<Step title="Define the URL to which you wish to receive the notification">
+
+Your page must respond with a HTTP 200 response within 2 seconds for Mangopay to consider the notification valid.
+
+Ensure you allow the [IP addresses listed below](#ip-addresses) from which Mangopay sends hook notifications. 
+<Note>
 **Note – Use a TLS 1.2 certificate**
-  
+
 Your endpoint must be protected using a TLS 1.2 certificate. Endpoints using self-signed certificates, SSL certificates or TLS versions 1.0 and 1.1 may be rejected by our webhook systems.
-</Note>  
+</Note>
+</Step>
+<Step title="Create the Hook for the event type">
+If using the <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a>, navigate to ***Developers*** > ***Webhooks*** > ***Add webhook***, then select the event type and enter your URL.
+
+You can also specify and optional `Tag`.
+
+If using the API, call the [POST Create a Hook](/api-reference/webhooks/create-hook) endpoint, specifying your `Url`.
+
+In response, the API returns the Hook object and its `HookId`.
+
+```json API response example
+{
+    "Url": "https://webhook.site/e1def644-2cee-4669-a4a6-b6ceeacc621b",
+    "Status": "ENABLED",
+    "Validity": "VALID",
+    "EventType": "USER_ACCOUNT_ACTIVATED",
+    "Id": "hook_m_01JQW43GW82MJ23HB8Y6B3JZ72",
+    "Tag": "Created using the Mangopay Postman collection",
+    "CreationDate": 1743626814
+}
+```
+</Step>
+<Step title="Create or act on the resource that leads to the event">
+A webhook notification is sent when the event type occurs for a specific API resource – when it is created or changes status.
+
+In the example above, for `USER_ACCOUNT_ACTIVATED`, the resource is a Natural or Legal User with the `OWNER` `UserCategory` that was created or categorized with the SCA-enabled endpoints.
+
+When SCA was triggered by a call to one of these endpoints, the `UserStatus` was set to `PENDING_USER_ACTION`. When the user completes the SCA session, their `UserStatus` changes to `ACTIVE`, triggering the `USER_ACCOUNT_ACTIVATED` event and the webhook notification.
+</Step>
+<Step title="Listen for the notification on your URL">
+An example of the notification for the Hook in this example would be:
+
+<table><tbody><tr>
+<td class="table-content no-borders">
+https<span>://www</span>.example.com?&#8288;EventType=USER_ACCOUNT_ACTIVATED&RessourceId=user_m_01JQVHDG0S0TJP5KFX029211BF&Date=1743627006
+</td>
+</tr></tbody></table>
+
+The `RessourceId` is the `Id` of the user that completed the SCA session. 
+</Step>
+<Step title="Trigger a GET call on the relevant resource">
+When your system receives the hook notification, you should trigger a GET call on the relevant API object, as listed in the event types list, using the `RessourceId` of the notification.
+
+This allows you to check that the event is still relevant and ensure that the notification is authentic.
+
+Continuing the example above, you would trigger a call to [GET View a User (SCA)](/api-reference/users/view-user-sca), using the value `user_m_01JQVHDG0S0TJP5KFX029211BF` as the `UserId` path parameter.
+
+In the API response, the `UserStatus` shows as `ACTIVE`, confirming that the event is still valid. The User object also returns other relevant information needed for your integration, such as name, email (for example, to send confirmation), and other key data.
+</Step>
+</Steps>
 
 ## IP addresses
-Mangopay sends webhook notifications from the IP addresses listed below. Depending on your firewall or network security setup, you may need to add them to an allowlist to receive notifications.
+Mangopay sends webhook notifications from the IP addresses listed below in both the Production and Sandbox environments. Depending on your firewall or network security setup, you may need to add them to an allowlist to receive notifications.
 
-The CIDR ranges and the full lists given below express the same IP addresses. The /30 indicates a block of 4 IPs in ascending decimals from the first, the /29 indicates a block of 8. 
+The CIDR ranges and the full lists given below express the same IP addresses. The `/32` indicates that only there is only one IP address in the range.
 
 <Note>
 **Note – Contact Mangopay for full list**
@@ -34,67 +97,67 @@ The CIDR ranges and the full lists given below express the same IP addresses. Th
 The IPs below are redacted for security reasons. When your platform is looking to test webhooks in Sandbox, contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> for the full list. 
 </Note>
 
-#### Sandbox
+**CIDR ranges:**
+- X.XX.XXX.180/32
+- X.XX.XXX.181/32
+- X.XX.XXX.182/32
 
-**CIDR ranges**
-- X.XX.XXX.156/30
-- X.XXX.XXX.152/30
-
-**Full list**
-- X.XX.XXX.156
-- X.XX.XXX.157
-- X.XX.XXX.158
-- X.XX.XXX.159
-- X.XXX.XXX.152
-- X.XXX.XXX.153
-- X.XXX.XXX.154
-- X.XXX.XXX.155
-
-#### Production
-**CIDR ranges**
-- X.XX.XXX.176/29
-- X.XXX.XXX.160/29
-
-**Full list**
-- X.XX.XXX.176
-- X.XX.XXX.177
-- X.XX.XXX.178
-- X.XX.XXX.179
+**IP addresses:**
 - X.XX.XXX.180
 - X.XX.XXX.181
 - X.XX.XXX.182
-- X.XX.XXX.183
-- X.XXX.XXX.160
-- X.XXX.XXX.161
-- X.XXX.XXX.162
-- X.XXX.XXX.163
-- X.XXX.XXX.164
-- X.XXX.XXX.165
-- X.XXX.XXX.166
-- X.XXX.XXX.167
 
+## Notification retries and failure
 
-## Notification failure
+If a notification for a specific `EventType` URL does not respond with 200 status code within 2 seconds, then the notification is considered as failed.
 
-Hook notifications can fail. This means the hooked URL did not respond with a 200 - status code within 2 seconds after the notification was sent.  
+Mangopay retires the same notification:
 
-If this happens, the Mangopay API will behave as follows:  
-- Every 10 failed notifications - You will receive an email warning you of the issue.  
-- After 1 successful notification - The counter is reset. Please note that changing the hook’s URL will not reset the failure count.  
-- After 100 consecutive failed notifications - The hook `Validity` will automatically be set to `INVALID` and its `Status` to `DISABLED`.
+- Every 10 minutes for the first hour
+- Every 8 hours once the first hour is passed, and for the next 3 days
 
-Once a hook becomes `INVALID` (following unsuccessful retries) the hook must be disabled and re-enabled.
+After 10 consecutive failed notifications (new or retries) for the same `EventType`, you receive an email warning you of the issue. 
 
-## Retries of failed notifications 
+After every 10 additional failed notifications you receive another email until the 100th consecutive failed notification.
 
-Hook notifications come with a retry feature, which means that the Mangopay API will resubmit a failed notification until it reaches 100 consecutive failures.  
+When the counter of consecutive failures reaches 100, the Hook object’s `Validity` is set to `INVALID` and no more notifications are sent (new or retries).
 
-To make sure the notification failures don’t lead to the hook being set to `INVALID` too quickly, the retries are spaced as follows:  
-- Every 10 minutes for the first hour  
-- Every 8 hours once the first hour is passed, and for the next 3 days 
+The counter is reset as soon as there is 1 successful notification (new or retry) for the `EventType`. So if there are 99 failed notifications and then 1 successful one, the Hook is not set to `INVALID` and any retries continue.
+
+Changing the `Url` does not reset the counter.
+
+If a Hook is set to `INVALID`, you need to reset the Hook to `VALID` for it to receive future notifications. 
+
+You can do this <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> (***Developers*** > ***Webhooks***) or by using the [PUT Update a Hook](/api-reference/webhooks/update-hook) endpoint:
+```json API request
+{
+    "Validity": "VALID"
+}
+```
+You can disable and re-enable a Hook to temporarily stop it receive notifications. You can do this via the Dashboard or by sending the relevant `Status` value on the PUT Update a Hook endpoint:
+```json API request
+{
+    "Status": "DISABLED" // "ENABLED"
+}
+```
+
+## Testing webhooks
+
+In the Dashboard, you can send a test notification to check your URL is valid.
+
+You can also use tools such as the following to obtain a URL for manual testing:
+
+- https://webhook.site/ provides a temporary URL
+- https://webhook-test.com/ provides a permanent URL if you sign up
+- https://pipedream.com/requestbin provides a permanent URL if you sign up
+
 
 <CardGroup col={2}> 
-    <Card title="Webhooks" href="/webhooks/event-types">Learn more about event types</Card>
+    <Card title="Guide" href="/webhooks/event-types">
+    See the list of available event types
+    </Card>
 
-    <Card title="Endpoint" href="/api-reference/webhooks/hook-object">The Hook object</Card>  
+    <Card title="Endpoints" href="/api-reference/webhooks/hook-object">
+    The Hook object
+    </Card>  
 </CardGroup>

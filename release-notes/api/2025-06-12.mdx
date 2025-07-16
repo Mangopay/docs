@@ -1,0 +1,24 @@
+---
+title: 'API - June 12, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+<div class="release-notes-page">
+
+<div class="pill pill-green">Added</div>
+
+### US and CA virtual accounts for local pay-in collection
+
+Platforms in both the EEA and UK can now create virtual accounts for local pay-in collection in the USA and Canada. The `US` and `CA` values have been added for the `Country` body parameter on [POST Create a Virtual Account](/api-reference/virtual-accounts/create-virtual-account), allowing platforms to requests these accounts.
+
+Only local pay-ins are available to these accounts, meaning that the funds must be sent in the US or Canada. The `Capabilities.LocalPayinAvailable` field is `false` to reflect this, and `InternationalAccountDetails` is returned `null`. 
+
+The `LocalAccountDetails` for US and CA accounts contain fields specific to these account types, so ensure you retrieve fields and values dynamically when displaying them to users. 
+
+### Bank name returned on all virtual accounts
+
+The `BankName` field has been added to all virtual account `Country` types in the `LocalAccountDetails.Account` and `InternationalAccountDetails.Account` responses objects. 
+
+Platforms should pass this data on to users when requesting pay-ins. 
+
+</div>

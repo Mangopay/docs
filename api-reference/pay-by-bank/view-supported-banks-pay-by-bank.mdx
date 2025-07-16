@@ -1,0 +1,187 @@
+---
+title: View supported banks for Pay by Bank
+api: GET /v2.01/{ClientId}/payment-methods/openbanking/metadata/supported-banks
+description: Retrieve supported banks to present to a user for Pay by Bank pay-ins
+---
+
+import per_page_PayByBank from '/snippets/p-query/per_page_PayByBank.mdx';
+import page from '/snippets/p-query/page.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+This endpoint allows you to retrieve a paginated list of banks that you can present to the user for selection during their Pay by Bank checkout experience. Once they have selected their bank, and optionally the scheme, submit the data of their selection to the [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin) endpoint. [Read the guide](/guides/payment-methods/banking/pay-by-bank) **&rarr;**
+
+### Query parameters
+
+<ParamField query="CountryCodes" type="string">
+**Allowed values:** `AT`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `IE`, `IT`, `LV`, `LT`, `NL`, `NO`, `PL`, `PT`.
+
+The countries for which to return supported banks. You can combine query values in a comma-separated list.
+</ParamField>
+
+<per_page_PayByBank/>
+<page/>
+
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters" defaultOpen>
+
+<ResponseField name="SupportedBanks" type="object">
+The supported banks listed by country.
+<Expandable title="properties" defaultOpen>
+<ResponseField name="Countries" type="array (object)">
+Array of objects listing the paginated `Banks` per `Country`.
+<Expandable title="properties" defaultOpen>
+<ResponseField name="Banks" type="array (object)">
+List of paginated banks for the country. Display the list of banks for the user to choose before submitting their selection in the [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin) request. 
+<Expandable title="properties" defaultOpen>
+<ResponseField name="BankName" type="string">
+The bank's `BankName` to identify it in the pay-in request.
+</ResponseField>
+<ResponseField name="Scheme" type="array (string)">
+List of `Scheme` values supported by the bank, which can be presented to the user for selection before submission in the pay-in request.
+</ResponseField>
+<ResponseField name="Name" type="type">
+The bank's display name to show to the user for selection.
+</ResponseField>
+</Expandable>
+<ResponseField name="Country" type="string">
+The `Country` value for the paginated list of `Banks` objects.
+</ResponseField>
+</ResponseField>
+</Expandable>
+</ResponseField>
+</Expandable>
+</ResponseField>
+</Accordion>
+</AccordionGroup>
+
+
+<AccordionGroup>
+<Accordion title="400 - Unsupported country code">
+```json
+{
+    "Id": "c3f6137d-eb40-4d48-a320-4209577b0101",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Date": 1749481944,
+    "Type": "param_error",
+    "Errors": {
+        "countryCodes": "The value [AU] is not valid"
+    }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+
+<RequestExample>
+<RestGetNoBody/>
+</RequestExample>
+
+<ResponseExample>
+```json REST (10 banks by default)
+{
+    "SupportedBanks": {
+        "Countries": [
+            {
+                "Banks": [
+                    {
+                        "BankName": "at-demobank-open-banking-embedded",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "at-demobank-open-banking-redirect",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "at-demobank-password",
+                        "Scheme": [],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "AT"
+            },
+            {
+                "Banks": [
+                    {
+                        "BankName": "de-demo-commerzbank-ob",
+                        "Scheme": [
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER",
+                            "PIS_FUTURE_DATE"
+                        ],
+                        "Name": "Commerzbank Sandbox"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-embedded-templates",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-redirect",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-open-banking-redirect-pisonly",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "de-demobank-password",
+                        "Scheme": [
+                            "PIS_BULK_PAYMENTS",
+                            "SEPA_CREDIT_TRANSFER",
+                            "SEPA_INSTANT_CREDIT_TRANSFER"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "DE"
+            },
+            {
+                "Banks": [
+                    {
+                        "BankName": "dk-demobank-open-banking-embedded",
+                        "Scheme": [
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG",
+                            "DANISH_DOMESTIC_CREDIT_TRANSFER",
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    },
+                    {
+                        "BankName": "dk-demobank-open-banking-redirect",
+                        "Scheme": [
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_INTRADAG",
+                            "DANISH_DOMESTIC_CREDIT_TRANSFER",
+                            "INSTANT_DANISH_DOMESTIC_CREDIT_TRANSFER_STRAKS"
+                        ],
+                        "Name": "Tink Demo Bank"
+                    }
+                ],
+                "Country": "DK"
+            }
+        ]
+    }
+}
+```
+</ResponseExample>
+
+

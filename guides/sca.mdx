@@ -1,0 +1,397 @@
+---
+title: Introduction to SCA
+sidebarTitle: Introduction
+description: Learn about Mangopay's SCA features applicable to Owner users
+---
+
+<Info>
+As communicated in February 2025, all platforms are required to integrate Mangopay's SCA features. 
+
+This guide provides an overview of Mangopay's SCA features and how your platform can integrate them effectively.
+
+If you have questions that aren't addressed in the pages below, or in our [dedicated FAQ](/guides/sca/faq), please get in touch with our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Info>
+
+Strong customer authentication (SCA) was introduced under the revised EU Payment Services Directive (<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32015L2366" target="_blank">PSD2</a>) to all kinds of financial institutions and payment service providers (PSP). It is a form of multi-factor authentication (MFA, also 2FA), where a user authenticates using evidence of different categories (knowledge, possession, and inherence).
+
+As a regulated [electronic money institution (EMI)](/guides/glossary#electronic-money-institution-emi), Mangopay is introducing SCA for the end users of your platform who hold a Mangopay Account. Our SCA solution allows your platform to protect users' funds and payment activity via a Mangopay-hosted experience.
+
+## Scope
+
+<Note>
+**Note – SCA applies to all Owner users**
+
+Mangopay's SCA features are applicable to **Natural Users** and **Legal Users** whose `UserCategory` is `OWNER`. 
+
+Owner users are subject to Mangopay's T&Cs and as such hold a **Mangopay Account**. The regulations require these account holders to perform SCA directly with Mangopay.
+
+Users whose `UserCategory` is `PAYER` are not affected by Mangopay's SCA features. See below for information about the `PLATFORM` category.
+</Note>
+
+## Actions requiring SCA
+
+The regulations require Mangopay to apply SCA to situations where a `OWNER` user accesses their payment account or initiates certain payment activities, or to other situations considered at risk.
+
+SCA has an impact on `OWNER` users at certain moments of their activity with Mangopay. Your platform must change its implementation as a result (see [integration required](#integration-required-for-sca)).
+
+Prior to being able to authenticate actions, the user must:
+
+- Enroll at Mangopay Account creation (when a user is assigned the `OWNER` `UserCategory`)
+- Re-enroll if their contact details change (`Email`, `PhoneNumber`)
+
+The actions taken by `OWNER` users that require SCA to be performed are: 
+
+- Bank account registration (by `OWNER` users for use with payouts)
+- Transfer initiation (between two `OWNER` users)
+- Mangopay Account access by `OWNER` users to view wallet balance or list transactions
+
+<Note>
+**Note – SCA cannot be delayed**
+
+On the actions above, SCA is triggered immediately when the API call is made. The SCA session (the `RedirectUrl` in the API response) is valid for **10 minutes** from when it is generated. The `OWNER` user must complete all the necessary steps for enrollment or authentication before the session expires.
+
+It is not possible to initiate an action and then ask the user to complete the SCA session later.
+</Note>
+
+## Integration required for SCA
+
+The table below lists the mandatory integration that we require your platform to undertake, along with their availability in Sandbox and Production to start implementation.
+
+<table>
+<thead>
+<tr>
+<th class="header">Integration required</th>
+<th class="header">Available</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+New user-creation endpoint for enrollment when you [register a Owner user for the first time](/guides/sca/users#register-an-owner-for-the-first-time) ([Natural](/api-reference/users/create-natural-user-sca) and [Legal](/api-reference/users/create-legal-user-sca), all types).
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+New user-categorization endpoint for enrollment when you [transition a Payer to Owner](/guides/sca/users#transition-a-payer-to-owner) ([Natural](/api-reference/users/categorize-natural-user) and [Legal](/api-reference/users/categorize-legal-user), all types)
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+New user-modification endpoint to [re-enroll an enrolled Owner](/guides/sca/users#re-enroll-an-enrolled-owner) if contact details changed ([Natural](/api-reference/users/update-natural-user-sca) and [Legal](/api-reference/users/update-legal-user-sca) Soletrader).
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+New endpoint to [enroll an existing Owner](/guides/sca/users#enroll-an-existing-owner) ([Natural and Soletrader](/api-reference/users/enroll-user)) at an appropriate moment in your user journey
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[Webhooks](/guides/sca/users#webhooks) for the `OWNER` user account, when enrollment is triggered and completed:
+- `USER_ACCOUNT_VALIDATION_ASKED`
+- `USER_ACCOUNT_ACTIVATED`
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+SCA enrollment and authentication for Business, Partnership, and Organization types of Legal user	
+</td>
+<td class="table-content">
+See [Legal user integration](/guides/sca/users#legal-user-integration), date to be announced
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Registration of new bank accounts as [Recipients](/guides/sca/recipients) with SCA for Owners
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[SCA on Transfers](/guides/sca/transfers) that are user-initiated between two Owners using `ScaContext`
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[Webhooks](/webhooks) for transfer event types:
+- `TRANSFER_NORMAL_CREATED`
+- `TRANSFER_NORMAL_FAILED`
+- `TRANSFER_NORMAL_SUCCEEDED	`
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+<tr>
+<td class="table-content">
+[SCA on Mangopay Account access](/guides/sca/wallets) for Owners using `ScaContext`
+</td>
+<td class="table-content">
+Now
+</td>
+</tr>
+</tbody>
+</table> 
+
+### Deadline for integration
+
+<Info>
+**Deadline for integration**
+
+Implementation of Mangopay's SCA features for all actions impacted by SCA is mandatory for all platforms.
+
+Your platform should start integrating features as soon as they become available. 
+
+**Deadline for platforms to integrate:** July 1, 2025
+
+If you have any concerns about integration timelines, please contact our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+</Info>
+
+<Check>
+**Best practice – Start testing in Postman**
+
+The Mangopay API Postman collection contains dedicated folders for <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/n8dirpk" target="_blank">SCA-enabled User endpoints</a>, <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/47sedyl" target="_blank">Recipient endpoints</a>, and simulating <a href="https://www.postman.com/mgp-productstars/mangopay-sandbox/folder/jk6okvt" target="_blank">SCA on transfers and wallet access</a>.
+
+See the [Postman](/postman) guide for details on how to fork the collection and set up your environment with your `ClientId` and API key.
+</Check>
+
+
+## Hosted webpage
+
+Mangopay is introducing SCA across its API through a secure and hosted webpage. 
+
+On relevant endpoints across Mangopay's API, the base URL for a user's session is provided in the response parameter `PendingUserAction.RedirectUrl`. You are able to define a specific page for the user to be returned to after the session.
+
+For the user, Mangopay's SCA session provides a user-friendly experience that guides them efficiently through all the necessary steps relating to all required factors.
+
+Mangopay's hosted SCA session handles both enrollment and authentication.
+
+<Note>
+**Note – Add your return URL before redirection**
+
+You must add your `returnUrl` before you redirect the user on the `RedirectUrl` value, otherwise the hosted web page cannot return them upon completion.
+</Note>
+
+[Read how to redirect for an SCA session](/guides/sca/session) **&rarr;**
+
+## Factors
+
+Mangopay's hosted SCA session allows the user to both enroll in SCA and authenticate using the required factors. [Read more](/guides/sca/factors) **&rarr;**
+
+<table>
+<thead>
+<tr>
+  <th class="header">Factor</th>
+  <th class="header">Required</th>
+  <th class="header">Type</th>
+  <th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="table-content">
+  Trusted device using WebAuthn [passkey](/guides/sca/factors#passkey)
+  </td>
+  <td class="table-content">
+  No
+  </td>
+  <td class="table-content">
+  Possession (of device) and inherence (if biometrics) or knowledge (if password or passcode)
+  </td>
+  <td class="table-content">
+  The individual uses the native authentication features (biometrics, password, passcode) of their device that they set up during enrollment.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  [Personal identification number (PIN)](/guides/sca/factors#pin)
+  </td>
+  <td class="table-content">
+  Yes
+  </td>
+  <td class="table-content">
+  Knowledge
+  </td>
+  <td class="table-content">
+  The individual enters a 6-digit code they defined during enrollment.
+  </td>
+</tr>
+<tr>
+  <td class="table-content">
+  Phone-based [one-time passcode (OTP)](/guides/sca/factors#otp)
+  </td>
+  <td class="table-content">
+  If passkey not used
+  </td>
+  <td class="table-content">
+  Possession
+  </td>
+  <td class="table-content">
+  The individual receives a 6-digit OTP via SMS to the phone number provided during enrollment.
+  </td>
+</tr>
+</tbody>
+</table>
+
+## Exemptions on actions
+
+The regulations allow for certain exemptions to be applied to certain actions. The exemptions available are different depending on the action being authenticated. 
+
+Enrollment cannot be exempted, because it is necessary to enable SCA to be performed.
+
+<Note>
+**Note – Exemptions applied by Mangopay**
+
+As a regulated PSP, Mangopay applies and requests exemptions on behalf of platforms. The exemptions that Mangopay may apply are detailed below.
+
+Platforms cannot request specific exemptions in a given situation. Platforms also cannot be exempted from integration of SCA – it is mandatory requirement.
+</Note>
+
+For Transfers and account access, platforms will have a degree of visibility over whether an exemption was applied or not, based on the response from the API.
+
+### Exemptions available to Mangopay
+
+<table>
+<thead>
+<tr>
+<th class="header">Action</th>
+<th class="header">Exemptions applicable by Mangopay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+User being assigned `OWNER` category (creation or categorization)
+</td>
+<td class="table-content">
+None, because this represents SCA enrollment
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Change of SCA contact details
+</td>
+<td class="table-content">
+None, because this represents SCA re-enrollment
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Recipient (bank/payment account) registration
+</td>
+<td class="table-content">
+None. Systematic SCA on Recipients enables your users to benefit from an SCA exemption when they request a payout, because the account can be considered a trusted beneficiary.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Transfer initiation between `OWNER` users
+</td>
+<td class="table-content">
+Two kinds of exemptions may be applied by Mangopay on Owner-initiated transfers to other Owners. Note that for transfers between wallets held by the same Owner, SCA does not apply. An Owner also can't transfer to a Payer.
+
+**Low-amount transfers**
+
+Transactions under €30 may be exempted from SCA until they reach one of the following limits:
+- More than 5 consecutive transactions
+- More than €100 in cumulated transactions
+
+**Low-risk transfers**
+
+Transaction risk analysis (TRA) calculations, done by Mangopay, may be able to exempt SCA on transactions up to €500 (in the absence of detected risks). The regulations apply thresholds of transaction amounts based on Mangopay's overall fraud rate for transfers and payouts. The data and calculations used will not be shared with platforms. 
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Account access (wallet, transaction history)
+</td>
+<td class="table-content">
+Accessing wallet balances and listing transactions may be exempted if the last SCA for either of these actions occurred less than 180 days ago. 
+
+SCA performed for a different action not related to account access, such as registering a Recipient (bank/payment account) or initiating a transfer, cannot be used to exempt account access.
+</td>
+</tr>
+</tbody>
+</table>
+
+## Notes on other actions
+
+#### Payouts
+
+While the payouts are in scope of SCA as per the regulations, Mangopay automatically applies the trusted beneficiary exemption because the Recipient registration was authenticated with SCA.
+
+This means that `OWNER` users will not be asked to perform SCA on payout requests.
+
+#### KYC and UBO
+
+Submitting KYC Documents and UBO Declarations for review will not require SCA.
+
+#### FX conversions
+
+Because FX conversions take place between two wallets held by the same user, conversions are not impacted by SCA. 
+
+#### Refunds
+
+Refunds of  all types will not be impacted by SCA. Pay-in and transfer refunds will continue to be possible for `PAYER` users. Furthermore, refunds that use payouts (by citing the reference of the initial transaction as the `PAYIN_REFUND` reason) will continue to be possible for `PAYER` users, because a Recipient can be created for this purpose (see [Recipient scopes - Pay-in](/guides/sca/recipients#recipient-scopes)).
+
+#### Disputes
+
+The dispute process is unaffected by Mangopay's SCA features.
+
+#### Pay-ins
+
+In a pay-in context, a `PAYER` (or `OWNER`) is asked to authenticate the transaction by their issuing bank or PSP. This authentication may also be mandated by the same European regulations (<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32015L2366" target="_blank">PSD2</a>). For example, 3DS on card transactions addresses the requirements of SCA.
+
+On pay-ins, Mangopay enables redirection for users to perform this authentication with third-parties, such as card networks, issuing banks, and payment method providers. In the API, this takes place via the `SecureModeRedirectURL` (e.g. direct and recurring card pay-ins, preauthorizations, etc.) or other `RedirectURL` (e.g. on APMs and web card pay-ins) that Mangopay returns in response to the pay-in request. 
+
+However, in the pay-in scenario, the issuing bank or PSP of the user is in charge of applying SCA and allowing any exemptions.
+
+Mangopay's introduction of SCA on `OWNER` users does not have any impact on pay-in authentication or your existing checkout or payment page integrations.
+
+#### Connecting to the Mangopay Dashboard
+
+Your platform's team members use multi-factor authentication (MFA) to log in to the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>. This security feature is not changing and will remain in place, and it is entirely separate from the SCA requirements regarding end users of Mangopay's payment and/or e-money services.
+
+#### Using the Mangopay Dashboard
+
+SCA is applicable to all the [listed actions](#actions-requiring-sca) that the `OWNER` user takes, whether via the API or via the Dashboard. Initially, your platform needs to change its API implementation. 
+
+Mangopay is defining a strategy for Dashboard-based actions. Until then, your usage of the Dashboard can continue as before.
+
+When actions are executed on behalf of Mangopay Account holders without direct user authentication, each case will be evaluated individually to determine the appropriate SCA process. It is essential that we understand the context and legal justification for such actions, as bypassing direct user consent could expose us to security risks. We remain committed to maintaining the highest standards of security and compliance.
+
+The Dashboard will integrate the API-based SCA-features (e.g. Recipients), but presently it has the legacy user endpoints integrated. 
+
+Note that if you change a `PAYER` to `OWNER` via the Dashboard, that action uses the legacy **PUT Update a User** endpoint, and as such it will not trigger SCA, even if the `PAYER` was created using the new SCA-enabled endpoint. Such a user will still need to enroll as an existing user via the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
+
+#### Platform user category
+
+The `UserCategory` value `PLATFORM` indicates a specific user approved by Mangopay that represents the platform. 
+
+Initially, SCA will not be required a User whose `UserCategory` is `PLATFORM`. SCA is applicable to actions taken by these users, however, and Mangopay is defining a suitable solution.
+
+#### Your platform's MFA features
+
+Your platform may already require users to complete multi-factor or two-factor authentication (MFA or 2FA) when they connect to your platform.
+
+Any existing MFA features your platform operates cannot be used to substitute or replace Mangopay's independent SCA on `OWNER` users. The regulations require Mangopay Account holders to perform SCA with Mangopay directly.

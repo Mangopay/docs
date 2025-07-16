@@ -43,11 +43,13 @@ import RestUpdateLegalUserScaPayer from '/snippets/code/rest-update-legal-user-s
 <Warning>
 **Caution – Modification may trigger SCA re-enrollment**
 
-If `UserCategory` is `OWNER`, modifying the following values changes `UserStatus` to `PENDING_USER_ACTION` and requires [re-enrollment in SCA](/guides/users/sca/enrollment#re-enroll-an-enrolled-owner) using the returned `PendingUserAction.RedirectUrl`:
+If `UserCategory` is `OWNER`, modifying the following values changes `UserStatus` to `PENDING_USER_ACTION` and requires [re-enrollment in SCA](/guides/sca/users#re-enroll-an-enrolled-owner) using the returned `PendingUserAction.RedirectUrl`:
 
 - `LegalRepresentative.Email`
 - `LegalRepresentative.PhoneNumber`
 - `LegalRepresentative.PhoneNumberCountry`
+
+The `RedirectUrl` is currently only returned if `LegalPersonType` is `SOLETRADER`, but the endpoint should be integrated for the other types.
 </Warning>
 
 <Warning>
@@ -140,6 +142,48 @@ Due to Mangopay's [country restrictions](/guides/users/country-restrictions), it
     </Accordion>
 
 </AccordionGroup>  
+
+<AccordionGroup>
+<Accordion title="400 - First name or last name identified as fake">
+```json
+{
+    "Message": "The data you provided does not comply with our anti-fraud policy",
+    "Type": "fraud_policy",
+    "Id": "51876239-4814-422e-8f4b-6986520414bb#1750420019",
+    "Date": 1750420020,
+    "errors": null
+}
+```
+Read more about Mangopay's [AML rule preventing fake names](/guides/users/types#rule-preventing-fake-user-names) **&rarr;**
+</Accordion>
+<Accordion title="400 - Invalid email">
+```json 
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "864a164a-cbb9-4e9d-b140-2b83c720e729",
+    "Date": 1690291065.0,
+    "errors": {
+        "LegalRepresentative.Email": "The field Email must match the regular expression '([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?'."
+    }
+}  
+```  
+</Accordion>
+<Accordion title="400 - Restricted country">
+```json  
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Id": "733c8dbc-2770-4cc4-80d4-63d684cff38c#1750669115",
+    "Date": 1750669116,
+    "errors": {
+        "HeadquartersAddress.Country": "The HeadquartersAddress.Country used is blocked"
+    }
+}
+```
+Read more about [country restrictions](/guides/users/country-restrictions) **&rarr;**
+</Accordion>
+</AccordionGroup>
 
 <ResponseExample>
 ```json REST - Payer

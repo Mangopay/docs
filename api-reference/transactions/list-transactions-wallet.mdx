@@ -4,13 +4,18 @@ api: 'GET /v2.01/{ClientId}/wallets/{WalletId}/transactions'
 ---
 
 import Array_Transactions1Response from '/snippets/p-response/Array_Transactions1Response.mdx';
+
 import WalletId from '/snippets/p-path/WalletId.mdx';
+
+import ScaContext from '/snippets/p-query/ScaContext.mdx';
 import Nature from '/snippets/p-query/Nature.mdx';
 import Type from '/snippets/p-query/Type.mdx';
 import AfterDate1 from '/snippets/p-query/AfterDate1.mdx';
 import BeforeDate1 from '/snippets/p-query/BeforeDate1.mdx';
 import ResultCode from '/snippets/p-query/ResultCode.mdx';
 import Status from '/snippets/p-query/Status.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
   
 import PhpListTransactionsWallet from '/snippets/code/php-list-transactions-wallet.mdx';
 import NodeListTransactionsWallet from '/snippets/code/node-list-transactions-wallet.mdx';
@@ -19,9 +24,25 @@ import ListWalletTransactionsJava from '/snippets/code/list-wallet-transactions-
 import PythonListWalletTransactions from '/snippets/code/python-list-wallet-transactions.mdx';
 import NetListWalletTransactions from '/snippets/code/net-list-wallet-transactions.mdx';
 
-This call returns all the transactions (pay-in, transfers, and payouts) of a given wallet.  
+This call returns the transactions (pay-in, transfers, conversions, and payouts) of a given wallet.
+
+<Note>
+**Note – SCA triggered by this endpoint**
+
+This endpoint requires the user to complete SCA to authenticate the access to their wallet, unless SCA for wallet access was successfully completed in the last 180 days (read more about [SCA on wallet access](/guides/sca/wallets)).
+
+When SCA is required, this endpoint returns a **401 - Unauthorized** response.
+
+To let the user complete the SCA session on the Mangopay-hosted webpage, your platform needs to retrieve the `RedirectUrl` from the `WWW-Authenticate` response header, add an encoded `returnUrl` query parameter, and redirect the user. Read more about how to redirect them in the [SCA session](/guides/sca/session) guide.
+</Note>
+
+### Path parameters  
+
+<WalletId />  
 
 ### Query parameters  
+
+<ScaContext/>
 
 <Status />  
 
@@ -35,18 +56,32 @@ This call returns all the transactions (pay-in, transfers, and payouts) of a giv
 
 <Nature />  
 
-### Path parameters  
-
-<WalletId />  
-
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup>
+<Accordion title="200">
+<Array_Transactions1Response />
+</Accordion>
+</AccordionGroup>
 
-<Array_Transactions1Response /></Accordion></AccordionGroup>  
+<AccordionGroup>
 
-<ResponseExample>  
+<Accordion title="401 - SCA required" defaultOpen>  
 
+When SCA is required for wallet access, this endpoint returns a **401 - Unauthorized** response code with the `redirectUrl` in the `WWW-Authenticate` response header: 
+
+```HTTP 401 response header
+WWW-Authenticate: PendingUserAction redirectUrl=https://sca.sandbox.mangopay.com/?token=0193cf51ed367151a0cb1c59def21e13
+```
+
+In this case, your platform needs to retrieve the URL value, encode and add a `returnUrl` query parameter, and redirect the user.
+
+Read more about [SCA redirection](/guides/sca/) and [SCA on wallet access](/guides/sca/wallets) **&rarr;**
+</Accordion>
+
+</AccordionGroup>
+
+<ResponseExample>
 ```json 200  
 [
     {
@@ -106,11 +141,14 @@ This call returns all the transactions (pay-in, transfers, and payouts) of a giv
         "DepositId": null
     }
 ]
- ```  
-
+```
+```json 401 - SCA required
+// No response body, redirectUrl returned in WWW-Authenticate response header
+```
 </ResponseExample>  
 
 <RequestExample>  
+    <RestNoBody />
     <PhpListTransactionsWallet />
     <NodeListTransactionsWallet />
     <RubyListTransactionsWallet />

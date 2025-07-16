@@ -7,17 +7,35 @@ description: 'Obtain an SCA redirection link to enroll an Owner user'
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
 
 import RestPostNoBody from '/snippets/code/rest-post-no-body.mdx';
+import PhpEnrollUser from '/snippets/code/php-enroll-user.mdx';
 
 import UserId from '/snippets/p-path/UserId.mdx';
 
 If `UserCategory` is `OWNER`, this endpoint allows you to enroll a user in SCA. Your platform needs to retrieve the returned `PendingUserAction.RedirectUrl`, add an encoded `returnUrl` query parameter for them to be returned to after the SCA session, and redirect the user.
 
-You can use this endpoint to:
-- Enroll Owners created without SCA enrollment
-- Retry an unsuccessful enrollment
-- Obtain a new session `RedirectUrl` if a previous one expired (after 10 minutes)
+[Read more about SCA redirection](/guides/sca/session) **&rarr;**
 
-[Read more about SCA redirection](/guides/users/sca/session) **&rarr;**
+You can use this endpoint to obtain a new session `RedirectUrl`. This is useful to: 
+- Enroll Owners created without SCA enrollment
+- Retry enrollment if a previous session was unsuccessful or expired (after 10 minutes)
+
+Calling this endpoint creates a new valid session that can be used, even if there is one already in progress for the user. Calling this endpoint also doesn't change the user's `UserStatus`, even if the session expires or is unsuccessful.
+
+<Note>
+**Note – This endpoint doesn't change UserStatus**
+
+Calling this endpoint does **not** change the user's status to `PENDING_USER_ACTION` (it stays as `ACTIVE`) and no `USER_ACCOUNT_VALIDATION_ASKED` webhook notification is sent.
+
+This ensures that legacy users do not become blocked if they are unable to complete SCA successfully.
+</Note>
+
+<Warning>
+**Caution – Legal representative's email required**
+
+The `LegalRepresentative.Email` address is required for SCA to build a [behavioral biometrics profile](/guides/sca/factors#email-confirmation-behavioral-biometrics) and as a backup communication channel.
+
+Prior to SCA, it was possible to create a Legal `OWNER` without the `LegalRepresentativeEmail`, so this data may be missing. Calling this endpoint without this data will return an error.
+</Warning>
 
 ### Path parameters
 
@@ -65,4 +83,5 @@ To enroll a user whose `UserCategory` is `PAYER` in SCA, use the endpoints [PUT 
 
 <RequestExample>  
 <RestPostNoBody/>
+<PhpEnrollUser />
 </RequestExample>

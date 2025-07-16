@@ -11,12 +11,15 @@ description: '<small>&#8249; [All error codes](/errors/codes##bank-wire)</small>
         </tr>
         <tr>
             <th class="header"><strong>Description</strong></th>
-            <td class="table-content">The bank wire pay-in has expired.</td>
+            <td class="table-content">The period allowed for the user to complete the payment has ended.</td>
         </tr>
         <tr>
             <th class="header"><strong>Categories</strong></th>
             <td class="table-content">  
 <div class="label">Bank wire pay-in</div>  
+<div class="label">Web card pay-in</div>  
+<div class="label">Klarna pay-in</div>  
+<div class="label">Pay by bank pay-in</div>  
 <div class="label">Refused transaction</div>
 </td>
         </tr>
@@ -25,68 +28,16 @@ description: '<small>&#8249; [All error codes](/errors/codes##bank-wire)</small>
 
 #### Causes  
 
-This error may occur when Mangopay does not receive the funds within a month after the initial bank wire pay-in request.  
+This error occurs when the user does not complete the payment within the allowed time period.
 
-#### What to do  
+The time period before this timeout error occurs is different between payment methods:
+- On [card web pay-ins](/api-reference/web-card-payins/create-web-card-payin), the user has **within 15 minutes** to complete the payment on the hosted payment page.
+- On [Klarna](/api-reference/klarna/create-klarna-payin), the user has **3 hours** to complete the payment on the Klarna page.
+- On [bank wire pay-ins](/api-reference/bank-wire-payins/create-bank-wire-payin), the user must initiate the wire transfer with their bank and the funds must be received by Mangopay within **1 month**.
+- On [pay by bank](/api-reference/pay-by-bank/create-pay-by-bank-payin), the user has **9 minutes** to complete the payment with their bank on the hosted page.
 
-If the funds were sent, please contact the Mangopay Support team.  
+#### What to do
 
-If the funds weren’t sent, the end user can initiate a new bank wire payment (i.e., using a new pay-in object).  
+If the payment expires, give the user the option to retry the payment on your platform.
 
-#### Example  
-
-The example below shows the response from the View a PayIn endpoint for a FAILED Direct Bank Wire PayIn which has expired.  
-```json API Response
-{
-    "Id": "157582562",
-    "Tag": null,
-    "CreationDate": 1670250544,
-    "ResultCode": "101109",
-    "ResultMessage": "The payment period has expired",
-    "AuthorId": "156671912",
-    "CreditedUserId": "156671912",
-    "DebitedFunds": {
-        "Currency": "XXX",
-        "Amount": 0
-    },
-    "CreditedFunds": {
-        "Currency": "XXX",
-        "Amount": 0
-    },
-    "Fees": {
-        "Currency": "XXX",
-        "Amount": 0
-    },
-    "Status": "FAILED",
-    "ExecutionDate": null,
-    "Type": "PAYIN",
-    "Nature": "REGULAR",
-    "CreditedWalletId": "156683554",
-    "DebitedWalletId": null,
-    "PaymentType": "BANK_WIRE",
-    "ExecutionType": "DIRECT",
-    "DeclaredDebitedFunds": {
-        "Currency": "EUR",
-        "Amount": 2000
-    },
-    "DeclaredFees": {
-        "Currency": "EUR",
-        "Amount": 0
-    },
-    "WireReference": "MG690u3z5p",
-    "BankAccount": {
-        "OwnerAddress": {
-            "AddressLine1": "2 Avenue Amélie",
-            "AddressLine2": null,
-            "City": "Luxembourg",
-            "Region": null,
-            "PostalCode": "L-1125",
-            "Country": "LU"
-        },
-        "Type": "IBAN",
-        "OwnerName": "MANGOPAY SA",
-        "IBAN": "FR7630056009271234567890182",
-        "BIC": "CCFRFRPPXXX"
-    }
-}
-```
+In the case of bank wire pay-ins, if the funds were sent by the user and this error occurs, then please contact the Mangopay Support team.

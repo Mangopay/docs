@@ -1,23 +1,38 @@
 ---
 title: List Recipients for a User
-api: POST /v2.01/{ClientId}/users/{UserId}/recipients
+api: GET /v2.01/{ClientId}/users/{UserId}/recipients
 description: List recipients created for a UserId
 ---
 
+import RecipientScope_Recipient_Response from '/snippets/p-response/RecipientScope_Recipient_Response.mdx';
+import UserId_Recipient_Response from '/snippets/p-response/UserId_Recipient_Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
 import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
 import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
 import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
 import Currency_RecipientResponse from '/snippets/p-response/Currency_RecipientResponse.mdx';
+import Country_RecipientResponse from '/snippets/p-response/Country_RecipientResponse.mdx';
 import Status_RecipientResponse from '/snippets/p-response/Status_RecipientResponse.mdx';
 
 import UserId from '/snippets/p-path/UserId.mdx';
 
+import RecipientScope from '/snippets/p-query/RecipientScope.mdx';
+
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+<Note>
+**Note – Endpoint returns filtered list by default**
+
+By default, this endpoint returns only recipients with the `RecipientScope` value of `PAYOUT`. To retrieve `PAYIN` recipients, you need to specify the value in the `RecipientScope` query parameter.
+</Note>
 
 ### Path parameters
 
 <UserId/>
+
+### Query parameters
+
+<RecipientScope/>
 
 ### Responses
 
@@ -31,7 +46,10 @@ The list of recipients created for the user.
 <PayoutMethodType_RecipientResponse/>
 <RecipientType_RecipientResponse/>
 <Currency_RecipientResponse/>
+<Country_RecipientResponse/>
+<UserId_Recipient_Response/>
 <Status_RecipientResponse/>
+<RecipientScope_Recipient_Response/>
 </Expandable>
 </ResponseField>
 </Accordion>
@@ -39,34 +57,66 @@ The list of recipients created for the user.
 
 <ResponseExample>
 ```json 200
-{
-    "Recipients": 
-        [
-            {
-                "Id": "rec_01JKWYH8DV0Q0KAGRH4KF7AQZG",
-                "DisplayName": "Alex Smith's EUR IBAN account",
-                "PayoutMethodType": "InternationalBankTransfer",
-                "RecipientType": "Individual",
-                "Currency": "EUR",
-                "Status": "ACTIVE"
-            },
-            {
-                "Id": "rec_01JKZS1EE13SMA68BT74TMP9JF",
-                "DisplayName": "Alex Smith's USD local account",
-                "PayoutMethodType": "InternationalBankTransfer",
-                "RecipientType": "Individual",
-                "Currency": "USD",
-                "Status": "ACTIVE"
-            },
-            {
-                "Id": "rec_01JKZT06JNG1T3ZNRA0JAB8DJE",
-                "DisplayName": "Alex Smith's GBP local account",
-                "PayoutMethodType": "LocalBankTransfer",
-                "RecipientType": "Individual",
-                "Currency": "GBP",
-                "Status": "PENDING"
-            }
-        ]
-}
+[
+    {
+        "Id": "rec_01JV700CD7E5GP9SFZHGX0RV2E",
+        "DisplayName": "Alex Smith USD account",
+        "PayoutMethodType": "LocalBankTransfer",
+        "RecipientType": "Individual",
+        "Currency": "USD",
+        "Country": "US",
+        "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
+        "Status": "ACTIVE",
+        "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JV6ZZG6W0RKG6ZGA3MEY60BZ",
+        "DisplayName": "Alex Smith USD account",
+        "PayoutMethodType": "LocalBankTransfer",
+        "RecipientType": "Individual",
+        "Currency": "USD",
+        "Country": "US",
+        "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
+        "Status": "CANCELED",
+        "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JV70P7J10PRZP0JQQ9CQZFN8",
+        "DisplayName": "Alex Smith EUR account",
+        "PayoutMethodType": "InternationalBankTransfer",
+        "RecipientType": "Business",
+        "Currency": "EUR",
+        "Country": "FR",
+        "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
+        "Status": "ACTIVE",
+        "RecipientScope": "PAYOUT"
+    }
+]
 ```
+{/* ```json Legacy active bank account with new recipient
+[
+    {
+        "Id": "bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G",
+        "DisplayName": null,
+        "PayoutMethodType": "LocalBankTransfer",
+        "RecipientType": "Individual",
+        "Currency": "EUR",
+        "Country": "FR",
+        "UserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+        "Status": "ACTIVE",
+        "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JVS3VF1AQS2G57MAR4BGA0VW",
+        "DisplayName": "Alex Smith CAD account",
+        "PayoutMethodType": "LocalBankTransfer",
+        "RecipientType": "Individual",
+        "Currency": "CAD",
+        "Country": "CA",
+        "UserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
+        "Status": "PENDING",
+        "RecipientScope": "PAYOUT"
+    }
+]
+``` */}
 </ResponseExample>

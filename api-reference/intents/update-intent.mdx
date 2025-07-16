@@ -1,0 +1,183 @@
+---
+title: Update an Intent
+api: PUT /v3.0/{ClientId}/payins/intents/{IntentId}
+description: Update details of a declared transaction authorization processed by a third-party PSP
+---
+
+import Amount_Intent_Request from '/snippets/p-body/Amount_Intent_Request.mdx';
+// import Amount_Intent_Request_Optional from '/snippets/p-body/Amount_Intent_Request_Optional.mdx'; delete if not used
+import Currency_Intent_Request_Optional from '/snippets/p-body/Currency_Intent_Request_Optional.mdx';
+import PlatformFeesAmount_Intent_Request from '/snippets/p-body/PlatformFeesAmount_Intent_Request.mdx';
+import ExternalData_Intent_Request_Optional from '/snippets/p-body/ExternalData_Intent_Request_Optional.mdx';
+import Buyer_Intent_Request from '/snippets/p-body/Buyer_Intent_Request.mdx';
+import LineItems_Intent_Update_Request from '/snippets/p-body/LineItems_Intent_Update_Request.mdx';
+
+import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
+import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
+import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
+import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
+import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
+import NextActions_Intent from '/snippets/p-response/NextActions_Intent.mdx';
+import ExternalData_Intent from '/snippets/p-response/ExternalData_Intent.mdx';
+import Buyer_Intent from '/snippets/p-response/Buyer_Intent.mdx';
+import LineItems_Intent from '/snippets/p-response/LineItems_Intent.mdx';
+import CreationDate_Intent from '/snippets/p-response/CreationDate_Intent.mdx';
+import ExecutionDate_Intent from '/snippets/p-response/ExecutionDate_Intent.mdx';
+
+import IntentId_Path from '/snippets/p-path/IntentId_Path.mdx';
+
+You can use this endpoint to update the details of an intent, provided its `Status` is `AUTHORIZED`.
+
+### Path parameters
+
+<IntentId_Path/>
+
+### Body parameters
+
+<Amount_Intent_Request/>
+<Currency_Intent_Request_Optional/>
+<PlatformFeesAmount_Intent_Request/>
+<ExternalData_Intent_Request_Optional/>
+<Buyer_Intent_Request/>
+<LineItems_Intent_Update_Request/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - Response parameters">
+<Id_Intent/>
+<Amount_Intent/>
+<AvailableAmountToSplit_Intent/>
+<Currency_Intent/>
+<PlatformFeesAmount_Intent/>
+<Status_Intent/>
+<NextActions_Intent/>
+<ExternalData_Intent/>
+<Buyer_Intent/>
+<LineItems_Intent/>
+<CreationDate_Intent/>
+<ExecutionDate_Intent/>
+</Accordion>
+</AccordionGroup>
+
+<AccordionGroup>
+<Accordion title="400 - Intent Amount must equal sum of line items' amounts">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "21d7dbc4-beea-4ad2-9f2a-471d683c25b5",
+    "Date": 1752053748,
+    "Type": "param_error",
+    "Errors": {
+        "Amount": "The total intent amount does not match the sum of the declared LineItem amounts"
+    }
+}
+```
+</Accordion>
+{/* <Accordion title="400 - ">
+```json
+
+```
+</Accordion> */}
+</AccordionGroup>
+
+<ResponseExample>
+```json
+{
+    "Id": "int_0197f451-5b16-7f67-b225-5ab47521e03b",
+    "Amount": 22000,
+    "AvailableAmountToSplit": 0,
+    "Currency": "EUR",
+    "PlatformFeesAmount": 0,
+    "Status": "AUTHORIZED",
+    "NextActions": "CAPTURED, PARTIALLY_CAPTURED, CANCELED",
+    "ExternalData": {
+        "ExternalProcessingDate": "01-07-2025",
+        "ExternalProviderReference": "auth-stripe-da2702e5-bf88-46dd-b6ee-06b0f3e8a060",
+        "ExternalMerchantReference": "order-3ec60335-765f-4e63-85a9-84f2d63490c7",
+        "ExternalProviderName": "Stripe",
+        "ExternalProviderPaymentMethod": "MASTERCARD"
+    },
+    "Buyer": {
+        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+    },
+    "LineItems": [
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZT2D6QQMS45JDR213A3FWF8",
+                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427e",
+            "Sku": "example-item-456",
+            "Name": "New item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 2000,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "775 Cathy Road",
+                "City": "Paris",
+                "Region": "Île de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 10000
+        },
+        {
+            "Seller": {
+                "AuthorId": "user_m_01JZSR7RTWE6A5A7NWVSMV28AF",
+                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "FeesAmount": 0
+            },
+            "Id": "int_li_0197f451-5b22-79f1-877b-1576f79a0aa9",
+            "Sku": "example-item-123",
+            "Name": "Example item name",
+            "Description": "Example item description",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "TaxAmount": 0,
+            "DiscountAmount": 0,
+            "Category": "Example category",
+            "ShippingAddress": {
+                "AddressLine1": "312 Jordan Prairie",
+                "City": "Paris",
+                "Region": "Ile de France",
+                "PostalCode": "75001",
+                "Country": "FR"
+            },
+            "CapturedAmount": 0,
+            "RefundedAmount": 0,
+            "DisputedAmount": 0,
+            "SplitAmount": 0,
+            "TotalLineItemAmount": 12000
+        }
+    ],
+    "CreationDate": 1752150661,
+    "ExecutionDate": 1752152925
+}
+```
+</ResponseExample>
+<RequestExample>
+```json Remove discount
+{
+    "Amount": 22000,
+    "LineItems": [
+        {
+            "Id": "int_li_0197eebf-21fd-73c7-85ef-8193b4cf427e",
+            "Sku": "example-item-123",
+            "Quantity": 2,
+            "UnitAmount": 6000,
+            "DiscountAmount": 0
+        }
+    ]
+}
+```
+</RequestExample>

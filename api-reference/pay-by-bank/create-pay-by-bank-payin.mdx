@@ -46,6 +46,14 @@ import BankName_PayByBank from '/snippets/p-body/BankName_PayByBank.mdx';
 import Scheme_PayByBank from '/snippets/p-body/Scheme_PayByBank.mdx';
 import Culture_PayByBank from '/snippets/p-body/Culture_PayByBank.mdx';
 
+Related: [test data](/testing/payment-methods#pay-by-bank), [guide](/guides/payment-methods/banking/pay-by-bank)
+
+<Note>
+**Note – Session timeout 9 minutes**
+
+The Pay by Bank session lasts for 9 minutes, at which point the pay-in fails automatically if no action has been taken by the user.
+</Note> 
+
 ### Body parameters
 
 <Tag />
@@ -66,7 +74,7 @@ import Culture_PayByBank from '/snippets/p-body/Culture_PayByBank.mdx';
 ### Responses 
 
 <AccordionGroup>
-<Accordion title="200">
+<Accordion title="200 - Body parameters">
 
 <IdResponse />
 <TagResponse />
@@ -97,6 +105,38 @@ import Culture_PayByBank from '/snippets/p-body/Culture_PayByBank.mdx';
 <Scheme_PayByBank_Response />
 <ProcessingStatusResponse />
 
+</Accordion>
+
+</AccordionGroup>
+
+Functional errors (`ResultCode`) are possible on a 200 response. [Read more](api-reference/pay-by-bank/pay-by-bank-payin-object) **&rarr;**
+
+<AccordionGroup>
+<Accordion title="400 - IBAN not valid">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "e5845761-cf31-4bf6-bbca-dee3a969a816",
+    "Date": 1743157036,
+    "Type": "param_error",
+    "Errors": {
+        "IBAN": "The value DE123456789 is not valid"
+    }
+}
+```
+</Accordion>
+<Accordion title="400 - BIC not valid">
+```json
+{
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Id": "7119ceaa-24b9-4330-a715-a6091f814f40",
+    "Date": 1743156913,
+    "Type": "param_error",
+    "Errors": {
+        "Bic": "The field must match the regular expression '[A-Z]{6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3})?'."
+    }
+}
+```
 </Accordion>
 </AccordionGroup>
 

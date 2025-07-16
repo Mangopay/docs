@@ -1,0 +1,80 @@
+---
+title: View a Settlement
+api: GET /v3.0/{ClientId}/payins/intents/settlements/{settlementId}
+description: Retrieve the settlement data generated from file upload
+---
+
+import SettlementId_Settlement from '/snippets/p-response/SettlementId_Settlement.mdx';
+import Status_Settlement from '/snippets/p-response/Status_Settlement.mdx';
+import CreationDate_Settlement from '/snippets/p-response/CreationDate_Settlement.mdx';
+import DeclaredIntentAmount_Settlement from '/snippets/p-response/DeclaredIntentAmount_Settlement.mdx';
+import ExternalProcessorFeesAmount_Settlement from '/snippets/p-response/ExternalProcessorFeesAmount_Settlement.mdx';
+import ActualSettlementAmount_Settlement from '/snippets/p-response/ActualSettlementAmount_Settlement.mdx';
+import FundsMissingAmount_Settlement from '/snippets/p-response/FundsMissingAmount_Settlement.mdx';
+
+import SettlementId_SettlementId_Path from '/snippets/p-path/SettlementId_SettlementId_Path.mdx';
+
+import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+{/* Use this endpoint to send another Mangopay-format CSV file to modify the data in an existing Settlement. */}
+
+### Path parameters
+
+<SettlementId_SettlementId_Path/>
+
+### Responses
+
+<AccordionGroup>
+<Accordion title="200 - OK" defaultOpen>
+
+<SettlementId_Settlement/>
+<Status_Settlement/>
+<CreationDate_Settlement/>
+<DeclaredIntentAmount_Settlement/>
+<ExternalProcessorFeesAmount_Settlement/>
+<ActualSettlementAmount_Settlement/>
+<FundsMissingAmount_Settlement/>
+
+</Accordion>
+</AccordionGroup>
+
+{/* <AccordionGroup>
+<Accordion title="400 - ">
+```json
+
+```
+</Accordion>
+</AccordionGroup> */}
+
+<ResponseExample>
+```json RECONCILED
+{
+    "SettlementId": "int_stlmnt_01975582-2b19-7699-aaf3-a8167936254f",
+    "Status": "RECONCILED",
+    "CreationDate": 1749486283,
+    "SettlementDate": "2025-06-09",
+    "ExternalProviderName": "Stripe",
+    "DeclaredIntentAmount": 10500,
+    "ExternalProcessorFeesAmount": 500,
+    "ActualSettlementAmount": 10000,
+    "FundsMissingAmount": 0
+}
+```
+```json PARTIALLY_SETTLED
+{
+    "SettlementId": "int_stlmnt_01980d5e-dea1-7828-b7ba-bf1772d6abf2",
+    "Status": "PARTIALLY_SETTLED",
+    "CreationDate": 1752570978,
+    "SettlementDate": 1752537600,
+    "ExternalProviderName": "Stripe",
+    "DeclaredIntentAmount": 20000,
+    "ExternalProcessorFeesAmount": 2,
+    "ActualSettlementAmount": 19998,
+    "FundsMissingAmount": 0
+}
+```
+</ResponseExample>
+
+<RequestExample>
+<RestGetNoBody/>
+</RequestExample>
