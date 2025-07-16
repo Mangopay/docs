@@ -66,22 +66,25 @@ Pay by Bank relies on open banking, which allows third-party providers to access
 
 The Pay by Bank payment method allows you to redirect the user to their bank to initiate and authenticate the bank wire.
 
-<Steps titleSize="h3">
+<Steps titleSize="h4">
 <Step title="User chooses payment method">
-On your app or website, the user selects Pay by Bank as the payment method. 
+On your app or website, the user selects Pay by Bank as the payment method.
+</Step>
+<Step title="You present available banks">
+Optionally, you can present the user with a list of banks for them to select theirs. If you provide the `BankName` in your API request, the user doesn't have to choose it on the hosted page on redirection.
 
-Optionally you can present the user with the list of banks for their `Country`. If you provide the `BankName` in your API request, the user doesn't have to choose it on the hosted page.
+You can also invite the user to select the `Scheme` they wish to use, otherwise the instant one is used by default (if supported by the bank).
 
-You can also invite the user to select the `Scheme` they wish to use, otherwise the instant one is used by default (if supported by the bank). See below for more about [banks and schemes](#banks-and-schemes).
+To retrieve the supported banks, call the [GET View supported banks for Pay by Bank](/api-reference/pay-by-bank/view-supported-banks-pay-by-bank) endpoint, filtering on the user's country. In the response, you can display the `Name` to the user in the list, while the `BankName` is the value to send in your payment request. For each bank, the list of `Scheme` values supported is also returned.
 
-In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user's `IBAN` and `BIC` up front. Otherwise, these details enable the account to be preselected.
+In Germany (`DE`), banks impose an additional authentication step that can be avoided if you also obtain and provide the user's `IBAN` and `BIC` up front.
 </Step>
 <Step title="Payment initiation">
 You initiate the payment request by calling [POST Create a Pay by Bank PayIn](/api-reference/pay-by-bank/create-pay-by-bank-payin), specifying the `ReturnURL` to which the user will be returned after payment (whatever the outcome).
 
 If the `ReturnURL` redirects to your app, rather than a website, you need to also set the `PaymentFlow` to `APP`.
 
-You should also provide the `BankName`, `IBAN`, `BIC`, and `Scheme` if you obtained them from the user.
+You should also provide the `BankName`, `Scheme` and `IBAN` and `BIC` if you obtained them from the user.
 
 <Warning>
 **Caution – Pay-in currency must match account currency**
@@ -138,6 +141,8 @@ Once redirected on the `RedirectUrl` to the Pay by Bank hosted experience, the u
 On the hosted Pay by Bank page, however, they are not able to select the scheme used for the payment. 
 
 You can send the `Scheme` in your API request, and we recommend that you present this choice to the user beforehand.
+
+To retrieve the banks supported by Pay by Bank, you can use the [GET View supported banks for Pay by Bank](/api-reference/pay-by-bank/view-supported-banks-pay-by-bank) endpoint.
 
 <Note>
 **Note – Ensure clear communication with the user**
