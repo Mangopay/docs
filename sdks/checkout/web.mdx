@@ -412,7 +412,7 @@ paymentMethods: [
 
 ## Configuring card payments  
 
-To configure the card payment method, specify `card` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
+To configure the card payment method, specify `card` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.  
 
 ### options
 
@@ -449,24 +449,23 @@ To configure the card payment method, specify `card` as the `type` of the `payme
         <tr>
             <td class="table-content">`options.enableSaveCard`</td>
             <td class="table-content">Boolean</td>
-            <td class="table-content">        If set to `true`, a "Save Card" checkbox will appear in the UI. When
-        checked, `SaveCard: true` will be returned in the `CreatePaymentData`
-        object, and you can forward this flag to your backend for further
-        handling.</td>
+            <td class="table-content">
+                If set to `true`, a ***Save Card*** checkbox will appear in the UI. When checked, `SaveCard: true` will be returned in the `CreatePaymentData` object, and you can forward this flag to your backend for further handling (read more about [managing saved cards](#managing-saved-cards)).
+        </td>
         </tr>
         <tr>
             <td class="table-content">`options.savedCards`</td>
             <td class="table-content">Array of `SavedCard`</td>
-            <td class="table-content">A list of cards previously saved by the user. If provided, a button will
-        appear within the card number input field that opens a dropdown of saved
-        cards to select from.</td>
+            <td class="table-content">
+                A list of cards previously saved by the user. If provided, a button will appear within the card number input field that opens a dropdown of saved cards to select from.
+            </td>
         </tr>
         <tr>
             <td class="table-content">`options.onDeactivateSavedCard`</td>
             <td class="table-content">Function</td>
-            <td class="table-content">A callback that is triggered when the user chooses to deactivate a saved
-        card. Receives an object containing `{ cardId: string }`. You can use
-        this ID to inform your backend which card should be deactivated.</td>
+            <td class="table-content">
+                A callback that is triggered when the user chooses to deactivate a saved card. Receives an object containing `{ cardId: string }`. You can use this ID to inform your backend which card should be deactivated.
+            </td>
         </tr>
     </tbody>
 </table>
@@ -541,13 +540,13 @@ const options = {
                 // 1. Call your server to remove card and deactivate in Mangopay API
             },
             onCreateCardRegistration: function (cardType: 'CB_VISA_MASTERCARD' | 'AMEX' | 'MAESTRO') {
-                // 1. implement server-side call to create a card registration.
-                // 2. return the card registration.
+                // 1. Implement server-side call to create a card registration.
+                // 2. Return the card registration.
             },
             onCreatePayment: function (event: CreatePaymentData) {
-                // 1. implement server-side call to request a card transaction.
-                // 2. return the card transaction object.
-                // 3. the SDK handles 3DS redirect for you.
+                // 1. Implement server-side call to request a card transaction.
+                // 2. Return the card transaction object.
+                // 3. The SDK handles 3DS redirect for you.
             }
         }
     ]
@@ -558,11 +557,11 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 ### Card tokenization  
 
 In the `options` for the card payment method, create a function to handle creation of Card Registration event handler in the `paymentMethods` object:  
-- Your `onCreateCardRegistration` function calls your server, and passes it the card brand of the user.  
+- Your `onCreateCardRegistration` function calls your server, and passes it the card brand of the user.  
 - Your server makes a request to [Create a Card Registration](/api-reference/card-registrations/create-card-registration).  
 - In response, your server receives a Card Registration object.  
 - In your `onCreateCardRegistration` function, return the unmodified Card Registration object to the SDK.  
-- The SDK [tokenizes the card](/api-reference/card-registrations/tokenize-card) and [updates the Card Registration](/api-reference/card-registrations/update-card-registration) object to create the `CardId` which is used for payment.  
+- The SDK [tokenizes the card](/api-reference/card-registrations/tokenize-card) and [updates the Card Registration](/api-reference/card-registrations/update-card-registration) object to create the `CardId` which is used for payment.  
 
 ```typescript TypeScript
 // Vanilla JS
@@ -629,48 +628,71 @@ In your requests:
 
 The Checkout SDK can allow the user to save their card for a future payment.
 
-1. **Enable saving cards**
-
+<Steps>
+<Step title="Enable saving cards">
 To enable saving cards, set `enableSaveCard` to `true` to present a ***Save card*** checkbox on the user interface. 
-
-2. **Deactivate if card not saved**
-
-If the user doesn’t check the box, then the `CreatePaymentData` object returns `SaveCard : false`. In this case, you must systematically call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API.
-
-3. **If saved, store tokenized card in your system**
-
+</Step>
+<Step title="Deactivate if card not saved">
+If the user doesn’t check the box, then the `CreatePaymentData` object returns `SaveCard : false`. In this case, you must systematically call [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card) to deactivate it in the Mangopay API.
+</Step>
+<Step title="If saved, store tokenized card in your system">
 If the user checks the box, the `SaveCard` flag is set to `true` and passed to your `onCreatePayment` handler. You can then store the card object in your system.
-
-4. **Re-use saved cards**
-
-To present the user’s saved cards in the next payment session, send an array of card objects in the `savedCards` array in the payment method configuration. 
+</Step>
+<Step title="Re-use saved cards">
+To present the user's saved cards in the next payment session, send an array of card objects in the `savedCards` array in the payment method configuration. 
 
 If sent, then a dropdown appears in the interface in the card number input field. When a saved card is selected, the SDK uses it for the payment process.
-
-5. **Deactivate card if user removes**
+</Step>
+<Step title="Deactivate card if user removes it">
 
 In the dropdown, there is an option for the user to remove a saved card. In this case, the `onDeactivateSavedCard` is triggered and you must: 
 
 - Remove the card in your system
-- Call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API
+- Call [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card) to deactivate it in the Mangopay API
 
-<aside>
-  <img src="/icons/circle-alternate_gray.svg" alt="/icons/circle-alternate_gray.svg" width="40px" />
+<Warning>
+**Caution - Deactivate card systematically unless user saves it**
 
-  **Warning - Deactivate card systematically unless user saves it**
+Under no circumstances should card information be kept without the end user's approval.
 
-  Under no circumstances should card information be kept without the end user’s approval.
+If `CreatePaymentData` returns `SaveCard : false`, indicating the user doesn't wish to save it, then you must call [PUT Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card) to deactivate it in the Mangopay API.
 
-  If `CreatePaymentData` returns `SaveCard : false`, indicating the user doesn’t wish to save it, then you must call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API.
+The same is true if the `onDeactivateSavedCard` is triggered, indicating that the user wishes to remove the card. 
+</Warning>
+</Step>
+</Steps>
 
-  The same is true if the `onDeactivateSavedCard` is triggered, indicating that the user wishes to remove the card. 
-</aside>
+### Diagram - Saved cards
 
-Diagram
+The following diagram shows the flow of managing saved cards: 
 
+<div>
+  <iframe 
+    width="100%" 
+    height="700" 
+    src="https://cdn.swimlanes.io/dist/embeded.html#fZBNbsIwEIX3OcVbAiWwRwWpgkpFbdWIwAGGZCgpiY3scVB3vUNv2JPUDj8iEu0qVubNe9+8ZSElj5BSzTkyMrnFz9c3nvQBheCgzc5G0cqyuY/j6ZaznXaCdPY8QmLYshLs6bMK3402VaOM40lb+aiETWOOnIWK0oKUTwsiaAOnjs9erxc4GqV/3zZL3boqLqnR9RDxBElJEkh8au3nI2g1NUzCyQmzc+bNSQh3zeXTgCbG8XBDpeVudHZpOy4401542UBNpeOW+JXUu/YJeEjmvqK3dIljPHz+XGEYaiMnW3QWLM6o1eJlnJ1uGFSn7UGmq2507YW4RRL++Pr3Wln+A3a+uYCOw2l92HO30OsPzuQf8OvlppI+ktUSM6ZMijqcE0a/#fZB0a"
+  >
+  </iframe>
+</div>
 
+{/* 
+https://swimlanes.io/u/SjGHpmyXGm
 
-Saved card example
+Title: Saved cards – How it works
+
+User<--Checkout SDK: Present payment form
+User-->Checkout SDK: Enter card details and check or uncheck ***Save card***
+User-->Checkout SDK: Submit payment
+Checkout SDK -> Platform: Event: onCreatePayment (payment data + SaveCard true/false)
+Platform -> Platform: Record SaveCard  value
+Platform -> Mangopay API: POST Create PayIn / Preauth (ReturnURL=checkout.mangopay.com)
+Mangopay API --> Platform: API response
+Platform -> Platform: If SaveCard=true, save card object
+Platform -> Mangopay API: If SaveCard=false, PUT Deactivate Card
+
+*/}
+
+#### Saved card example
 
 ```typescript TypeScript
 const options = {
@@ -734,7 +756,7 @@ Offering Apple Pay requires additional setup by the platform, including certific
 [Apple Pay on the Web](https://developer.apple.com/documentation/apple_pay_on_the_web/), using the JavaScript Checkout SDK, is only available on Mac and iOS devices. Apple Pay on the Web also requires additional certification.  
 </Warning>  
 
-To configure the Apple Pay payment method, specify `apple_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.   
+To configure the Apple Pay payment method, specify `apple_pay` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.   
 
 ### Apple Pay configuration options  
 
@@ -928,7 +950,7 @@ const mangopaySdk = await CheckoutSdk.loadCheckoutSdk(elementOrSelector, options
 <Note>  
 **Note - Google Pay setup required** 
   
-Offering Google Pay requires additional setup by the platform. For more information, see the [How to process a Google Pay payment](/guides/payment-methods/google-pay/how-to) tutorial.   
+Offering Google Pay requires additional setup by the platform. For more information, see the [How to process a Google Pay payment](/guides/payment-methods/google-pay/how-to) tutorial.   
 </Note>  
 
 <Warning>
@@ -1154,7 +1176,7 @@ Offering PayPal requires approval from PayPal and activation. For more informati
 
 ### PayPal configuration options
 
-To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.
+To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` object. For the `options`, use the following configuration parameters.
 
 <table>
     <thead>
@@ -1177,13 +1199,11 @@ To configure PayPal, specify `paypal` as the `type` of the `paymentMethods` obje
         </tr>
         <tr>
             <td class="table-content">`options.merchantId`</td>
-            <td class="table-content">string
-                **REQUIRED**</td>
+            <td class="table-content">string **REQUIRED**</td>
             <td class="table-content">
-            A unique identifier for the merchant account.  
-            <br />
-            This value is required to associate the payment with your merchant account when processing PayPal pay-ins.  
-            You can find your `merchantId` in your Business Account Dashboard.
+            A unique identifier for your merchant account, required to associate the payment with it when processing PayPal pay-ins. 
+            
+            You can find your `merchantId` in your PayPal Business Account Dashboard.
             </td>
         </tr>
     </tbody>
@@ -1230,7 +1250,7 @@ mangopaySdk.on('paymentComplete', (event: CustomEvent<PaymentCompleteEventDetail
 
 ### Requesting PayPal pay-in  
 
-To request the payment, use the [Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin) endpoint. Ensure that the `ReturnURL` parameter is set to `https://checkout.mangopay.com`.  
+To request the payment, use the [Create a PayPal PayIn](/api-reference/paypal/create-paypal-payin) endpoint. Ensure that the `ReturnURL` parameter is set to `https://checkout.mangopay.com`.  
 
 ## Obtaining browser info for a pay-in
 
