@@ -1,0 +1,77 @@
+---
+title: 'API - July 16, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+## <span class="pill pill-green">Added</span>
+
+### Mangopay Echo: Intents and Settlements to support third-party PSP transactions
+
+Platforms using third-party PSPs for pay-in acquiring can now integrate Mangopay Echo. 
+
+Mangopay Echo allows platforms to declare transactions processed by other PSPs as Intents. The settlements received from their partner PSP can be declared to Mangopay by uploading settlement files to create Settlements. 
+
+Once these Intents and Settlements are reconciled, and the funds arrive on the platform's Escrow Wallet, then transfers to the sellers wallets can be executed as Splits. 
+
+<CardGroup cols={1}>
+<Card title="Mangopay Echo" href="/guides/echo">
+Leverage Mangopay's e-wallet system with third-party acquirers
+</Card>
+</CardGroup>
+
+The following endpoints have been added: 
+
+#### Intent endpoints 
+
+<CardGroup cols={1}>
+<Card title="POST Create an Intent" href="/api-reference/intents/create-intent">
+Declare a transaction authorization processed by a third-party PSP
+</Card>
+{/* <Card title="PUT Update an Intent" href="/api-reference/intents/update-intent">
+Update details of a declared transaction authorization processed by a third-party PSP
+</Card> */}
+<Card title="GET View an Intent" href="/api-reference/intents/view-intent">
+Retrieve the declaration of a transaction processed by a third-party PSP
+</Card>
+<Card title="POST Create a Capture of an Intent" href="/api-reference/intents/create-intent-capture">
+Declare the full or partial capture of an authorization processed by a third-party PSP
+</Card>
+{/* <Card title="PUT Create a Cancel of an Intent" href="/api-reference/intents/create-intent-cancel">
+Declare the full or partial cancellation of a payment authorization processed by a third-party PSP
+</Card> */}
+</CardGroup>
+
+<CardGroup cols={1}>
+<Card title="POST Create a Split of an Intent" href="/api-reference/intents/create-intent-split">
+Create a transfer to the wallet of the seller of an Intent line item
+</Card>
+<Card title="POST Execute a Split of an Intent" href="/api-reference/intents/execute-intent-split">
+Release the funds of a Split to the wallet of the seller of the Intent line item
+</Card>
+<Card title="POST Reverse a Split of an Intent" href="/api-reference/intents/reverse-intent-split">
+Reallocate a Split's funds back to the Escrow Wallet if not yet executed
+</Card>
+<Card title="PUT Update a Split of an Intent" href="/api-reference/intents/update-intent-split">
+Modify a Split before execution
+</Card>
+<Card title="GET View a Split of an Intent" href="/api-reference/intents/view-intent-split">
+Retrieve details of a Split of an Intent
+</Card>
+</CardGroup>
+
+#### Settlement endpoints
+
+<CardGroup cols={1}>
+<Card title="POST Create a Settlement" href="/api-reference/settlements/create-settlement">
+Upload a Mangopay-format settlement file for a single currency to be reconciled with Intents
+</Card>
+<Card title="PUT Update a Settlement" href="/api-reference/settlements/update-settlement">
+Upload an additional file to update the Settlement
+</Card>
+<Card title="GET View a Settlement" href="/api-reference/settlements/view-settlement">
+Retrieve the Settlement details generated from file upload
+</Card>
+</CardGroup>
+
