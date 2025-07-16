@@ -538,8 +538,7 @@ const options = {
                 }
             ],
             onDeactivateSavedCard: function({ cardId }) {
-                // 1. implement server-side call to deactivate the card with this cardId
-                // 2. handle any UI updates after a successful deactivation
+                // 1. Call your server to remove card and deactivate in Mangopay API
             },
             onCreateCardRegistration: function (cardType: 'CB_VISA_MASTERCARD' | 'AMEX' | 'MAESTRO') {
                 // 1. implement server-side call to create a card registration.
@@ -611,22 +610,7 @@ const onPaymentComplete = () => {
   "Status": "VALIDATED",
   "ProfilingAttemptReference": "25e5c450-7f00-4805-af04-4330e4dc0cee"
 }
-```  
-
-### Managing cards  
-
-You can use the following endpoints to manage cards:  
-- [View a Card](/api-reference/cards/view-card) provides key information about the card, including its Fingerprint which can be used as an anti-fraud tool  
-- [Deactivate or edit a Card](/api-reference/cards/deactivate-edit-card) allows you to irreversibly set the card as inactive  
-
-<Warning>  
-**Warning - End user's approval needed to save card details** 
-  
-Under no circumstances should card information be kept without the end user's approval.   
-
-If you don’t have the end user’s approval, you need to deactivate the card systematically after use in your implementation.  
-</Warning>  
-
+```   
 ### Requesting card pay-ins
 
 You can use a registered card (`CardId`) for requests with the following API objects:
@@ -641,15 +625,52 @@ In your requests:
 - Ensure that the `SecureModeReturnURL` parameter is set to `https://checkout.mangopay.com`
 - Submit the `PreferredCardNetwork` value if it was received by `onCreatePayment`
 
-### Working with saved cards 
+### Managing saved cards
 
-When you enable the **Save Card** option, a **Save Card** checkbox appears on the payment form. If the user selects this checkbox, the `SaveCard` flag is set to `true` and passed to the `onCreatePayment` handler. You can then store the card details in your backend for future use.
+The Checkout SDK can allow the user to save their card for a future payment.
 
-**Using Saved Cards for Future Payments**
-During future checkout sessions, previously saved cards should be included via the `savedCards` array in the card payment method configuration. When a saved card is selected, the SDK automatically uses it for the payment process.
+1. **Enable saving cards**
 
-**Handling Card Removal**
-If a user decides to remove a saved card, the `onDeactivateSavedCard` callback is triggered. This allows you to remove or deactivate the card from your backend accordingly.
+To enable saving cards, set `enableSaveCard` to `true` to present a ***Save card*** checkbox on the user interface. 
+
+2. **Deactivate if card not saved**
+
+If the user doesn’t check the box, then the `CreatePaymentData` object returns `SaveCard : false`. In this case, you must systematically call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API.
+
+3. **If saved, store tokenized card in your system**
+
+If the user checks the box, the `SaveCard` flag is set to `true` and passed to your `onCreatePayment` handler. You can then store the card object in your system.
+
+4. **Re-use saved cards**
+
+To present the user’s saved cards in the next payment session, send an array of card objects in the `savedCards` array in the payment method configuration. 
+
+If sent, then a dropdown appears in the interface in the card number input field. When a saved card is selected, the SDK uses it for the payment process.
+
+5. **Deactivate card if user removes**
+
+In the dropdown, there is an option for the user to remove a saved card. In this case, the `onDeactivateSavedCard` is triggered and you must: 
+
+- Remove the card in your system
+- Call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API
+
+<aside>
+  <img src="/icons/circle-alternate_gray.svg" alt="/icons/circle-alternate_gray.svg" width="40px" />
+
+  **Warning - Deactivate card systematically unless user saves it**
+
+  Under no circumstances should card information be kept without the end user’s approval.
+
+  If `CreatePaymentData` returns `SaveCard : false`, indicating the user doesn’t wish to save it, then you must call [**PUT** **Deactivate or edit a Card](https://docs.mangopay.com/api-reference/cards/deactivate-edit-card)** to deactivate it in the Mangopay API.
+
+  The same is true if the `onDeactivateSavedCard` is triggered, indicating that the user wishes to remove the card. 
+</aside>
+
+Diagram
+
+
+
+Saved card example
 
 ```typescript TypeScript
 const options = {
@@ -664,30 +685,29 @@ const options = {
       savedCards: [
         {
           Id: '12345',
-          Alias: 'XXXX XXXX XXXX 1234',
+          Alias: '497010XXXXXX8183',
           ExpirationDate: '1026',
           CardProvider: 'MASTERCARD',
           Active: true,
           UserId: '67890',
-          Validity: 'VALID'
-          // ...any other properties you need
+          Validity: 'VALID',
+          CardType: 'CB_VISA_MASTERCARD',
+          Country: 'FRA',
+          Product: 'I',
+          BankCode: 'unknown',
+          Currency: 'EUR',
+          Tag: null,
+          CreationDate: 1744280826,
+          Fingerprint: '48d63bbcfc2c47fcbc19df35e47b2f8d',
+          CardHolderName: 'John Doe'
         }
       ],
       onDeactivateSavedCard: function({ cardId }) {
-        // 1. call your backend to remove or deactivate the card with this cardId
-        // 2. handle any UI updates necessary
+        // 1. Call your server to remove card and deactivate in Mangopay API
       },
       onCreatePayment: function (event) {
-        /*
-          1. Check if event.SaveCard === true
-          2. If true:
-             - Store the newly created CardId in your backend so it can be
-               reused next time (by adding it to savedCards).
-          3. If false:
-             - Call your backend to deactivate the card in MangoPay API.
-             - Ensure the card is marked as inactive to prevent future use.
-          4. Create the pay-in on your backend with the CardId or payment details.
-        */
+        // 1. Check if event.SaveCard === true
+        // 2. Deactivate if false
       }
     }
   ]
