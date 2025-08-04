@@ -1,0 +1,71 @@
+---
+title: '002704'  
+description: '<small>&#8249; [All error codes](/errors/codes#user-category)</small>'
+---
+  
+<table>
+    <tbody>
+        <tr>
+            <th class="header"><strong>Error message</strong></th>
+            <td class="table-content">Users in PENDING_USER_ACTION status cannot create transfers</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Description</strong></th>
+            <td class="table-content">The transfer failed because the user's `UserStatus` is `PENDING_USER_ACTION`.</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Categories</strong></th>
+            <td class="table-content">  
+<div class="label">Transfer</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+#### Causes  
+
+This error occurs on the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint if the `AuthorId` or the owner of the `DebitedWalletId` has the `UserStatus` of `PENDING_USER_ACTION`. 
+
+This error occurs regardless of the `ScaContext` value sent in the request.
+
+For more information on when this `UserStatus` occurs, see the [Pending user action](/guides/sca/users#pending-user-action) guide section.
+
+#### What to do  
+
+The `PENDING_USER_ACTION` value indicates that the user needs to enroll in SCA. To retrieve a new SCA redirection link for them, call the [POST Enroll a User](/api-reference/users/enroll-user) endpoint. 
+
+#### Example 
+
+Example API response to [POST Create a Transfer](/api-reference/transfers/create-transfer): 
+
+```json
+{
+    "ScaContext": "USER_PRESENT",
+    "Id": "xfer_c_01K1TKMC8GTPZBH5XRR4AACGRX",
+    "CreationDate": 1754313404,
+    "DebitedWalletId": "wlt_m_01K1TKESVW6HTYQJGTCE5HYNE1",
+    "CreditedWalletId": "wlt_m_01K076S3GG60GNZAR2GP34AXHK",
+    "AuthorId": "user_m_01K1TKE1Y8DZ94A6MT0062F920",
+    "CreditedUserId": "user_m_01K076MX89HG1E64VAVM17DRKY",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 3001
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "Status": "FAILED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": "002704",
+    "ResultMessage": "Users in PENDING_USER_ACTION status cannot create transfers",
+    "ExecutionDate": null,
+    "PendingUserAction": null
+}
+```

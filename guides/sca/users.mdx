@@ -167,7 +167,9 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
 
 ### Pending user action
 
-The new `PENDING_USER_ACTION` status value prevents the user from accessing Mangopay services until they enroll in SCA. 
+The new `PENDING_USER_ACTION` status value prevents the user from accessing Mangopay services until they enroll in SCA.
+
+#### Triggers
 
 The user's `UserStatus` becomes `PENDING_USER_ACTION` after the following events:
 - Creation using the SCA-enabled POST endpoints if `OWNER`:
@@ -202,7 +204,21 @@ The `PENDING_USER_ACTION` status is only returned on the SCA-enabled endpoints, 
 If you do this (for example, in the Mangopay Dashboard), then you need to use the [POST Enroll a User](/api-reference/users/enroll-user) endpoint to enroll them as an existing `OWNER`.
 </Warning>
 
-When the user's `UserStatus` is `PENDING_USER_ACTION`, they are unable to access Mangopay features. For example, a call to [POST Create a Wallet](/api-reference/wallets/create-wallet) for this user returns an error:
+#### Refused actions
+
+If your user is stuck in a `PENDING_USER_ACTION` status, then you can use [POST Enroll a User in SCA](/api-reference/users/enroll-user) to retrieve a new SCA session for them to enroll.
+
+When the user's `UserStatus` is `PENDING_USER_ACTION`, they are unable to take the following actions: 
+- Request a payout using [POST Create a Payout](/api-reference/payouts/create-payout)
+- Register a recipient using [POST Create a Recipient](/api-reference/recipients/create-recipient)
+- Register a bank account using any of the [POST Create a Bank Account](/api-reference/bank-accounts/bank-account-object) endpoints
+- Request a transfer debiting their wallet, using [POST Create a Transfer](/api-reference/transfers/create-transfer) if they are referenced as the `AuthorId` or the owner of the `DebitedWalletId`
+- View their wallet balance using [GET View a Wallet](/api-reference/wallets/view-wallet)
+- List their wallets using [GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+- List transactions for a wallet they own using [GET List Transactions for a Wallet](/api-reference/transactions/list-transactions-wallet)
+- List their transactions using [GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+
+Attempts to perform the actions above return an error. In some cases this is indicated by a 400 response: 
 
 ```json 400
 {
@@ -214,7 +230,8 @@ When the user's `UserStatus` is `PENDING_USER_ACTION`, they are unable to access
 }
 ```
 
-If your user is stuck in a `PENDING_USER_ACTION` status, then you can use [POST Enroll a User in SCA](/api-reference/users/enroll-user) to retrieve a new SCA session for them to enroll.
+On transfers, such a request fails immediately with the dedicated `ResultCode`: 
+- [002704](/errors/codes/002704) – Users in PENDING_USER_ACTION status cannot create transfers
 
 ### Restrictions on existing users
 

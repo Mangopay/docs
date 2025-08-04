@@ -1,0 +1,26 @@
+---
+title: 'API - July 23, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+
+## <span class="pill pill-orange">Changed</span>
+### Actions refused if `UserStatus` is `PENDING_USER_ACTION`
+
+The `PENDING_USER_ACTION` value for `UserStatus` indicates that the newly created `OWNER` user has not enrolled in SCA.
+
+The list of actions refused to these users has been refined to include only those impacted by SCA: recipient or bank account registration, payout requests (conditional on SCA on recipients), transfers debiting their wallet, and wallet access requests.
+
+For the full list, see the [Pending user action – Refused actions](/guides/sca/users#refused-actions) guide section.
+
+To change a user's `UserStatus` from `PENDING_USER_ACTION` to `ACTIVE`, and thus unblock these actions, use [POST Enroll a User in SCA](/api-reference/users/enroll-user) to retrieve a new SCA session for them to enroll.
+
+## <span class="pill pill-green">Added</span>
+### Transfer error 002704 if `UserStatus` is `PENDING_USER_ACTION`
+
+The following ResultCode and message have been added on transfers: 
+- [002704](/errors/codes/002704) – Users in PENDING_USER_ACTION status cannot create transfers
+
+This error occurs on a transfer if the `AuthorId` or the owner of the `DebitedWalletId` has the `UserStatus` of `PENDING_USER_ACTION`, because they have not enrolled in SCA.
