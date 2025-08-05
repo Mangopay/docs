@@ -15,7 +15,7 @@ import LogoBacs from '/snippets/logos/logo-bacs.mdx';
     <thead>
         <tr>
             <th class="header">Scheme</th>
-            <th class="header">SEPA</th>
+            <th class="header">SEPA Core</th>
             <th class="header">Bacs</th>
         </tr>
     </thead>
@@ -80,11 +80,13 @@ Scheme operated by Pay.UK in the UK for collecting payments in the UK in GBP.
 
 A GB-type Bank Account is required for the mandate. 
 </Card>  
-</CardGroup>  
+</CardGroup>
+
+### IBAN compatibility
 
 The user's bank must be participating in the relevant scheme, which is not always the case. It may also be that the scheme rules prevent the use of certain account types.
 
-For SDD, Danish IBANs (starting `DK`) are not currently accepted. Mangopay does not offer the SEPA B2B scheme.
+For SDD, Mangopay only supports the SEPA Core scheme and not the SEPA B2B scheme. Furthermore, the IBAN must be accepted as part of the SEPA Core scheme. Some European countries, notably Denmark and Sweden, operate different local direct debit schemes and IBANs from these countries (starting `DK` or `SE`) may not be supported.
 
 ## How it works
 
@@ -101,7 +103,7 @@ In response, the bank account's `Active` property should be `true` and its `Id` 
 <Step title="Create the mandate">
 Create the mandate using the <a href="/api-reference/mandates/create-mandate">POST Create a Mandate</a> endpoint, using the bank account's `Id` as the `BankAccountId` and defining a `ReturnURL` to which the user is returned after confirming the mandate.
 
-For SDD, Danish IBANs (starting `DK`) are not currently accepted.
+For SDD, IBANs that are not SEPA Core are not accepted ([read more](#iban-compatibility)).
 </Step>
 <Step title="Let the user confirm the mandate">
 In the response to the mandate creation request, the API returns a `RedirectURL` to which you must redirect the user so they can validate the mandate. After confirming, the user is returned on the URL you provided for `ReturnURL`.
