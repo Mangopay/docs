@@ -1,0 +1,53 @@
+---
+title: 'API - August 6, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+
+## <span class="pill pill-orange">Changed</span>
+### Two rate limit buckets added in Sandbox (only)
+
+Mangopay has introduced two additional rate limit buckets in Sandbox (not Production):
+
+
+<table>
+<thead>
+<tr>
+<th class="header">Time period</th>
+<th class="header">Maximum number of API calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">1 minute</td>
+<td class="table-content">153</td>
+</tr>
+<tr>
+<td class="table-content">5 minutes</td>
+<td class="table-content">766</td>
+</tr>
+</tbody>
+</table>
+
+These new buckets have been added to assess their suitability in helping optimize API performance for all platforms.
+
+The new buckets are only returned in Sandbox and in addition to the existing 4 values. The new buckets are returned first in the arrays.
+
+The SDKs have been updated to return either the 6 or 4 values, but if you have an integration calling Sandbox you may need to review your parsing or usage of the values.
+
+These two additional limits may be implemented in Production at a later date. If and when this happens, Mangopay will notify platforms in advance.
+
+[Read more about rate limiting](/api-reference/overview/rate-limiting) **&rarr;**
+
+## <span class="pill pill-green">Added</span>
+### Report types for Echo
+
+Report types for [Echo](/guides/echo), Mangopay's new solution for integrations using third-party PSPs:
+- `ECHO_INTENT` – Summary of all intents declared during the selected period, detailing the total funds expected to enter the platform’s escrow wallets.
+- `ECHO_INTENT_ACTION` – Summary of all operations related to intents processed during the selected period, detailing the expected money movements to be escrowed — including payments, refunds, refund reversals, and chargebacks. 
+- `ECHO_SETTLEMENT` – Summary of all settlement files uploaded during the selected period to initiate the reconciliation process, confirming the expected money movements to be escrowed.
+- `ECHO_SPLIT` – Summary of all splits related to intents during the selected period, detailing the transfer of funds to the declared destination.
+
+These report types are available on the [POST Create a Report](/api-reference/reporting/create-report) endpoint (of the new reporting service).
