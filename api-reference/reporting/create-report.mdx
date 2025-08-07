@@ -29,11 +29,13 @@ import BeforeDate2 from '/snippets/p-body/BeforeDate2.mdx';
 import Filters3 from '/snippets/p-body/Filters3.mdx';
 import Columns1 from '/snippets/p-body/Columns1.mdx';
 
-This endpoint generates a report from Mangopay's Reporting Service, which is replacing the legacy report types. 
+This endpoint generates a report from Mangopay's Reporting Service, which is replacing the legacy report types (read the [guide](/reports)). 
 
-Two types of report are available, specified in the `ReportType`:
-- `USER_WALLET_TRANSACTIONS` – All transactions crediting or debiting user wallets: pay-ins, transfers, conversions, and payouts, as well as refunds of all types and repudiations (from chargebacks).
-- `COLLECTED_FEES`– Detail of transactions crediting or debiting the fees wallet: transactions of all types (pay-ins, transfers, refunds, payouts, etc.) that have a positive or negative fees amount.
+There are 2 reports (indicated by `ReportType`) that may be useful to all platforms: `USER_WALLET_TRANSACTIONS` and `COLLECTED_FEES`. 
+
+There are 4 `ReportType` that are designed to support platforms using [Echo](/guides/echo), Mangopay solution for integrations working with third-party PSPs: `ECHO_INTENT`, `ECHO_INTENT_ACTION`, `ECHO_SETTLEMENT`, `ECHO_SPLIT`.
+
+Each `ReportType` has different available `Columns` and `Filters`.
 
 <Note>  
 **Note – Report expires after 31 days** 
@@ -53,7 +55,6 @@ You can generate a new report with the same filters and dates.
 <BeforeDate2/>
 <Filters3/>
 <Columns1/>
-
 
 ### Responses  
 
@@ -125,7 +126,7 @@ You can generate a new report with the same filters and dates.
 </AccordionGroup>
 
 <ResponseExample>
-```json User wallet transactions
+```json USER_WALLET_TRANSACTIONS
 {
     "Id": "report_01JVVQFJETHHP9M9S18RN6N8JZ",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -145,42 +146,138 @@ You can generate a new report with the same filters and dates.
         "Currency": "EUR"
     },
     "Columns": [
-        "ClientId",
-        "TransactionId",
-        "CreationDate",
-        "ExecutionDate",
-        "AuthorId",
-        "CreditedUserId",
-        "DebitedFundsAmount",
-        "DebitedFundsCurrency",
-        "CreditedFundsAmount",
-        "CreditedFundsCurrency",
-        "FeesAmount",
-        "FeesCurrency",
-        "Type",
-        "Nature",
-        "CreditedWalletId",
-        "DebitedWalletId",
-        "BankAccountId",
-        "PreauthorizationId",
-        "BankWireRef",
-        "CardId",
-        "CardAlias",
-        "CardType",
-        "CardCountry",
-        "CardExpirationDate",
-        "Culture",
-        "DeclaredDebitedFundsAmount",
-        "DeclaredDebitedFundsCurrency",
-        "DeclaredFeesAmount",
-        "DeclaredFeesCurrency",
-        "ExecutionType",
-        "PaymentType",
-        "WireReference"
+        {
+            "Name": "ClientId",
+            "IsDefault": true
+        },
+        {
+            "Name": "TransactionId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreationDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExecutionDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "AuthorId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedUserId",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedFundsAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedFundsCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedFundsAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedFundsCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Type",
+            "IsDefault": true
+        },
+        {
+            "Name": "Nature",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "BankAccountId",
+            "IsDefault": true
+        },
+        {
+            "Name": "PreauthorizationId",
+            "IsDefault": true
+        },
+        {
+            "Name": "BankWireRef",
+            "IsDefault": true
+        },
+        {
+            "Name": "CardId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CardAlias",
+            "IsDefault": true
+        },
+        {
+            "Name": "CardType",
+            "IsDefault": true
+        },
+        {
+            "Name": "CardCountry",
+            "IsDefault": true
+        },
+        {
+            "Name": "CardExpirationDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "Culture",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeclaredDebitedFundsAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeclaredDebitedFundsCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeclaredFeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeclaredFeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExecutionType",
+            "IsDefault": true
+        },
+        {
+            "Name": "PaymentType",
+            "IsDefault": true
+        },
+        {
+            "Name": "WireReference",
+            "IsDefault": true
+        }
     ]
 }
 ```
-```json Collected fees
+```json COLLECTED_FEES
 {
     "Id": "report_01JVVQDDZ4AT67C2W62ZNK2DC2",
     "Tag": "Created using the Mangopay API Postman collection",
@@ -199,30 +296,372 @@ You can generate a new report with the same filters and dates.
         "Currency": "EUR"
     },
     "Columns": [
-        "ClientId",
-        "TransactionId",
-        "CreationDate",
-        "ExecutionDate",
-        "AuthorId",
-        "DebitedWalletId",
-        "CreditedWalletId",
-        "CreditedFundsCurrency",
-        "CreditedFundsAmount",
-        "DebitedFundsCurrency",
-        "DebitedFundsAmount",
-        "FeesAmount",
-        "FeesCurrency",
-        "Type",
-        "Nature",
-        "PaymentType",
-        "Tag"
+        {
+            "Name": "ClientId",
+            "IsDefault": true
+        },
+        {
+            "Name": "TransactionId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreationDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExecutionDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "AuthorId",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedFundsCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedFundsAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedFundsCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedFundsAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Type",
+            "IsDefault": true
+        },
+        {
+            "Name": "Nature",
+            "IsDefault": true
+        },
+        {
+            "Name": "PaymentType",
+            "IsDefault": true
+        },
+        {
+            "Name": "Tag",
+            "IsDefault": true
+        }
     ]
 }
 ```
-</ResponseExample>  
+```json ECHO_INTENT
+{
+    "Id": "report_01K21WBZNWF8JYD5NDMKA3YA73",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1754557447,
+    "ReportDate": null,
+    "Status": "PENDING",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "ReportType": "ECHO_INTENT",
+    "Sort": "CreationDate:DESC",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "PaymentMethod": "MASTERCARD",
+        "Status": "CAPTURED",
+        "Type": "PAYIN"
+    },
+    "Columns": [
+        {
+            "Name": "Id",
+            "IsDefault": true
+        },
+        {
+            "Name": "Status",
+            "IsDefault": true
+        },
+        {
+            "Name": "Amount",
+            "IsDefault": true
+        },
+        {
+            "Name": "Currency",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Type",
+            "IsDefault": true
+        },
+        {
+            "Name": "PaymentMethod",
+            "IsDefault": true
+        },
+        {
+            "Name": "BuyerId",
+            "IsDefault": true
+        },
+        {
+            "Name": "SellerId",
+            "IsDefault": true
+        }
+    ]
+}
+```
+```json ECHO_INTENT_ACTION
+{
+    "Id": "report_01K21XEH908CGAN6W8XJ1RK4GW",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1754558580,
+    "ReportDate": null,
+    "Status": "PENDING",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "ReportType": "ECHO_INTENT_ACTION",
+    "Sort": "CreationDate:DESC",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "PaymentMethod": "MASTERCARD",
+        "Status": "CAPTURED",
+        "Type": "PAYIN"
+    },
+    "Columns": [
+        {
+            "Name": "IntentId",
+            "IsDefault": true
+        },
+        {
+            "Name": "Id",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExternalProcessingDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExternalProviderReference",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExternalMerchantReference",
+            "IsDefault": true
+        },
+        {
+            "Name": "Status",
+            "IsDefault": true
+        },
+        {
+            "Name": "Amount",
+            "IsDefault": true
+        },
+        {
+            "Name": "Currency",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Type",
+            "IsDefault": true
+        },
+        {
+            "Name": "PaymentMethod",
+            "IsDefault": true
+        },
+        {
+            "Name": "BuyerId",
+            "IsDefault": true
+        },
+        {
+            "Name": "SellerId",
+            "IsDefault": true
+        }
+    ]
+}
+```
+```json ECHO_SETTLEMENT
+{
+    "Id": "report_01K2208G3778ETC7KKF8AE2895",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1754561527,
+    "ReportDate": null,
+    "Status": "PENDING",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "ReportType": "ECHO_SETTLEMENT",
+    "Sort": "CreationDate:DESC",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "Status": "RECONCILED",
+        "ExternalProviderName": "STRIPE"
+    },
+    "Columns": [
+        {
+            "Name": "Id",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreationDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "FileName",
+            "IsDefault": true
+        },
+        {
+            "Name": "SettlementCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Status",
+            "IsDefault": true
+        },
+        {
+            "Name": "SettledTransactionCount",
+            "IsDefault": true
+        },
+        {
+            "Name": "UnsettledTransactionCount",
+            "IsDefault": true
+        },
+        {
+            "Name": "SettledAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeclaredAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "DeficitAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExternalProviderName",
+            "IsDefault": true
+        }
+    ]
+}
+```
+```json ECHO_SPLIT
+{
+    "Id": "report_01K220F5CEBWE4J9V25V7XNZX6",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "CreationDate": 1754561746,
+    "ReportDate": null,
+    "Status": "PENDING",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "DownloadFormat": "CSV",
+    "DownloadURL": null,
+    "ReportType": "ECHO_SPLIT",
+    "Sort": "CreationDate:DESC",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "Status": "COMPLETED",
+        "IntentId": "int_0197f975-63f6-714e-8fc6-4451e128170f",
+        "Scheduled": false
+    },
+    "Columns": [
+        {
+            "Name": "Id",
+            "IsDefault": true
+        },
+        {
+            "Name": "IntentId",
+            "IsDefault": true
+        },
+        {
+            "Name": "AuthorId",
+            "IsDefault": true
+        },
+        {
+            "Name": "Amount",
+            "IsDefault": true
+        },
+        {
+            "Name": "Currency",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesAmount",
+            "IsDefault": true
+        },
+        {
+            "Name": "FeesCurrency",
+            "IsDefault": true
+        },
+        {
+            "Name": "Status",
+            "IsDefault": true
+        },
+        {
+            "Name": "Description",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreditedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "DebitedWalletId",
+            "IsDefault": true
+        },
+        {
+            "Name": "Scheduled",
+            "IsDefault": true
+        },
+        {
+            "Name": "CreationDate",
+            "IsDefault": true
+        },
+        {
+            "Name": "ExecutionDate",
+            "IsDefault": true
+        }
+    ]
+}
+```
+</ResponseExample>
 
 <RequestExample>  
-```json User wallet transactions
+```json USER_WALLET_TRANSACTIONS
 {
     "Tag": "Created using the Mangopay API Postman collection",
     "DownloadFormat": "CSV",
@@ -235,7 +674,7 @@ You can generate a new report with the same filters and dates.
     }
 }
 ```
-```json Collected fees
+```json COLLECTED_FEES
 {
     "Tag": "Created using the Mangopay API Postman collection",
     "DownloadFormat": "CSV",
@@ -244,6 +683,61 @@ You can generate a new report with the same filters and dates.
     "BeforeDate": 1743544740,
     "Filters": {
         "Currency": "EUR"
+    }
+}
+```
+```json ECHO_INTENT
+{
+    "Tag": "Created using the Mangopay API Postman collection",
+    "DownloadFormat": "CSV",
+    "ReportType": "ECHO_INTENT",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "PaymentMethod": "MASTERCARD",
+        "Status": "CAPTURED",
+        "Type": "PAYIN"
+    }
+}
+```
+```json ECHO_INTENT_ACTION
+{
+    "Tag": "Created using the Mangopay API Postman collection",
+    "DownloadFormat": "CSV",
+    "ReportType": "ECHO_INTENT_ACTION",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "PaymentMethod": "MASTERCARD",
+        "Status": "CAPTURED",
+        "Type": "PAYIN"
+    }
+}
+```
+```json ECHO_SETTLEMENT
+{
+    "Tag": "Created using the Mangopay API Postman collection",
+    "DownloadFormat": "CSV",
+    "ReportType": "ECHO_SETTLEMENT",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters": {
+        "Status": "RECONCILED",
+        "ExternalProviderName": "STRIPE"
+    }
+}
+```
+```json ECHO_SPLIT
+{
+    "Tag": "Created using the Mangopay API Postman collection",
+    "DownloadFormat": "CSV",
+    "ReportType": "ECHO_SPLIT",
+    "AfterDate": 1740787200,
+    "BeforeDate": 1743544740,
+    "Filters" : {
+        "Status" : "COMPLETED",
+        "IntentId" : "int_0197f975-63f6-714e-8fc6-4451e128170f",
+        "Scheduled" : false
     }
 }
 ```
