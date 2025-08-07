@@ -7,6 +7,7 @@ description: List recipients created for a UserId
 import RecipientScope_Recipient_Response from '/snippets/p-response/RecipientScope_Recipient_Response.mdx';
 import UserId_Recipient_Response from '/snippets/p-response/UserId_Recipient_Response.mdx';
 import IdResponse from '/snippets/p-response/IdResponse.mdx';
+import CreationDateResponse from '/snippets/p-response/CreationDateResponse.mdx';
 import DisplayName_RecipientResponse from '/snippets/p-response/DisplayName_RecipientResponse.mdx';
 import PayoutMethodType_RecipientResponse from '/snippets/p-response/PayoutMethodType_RecipientResponse.mdx';
 import RecipientType_RecipientResponse from '/snippets/p-response/RecipientType_RecipientResponse.mdx';
@@ -19,6 +20,8 @@ import UserId from '/snippets/p-path/UserId.mdx';
 import RecipientScope from '/snippets/p-query/RecipientScope.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+import NodeListRecipientsUser from '/snippets/code/node-list-recipients-user.mdx';
 
 <Note>
 **Note – Endpoint returns filtered list by default**
@@ -42,6 +45,7 @@ By default, this endpoint returns only recipients with the `RecipientScope` valu
 The list of recipients created for the user.
 <Expandable>
 <IdResponse/>
+<CreationDateResponse/>
 <DisplayName_RecipientResponse/>
 <PayoutMethodType_RecipientResponse/>
 <RecipientType_RecipientResponse/>
@@ -56,32 +60,23 @@ The list of recipients created for the user.
 </AccordionGroup>
 
 <ResponseExample>
-```json 200
+```json 200 Including legacy migrated bank account
 [
     {
-        "Id": "rec_01JV700CD7E5GP9SFZHGX0RV2E",
-        "DisplayName": "Alex Smith USD account",
+        "Id": "bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G",
+        "CreationDate": 1723035193,
+        "DisplayName": null,
         "PayoutMethodType": "LocalBankTransfer",
         "RecipientType": "Individual",
-        "Currency": "USD",
-        "Country": "US",
+        "Currency": "EUR",
+        "Country": "FR",
         "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
         "Status": "ACTIVE",
         "RecipientScope": "PAYOUT"
     },
     {
-        "Id": "rec_01JV6ZZG6W0RKG6ZGA3MEY60BZ",
-        "DisplayName": "Alex Smith USD account",
-        "PayoutMethodType": "LocalBankTransfer",
-        "RecipientType": "Individual",
-        "Currency": "USD",
-        "Country": "US",
-        "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
-        "Status": "CANCELED",
-        "RecipientScope": "PAYOUT"
-    },
-    {
         "Id": "rec_01JV70P7J10PRZP0JQQ9CQZFN8",
+        "CreationDate": 1746622392,
         "DisplayName": "Alex Smith EUR account",
         "PayoutMethodType": "InternationalBankTransfer",
         "RecipientType": "Business",
@@ -90,33 +85,24 @@ The list of recipients created for the user.
         "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
         "Status": "ACTIVE",
         "RecipientScope": "PAYOUT"
+    },
+    {
+        "Id": "rec_01JV6ZZG6W0RKG6ZGA3MEY60BZ",
+        "CreationDate": 1746699783,
+        "DisplayName": "Alex Smith USD account",
+        "PayoutMethodType": "LocalBankTransfer",
+        "RecipientType": "Individual",
+        "Currency": "USD",
+        "Country": "US",
+        "UserId": "user_m_01JV6ZGXBE0VZSF4TEN9JK343Z",
+        "Status": "CANCELED",
+        "RecipientScope": "PAYOUT"
     }
 ]
 ```
-{/* ```json Legacy active bank account with new recipient
-[
-    {
-        "Id": "bankacc_m_01JCN1X2EHWG0JNJNPNQ21CW5G",
-        "DisplayName": null,
-        "PayoutMethodType": "LocalBankTransfer",
-        "RecipientType": "Individual",
-        "Currency": "EUR",
-        "Country": "FR",
-        "UserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
-        "Status": "ACTIVE",
-        "RecipientScope": "PAYOUT"
-    },
-    {
-        "Id": "rec_01JVS3VF1AQS2G57MAR4BGA0VW",
-        "DisplayName": "Alex Smith CAD account",
-        "PayoutMethodType": "LocalBankTransfer",
-        "RecipientType": "Individual",
-        "Currency": "CAD",
-        "Country": "CA",
-        "UserId": "user_m_01J9KR16BG7EDC8RNEY2M18EXK",
-        "Status": "PENDING",
-        "RecipientScope": "PAYOUT"
-    }
-]
-``` */}
 </ResponseExample>
+
+<RequestExample>
+<RestGetNoBody/>
+<NodeListRecipientsUser/>
+</RequestExample>
