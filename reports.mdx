@@ -26,8 +26,12 @@ There are two report features that currently exist. The table below gives an ove
 <tr>
 <th class="header">Report types</th>
 <td class="table-content">
-- User wallet transactions
-- Collected fees
+- USER_WALLET_TRANSACTIONS (equivalent of legacy Transactions report)
+- COLLECTED_FEES
+- ECHO_INTENT
+- ECHO_INTENT_ACTION
+- ECHO_SETTLEMENT
+- ECHO_SPLIT
 </td>
 <td class="table-content">
 - Transactions report
@@ -96,15 +100,114 @@ The two reporting features are independent, meaning that a legacy report object 
   </Step>
 </Steps>
 
-### Filters
+### Filters and columns
 
-To filter the data that will be included in the report, include the relevant filters in the body of your request.
+To filter the data that will be included in the report, include the relevant filters in the body of your generation request.
 
-#### Filters (Collected Fees)
+When you generate a report, you can also specify in the `Columns` parameter the columns to be included from those available below. Otherwise, the default columns will be used as described below.
+
+### COLLECTED_FEES
+
+#### Filters (COLLECTED_FEES)
 
 For the `COLLECTED_FEES` report, the `Currency` filter can be used to focus on one currency's Fees Wallet (otherwise all currencies' Fees Wallets are included).
 
-#### Filters (User Wallet Transactions)
+#### Columns (COLLECTED_FEES)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Unique identifier associated with the API key</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">TransactionId</td>
+<td class="table-content">Unique identifier of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr><tr>
+<td class="table-content">CreationDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">ExecutionDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr><tr>
+<td class="table-content">ExecutionDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was executed</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">AuthorId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedWalletId</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedWalletId</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsCurrency</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsAmount</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsCurrency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsAmount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the transaction: PAYIN, TRANSFER, CONVERSION, PAYOUT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Nature</td>
+<td class="table-content">Nature of the transaction: REGULAR, REPUDIATION, REFUND, SETTLEMENT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">PaymentType</td>
+<td class="table-content">Payment type of the pay-in</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Tag</td>
+<td class="table-content">Custom data added to the object</td>
+<td class="table-content">Yes</td>
+</tr>
+</tbody>
+</table>
+
+### USER_WALLET_TRANSACTIONS
+
+#### Filters (USER_WALLET_TRANSACTIONS)
 
 For the `USER_WALLET_TRANSACTIONS` report, three filters are available: 
 - `Currency` – The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
@@ -119,7 +222,7 @@ The `Currency` and `WalletId` cannot be used together.
 
 If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
 
-### Columns (User Wallet Transactions)
+#### Columns (USER_WALLET_TRANSACTIONS)
 
 <table>
 <thead>
@@ -303,7 +406,11 @@ If no `Filters` are specified, the report contains all transactions crediting or
 </tbody>
 </table>
 
-### Columns (Collected Fees)
+### ECHO_INTENT
+
+#### Filters (ECHO_INTENT)
+
+#### Columns (ECHO_INTENT)
 
 <table>
 <thead>
@@ -315,76 +422,67 @@ If no `Filters` are specified, the report contains all transactions crediting or
 </thead>
 <tbody>
 <tr>
-<td class="table-content">ClientId</td>
-<td class="table-content">Unique identifier associated with the API key</td>
+<td class="table-content">`Id`</td>
+<td class="table-content">Unique identifier of the intent</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">TransactionId</td>
-<td class="table-content">Unique identifier of the transaction</td>
+<td class="table-content">`Status`</td>
+<td class="table-content">Status of the intent</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">CreationDate</td>
-<td class="table-content">Unix timestamp of the date and time at which the transaction was created</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">ExecutionDate</td>
-<td class="table-content">Unix timestamp of the date and time at which the transaction was executed</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">AuthorId</td>
-<td class="table-content">Unique identifier of the user at the source of the transaction</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">DebitedWalletId</td>
-<td class="table-content">Unique identifier of the debited wallet</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">CreditedWalletId</td>
-<td class="table-content">Unique identifier of the credited wallet</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">CreditedFundsCurrency</td>
-<td class="table-content">Currency of the credited amount</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">CreditedFundsAmount</td>
-<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">DebitedFundsCurrency</td>
-<td class="table-content">Currency of the debited amount</td>
-<td class="table-content">Yes</td>
-</tr><tr>
-<td class="table-content">DebitedFundsAmount</td>
+<td class="table-content">`Amount`</td>
 <td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">FeesAmount</td>
+<td class="table-content">`Currency`</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`FeesAmount`</td>
 <td class="table-content">Amount of the fees in the currency of the fees</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">FeesCurrency</td>
+<td class="table-content">`FeesCurrency`</td>
 <td class="table-content">Currency of the fees</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">Type</td>
-<td class="table-content">Type of the transaction: PAYIN, TRANSFER, CONVERSION, PAYOUT</td>
+<td class="table-content">`Type`</td>
+<td class="table-content">Type of the intent: PAYIN, REFUND, DISPUTE</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">Nature</td>
-<td class="table-content">Nature of the transaction: REGULAR, REPUDIATION, REFUND, SETTLEMENT</td>
+<td class="table-content">`PaymentMethod`</td>
+<td class="table-content">Payment method of the intent</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">PaymentType</td>
-<td class="table-content">Payment type of the pay-in</td>
+<td class="table-content">`BuyerId`</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
 <td class="table-content">Yes</td>
 </tr><tr>
-<td class="table-content">Tag</td>
-<td class="table-content">Custom data added to the object</td>
+<td class="table-content">`SellerId`</td>
+<td class="table-content">Unique identifier of the user(s) at the destination of the transaction</td>
 <td class="table-content">Yes</td>
 </tr>
 </tbody>
 </table>
+
+### ECHO_INTENT_ACTION
+
+#### Filters (ECHO_INTENT_ACTION)
+
+#### Columns (ECHO_INTENT_ACTION)
+
+### ECHO_SETTLEMENT
+
+#### Filters (ECHO_SETTLEMENT)
+
+#### Columns (ECHO_SETTLEMENT)
+
+### ECHO_SPLIT
+
+#### Filters (ECHO_SPLIT)
+
+#### Columns (ECHO_SPLIT)
+
 
 ## Legacy reports 
 
