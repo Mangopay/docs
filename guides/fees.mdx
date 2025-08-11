@@ -9,19 +9,23 @@ import WorkingDay from '/snippets/glossary/working-day.mdx';
 
 Platforms use Mangopay to collect fees from their users during transactions. Mangopay’s flexible e-wallet system allows platforms to choose exactly when during their payment workflow to take fees.   
 
-For each currency, Mangopay automatically creates a dedicated fees wallet for the purpose of collecting fees.  
+## Fees wallet
 
-To collect fees, platforms enter an amount in the transaction’s `Fees` parameter, which is then deducted from the `DebitedFunds` and directed to the fees wallet. The remaining funds are the `CreditedFunds` that arrive on the recipient’s wallet (indicated by the `CreditedWalletId`). 
+For each currency, Mangopay automatically creates a dedicated [Fees Wallet](/api-reference/client-wallets/client-wallet-object) for the purpose of collecting fees.
+
+To collect fees during a transaction, your platform enters an amount in the transaction’s `Fees` parameter. When the transaction request succeeds, the `Fees` amount is deducted from the `DebitedFunds` and directed to the Fees Wallet, while the remaining amount (the `CreditedFunds`) arrive on the Mangopay wallet (indicated by the `CreditedWalletId`).
 
 Transactions follow this sum:
 
 > `DebitedFunds` - `Fees` = `CreditedFunds`
 
-Note that as fees is a required parameter, if you don't wish to collect fees on a transaction, you need to set the value to zero.  
+As `Fees` is a required parameter, if you don't wish to collect fees on a give transaction, you need to set the value to zero.
 
-You can collect fees at each stage of your payment workflow. 
+The amounts on the Fees Wallet are paid out automatically by Mangopay as part of the [billing](#billing) cycle. Platforms cannot initiate fees payouts to the platform's bank account.
 
-### When to collect fees  
+### When to collect fees
+
+You can collect fees at each stage of your payment workflow.
 
 #### Pay-in  
 
@@ -51,9 +55,9 @@ The commission and fees that Mangopay charges platforms is managed separately fr
 
 Within the first 5 <WorkingDay content="working days" /> of the month, Mangopay generates an invoice for the previous month based on the pricing in the platform’s contract.  
 
-There is one invoice generated per currency (like there is one fees wallet per currency).  
+There is one invoice generated per currency (like there is one Fees Wallet per currency).  
 
-The balance of the platform’s fees wallet for each currency is used by Mangopay during invoicing. On the 5th <WorkingDay content="working day" /> of the month, the sum of the fees collected during the previous month is paid out.  
+The balance of the platform’s Fees Wallet for each currency is used by Mangopay during invoicing. On the 5th <WorkingDay content="working day" /> of the month, the sum of the fees collected during the previous month is paid out.
 
 There are two possible cases: 
 
@@ -79,11 +83,19 @@ If the sum of the collected fees is less than (or equal to) the amount due to Ma
   </tbody>
 </table>
 
+<Note>
+**Note – Platforms not able to withdraw funds manually**
+
+It is not possible for platforms to withdraw funds from the Fees Wallet manually. 
+
+Payouts from the Fees Wallet are only executed automatically by Mangopay as part of the billing cycle.
+</Note>
+
 The platform’s bank account is set up, for both credit transfers and direct debits, during initial onboarding or during activation of a new currency.   
 
-For fees payouts, the payment is made in the currency of the fees wallet.  
+For fees payouts, the payment is made in the currency of the Fees Wallet.  
 
-ForMangopay’s invoices, payments are collected as follows:  
+For Mangopay’s invoices, payments are collected as follows:  
 - EUR invoices via SEPA Direct Debit (SDD)  
 - GBP invoices via BACS Direct Debit  
 - Invoices in other currencies are converted to EUR before payment via SDD  
