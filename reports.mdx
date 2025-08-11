@@ -3,7 +3,12 @@ title: 'Reports'
 'og:description': 'How to leverage the Mangopay API’s reporting endpoints to get the data you need on transaction activity.'  
 ---
   
-{/* Imports */}  
+import Filters_Reporting_COLLECTED_FEES from '/snippets/p-body/Filters_Reporting_COLLECTED_FEES.mdx';
+import Filters_Reporting_USER_WALLET_TRANSACTIONS from '/snippets/p-body/Filters_Reporting_USER_WALLET_TRANSACTIONS.mdx';
+import Filters_Reporting_ECHO_INTENT_ACTION from '/snippets/p-body/Filters_Reporting_ECHO_INTENT_ACTION.mdx';
+import Filters_Reporting_ECHO_INTENT from '/snippets/p-body/Filters_Reporting_ECHO_INTENT.mdx';
+import Filters_Reporting_ECHO_SETTLEMENT from '/snippets/p-body/Filters_Reporting_ECHO_SETTLEMENT.mdx';
+import Filters_Reporting_ECHO_SPLIT from '/snippets/p-body/Filters_Reporting_ECHO_SPLIT.mdx';
 
 Mangopay provides platforms reporting features so that your platform can download data relating to your payment operations. 
 
@@ -86,11 +91,9 @@ The two reporting features are independent, meaning that a legacy report object 
     - `REPORT_FAILED` – Indicates that a report was not generated successfully
   </Step>
   <Step title="Generate the report">
-    Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. You can also specify the columns your wish to include in the report, otherwise the default ones are used (see [columns tables](#columns-user-wallet-transactions) below).
+    Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. 
     
-    You should also apply the relevant filters to your report:
-    - `COLLECTED_FEES` – Include the `Currency` filter to narrow the report to one currency's fees wallet. 
-    - `USER_WALLET_TRANSACTIONS` – Narrow the report by `UserId`, `WalletId`, and/or `Currency` to suit your needs.
+    You should apply the relevant `Filters` to your report. You can also specify the `Columns` your wish to include in the report, otherwise the default ones are used (see tables below).
   </Step>
   <Step title="Download when ready">
   When the report status changes to `GENERATED`, the `DownloadURL` is populated with the URL where you can download the report. 
@@ -102,7 +105,7 @@ The two reporting features are independent, meaning that a legacy report object 
 
 ### Filters and columns
 
-To filter the data that will be included in the report, include the relevant filters in the body of your generation request.
+To filter the data that will be included in the report, include the relevant `Filters` in the body of your generation request. The available values for each `ReportType` is given below. 
 
 When you generate a report, you can also specify in the `Columns` parameter the columns to be included from those available below. Otherwise, the default columns will be used as described below.
 
@@ -110,7 +113,7 @@ When you generate a report, you can also specify in the `Columns` parameter the 
 
 #### Filters (COLLECTED_FEES)
 
-For the `COLLECTED_FEES` report, the `Currency` filter can be used to focus on one currency's Fees Wallet (otherwise all currencies' Fees Wallets are included).
+<Filters_Reporting_COLLECTED_FEES/>
 
 #### Columns (COLLECTED_FEES)
 
@@ -209,18 +212,7 @@ For the `COLLECTED_FEES` report, the `Currency` filter can be used to focus on o
 
 #### Filters (USER_WALLET_TRANSACTIONS)
 
-For the `USER_WALLET_TRANSACTIONS` report, three filters are available: 
-- `Currency` – The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
-- `UserId` – The unique identifier of the user referenced as the `AuthorId` or `CreditedUserId` of the transaction.
-- `WalletId` – The unique identifier of the wallet referenced as the `DebitedWalletId` or `CreditedWalletId` of the transaction.
-
-Each filter can be used on its own or in combination, in which case the report data satisfies both filters:
-- `UserId` and `Currency` – Report contains all transactions (credited or debited) in the currency where UserId is the AuthorId
-- `UserId` and `WalletId` – Report contains all transactions (credited or debited) in all currencies where the UserId is specified as the `DebitedWalletId` or `CreditedWalletId`. If the `WalletId` is not a wallet owned by the `UserId`, then the report will be empty.
- 
-The `Currency` and `WalletId` cannot be used together.
-
-If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
+<Filters_Reporting_USER_WALLET_TRANSACTIONS/>
 
 #### Columns (USER_WALLET_TRANSACTIONS)
 
@@ -410,6 +402,8 @@ If no `Filters` are specified, the report contains all transactions crediting or
 
 #### Filters (ECHO_INTENT)
 
+<Filters_Reporting_ECHO_INTENT/>
+
 #### Columns (ECHO_INTENT)
 
 <table>
@@ -469,20 +463,231 @@ If no `Filters` are specified, the report contains all transactions crediting or
 
 #### Filters (ECHO_INTENT_ACTION)
 
+<Filters_Reporting_ECHO_INTENT_ACTION/>
+
 #### Columns (ECHO_INTENT_ACTION)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`IntentId`</td>
+<td class="table-content">Unique identifier of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Id`</td>
+<td class="table-content">Unique identifier of the intent action (capture, refund, dispute, cancel)</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`ExternalProcessingDate`</td>
+<td class="table-content">Unix timestamp of the date and time at which the intent was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`ExternalProviderReference`</td>
+<td class="table-content">Unique identifier of the intent in the external provider system</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`ExternalMerchantReference`</td>
+<td class="table-content">Unique identifier of the intent in the merchant system</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Status`</td>
+<td class="table-content">Status of the intent action</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Amount`</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Currency`</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`FeesAmount`</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`FeesCurrency`</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Type`</td>
+<td class="table-content">Type of the intent: PAYIN, REFUND, DISPUTE</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`PaymentMethod`</td>
+<td class="table-content">Payment method of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`BuyerId`</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`SellerId`</td>
+<td class="table-content">Unique identifier of the user(s) at the destination of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
 
 ### ECHO_SETTLEMENT
 
 #### Filters (ECHO_SETTLEMENT)
 
+<Filters_Reporting_ECHO_SETTLEMENT/>
+
 #### Columns (ECHO_SETTLEMENT)
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`Id`</td>
+<td class="table-content">Unique identifier of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`CreationDate`</td>
+<td class="table-content">Unix timestamp of the date and time at which the settlement was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`CreationDate:ISO`</td>
+<td class="table-content">ISO format of the date and time at which the settlement was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">`FileName`</td>
+<td class="table-content">Name of settlement file</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`SettlementCurrency`</td>
+<td class="table-content">Currency of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Status`</td>
+<td class="table-content">Status of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`SettledTransactionCount`</td>
+<td class="table-content">Total number of intents that have been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`UnsettledTransactionCount`</td>
+<td class="table-content">Total number of intents that haven’t been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`SettledAmount`</td>
+<td class="table-content">Total amount of intents that have been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`DeclaredAmount`</td>
+<td class="table-content">Total amount of intents that have been declared</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`DeficitAmount`</td>
+<td class="table-content">The difference between `DeclaredAmount` and `SettledAmount`</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
 
 ### ECHO_SPLIT
 
 #### Filters (ECHO_SPLIT)
 
+<Filters_Reporting_ECHO_SPLIT/>
+
 #### Columns (ECHO_SPLIT)
 
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`Id`</td>
+<td class="table-content">Unique identifier of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`IntentId`</td>
+<td class="table-content">Unique identifier of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`AuthorId`</td>
+<td class="table-content">Unique identifier of the user at the source of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Amount`</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Currency`</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`FeesAmount`</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`FeesCurrency`</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Status`</td>
+<td class="table-content">Status of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Description`</td>
+<td class="table-content">Description of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`CreditedWalletId`</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`DebitedWalletId`</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`Scheduled`</td>
+<td class="table-content">Whether or not `TransferDate` was sent in the intent or split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`CreationDate`</td>
+<td class="table-content">Unix timestamp of the date and time at which the split was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`CreationDate:ISO`</td>
+<td class="table-content">ISO format of the date and time at which the split was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">`ExecutionDate`</td>
+<td class="table-content">Unix timestamp of the date and time at which the split was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">`ExecutionDate:ISO`</td>
+<td class="table-content">ISO format of the date and time at which the split was executed</td>
+<td class="table-content">No</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
 
 ## Legacy reports 
 

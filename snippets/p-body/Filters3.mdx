@@ -1,90 +1,30 @@
+import Filters_Reporting_COLLECTED_FEES from '/snippets/p-body/Filters_Reporting_COLLECTED_FEES.mdx';
+import Filters_Reporting_USER_WALLET_TRANSACTIONS from '/snippets/p-body/Filters_Reporting_USER_WALLET_TRANSACTIONS.mdx';
+import Filters_Reporting_ECHO_INTENT_ACTION from '/snippets/p-body/Filters_Reporting_ECHO_INTENT_ACTION.mdx';
+import Filters_Reporting_ECHO_INTENT from '/snippets/p-body/Filters_Reporting_ECHO_INTENT.mdx';
+import Filters_Reporting_ECHO_SETTLEMENT from '/snippets/p-body/Filters_Reporting_ECHO_SETTLEMENT.mdx';
+import Filters_Reporting_ECHO_SPLIT from '/snippets/p-body/Filters_Reporting_ECHO_SPLIT.mdx';
+
 <ParamField body="Filters" type="object">
 The filers to apply. Each `ReportType` has different available filters:
 <Tabs>
 <Tab title="COLLECTED_FEES">
-The `Currency` filter is available. If not specified, the report contains data on all currencies.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Currency" type="string">
-The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
-</ParamField>
-</Expandable>
+<Filters_Reporting_COLLECTED_FEES/>
 </Tab>
 <Tab title="USER_WALLET_TRANSACTIONS">
-The `Currency`, `UserId`, and `WalletId` filters are available, and can be used alone or in combination, in which case the report data satisfies both filters.
-- `UserId` and `Currency` – Report contains all transactions (credited or debited) in the currency where `UserId` is the `AuthorId`
-- `UserId` and `WalletId` – Report contains all transactions (credited or debited) in all currencies where the `UserId` is specified as the `DebitedWalletId` or `CreditedWalletId`. If the `WalletId` is not a wallet owned by the `UserId`, then the report will be empty.
- 
-The `Currency` and `WalletId` cannot be used together.
-
-If no `Filters` are specified, the report contains all transactions crediting or debiting all user wallets.
-
-**Caution:** The `WalletId` and `UserId` values are not validated before the request is launched, so if both are used but don't correspond (the user doesn't own the wallet), then the report will be empty.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Currency" type="string">
-The currency of the `DebitedFunds`, `CreditedFunds`, or `Fees` of the transactions.
-</ParamField>
-<ParamField body="UserId" type="string">
-The unique identifier of the user referenced as the `AuthorId` or `CreditedUserId` of the transaction.
-</ParamField>
-<ParamField body="WalletId" type="string">
-The unique identifier of the wallet referenced as the `DebitedWalletId` or `CreditedWalletId` of the transaction.
-</ParamField>
-</Expandable>
+<Filters_Reporting_USER_WALLET_TRANSACTIONS/>
 </Tab>
 <Tab title="ECHO_INTENT">
-The `Type`, `Status`, and `PaymentMethod` filters are available and can be used in any combination.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Type" type="string">
-The type of Intent (as indicated in the settlement file): `PAYIN`, `REFUND`, `DISPUTE`
-</ParamField>
-<ParamField body="Status" type="string">
-The `Status` of the Intent: `AUTHORIZED`, `PARTIALLY_CAPTURED`, `CAPTURED`, `CANCELED`, `REFUNDED`, `REFUND_REVERSED`, `DISPUTED`, `DEFENDED`, `DISPUTED_WON`, `DISPUTED_LOST`
-</ParamField>
-<ParamField body="PaymentMethod" type="string">
-The payment method of the Intent: one of the [supported values](/guides/echo/supported-payment-methods) of the `ExternalProviderPaymentMethod`.
-</ParamField>
-</Expandable>
+<Filters_Reporting_ECHO_INTENT/>
 </Tab>
 <Tab title="ECHO_INTENT_ACTION">
-The `Type`, `Status`, and `PaymentMethod` filters are available and can be used in any combination.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Type" type="string">
-The type of Intent (as indicated in the settlement file): `PAYIN`, `REFUND`, `DISPUTE`
-</ParamField>
-<ParamField body="Status" type="string">
-The `Status` of the Intent: `AUTHORIZED`, `PARTIALLY_CAPTURED`, `CAPTURED`, `CANCELED`, `REFUNDED`, `REFUND_REVERSED`, `DISPUTED`, `DEFENDED`, `DISPUTED_WON`, `DISPUTED_LOST`
-</ParamField>
-<ParamField body="PaymentMethod" type="string">
-The payment method of the Intent: one of the [supported values](/guides/echo/supported-payment-methods) of the `ExternalProviderPaymentMethod`.
-</ParamField>
-</Expandable>
+<Filters_Reporting_ECHO_INTENT_ACTION/>
 </Tab>
 <Tab title="ECHO_SETTLEMENT">
-The `Status` and `ExternalProviderName` filters are available and can be used together.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Status" type="string">
-The `Status` of the Settlement:
-</ParamField>
-<ParamField body="ExternalProviderName" type="string">
-The [supported third-party PSP](/guides/echo/supported-providers) processing the transaction.
-</ParamField>
-</Expandable>
+<Filters_Reporting_ECHO_SETTLEMENT/>
 </Tab>
 <Tab title="ECHO_SPLIT">
-The `Status`, `IntentId`, and `Scheduled` filters are available and can be used in any combination.
-<Expandable title="properties" defaultOpen>
-<ParamField body="Status" type="string">
-The `Status` of the Split: `CREATED`, `PENDING_FUNDS_RECEPTION`, `AVAILABLE`, `PENDING`, `COMPLETED`, `REJECTED`, `FAILED `, `REVERSED`
-</ParamField>
-<ParamField body="IntentId" type="string">
-The unique identifier of the related Intent. 
-
-**Caution:** There is no validation that the `IntentId` is valid.
-</ParamField>
-<ParamField body="Scheduled" type="boolean">
-Whether or not the `TransferDate` was sent (in either the Intent or the Split), regardless of the `Status` of the Split.
-</ParamField>
-</Expandable>
+<Filters_Reporting_ECHO_SPLIT/>
 </Tab>
 </Tabs>
 </ParamField>
