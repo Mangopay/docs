@@ -1,111 +1,161 @@
 ---
-title: Overview
-sidebarTitle: Overview
+title: 30-day preauth
 'og:title': '30-day card preauthorization - Mangopay docs'
-"og:description": "Find out about Mangopay’s preauthorization features to reserve funds on a card to be captured later, with 7-day or 30-day options."
+"og:description": "How to place a hold on a card and capture the amount within 30 days."
 ---
+
+import RestCreateDepositPreauthorization from '/snippets/code/rest-create-deposit-preauthorization.mdx';
+import PhpCreateDepositPreauthorization from '/snippets/code/php-create-deposit-preauthorization.mdx';
+import JavaCreateDepositPreauthorization from '/snippets/code/java-create-deposit-preauthorization.mdx';
+import PythonCreateDepositPreauthorization from '/snippets/code/python-create-deposit-preauthorization.mdx';
+import NetCreateDepositPreauthorization from '/snippets/code/net-create-deposit-preauthorization.mdx';
+
+import RestCreateDepositPreauthorizedPayin from '/snippets/code/rest-create-deposit-preauthorized-payin.mdx';
+import PhpCreateDepositPreauthorizedPayin from '/snippets/code/php-create-deposit-preauthorized-payin.mdx';
+import JavaCreateDepositPreauthorizedPayin from '/snippets/code/java-create-deposit-preauthorized-payin.mdx';
+import PythonCreateDepositPreauthorizedPayin from '/snippets/code/python-create-deposit-preauthorized-payin.mdx';
+import NetCreateDepositPreauthorizedPayin from '/snippets/code/net-create-deposit-preauthorized-payin.mdx';
+
+import RestCancelOrValidatePreauthorization from '/snippets/code/rest-cancel-or-validate-preauthorization.mdx';
+import PhpCancelDepositPreauthorization from '/snippets/code/php-cancel-deposit-preauthorization.mdx';
+import JavaCancelValidatePreauthorization from '/snippets/code/java-cancel-validate-preauthorization.mdx';
+import PythonCancelDepositPreauthorization from '/snippets/code/python-cancel-deposit-preauthorization.mdx';
+import NetCancelDepositPreauthorization from '/snippets/code/net-cancel-deposit-preauthorization.mdx';
 
 **Availability:**
 
 * `CB_VISA_MASTERCARD` only
 
-The basic flow of Mangopay’s 30-day preauthorization feature works as follows:
-
-<Steps>
-  <Step title="Secure the funds">
-    Secure the funds with the <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorization">POST Create a Deposit Preauthorization</a> endpoint
-  </Step>
-
-  <Step title="Capture pay-in">
-    Capture the preauthorized funds using the dedicated <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin">POST Create a Deposit Preauthorized PayIn without complement</a> endpoint
-  </Step>
-</Steps>
-
-This scenario is described step by step in the tutorial:
-
-<a href="/guides/payment-methods/card/deposit-preauthorization/how-to">How to process a 30-day preauthorization →</a>
-
 <Note>
-  **Note - Multi-capture not possible with 30-day preauthorization**
+**Note - Multi-capture not possible with 30-day preauthorization**
 
-  Multi-capture is only available for 7-day preauthorization.
+Multi-capture is only available for 7-day preauthorization.
 </Note>
 
-## Complement features
+Mangopay's 30-day preauthorization feature is a two-step process, and uses two API objects:
+- The Deposit Preauthorization to request the card authorization, which involves the user completing 3DS
+- The Deposit Preauthorized PayIn to capture the funds without the user present and based on the authorization
 
-30-day preauthorization also comes with additional functionalities:
+## How to process a 30-day card preauthorization
 
-* **Complement after pay-in** – Capture more than the initial preauthorized amount
-* **Complement after no-show** – Capture additional funds against an unused preauthorization
 
-These features both involve charging a complementary amount in addition to the initially preauthorized amount. The preauthorized pay-in capture and the pay-in complement are both linked to the Deposit object in the `PayinsLinked` parameter.
+<Info>
+  **Prerequisites**
 
-For step-by-step guidance on all complement scenarios, see the tutorial:
+  * A `ClientId` and an API key – if you don't have these, <a href="https://mangopay.com/contact" target="_blank">contact Sales</a> to get access to the <a href="https://hub.mangopay.com/" target="_blank">Mangopay Dashboard</a>
+  * A User object created for your end user, and their associated Wallet
+  * A <a href="/guides/payment-methods/card">registered card</a> (CB, Visa, or Mastercard), which is `VALID` or registered less than 24 hours ago, to make the payments
+  * The URL of a page on your platform to return the end user to after authentication
+</Info>
 
-<a href="/guides/payment-methods/card/deposit-preauthorization/how-to">How to process a 30-day preauthorization →</a>
+### 1. Secure the funds
 
-#### Complement after pay-in
+Create a deposit preauthorization to hold funds for 30 days:
 
-Platforms may want to capture more than the initially preauthorized amount - for example, if end users are benefiting from additional services or if damages have been incurred during a rental.
+> [**POST** /v2.01/\{ClientId}/deposit-preauthorizations/card/direct](/api-reference/deposit-preauthorizations/create-deposit-preauthorization)
 
-The steps are the following:
+<CodeGroup>
+    <RestCreateDepositPreauthorization />
+    <PhpCreateDepositPreauthorization />
+    <JavaCreateDepositPreauthorization />
+    <PythonCreateDepositPreauthorization />
+    <NetCreateDepositPreauthorization />
+</CodeGroup>
 
-<Steps>
-  <Step title="Secure the funds">
-    Secure the funds with the <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorization">POST Create a Deposit Preauthorization</a> endpoint
-  </Step>
+In the information returned, retain the `Id` of the Deposit Preauthorization for the next steps.
 
-  <Step title="Capture pay-in and signal intent to complement">
-    Capture the preauthorized funds, while also signaling the intent to capture an additional amount, using the dedicated <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-prior-to-complement">POST Create a Deposit Preauthorized PayIn prior to complement</a> endpoint
-  </Step>
+### 2. Redirect the user to 3DS protocol (if required)
 
-  <Step title="Capture complement pay-in">
-    Charge the card for the additional amount with the <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-complement">POST Create a Deposit Preauthorized PayIn complement</a> endpoint
-  </Step>
-</Steps>
+Redirect the user to the `SecureModeRedirectURL` value to complete strong customer authentication, unless it is `null`. If `SecureModeRedirectURL` is `null`, this means that 3DS is not required and no redirection is needed.
+
+You can also use the `SecureModeNeeded` boolean to determine this redirection behavior.
+
+For more information on how to handle 3DS redirection, see Steps 4, 6, and 7 of the <a href="/guides/payment-methods/card/direct/how-to">How to process a card payment</a> guide.
+
+### 3. Capture the funds
+
+Once the Deposit Preauthorization's `PaymentStatus` is `WAITING`, the funds are authorized to be captured within 29.5 days.
 
 <Note>
-  **Note - Pay-in prior to complement must be full capture** The pay-in prior
-  to a complement must be a full capture of the preauthorized amount - it
-  can’t be partial.
+  **Note - Multiple captures not possible**
+
+  Capturing the preauthorized amount can only be done once. It is possible to do a partial capture (for an amount less than the preauthorized amount).
 </Note>
 
-#### Complement after no-show
+To capture the funds, create the pay-in using the `Id` of the Deposit Preauthorization obtained previously as the `DepositId`.
 
-Platforms may want to capture additional funds if the initially preauthorized funds have not been captured. For example, this could be a penalty charged if end users cancel a reservation at the last minute.
+Specify the `Amount` values of debited funds and fees. The amount of the `DebitedFunds` must be less than or equal to the preauthorized amount.
 
-The steps are the following:
+> [**POST** /v2.01/\{ClientId}/payins/deposit-preauthorized/direct/full-capture](/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin)
 
-<Steps>
-  <Step title="Secure the funds">
-    Secure the funds with the <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorization">POST Create a Deposit Preauthorization</a> endpoint
-  </Step>
+<CodeGroup>
+<RestCreateDepositPreauthorizedPayin />
+<PhpCreateDepositPreauthorizedPayin />
+<JavaCreateDepositPreauthorizedPayin />
+<PythonCreateDepositPreauthorizedPayin /> 
+<NetCreateDepositPreauthorizedPayin />
+</CodeGroup>
 
-  <Step title="Request no-show">
-    Request the no-show, which also signals the intent to capture an additional amount, using the <a href="/api-reference/deposit-preauthorizations/cancel-deposit-preauthorization">PUT Cancel a Deposit Preauthorization or request a no-show</a> endpoint
-  </Step>
+If the preauthorized pay-in is successful, the deposit preauthorization’s `PaymentStatus` becomes `VALIDATED`. In the `PayinsLinked` parameter, the `Id` of the capture is linked as the `PayinCaptureId`.
 
-  <Step title="Capture complement pay-in">
-    Charge the card for the additional amount with the <a href="/api-reference/deposit-preauthorizations/create-deposit-preauthorized-payin-complement">POST Create a Deposit Preauthorized PayIn complement</a> endpoint
-  </Step>
-</Steps>
+You can set up a webhook for the following event type to be notified of the status change:
 
-#### Behavior of complement pay-ins
+* DEPOSIT\_PREAUTHORIZATION\_PAYMENT\_VALIDATED
 
-Both the initial pay-in and the complement benefit from the authorization of the deposit preauthorization. The complement benefits from an exemption to 3DS.
+Use the [GET View a Deposit Preauthorization](/api-reference/deposit-preauthorizations/view-deposit-preauthorization) endpoint to see these details.
 
-The amount of the complement can be greater than the initially preauthorized amount, but the issuer has the right to refuse the complement if the amount (or timing) are not satisfactory.
+```json API response
+...
+    "PaymentStatus": "VALIDATED",
+    "PayinsLinked": {
+        "PayinCaptureId": "1719d157-5a97-4af3-91b0-7d660b34b21c",
+        "PayinComplementId": null
+    },
+...
+```
 
-If the complement pay-in is declined, you are able to retry it on the same endpoint.
+Once the `PaymentStatus` is `VALIDATED`, no further action is possible.
+
+### 4. Cancel hold if not used
+
+In the scenario where the capture is not needed, you should release the user's funds proactively rather than letting the hold expire after 29.5 days.
+
+You can release the preauthorized funds by changing the Deposit Preauthorization's `PaymentStatus` to `CANCELED`:
+
+> [**PUT** /v2.01/\{ClientId}/deposit-preauthorizations/\{DepositId}](/api-reference/deposit-preauthorizations/cancel-deposit-preauthorization)
+
+<CodeGroup>
+<RestCancelOrValidatePreauthorization />
+<PhpCancelDepositPreauthorization />
+<JavaCancelValidatePreauthorization />
+<PythonCancelDepositPreauthorization />  
+<NetCancelDepositPreauthorization />
+</CodeGroup>
+
+Once the `PaymentStatus` is `CANCELED`, no further action is possible.
+
+```json API response parameters - Canceled
+...
+    "PaymentStatus": "CANCELED",
+    "PayinsLinked": {
+        "PayinCaptureId": null,
+        "PayinComplementId": null
+    },
+...
+```
+
+You can set up a webhook for the following event types to be notified of the status changes:
+
+* DEPOSIT\_PREAUTHORIZATION\_PAYMENT\_CANCEL\_REQUESTED
+* DEPOSIT\_PREAUTHORIZATION\_PAYMENT\_CANCELED
 
 ## Related resources
 
 <CardGroup col={2}>
-  <Card title="How to" href="/guides/payment-methods/card/deposit-preauthorization/how-to">
-    Learn how to process a 30-day card preauthorization
-  </Card>
-
-  <Card title="Endpoint" href="/api-reference/deposit-preauthorizations/deposit-preauthorization-object">
-    The Deposit Preauthorization object
-  </Card>
+<Card title="Guide" href="/guides/payment-methods/card/direct/how-to">
+Learn how to process a one-time card payment
+</Card>
+<Card title="Endpoint" href="/api-reference/deposit-preauthorizations/deposit-preauthorization-object">
+The Deposit Preauthorization object
+</Card>
 </CardGroup>
