@@ -1,5 +1,5 @@
 ---
-title: 'Cancel a Deposit Preauthorization or request a no-show'  
+title: 'Cancel a Deposit Preauthorization'  
 api: 'PUT /v2.01/{ClientId}/deposit-preauthorizations/{DepositId}'  
 ---
 
@@ -39,9 +39,7 @@ import JavaCancelValidatePreauthorization from '/snippets/code/java-cancel-valid
 import PythonCancelDepositPreauthorization from '/snippets/code/python-cancel-deposit-preauthorization.mdx';
 import NetCancelDepositPreauthorization from '/snippets/code/net-cancel-deposit-preauthorization.mdx';
 
-This endpoints allows you to take one of two actions against a deposit preauthorization, in both cases provided that no preauthorized pay-ins have been made to capture funds:  
-- Cancel it manually by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can’t be used for any further action.  
-- Request a no-show by setting the `PaymentStatus` to `NO_SHOW_REQUESTED`. If successful, the `PaymentStatus` `NO_SHOW` indicates that you can use the Create a Deposit Preauthorized PayIn complement endpoint to capture additional funds.  
+This endpoint allows you to cancel a deposit preauthorization if it is no longer needed, by setting the `PaymentStatus` to `CANCEL`. A canceled deposit preauthorization can't be subsequently captured.
 
 ### Path parameters  
 
@@ -107,21 +105,9 @@ This endpoints allows you to take one of two actions against a deposit preauthor
 
 <TagResponse />  
 
-<CardInfoResponse /></Accordion>
+<CardInfoResponse />
 
-
-<Accordion title="400 - Trying to cancel PaymentStatus TO_BE_COMPLETED or NO_SHOW">
-```json 
-{
-    "Message": "The capture has a success status.",
-    "Type": "invalid_action",
-    "Id": "37b05486-e0de-4b17-9056-b3197a4d85e2",
-    "Date": 1699264645.0,
-    "errors": null
-}  
- ```  
 </Accordion>
-
 
 <ResponseExample>  
 
