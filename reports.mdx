@@ -29,7 +29,7 @@ There are two report features that currently exist. The table below gives an ove
 </thead>
 <tbody>
 <tr>
-<th class="header">Report types</th>
+<th class="header">[Report types](#report-types)</th>
 <td class="table-content">
 - USER_WALLET_TRANSACTIONS (equivalent of legacy Transactions report)
 - COLLECTED_FEES
@@ -64,7 +64,7 @@ Webhook event type
 <tr>
 <th class="header">Generation endpoint</th>
 <td class="table-content">
-- [POST Create a Report](/api-reference/reporting/create-report)
+- [POST Create a Report](/api-reference/reporting/create-report) with a `ReportType` value for each type
 </td>
 <td class="table-content">
 - [POST Create a Transactions report](/api-reference/reports/create-transactions-report)
@@ -85,22 +85,22 @@ The two reporting features are independent, meaning that a legacy report object 
 ### Generate a report via API 
 
 <Steps>
-  <Step title="Set up webhooks to be notified that report is ready for download (recommended)">
-    Set up webhooks for the following event types:
-    - `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
-    - `REPORT_FAILED` – Indicates that a report was not generated successfully
-  </Step>
-  <Step title="Generate the report">
-    Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range. 
-    
-    You should apply the relevant `Filters` to your report. You can also specify the `Columns` your wish to include in the report, otherwise the default ones are used (see tables below).
-  </Step>
-  <Step title="Download when ready">
-  When the report status changes to `GENERATED`, the `DownloadURL` is populated with the URL where you can download the report. 
-  </Step>
-  <Step title="Repeat process as needed">
-  A report is valid for 31 days. After this, its `Status` changes to `EXPIRED` at it is no longer available for download. You can re-generate another report with the same parameters, or else update your report to capture data from the latest period.
-  </Step>
+<Step title="Set up webhooks to be notified that report is ready for download (recommended)">
+Set up [webhooks](/webhooks) for the following event types:
+- `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
+- `REPORT_FAILED` – Indicates that a report was not generated successfully
+</Step>
+<Step title="Generate the report">
+Call the [POST Create a Report](/api-reference/reporting/create-report) endpoint to generate your report, selecting the `ReportType` and date range (in `AfterDate` and `BeforeDate`).
+
+You should apply the relevant `Filters` to your report. You can also specify the `Columns` your wish to include in the report, otherwise the default ones are used (see tables below).
+</Step>
+<Step title="Download when ready">
+When the report status changes to `GENERATED`, the `DownloadURL` is populated with the URL where you can download the report. 
+</Step>
+<Step title="Repeat process as needed">
+A report is valid for 31 days. After this, its `Status` changes to `EXPIRED` at it is no longer available for download. You can re-generate another report with the same parameters, or else update your report to capture data from the latest period.
+</Step>
 </Steps>
 
 ### Filters and columns
