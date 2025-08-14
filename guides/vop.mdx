@@ -1,0 +1,242 @@
+---
+title: Verification of Payee
+description: Guide to how Verification of Payee impacts your platform's integration with Mangopay
+---
+
+<a href="https://www.europeanpaymentscouncil.eu/what-we-do/other-schemes/verification-payee" target="_blank">Verification of Payee (VOP)</a> is an EU regulatory scheme that aims to protect users from fraud and payment errors during bank wire transfers. As such, the regulation impacts wire payments made in EUR in SEPA's local schemes, meaning SEPA Credit Transfer (SCT) or SEPA Instant Credit Transfer (SCT Inst).
+
+A bank wire transfer involves two payment service providers (PSPs) or banks: 
+- The **Requesting PSP**, making the payment request on behalf of their customer, the **payer**
+- The **Responding PSP**, who’s customer, the **payee**, will receive the funds
+
+Verification of Payee checks whether the **IBAN** and **account holder name** sent by the Requesting PSP correspond to the combination of data held by the Responding PSP.
+
+There are 4 possible outcomes: 
+
+- **Match**: The IBAN and account holder name correspond.
+- **Close Match**: There are minor discrepancies (such as typos) between the name requested and the one registered.
+- **No Match**: The details do not match, indicating a possible error or fraudulent attempt.
+- **Verification Impossible**: A technical issue prevents verification, such as formatting errors or the responding service being unreachable.
+
+## Mangopay’s role in VOP
+
+Mangopay plays the role of both PSP parties in different scenarios: 
+
+- **Requesting PSP** – In a **payout** scenario, Mangopay is sending a payment request and receives the result of the VOP check.
+- **Responding PSP** – In a **pay-in** scenario, funds are arriving at an account provided by Mangopay, in which case it is responding with the VOP data.
+
+## Impact on your platform
+
+Verification of Payee has an impact on Mangopay’s banking features in EUR using SCT and SCT Inst, which may impact your platform.
+
+### Pay-in
+
+In a pay-in scenario, as a Responding PSP, Mangopay must correctly supply account holder data, which impacts the legacy [Banking Alias](/api-reference/banking-aliases/banking-alias-object) feature. Mangopay needs to categorize existing Banking Alias objects to identify those which are held in the name of the user and not Mangopay – these are known as [User-Owned Accounts](#categorization-of-legacy-banking-alias).
+
+**Platforms using User-Owned Accounts** (either **Banking Alias** or [Virtual Account](/api-reference/virtual-accounts/virtual-account-object)), will be required to sign an amendment with Mangopay to continue providing the accounts to their users in the name of the user. These users need to be KYC verified if not already the case.
+
+### Payout
+
+In a payout scenario, as a Requesting PSP, Mangopay will be carrying out VOP checks on:
+- Payout requests made in `EUR` using SCT or SCT Inst
+- Recipient registrations if `Currency` is `EUR`, `PayoutMethod` is `LocalBankTransfer`, and `Country` is a SEPA country
+
+Mangopay will also provide an endpoint to enable your platform to retrieve the VOP result of Recipients and Bank Accounts that are already registered.
+
+**All platforms** will be able to take advantage of Mangopay’s [Verification of Payee data](#verification-of-payee-api-fields) to help prevent fraud before a payout is requested.
+
+Until the aforementioned amendment is signed, **platforms using User-Owned Accounts** (either **Banking Alias** or **Virtual Account**) will have payouts blocked, for users using User-Owned Accounts, if the VOP result is No Match or cannot be made for a technical error (Verification Impossible) – read more about [payouts from user-owned IBANs](#payouts-from-user-owned-accounts).
+
+## Categorization of legacy Banking Alias
+
+Mangopay released its new [Virtual Accounts feature](/guides/payment-methods/banking/virtual-iban) to replace the legacy Banking Aliases. One of the benefits of Virtual Accounts is the categorization between **Collection Accounts** and **User-Owned Accounts** (defined in the `VirtualAccountPurpose` field).
+
+These serve very different purposes and have different user-verification requirements which must be met before being created:
+
+<table>
+  <thead>
+    <tr>
+      <th class="header"></th>
+      <th class="header">Collection account</th>
+      <th class="header">User-owned account</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th class="header">Purpose</th>
+      <td class="table-content">Collection and reconciliation of funds by the platform</td>
+      <td class="table-content">User's acceptance and storing of funds</td>
+    </tr>
+    <tr>
+      <th class="header">Account owner</th>
+      <td class="table-content">Mangopay S.A. or Mangopay UK Ltd.</td>
+      <td class="table-content">Wallet owner</td>
+    </tr>
+    <tr>
+      <th class="header">Account holder name example</th>
+      <td class="table-content">"MGP `PlatformTradingName`"</td>
+      <td class="table-content">"`FirstName` `LastName`" (Natural user) or "`Name`" (Legal user)</td>
+    </tr>
+    <tr>
+      <th class="header">Allowed user category</th>
+      <td class="table-content">Owner or Payer</td>
+      <td class="table-content">Owner</td>
+    </tr>
+    <tr>
+      <th class="header">KYC verification</th>
+      <td class="table-content">Not required</td>
+      <td class="table-content">Required</td>
+    </tr>
+    <tr>
+      <th class="header">Payouts</th>
+      <td class="table-content">Prohibited from the associated  wallet, except for refunds returning funds to their origin</td>
+      <td class="table-content">Authorized from the associated wallet</td>
+    </tr>
+  </tbody>
+</table>
+
+The legacy Banking Alias feature does not have these types, and the Verification of Payee regulations require Mangopay to categorize them, so that the correct data can be returned to payers.
+
+### Criteria for categorization
+
+Mangopay will categorize existing Banking Alias by adding the `VirtualAccountPurpose` field to the object. 
+
+The value assigned to the field will depend on the status of the associated User, and the `OwnerName` will be changed (or not) accordingly.
+
+#### User-Owned case
+
+**IF** the User owning the Banking Alias object’s `WalletId` has:
+
+- The `UserCategory` of `OWNER`
+- **AND** the `KYCLevel` of `REGULAR`
+
+**THEN**:
+
+- The `USER_OWNED` value will assigned for `VirtualAccountPurpose`
+- **AND** the account’s `OwnerName` will not be changed
+
+**Consequences:**
+
+- Payouts requested for the user will continue to be possible, provided the legal amendment is signed
+- For pay-ins to these IBANs, the response Mangopay’s service gives as a Responding PSP should be **Match**, because the `OwnerName` is the User’s name as validated by KYC/KYB
+
+#### Collection case
+
+**IF** the User owning the Banking Alias object’s `WalletId` has:
+
+- The `UserCategory` of `PAYER`
+- **OR** the `KYCLevel` of `LIGHT`
+
+**THEN**:
+
+- The `COLLECTION` value will assigned for `VirtualAccountPurpose`
+- **AND** the account’s `OwnerName` will be changed to “MGP `PlatformTradingName`”
+
+**Consequences**:
+
+- Payouts requested for the user will continue to not be possible (already the case)
+- For pay-ins to these IBANs, the response Mangopay’s service gives as Responding PSP will be the IBAN and the platform’s trading name. If, with their PSP or bank, the payer has requested payment to the IBAN in the name of the Mangopay User associated with it, the VOP response will likely be **No match**. Depending on how this case is handled by their PSP or bank, the payer may or may not be able to proceed with the payment.
+
+### Actions to take before categorization
+
+If your platform has Banking Alias objects that users are using in their name, either for pay-ins or payouts, then these users must meet the necessary criteria to be KYC verified.
+
+To retain the use of these IBANs for these users, they need to provide the necessary data to become `OWNER` (including enrollment in SCA) and validate their KYC/B.
+
+If these users do not meet these criteria, and Mangopay assigns the `COLLECTION` value, there may be some consequences as described above on pay-ins.
+
+## Payouts from User-Owned Accounts
+
+To provide User-Owned IBANs to their users, platforms must sign an amendment with Mangopay. 
+
+Until the amendment is signed, payouts from User-Owned IBANs will be blocked if the VOP check made by Mangopay during the Payout request is **No Match** or **Error**.
+
+Once the amendment is signed, payouts are permitted whatever the VOP result, and platforms are responsible for displaying the VOP result to the end user.
+
+### Verification of Payee API fields
+
+To enable this, Mangopay is adding fields to the API response on the existing [POST Create a Payout](/api-reference/payouts/create-payout) endpoint.
+
+There are three new data points, which will be returned inside a new `VerificationOfPayee` JSON object parameter: 
+
+- `VerificationId` – A unique identifier of the VOP check performed by Mangopay.
+- `Result` – The outcome of the VOP check performed by Mangopay, using the details in the Recipient or Bank Account object reference in the `BankAccountId` field.
+- `Message` – The explanation of the check outcome.
+
+The fields will give the result of the VOP check:
+
+<table>
+<thead>
+<tr>
+<th class="header">`Check`</th>
+<th class="header">`Message`</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`MATCH`</td>
+<td class="table-content">Account name fully matches account identifier.</td>
+</tr>
+<tr>
+<td class="table-content">`CLOSE_MATCH`</td>
+<td class="table-content">Account name partially matches account identifier. Name returned by check: Alex Smith. Payment made to this account may not reach its intended counterparty.</td>
+</tr>
+<tr>
+<td class="table-content">`NO_MATCH`</td>
+<td class="table-content">Account name does not match account identifier. Payment made to this account may not reach its intended counterparty.</td>
+</tr>
+<tr>
+<td class="table-content">`ERROR`</td>
+<td class="table-content">Responding PSP's verification service unreachable. Payment made to this account may not reach its intended counterparty.</td>
+</tr>
+</tbody>
+</table>
+
+<Note>
+**Note – VOP only performed on EUR using in SEPA local schemes**
+
+VOP only applies to payments in EUR using SCT or SCT Inst.
+
+This means the Recipient referenced in the payout's `BankAccountId` has `Currency` of `EUR`, `PayoutMethod` of `LocalBankTransfer`, and `Country` as a SEPA country. 
+
+If the BankAccountId references a legacy Bank Account, you can retrieve these data points by using the existing `BankAccountId` as the `RecipientId` on the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint (read more about [recipient migration](/guides/payouts#migration-of-legacy-bank-accounts)).
+</Note>
+
+If the check result is **Match**, or **Close Match**, then the endpoint will return a 200 response and the request will proceed as usual with the `VerificationOfPayee` data in the body of the payout object.
+
+If the check result is No Match or Error, then, **until the amendment is signed**, the endpoint will return a 400 result.
+
+#### Example 400 result (if No Match or Error and amendment not signed)
+
+```json HTTP 400
+{
+    "Id": "44312c27-c681-4240-8df9-a2507bcf30d6",
+    "Message": "Payout not allowed because Verification of Payee result is NO_MATCH or ERROR",
+    "Type": "invalid_action",
+    "Date": 1747666655.0,
+    "errors": null
+}
+```
+This block will **only** apply if the VOP result is `NO_MATCH` or `ERROR` and if the amendment is not signed.
+
+The block will be applied to the user identified as using User-Owned Accounts, meaning any call to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint where the `BankAccountId` held by the identified user will be rejected (if VOP result is `NO_MATCH` or `ERROR`). 
+
+Payouts made by other users not using User-Owned Accounts will not be blocked by VOP, regardless of whether the platform has signed the amendment or not. 
+
+Once the amendment has been signed, a 200 result will be returned and the `VerificationOfPayee` data will be returned in the body of the Payout object, so that platforms can display it to users.
+
+### VOP on recipients (bank accounts)
+
+### Recipient registration
+
+Mangopay will also perform VOP checks during bank account registration on the [POST Validate data for a Recipient](/api-reference/recipients/validate-recipient-data) endpoint.
+
+The response to this endpoint will give the data of the VerificationOfPayee object, with `VerificationId`, Check, and Message (see [API fields](#verification-of-payee-api-fields)). This allows platforms to display this information to the user before the Recipient is created. 
+
+VOP only applies to EUR local schemes (SCT and SCT Inst). This means that for the check to carried out, the Recipient must have `Currency` of `EUR`, `PayoutMethod` of `LocalBankTransfer`, and `Country` as a SEPA country. Note that non-eurozone countries in SEPA (e.g. Poland, Denmark) are only impacted if the currency is `EUR` (e.g. not `PLN` or `DDK` respectively).
+
+### Existing accounts
+
+For the Bank Account and Recipient objects that have already been created, and are active, Mangopay will provide a dedicated endpoint that platforms can call to retrieve the VOP result.
+
+Your platform can call the new endpoint to retrieve the VOP result to display to the user before they initiate a payout request.
