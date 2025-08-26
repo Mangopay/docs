@@ -213,10 +213,10 @@ Payouts where the VOP result is **Match** or **Close Match** will continue to be
 
 Mangopay is adding fields to the API response on the existing [POST Create a Payout](/api-reference/payouts/create-payout) endpoint to return the result of the VOP check on each payout request. These new fields will also be added on [recipient creation](#vop-on-recipients-bank-accounts) to return the result of the VOP check performed on recipients.
 
-There are three new data points, which will be returned inside a new `VerificationOfPayee` JSON object parameter: 
+There are three new data points, which will be returned inside a new `RecipientVerificationOfPayee` JSON object parameter: 
 
 - `RecipientVerificationId` – A unique identifier of the VOP check performed by Mangopay.
-- `RecipientVerificationCheck` – The outcome of the VOP check performed by Mangopay, using the details in the Recipient or Bank Account object reference in the `BankAccountId` field.
+- `RecipientVerificationCheck` – The outcome of the VOP check performed by Mangopay, using the details in the Recipient or Bank Account object referenced in the `BankAccountId` field.
 - `RecipientVerificationMessage` – The explanation of the check outcome.
 
 In the future, Mangopay plans to introduce another field, `UserMatchResult`, to indicate if the name returned by the VOP check matches the name of the User who owns the Recipient account.
@@ -266,7 +266,7 @@ This means the Recipient referenced in the payout's `BankAccountId` has `Currenc
 If the `BankAccountId` references a legacy Bank Account, you can retrieve these data points by using the existing `BankAccountId` as the `RecipientId` on the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint (read more about [recipient migration](/guides/payouts#migration-of-legacy-bank-accounts)).
 </Note>
 
-If the check result is `MATCH`, or `CLOSE_MATCH`, then the Payout endpoint will return a 200 response and the request will proceed as usual with the `VerificationOfPayee` data in the response body of the payout object.
+If the check result is `MATCH`, or `CLOSE_MATCH`, then the Payout endpoint will return a 200 response and the request will proceed as usual with the `RecipientVerificationOfPayee` data in the response body of the payout object.
 
 ```json Example 200 response with VOP data (MATCH case)
 {
@@ -303,7 +303,7 @@ If the check result is `MATCH`, or `CLOSE_MATCH`, then the Payout endpoint will 
     "FallbackReason": null,
     "EndToEndId": "3b891fba337d45ec874646ac48565964",
     "PaymentRef": null,
-    "VerificationOfPayee": {
+    "RecipientVerificationOfPayee": {
       "RecipientVerificationId": "123456789",
       "RecipientVerificationCheck": "MATCH",
       "RecipientVerificationMessage": "Account name fully matches account identifier."
@@ -328,7 +328,7 @@ The block will be applied to the user identified as using User-Owned Accounts, m
 
 Payouts made by other users not using User-Owned Accounts will not be blocked by VOP, regardless of whether the platform has signed the amendment or not. 
 
-Once the amendment has been signed, a 200 result will be returned and the `VerificationOfPayee` data will be returned in the body of the Payout object, so that your platform can display it to users.
+Once the amendment has been signed, a 200 result will be returned and the `RecipientVerificationOfPayee` data will be returned in the body of the Payout object, so that your platform can display it to users.
 
 ### VOP on recipients (bank accounts)
 
@@ -336,12 +336,12 @@ Once the amendment has been signed, a 200 result will be returned and the `Verif
 
 Mangopay will also perform VOP checks during recipient registration on the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint.
 
-The response to this endpoint will give the data of the `VerificationOfPayee` object, with `RecipientVerificationId`, `RecipientVerificationCheck`, and `RecipientVerificationMessage` (see [API fields](#verification-of-payee-api-fields)).
+The response to this endpoint will give the data of the `RecipientVerificationOfPayee` object, with `RecipientVerificationId`, `RecipientVerificationCheck`, and `RecipientVerificationMessage` (see [API fields](#verification-of-payee-api-fields)).
 
 Verification of Payee (VOP) only applies to EUR local schemes (SCT and SCT Inst). This means that for the check to carried out, the Recipient must have `Currency` of `EUR`, `PayoutMethod` of `LocalBankTransfer`, and `Country` as a SEPA country. Note that non-eurozone countries in SEPA (e.g. Poland, Denmark) are only impacted if the currency is `EUR` (e.g. not `PLN` or `DDK` respectively).
 
 #### Existing accounts
 
-For the active Bank Account and Recipient objects that have already been created, Mangopay will provide a dedicated endpoint that platforms can call to retrieve the VOP result and `VerificationOfPayee` data.
+For the active Bank Account and Recipient objects that have already been created, Mangopay will provide a dedicated endpoint that platforms can call to retrieve the VOP result and `RecipientVerificationOfPayee` data.
 
 Your platform can call the new endpoint to retrieve the VOP result to display to the user before they initiate a payout request.
