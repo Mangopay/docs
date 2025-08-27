@@ -6,16 +6,12 @@ const mangopay = new mangopayInstance({
   clientApiKey: 'your-api-key',
 })
 
-let user = {
-  Id: '146476890',
-}
-
 let kycDocument = {
-  Id: '148967491',
+  Id: 'kyc_01HSXNH060XEFTTQ57RKYBHHQ1',
 }
 
-const getKycDocument = async (userId, kycDocumentId) => {
-  return await mangopay.Users.getKycDocument(userId, kycDocumentId)
+const getKycDocument = async (kycDocumentId) => {
+  return await mangopay.KycDocuments.get(kycDocumentId)
     .then((response) => {
       console.info(response)
       return response
@@ -26,5 +22,5 @@ const getKycDocument = async (userId, kycDocumentId) => {
     })
 }
 
-getKycDocument(user.Id, kycDocument.Id)  
+getKycDocument(kycDocument.Id)
 ```
