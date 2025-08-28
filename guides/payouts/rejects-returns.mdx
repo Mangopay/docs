@@ -1,36 +1,119 @@
 ---
 title: Rejects, returns, and recalls
 sidebarTitle: Returns
+description: Guidance for dealing with payout returns and R-transactions
 ---
 
-Successful payouts (i.e. with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
+## Payout returns
 
-In this scenario, Mangopay creates a Refund object for the payout so that the funds can be returned to the wallet.
+Successful payouts (with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. if it's a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
 
-Set up <a href="/webhooks">hook notifications</a> for the following <a href="/webhooks/event-types">event types</a> to be notified of this:  
-- `PAYOUT_REFUND_CREATED`  
-- `PAYOUT_REFUND_SUCCEEDED`  
-- `PAYOUT_REFUND_FAILED`  
+In these scenarios, Mangopay creates a [Refund](/api-reference/refunds/refund-object) object for the initial payout so that the funds can be returned to the wallet.
 
-You can use the [GET View a Refund endpoint](/api-reference/refunds/view-refund) to see details of the payout return.
+Set up [hook notifications](/webhooks) for the following [event types](/webhooks/event-types) to be notified of this:
+- `PAYOUT_REFUND_CREATED`
+- `PAYOUT_REFUND_SUCCEEDED`
+- `PAYOUT_REFUND_FAILED`
 
-Additional information regarding the return can be found in the `RefundReason` object returned by the API.  
+For the vast majority of payout return objects, the `Status` value passes from `CREATED` to `SUCCEEDED` within a matter of seconds. On extremely rare occasions, a payout return can fail (`FAILED`), in which case details are given in the fields below.
 
-Possible `RefundReasonType` are:
-- `BANKACCOUNT_INCORRECT`
-- `BANKACCOUNT_HAS_BEEN_CLOSED`
-- `OWNER_DO_NOT_MATCH_BANKACCOUNT`
-- `WITHDRAWAL_IMPOSSIBLE_ON_SAVINGS_ACCOUNTS`
+To view the details of a payout return (once `SUCCEEDED`), call the [GET View a Refund endpoint](/api-reference/refunds/view-refund) to see details of the payout return.
 
-The refund reason type may be accompanied by a custom message in the `RefundReasonMessage` parameter.  
+In the response, the `RefundReason` object parameter contains a `RefundReasonType` and `RefundReasonMessage` which give more information about why the transaction was returned.
+
+### Refusal reasons 
+
+When Mangopay creates a payout return, the `RefusedReasonType` assigned gives more details about why the refund object was created. 
+
+Where possible, Mangopay assigns a code in line with the standards for **SEPA Credit Transfer (SCT) reason codes for R-transactions** (rejects, returns, recalls, and requests for recall), which are available on the <a href="https://www.europeanpaymentscouncil.eu/document-library/guidance-documents/guidance-reason-codes-sepa-credit-transfer-r-transactions" target="_blank">EPC website</a>. 
+
+The table below lists the `RefusedReasonType` values along with a description and recommendation for how your platform can proceed (where relevant). The `RefundReasonMessage` value may provide more information about the specific case.
+
+<Note>
+**Note – Types and messages may change**
+
+The `RefundReasonType` and `RefundReasonMessage` values may evolve over time as Mangopay improves payout deliverability.
+</Note>
+
+<table>
+<thead>
+<tr>
+<th class="header">Refund `RefundReasonType`</th>
+<th class="header">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`AC06_BLOCKED_BANKACCOUNT`</td>
+<td class="table-content">Account blocked. Ask the user to register a different bank account.</td>
+</tr><tr>
+<td class="table-content">`AG01_FORBIDDEN_TRANSACTION`</td>
+<td class="table-content">Payout not possible to this account (e.g. because it's a savings account). Ask the user to register a different account.</td>
+</tr><tr>
+<td class="table-content">`AG02_INVALID_BANK_OPERATION`</td>
+<td class="table-content">Bank operation code not valid.</td>
+</tr><tr>
+<td class="table-content">`BANKACCOUNT_HAS_BEEN_CLOSED`</td>
+<td class="table-content">Account closed. Ask the user to register a new (open) account.</td>
+</tr><tr>
+<td class="table-content">`BANKACCOUNT_INCORRECT`</td>
+<td class="table-content">Incorrect identifier (IBAN or account number). Verify the account details with the user.</td>
+</tr><tr>
+<td class="table-content">`BE04_BENEFICIARY_ADDRESS_MISSING`</td>
+<td class="table-content">Address missing. See `RR03_BENEFICIARY_NAME_OR_ADDRESS_MISSING`.</td>
+</tr><tr>
+<td class="table-content">`FOCR_RECALLED`</td>
+<td class="table-content">Payout recalled by Mangopay following a cancellation request.</td>
+</tr><tr>
+<td class="table-content">`INITIALIZED_BY_MANGOPAY`</td>
+<td class="table-content">Refund initiated by Mangopay.</td>
+</tr><tr>
+<td class="table-content">`MD07_BENEFICIARY_IS_DECEASED`</td>
+<td class="table-content">Beneficiary indicated as deceased.</td>
+</tr><tr>
+<td class="table-content">`MS02_BENEFICIARY_ORDER`</td>
+<td class="table-content">Rejected by order of the beneficiary. Contact the user for details.</td>
+</tr><tr>
+<td class="table-content">`MS03_NOT_SPECIFIED`</td>
+<td class="table-content">Not specified. Check the `RefusedReasonMessage` for more details.</td>
+</tr><tr>
+<td class="table-content">`OTHER`</td>
+<td class="table-content">Other. Check the `RefusedReasonMessage` for more details.</td>
+</tr><tr>
+<td class="table-content">`OWNER_DOT_NOT_MATCH_BANKACCOUNT`</td>
+<td class="table-content">Beneficiary name mismatch. Ensure the registered bank account owner name matches the beneficiary.</td>
+</tr><tr>
+<td class="table-content">`RC01_INVALIDE_BIC`</td>
+<td class="table-content">Invalid BIC. Ensure the BIC is valid. If possible, use the 11-character BIC instead of the 8-character one.</td>
+</tr><tr>
+<td class="table-content">`RR01_REGULATORY_REASON`</td>
+<td class="table-content">Missing debtor account or identification.</td>
+</tr><tr>
+<td class="table-content">`RR02_REGULATORY_REASON`</td>
+<td class="table-content">Missing debtor's name or address.</td>
+</tr><tr>
+<td class="table-content">`RR03_BENEFICIARY_NAME_OR_ADDRESS_MISSING`</td>
+<td class="table-content">
+Missing creditor's name or address. Ensure the name and address of the Recipient match the beneficiary name and address.
+
+When [creating the Recipient](/api-reference/recipients/create-recipient):
+- The registered name is specified in the `FirstName` and `LastName` of the `IndividualRecipient`, or the `BusinessName` of the `BusinessRecipient`.
+- The registered address is specified in the `Address` of the `IndividualRecipient` or `BusinessRecipient`.
+</td>
+</tr><tr>
+<td class="table-content">`RR04_REGULATORY_REASON`</td>
+<td class="table-content">A regulatory reason not covered by RR01, RR02 or RR03.</td>
+</tr>
+</tbody>
+</table>
 
 ## Related resources  
 
 <CardGroup cols={2}>
-<Card title="Testing" href="/api-reference/refunds/list-refunds-payout">
-GET List Refunds for a Payout
+<Card title="Endpoint" href="/api-reference/refunds/view-refund">
+GET View a Refund 
 </Card>
-<Card title="Endpoint" href="/api-reference/payouts/view-payout-check-mode-applied">
-GET View Payout and check mode applied
+<Card title="Endpoint" href="/api-reference/refunds/list-refunds-payout">
+GET List Refunds for a Payout
 </Card>
 </CardGroup>
