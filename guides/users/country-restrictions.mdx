@@ -1,6 +1,6 @@
 ---
 title: 'Country restrictions'  
-'og:description': 'Understand Mangopay’s country-specific restrictions, refusing funds based on origin and preventing the creation of users, bank accounts, and payouts.'  
+'og:description': 'Understand Mangopay's country-specific restrictions, refusing funds based on origin and preventing the creation of users, bank accounts, and payouts.'  
 ---
   
   
@@ -21,43 +21,43 @@ The Mangopay API prevents platforms from creating or modifying certain objects b
 
 #### Users  
 
-For <a href="/api-reference/users">users</a>, it is not possible to create users using restricted countries as the following parameters:  
+For [Natural Users](/api-reference/users/natural-user-object-sca) and [Legal Users](/api-reference/users/legal-user-object-sca), it is not possible to create users using restricted countries as the following parameters:  
 
 #### Natural Users  
 - `CountryOfResidence`  
-- `Country` of the `Address`  
+- `Address.Country`  
 
 #### Legal Users  
-- `Country` of the `HeadquartersAddress`  
-- `LegalRepresentativeCountryOfResidence`  
-- `Country` of the `LegalRepresentativeAddress`  
+- `HeadquartersAddress.Country`
+- `LegalRepresentative.CountryOfResidence`
+- `LegalRepresentativeAddress.Country`
 
-Updating these parameters to a restricted country on an existing user results in the user being blocked. To be unblocked, the user must submit a proof of identity and/or address. For further details, see the <a href="/guides/users/blocked-users">blocked user</a> guide.
+Updating these parameters to a restricted country on an existing user results in the user being blocked. To be unblocked, the user must submit a proof of identity and/or address. For further details, see the [blocked user](/guides/users/blocked-users) guide.
 
-Restrictions on North Korea (KP) also apply to the parameters `Nationality` (Natural User) and `LegalRepresentativeNationality` (Legal User), in addition to the residency parameters described above.
+Restrictions on North Korea (KP) also apply to the parameters `Nationality` (Natural User) and `LegalRepresentative.Nationality` (Legal User), in addition to the residency parameters described above.
 
-#### Bank accounts  
+#### Bank accounts
 
-<a href="/api-reference/bank-accounts">Bank account</a> creation is not possible based on the bank’s country of registration (as determined by the bank identification details, which differ depending on the `Type`).  
+[Recipient](/api-reference/recipients/recipient-object) (or Bank Account) creation is not possible based on the bank's country of registration (as determined by the bank identification details).
 
 #### Payouts  
 
-<a href="/api-reference/payouts">Payout</a> creation is not possible based on the bank’s country of registration (as determined by the identification details of the `BankAccountId`).  
+[Payout](/api-reference/payouts/create-payout) creation is not possible based on the bank's country of registration, as determined by the identification details of the Recipient or Bank Account specified in the `BankAccountId`.  
 
 Because a bank account is required to make a payout, these restrictions usually apply together.  
 
 ## Handling restrictions  
 
 The following endpoints are available to find out about restrictions in place:  
-- <a href="/api-reference/country-authorizations/view-authorizations-country">GET View Authorizations for a country</a>
-- <a href="/api-reference/country-authorizations/list-authorizations-countries">GET List Authorizations for all countries</a>
+- [GET View Authorizations for a country](/api-reference/country-authorizations/view-authorizations-country)
+- [GET List Authorizations for all countries](/api-reference/country-authorizations/list-authorizations-countries)
 
-You can also set up a <a href="/webhooks">hook notification</a> for the following <a href="/webhooks/event-types">event type</a> to be notified when a country's restrictions are modified:  
+You can also set up a [webhook notification](/webhooks) for the following [event type](/webhooks/event-types) to be notified when a country's restrictions are modified:  
 - `COUNTRY_AUTHORIZATION_UPDATED`
 
 ## Additional checks  
 
-Mangopay may rely on information retrieved from the user’s verification documents to apply further restrictions.  
+Mangopay may rely on information retrieved from the user's verification documents to apply further restrictions.  
 
 Users may be blocked whose identity proof document indicates that their birthplace is in the following countries: CU, IR, and KP.  
 
@@ -69,8 +69,8 @@ Users may be blocked whose identity proof document indicates that their birthpla
     <thead>
         <tr>
             <th class="header">Pay-ins</th>
-            <th class="header">User</th>
-            <th class="header">Bank accounts</th>
+            <th class="header">Users</th>
+            <th class="header">Recipients (bank accounts)</th>
             <th class="header">Payouts</th>
         </tr>
     </thead>
@@ -88,7 +88,7 @@ The following countries have all restrictions applied:
 
 - CU - Cuba
 - IR - Iran (Islamic Republic of)
-- KP - North Korea (the Democratic People’s Republic of)
+- KP - North Korea (the Democratic People's Republic of)
 - MM - Myanmar
 - SY - Syrian Arab Republic (the)
 
@@ -107,8 +107,8 @@ The following country codes are accepted by the API as part of ISO 3166-1 alpha-
     <thead>
         <tr>
             <th class="header">Pay-ins</th>
-            <th class="header">User</th>
-            <th class="header">Bank accounts</th>
+            <th class="header">Users</th>
+            <th class="header">Recipients (bank accounts)</th>
             <th class="header">Payouts</th>
         </tr>
     </thead>
@@ -150,8 +150,8 @@ The following countries have all restrictions applied except that user creation 
     <thead>
         <tr>
             <th class="header">Pay-ins</th>
-            <th class="header">User</th>
-            <th class="header">Bank accounts</th>
+            <th class="header">Users</th>
+            <th class="header">Recipients (bank accounts)</th>
             <th class="header">Payouts</th>
         </tr>
     </thead>
