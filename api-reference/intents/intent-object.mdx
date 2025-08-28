@@ -5,6 +5,7 @@ title: The Intent object
 import Id_Intent from '/snippets/p-response/Id_Intent.mdx';
 import Amount_Intent from '/snippets/p-response/Amount_Intent.mdx';
 import AvailableAmountToSplit_Intent from '/snippets/p-response/AvailableAmountToSplit_Intent.mdx';
+import UnfundedAmount_Intent from '/snippets/p-response/UnfundedAmount_Intent.mdx';
 import Currency_Intent from '/snippets/p-response/Currency_Intent.mdx';
 import PlatformFeesAmount_Intent from '/snippets/p-response/PlatformFeesAmount_Intent.mdx';
 import Status_Intent from '/snippets/p-response/Status_Intent.mdx';
@@ -29,6 +30,7 @@ The Intent object represents the declaration of a payment authorization made via
 <Id_Intent/>
 <Amount_Intent/>
 <AvailableAmountToSplit_Intent/>
+<UnfundedAmount_Intent/>
 <Currency_Intent/>
 <PlatformFeesAmount_Intent/>
 <Status_Intent/>
@@ -47,31 +49,32 @@ The Intent object represents the declaration of a payment authorization made via
 <Panel>
 ```json Intent object example
 {
-    "Id": "int_01980d51-ee76-7841-a98f-009e98d2def2",
+    "Id": "int_0198f0f0-471f-7f1b-8f79-483ab735c6d9",
     "Amount": 20000,
     "AvailableAmountToSplit": 20000,
+    "UnfundedAmount": 0,
     "Currency": "EUR",
     "PlatformFeesAmount": 0,
     "Status": "CAPTURED",
     "NextActions": "REFUND, DISPUTE",
     "ExternalData": {
-        "ExternalProcessingDate": 1752439988,
-        "ExternalProviderReference": "auth-stripe-da46c083-ef83-438d-ae4f-d8d2cf0cbca0",
-        "ExternalMerchantReference": "order-7f3234ad-f0c5-4a66-98ac-83e37cada65b",
+        "ExternalProcessingDate": 1754489100,
+        "ExternalProviderReference": "auth-stripe-76f0baab-3d89-47e4-85f6-417864588055",
+        "ExternalMerchantReference": "order-390ca7c3-9e5f-4814-bb6a-c5ef6fd74c47",
         "ExternalProviderName": "Stripe",
         "ExternalProviderPaymentMethod": "MASTERCARD"
     },
     "Buyer": {
-        "Id": "user_m_01JZB09HSDZRVN60QH1006TK6E"
+        "Id": "user_m_01K3QXQEA1N0SYR7CFH82WHYWZ"
     },
     "LineItems": [
         {
             "Seller": {
-                "AuthorId": "user_m_01JZWV35ZQZF8T9BYQ3494N4R7",
-                "WalletId": "wlt_m_01JZ5STM3FDSC5G1WWVS4ZCZFJ",
+                "AuthorId": "user_m_01JH2Z9GXCCHGFN65T5HDZG4GB",
+                "WalletId": "wlt_m_01K3K8GR95Q64RPM4F6F1E5FVB",
                 "FeesAmount": 0
             },
-            "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070d",
+            "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb48",
             "Sku": "example-item-123",
             "Name": "Example item name",
             "Description": "Example item description",
@@ -81,7 +84,7 @@ The Intent object represents the declaration of a payment authorization made via
             "DiscountAmount": 2000,
             "Category": "Example category",
             "ShippingAddress": {
-                "AddressLine1": "00920 Bahringer Fields",
+                "AddressLine1": "550 Vincent Stream",
                 "City": "Paris",
                 "Region": "Ile de France",
                 "PostalCode": "75001",
@@ -91,15 +94,17 @@ The Intent object represents the declaration of a payment authorization made via
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0,
-            "TotalLineItemAmount": 10000
+            "CancelledAmount": 0,
+            "TotalLineItemAmount": 10000,
+            "UnfundedSellerAmount": 0
         },
         {
             "Seller": {
-                "AuthorId": "user_m_01JZT2D6QQMS45JDR213A3FWF8",
-                "WalletId": "wlt_m_01JZ8DKE83Y06860JZRKAM259V",
+                "AuthorId": "user_m_01K3QXPKSXPXETQQX92M5TH66K",
+                "WalletId": "wlt_m_01K3NXMX4WXNSQPDJR0JQ4TKVD",
                 "FeesAmount": 0
             },
-            "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070e",
+            "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb49",
             "Sku": "example-item-456",
             "Name": "Example item name",
             "Description": "Example item description",
@@ -109,7 +114,7 @@ The Intent object represents the declaration of a payment authorization made via
             "DiscountAmount": 0,
             "Category": "Example category",
             "ShippingAddress": {
-                "AddressLine1": "5997 Miller Oval",
+                "AddressLine1": "16586 Matt Points",
                 "City": "Paris",
                 "Region": "Ile de France",
                 "PostalCode": "75001",
@@ -119,34 +124,65 @@ The Intent object represents the declaration of a payment authorization made via
             "RefundedAmount": 0,
             "DisputedAmount": 0,
             "SplitAmount": 0,
-            "TotalLineItemAmount": 10000
+            "CancelledAmount": 0,
+            "TotalLineItemAmount": 10000,
+            "UnfundedSellerAmount": 0
         }
     ],
     "Captures": [
         {
-            "Id": "int_capture_01980d51-faba-764a-b95f-deba3a1128be",
+            "Id": "int_capture_0198f0f0-54c9-7821-aa58-9ea99c19cac3",
             "Amount": 20000,
             "Status": "SETTLED_NOT_PAID",
             "LineItems": [
                 {
-                    "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070d",
+                    "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb48",
                     "Amount": 10000
                 },
                 {
-                    "Id": "int_li_01980d51-ee78-717a-93ef-9ebe5a7f070e",
+                    "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb49",
                     "Amount": 10000
                 }
             ],
-            "CreationDate": 1752570133,
-            "ExecutionDate": 1752570982
+            "CreationDate": 1756388938,
+            "ExecutionDate": 1756389033
         }
     ],
     "Refunds": [],
     "Disputes": [],
-    "Splits": [],
-    "CreationDate": 1752570130,
-    "ExecutionDate": 1752570133,
-    "SettlementId": "int_stlmnt_01980d5e-dea1-7828-b7ba-bf1772d6abf2"
+    "Splits": [
+        {
+            "Id": "int_split_0198f124-ea93-786c-b7f1-40c465efacca",
+            "Amount": 5000,
+            "Status": "PENDING_FUNDS_RECEPTION",
+            "LineItems": [
+                {
+                    "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb48",
+                    "Amount": 5000
+                }
+            ],
+            "CreationDate": 1756392385,
+            "ExecutionDate": 1756392385
+        },
+        {
+            "Id": "int_split_0198f124-ea93-786c-b7f1-40c465efaccb",
+            "Amount": 5000,
+            "Status": "PENDING_FUNDS_RECEPTION",
+            "LineItems": [
+                {
+                    "Id": "int_li_0198f0f0-4720-79d1-ad7f-7f34c5d7fb49",
+                    "Amount": 5000
+                }
+            ],
+            "CreationDate": 1756392385,
+            "ExecutionDate": 1756392385
+        }
+    ],
+    "CreationDate": 1756388935,
+    "ExecutionDate": 1756388938,
+    "SettlementIds": [
+        "int_stlmnt_0198f0f1-b3ac-7635-baa3-0ab1dff2ea3a"
+    ]
 }
 ```
 </Panel>
