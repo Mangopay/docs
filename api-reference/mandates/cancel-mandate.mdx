@@ -32,7 +32,13 @@ import NetCancelMandate from '/snippets/code/net-cancel-mandate.mdx';
 **Warning – Call requires `Content-Length` adjustment** 
   
 For this call to succeed, you need to define the header `Content-Length` to `0`.  
-</Warning>  
+</Warning>
+
+<Note>
+**Note – Mandate must be `ACTIVE` or `SUBMITTED`**
+
+A mandate can only be canceled if its `Status` is `ACTIVE` or `SUBMITTED`. Once canceled, its status changes to `FAILED`.
+</Note>
 
 ### Path parameters  
 
@@ -40,7 +46,7 @@ For this call to succeed, you need to define the header `Content-Length` to `0`.
 
 ### Responses  
 
-<AccordionGroup><Accordion title="200">  
+<AccordionGroup><Accordion title="Response parameters">  
 
 <SchemeResponse />  
 
@@ -72,11 +78,29 @@ For this call to succeed, you need to define the header `Content-Length` to `0`.
 
 <ResultCodeResponse />  
 
-<ResultMessageResponse /></Accordion></AccordionGroup>  
+<ResultMessageResponse />
+
+</Accordion>
+
+</AccordionGroup>  
+
+<AccordionGroup>
+<Accordion title="400 - Mandate must be ACTIVE or SUBMITTED">
+```json 
+{
+    "Message": "The Status of this mandate does not allow it to be cancelled",
+    "Type": "mandate_cannot_be_cancelled",
+    "Id": "f569e443-17a1-4c59-a8ca-143586c99bca#1756734881",
+    "Date": 1756734882,
+    "errors": null
+}
+```
+</Accordion>
+</AccordionGroup>
 
 <ResponseExample>  
 
-```json 200  
+```json Canceled  
 {
     "Scheme": "SEPA",
     "BankAccountId": "bankacc_m_01J999AWHFHW2PQ1ADNQ46AYE9",
@@ -87,7 +111,7 @@ For this call to succeed, you need to define the header `Content-Length` to `0`.
     "RedirectURL": "https://api.sandbox.mangopay.com/mvc/eu/public/mandates/e8a73d/dfbdce2a12a442bfae973e56777b3ddb/confirmation?version=2.01",
     "Id": "mdt_m_01J999B9HSEDH9CZDEXXYZGHEZ",
     "CreationDate": 1727962392,
-    "Status": "FAILED",,
+    "Status": "FAILED",
     "UserId": "user_m_01J8SY95DQ5CM7DH43NQCAS65T",
     "ExecutionType": "WEB",
     "MandateType": "DIRECT_DEBIT",
