@@ -4,6 +4,19 @@ sidebarTitle: Returns
 description: Guidance for dealing with payout returns and R-transactions
 ---
 
+## Payout failures
+
+Once initiated successfully, the Payout object has the `Status` value `CREATED`, which changes to `SUCCEEDED` or `FAILED` to indicate the outcome of the request. The delay between `CREATED` and the final status depends on the [payout route](/guides/payouts#all-payout-rails-by-currency) and the outcome.
+
+If a payout request could not be created in Mangopay's system or was created and then failed for other reasons, the `Status` changes to `FAILED` and a [webhook](/webhooks) is triggered for the event type `PAYOUT_NORMAL_FAILED`. 
+
+A payout may be rejected for a number of reasons, such as invalid data, compliance or anti-fraud reasons, or by the clearing system or receiving bank.
+
+To view further details about the request, call the [GET View a Payout](/api-reference/payouts/view-payout) endpoint or, if using SCT Inst ([read more](/guides/payouts/integration#initiate-an-sct-inst-payout)), [GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied).
+
+Details about why the payout failed can be found in the `ResultCode` and `ResultMessage`, which are described in more detail in the [error codes](/errors/codes) section.
+
+
 ## Payout returns
 
 Successful payouts (with `Status` value `SUCCEEDED`) can be rejected by the acquiring bank, for example if the bank account is closed or not compatible (e.g. if it's a savings account). In some cases, Mangopay is able to request the recall on behalf of a platform or user.
