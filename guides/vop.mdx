@@ -41,11 +41,9 @@ In a payout scenario, as a Requesting PSP, Mangopay will be carrying out VOP che
 - Payout requests made in `EUR` using SCT or SCT Inst
 - Recipient registrations if `Currency` is `EUR`, `PayoutMethod` is `LocalBankTransfer`, and `Country` is a SEPA country
 
-Mangopay will also provide an endpoint to enable your platform to retrieve the VOP result of Recipients and Bank Accounts that are already registered.
-
-**All platforms** will be able to take advantage of Mangopay’s [Verification of Payee data](#verification-of-payee-api-fields) to help prevent fraud before a payout is requested.
-
 For **platforms using User-Owned Accounts** (either **Banking Alias** or **Virtual Account**), until the aforementioned amendment is signed, and starting from October 9, 2025, SEPA and SEPA Instant payouts where the VOP outcome is No Match or cannot be performed due to technical error will be blocked – read more about [payouts from user-owned IBANs](#payouts-from-user-owned-accounts). If the VOP result is Match or Partial Match, the payouts will not be blocked. Once the amendment is signed, payouts will not be blocked regardless of the VOP result. 
+
+In future, Mangopay will also provide an endpoint to enable your platform to retrieve the VOP result of Recipients and Bank Accounts that are already registered.
 
 ## Categorization of legacy Banking Alias
 
@@ -211,9 +209,14 @@ Payouts where the VOP result is **Match** or **Close Match** will continue to be
 
 ### Verification of Payee API fields
 
-Mangopay is adding fields to the API response on the existing [POST Create a Payout](/api-reference/payouts/create-payout) endpoint to return the result of the VOP check on each payout request. These new fields will also be added on [recipient creation](#vop-on-recipients-bank-accounts) to return the result of the VOP check performed on recipients.
+Mangopay is adding fields to the API response on existing payout and recipient endpoints to return the result of the VOP check performed. As described below, the VOP check will only be performed on User-Owned accounts in the first instance, but Mangopay will extend the feature in 2026 so that all platforms can benefit from the data.
 
-There are three new data points, which will be returned inside a new `RecipientVerificationOfPayee` JSON object parameter: 
+The following endpoints will be enriched with the Verification of Payee in the API response:
+- [POST Create a Payout](/api-reference/payouts/create-payout), when the `DebitedWalletId` has a User-Owned Account attached
+- [POST Create a Recipient](/api-reference/recipients/create-recipient), when the user has at least one User-Owned Account attached to one of their wallets
+- [GET View a Recipient](/api-reference/recipients/view-recipient), when the user has at least one User-Owned Account attached to one of their wallets
+
+The VOP result will be returned in a new object parameter, `RecipientVerificationOfPayee`, which will contain 3 data points:
 
 - `RecipientVerificationId` – A unique identifier of the VOP check performed by Mangopay.
 - `RecipientVerificationCheck` – The outcome of the VOP check performed by Mangopay, using the details in the Recipient or Bank Account object referenced in the `BankAccountId` field.
@@ -324,9 +327,9 @@ If the check result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`, then, beginning on Oc
 ```
 This block will **only** apply from October 9, 2025, if the VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE` and if the amendment is not signed.
 
-The block will be applied to the user identified as using User-Owned Accounts, meaning any call to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint where the `BankAccountId` held by the identified user will be rejected (if VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`). 
+The block will be applied to the user identified as using User-Owned Accounts, meaning any call to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint where the `BankAccountId` held by the identified user will be rejected (if VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`).
 
-Payouts made by other users not using User-Owned Accounts will not be blocked by VOP, regardless of whether the platform has signed the amendment or not. 
+Payouts made by other users not using User-Owned Accounts will not return the VOP data (because the check won't be performed) and they will not be blocked, regardless of whether the platform has signed the amendment or not.
 
 Once the amendment has been signed, a 200 result will be returned and the `RecipientVerificationOfPayee` data will be returned in the body of the Payout object, so that your platform can display it to users.
 
@@ -334,7 +337,7 @@ Once the amendment has been signed, a 200 result will be returned and the `Recip
 
 #### Recipient registration
 
-Mangopay will also perform VOP checks during recipient registration on the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint.
+Mangopay will also perform VOP checks during recipient registration on the [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoint. This check will only be performed when the user has at least one User-Owned Account attached to one of their wallets.
 
 The response to this endpoint will give the data of the `RecipientVerificationOfPayee` object, with `RecipientVerificationId`, `RecipientVerificationCheck`, and `RecipientVerificationMessage` (see [API fields](#verification-of-payee-api-fields)).
 
@@ -342,6 +345,6 @@ Verification of Payee (VOP) only applies to EUR local schemes (SCT and SCT Inst)
 
 #### Existing accounts
 
-For the active Bank Account and Recipient objects that have already been created, Mangopay will provide a dedicated endpoint that platforms can call to retrieve the VOP result and `RecipientVerificationOfPayee` data.
+For Recipients and Bank Accounts registered for users that have at least one User-Owned Account attached to one of their wallets, Mangopay will also perform a VOP check and return the response on the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint. Your platform can use this endpoint to retrieve the VOP result for User-Owned IBAN users, for example before requesting a payout. 
 
-Your platform can call the new endpoint to retrieve the VOP result to display to the user before they initiate a payout request.
+The [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint can be used to retrieve the details and VOP check of a legacy Bank Account object, by using its `Id` as the `RecipientId` path parameter, as well as Recipient objects.
