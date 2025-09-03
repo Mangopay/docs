@@ -1,0 +1,23 @@
+```javascript NodeJS
+const mangopayInstance = require("mangopay2-nodejs-sdk");
+const mangopay = new mangopayInstance({
+  clientId: "client-id",
+  clientApiKey: "api-key",
+});
+
+let idempotencyKey = "045896dd-2547-4f91-a352-5303bb2c258c";
+
+const viewApiResponse = async (idempotencyKey) => {
+  return await mangopay.Idempotency.get(idempotencyKey)
+    .then((response) => {
+      console.info(response);
+      return response;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+};
+
+viewApiResponse(idempotencyKey);
+```
