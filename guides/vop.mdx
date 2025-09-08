@@ -260,13 +260,15 @@ Your platform can take advantage of the `RecipientVerificationCheck` and `Recipi
 </Check>
 
 <Note>
-**Note – VOP only performed on EUR using in SEPA local schemes**
+**Note – VOP only performed to EUR using SEPA local schemes**
 
 VOP only applies to payments in EUR using SEPA Credit Transfer (SCT) or SEPA Instant Credit Transfer (SCT Inst).
 
-This means the Recipient referenced in the payout's `BankAccountId` has `Currency` of `EUR`, `PayoutMethod` of `LocalBankTransfer`, and `Country` as a SEPA country. 
+This means the Recipient referenced in the payout's `BankAccountId` has `Currency` of `EUR`, `PayoutMethod` of `LocalBankTransfer`, and `Country` as a SEPA country.
 
 If the `BankAccountId` references a legacy Bank Account, you can retrieve these data points by using the existing `BankAccountId` as the `RecipientId` on the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint (read more about [recipient migration](/guides/payouts#migration-of-legacy-bank-accounts)).
+
+If the SEPA country also uses a local scheme for the local currency, then Mangopay only applies VOP on the EUR payout and recipient. For example, if you send SEK to a Swedish bank account, the payout uses RIX or RIX-Inst – and the Recipient required has the `Currency` of `SEK`.
 </Note>
 
 If the check result is `MATCH`, or `CLOSE_MATCH`, then the Payout endpoint will return a 200 response and the request will proceed as usual with the `RecipientVerificationOfPayee` data in the response body of the payout object.
