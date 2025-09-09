@@ -1,0 +1,376 @@
+---
+title: Echo reports
+sidebarTitle: Echo
+description: List intents, intent actions, settlements and splits
+---
+
+import RestCreateReportEchoIntent from '/snippets/code/rest-create-report-echo-intent.mdx';
+import RestCreateReportEchoIntentAction from '/snippets/code/rest-create-report-echo-intent-action.mdx';
+import RestCreateReportEchoSettlement from '/snippets/code/rest-create-report-echo-settlement.mdx';
+import RestCreateReportEchoSplit from '/snippets/code/rest-create-report-echo-split.mdx';
+import RestCreateReportEchoIntentResponse from '/snippets/code/rest-create-report-echo-intent-response.mdx';
+import RestCreateReportEchoIntentActionResponse from '/snippets/code/rest-create-report-echo-intent-action-response.mdx';
+import RestCreateReportEchoSettlementResponse from '/snippets/code/rest-create-report-echo-settlement-response.mdx';
+import RestCreateReportEchoSplitResponse from '/snippets/code/rest-create-report-echo-split-response.mdx';
+
+import Filters_Reporting_ECHO_INTENT_INTENT_ACTION from '/snippets/p-body/Filters_Reporting_ECHO_INTENT_INTENT_ACTION.mdx';
+import Filters_Reporting_ECHO_SETTLEMENT from '/snippets/p-body/Filters_Reporting_ECHO_SETTLEMENT.mdx';
+import Filters_Reporting_ECHO_SPLIT from '/snippets/p-body/Filters_Reporting_ECHO_SPLIT.mdx';
+
+[Mangopay Echo](/guides/echo) provides 4 report types that give your platform full visibility on your declared intents, the payment lifecycle, reconciliation in settlements, and the subsequent splits to sellers.
+
+The Echo reports can contain data from the previous 2 years, and the maximum period of data the report can contain is 1 year.
+
+{/* You can access this report <a href="https://hub.mangopay.com/" target="_blank">in the Dashboard</a> in ***Reports*** > ***Fees wallets*** tab. Contact your platform's Dashboard admin if you don't see the Reports feature in the side navigation.
+
+In the Dashboard, as well as running reports manually, you can schedule reports to be generated automatically at regular intervals, such as daily, weekly, monthly, and quarterly. */}
+
+## Types and columns
+
+### Intents
+
+The **Echo Intent** report lists all intents declared during the selected period, detailing the total funds expected to enter the platform’s escrow wallets.
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">Id</td>
+<td class="table-content">Unique identifier of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Status</td>
+<td class="table-content">Status of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Amount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Currency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the intent: PAYIN, REFUND, DISPUTE</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">PaymentMethod</td>
+<td class="table-content">Payment method of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">BuyerId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">SellerId</td>
+<td class="table-content">Unique identifier of the user(s) at the destination of the transaction</td>
+<td class="table-content">Yes</td>
+</tr>
+</tbody>
+</table>
+
+### Intent actions
+
+The **Echo Intent Action** report lists all operations related to intents processed during the selected period, detailing the expected money movements to be escrowed — including payments, refunds, refund reversals, and chargebacks.
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">IntentId</td>
+<td class="table-content">Unique identifier of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Id</td>
+<td class="table-content">Unique identifier of the intent action (capture, refund, dispute, cancel)</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">ExternalProcessingDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the intent was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">ExternalProviderReference</td>
+<td class="table-content">Unique identifier of the intent in the external provider system</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">ExternalMerchantReference</td>
+<td class="table-content">Unique identifier of the intent in the merchant system</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Status</td>
+<td class="table-content">Status of the intent action</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Amount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Currency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the intent: PAYIN, REFUND, DISPUTE</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">PaymentMethod</td>
+<td class="table-content">Payment method of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">BuyerId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">SellerId</td>
+<td class="table-content">Unique identifier of the user(s) at the destination of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
+
+### Settlements
+
+The **Echo Settlement** report lists all settlement files uploaded during the selected period to initiate the reconciliation process, confirming the expected money movements to be escrowed.
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">Id</td>
+<td class="table-content">Unique identifier of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the settlement was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the settlement was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">FileName</td>
+<td class="table-content">Name of settlement file</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">SettlementCurrency</td>
+<td class="table-content">Currency of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Status</td>
+<td class="table-content">Status of the settlement</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">SettledTransactionCount</td>
+<td class="table-content">Total number of intents that have been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">UnsettledTransactionCount</td>
+<td class="table-content">Total number of intents that haven’t been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">SettledAmount</td>
+<td class="table-content">Total amount of intents that have been reconciled</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DeclaredAmount</td>
+<td class="table-content">Total amount of intents that have been declared</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DeficitAmount</td>
+<td class="table-content">The difference between `DeclaredAmount` and `SettledAmount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
+
+### Splits
+
+The **Echo Splits** report lists all splits related to intents during the selected period, detailing the transfer of funds to the declared destination.
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">Id</td>
+<td class="table-content">Unique identifier of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">IntentId</td>
+<td class="table-content">Unique identifier of the intent</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">AuthorId</td>
+<td class="table-content">Unique identifier of the user at the source of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Amount</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Currency</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Status</td>
+<td class="table-content">Status of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Description</td>
+<td class="table-content">Description of the split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedWalletId</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedWalletId</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Scheduled</td>
+<td class="table-content">Whether or not `TransferDate` was sent in the intent or split</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the split was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the split was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">ExecutionDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the split was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">ExecutionDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the split was executed</td>
+<td class="table-content">No</td>
+</tr><tr>
+</tr>
+</tbody>
+</table>
+
+## Generate via API
+
+<Steps>
+<Step title="Set up webhooks">
+The [API endpoint](/api-reference/reporting/report-object) for the Echo reports uses [webhooks](/webhooks) to notify your chosen URL that a report is ready for download.
+
+The time it takes for a report to be generated depends on the quantity of data. If exporting large amounts of data via API, ensure you have these webhook [event types](/webhooks/event-types) set up to know when to fetch the report:
+
+- `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
+- `REPORT_FAILED` – Indicates that a report was not generated successfully
+</Step>
+<Step title="Define filters and columns">
+
+The available sub-parameters of the `Filters` parameter for the Echo reports depend on the type, which is defined in the `ReportType` field.
+
+<Tabs>
+<Tab title="Intents and actions">
+<Filters_Reporting_ECHO_INTENT_INTENT_ACTION/>
+</Tab>
+<Tab title="Settlements">
+<Filters_Reporting_ECHO_SETTLEMENT/>
+</Tab>
+<Tab title="Splits">
+<Filters_Reporting_ECHO_SPLIT/>
+</Tab>
+</Tabs>
+
+All available columns are set by default on the Echo reports. You can customize this in the `Columns` parameter by sending the full list of columns you wish to see in the report.
+</Step>
+<Step title="Run the report">
+Run the report by calling the [POST Create a Report](/api-reference/reporting/create-report) endpoint and setting the relevant `ReportType`.
+
+Send your desired date period in the `AfterDate` and `BeforeDate` fields, which refers to the transaction `CreationDate`. Ensure that the difference between them is no more than 12 months and the `AfterDate` is not more than 24 months ago.
+
+Send your defined filters in the `Filters` parameter and, if not using the default columns, the full list of columns you wish to include in the `Columns` parameter.
+
+<CodeGroup>
+<RestCreateReportEchoIntent/>
+<RestCreateReportEchoIntentAction/>
+<RestCreateReportEchoSettlement/>
+<RestCreateReportEchoSplit/>
+</CodeGroup>
+
+The API response shows the `Status` as `PENDING`, indicating that the report is being generated.
+
+<CodeGroup>
+<RestCreateReportEchoIntentResponse/>
+<RestCreateReportEchoIntentActionResponse/>
+<RestCreateReportEchoSettlementResponse/>
+<RestCreateReportEchoSplitResponse/>
+</CodeGroup>
+
+</Step>
+<Step title="Download when ready">
+The report is ready for download when its status changes to `GENERATED`, which triggers the  `REPORT_GENERATED` webhook. 
+
+Call the [GET View a Report](/api-reference/reporting/view-report) endpoint to retrieve the `DownloadURL` value where you can download the report.
+
+If the `Status` changes to `FAILED`, triggering the `REPORT_FAILED` webhook, then more information about why the report could not be generated is available in the `ResultCode` and `ResultMessage`.
+</Step>
+<Step title="Repeat process as needed">
+All Echo reports are valid for 31 days. After this, the `Status` changes to `EXPIRED` at it is no longer available for download.
+
+You can re-generate another report with the same parameters and update the date range for the latest period.
+</Step>
+</Steps>
+{/* <Note>
+**Note – You can schedule reports in the Dashboard**
+
+The <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a> features a scheduling feature that enables you to automatically generate the same report daily, weekly, monthly, or quarterly. 
+</Note> */}
+

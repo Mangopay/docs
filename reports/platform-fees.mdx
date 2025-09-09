@@ -1,0 +1,161 @@
+---
+title: Platform fees report
+sidebarTitle: Platform fees
+description: List transactions crediting or debiting your platform’s Fees Wallet
+---
+
+import RestCreateReportCollectedFees from '/snippets/code/rest-create-report-collected-fees.mdx';
+import RestCreateReportCollectedFeesResponse from '/snippets/code/rest-create-report-collected-fees-response.mdx';
+
+
+The **Collected Fees** report lists all transactions crediting or debiting your platform’s Fees Wallet: pay-ins, transfers, refunds, and payouts where your platform has set a positive or negative `FEES` amount.
+
+The report can contain data from the previous 2 years, and the maximum period of data the report can contain is 1 year.
+
+You can access this report <a href="https://hub.mangopay.com/" target="_blank">in the Dashboard</a> in ***Reports*** > ***Fees wallets*** tab. Contact your platform's Dashboard admin if you don't see the Reports feature in the side navigation.
+
+In the Dashboard, as well as running reports manually, you can schedule reports to be generated automatically at regular intervals, such as daily, weekly, monthly, and quarterly.
+
+## Columns
+
+The **Collected Fees** report has the following available columns and columns used by default.
+
+<table>
+<thead>
+<tr>
+<th class="header">Column</th>
+<th class="header">Description</th>
+<th class="header">Included by default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">ClientId</td>
+<td class="table-content">Unique identifier associated with the API key</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">TransactionId</td>
+<td class="table-content">Unique identifier of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreationDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was created</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr><tr>
+<td class="table-content">CreationDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was created</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">ExecutionDate</td>
+<td class="table-content">Unix timestamp of the date and time at which the transaction was executed</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+</tr><tr>
+<td class="table-content">ExecutionDate:ISO</td>
+<td class="table-content">ISO format of the date and time at which the transaction was executed</td>
+<td class="table-content">No</td>
+</tr><tr>
+<td class="table-content">AuthorId</td>
+<td class="table-content">Unique identifier of the user at the source of the transaction</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedWalletId</td>
+<td class="table-content">Unique identifier of the debited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedWalletId</td>
+<td class="table-content">Unique identifier of the credited wallet</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsCurrency</td>
+<td class="table-content">Currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">CreditedFundsAmount</td>
+<td class="table-content">Amount of the credited funds in the currency of the credited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsCurrency</td>
+<td class="table-content">Currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">DebitedFundsAmount</td>
+<td class="table-content">Amount of the debited funds in the currency of the debited amount</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesAmount</td>
+<td class="table-content">Amount of the fees in the currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">FeesCurrency</td>
+<td class="table-content">Currency of the fees</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Type</td>
+<td class="table-content">Type of the transaction: PAYIN, TRANSFER, CONVERSION, PAYOUT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Nature</td>
+<td class="table-content">Nature of the transaction: REGULAR, REPUDIATION, REFUND, SETTLEMENT</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">PaymentType</td>
+<td class="table-content">Payment type of the pay-in</td>
+<td class="table-content">Yes</td>
+</tr><tr>
+<td class="table-content">Tag</td>
+<td class="table-content">Custom data added to the object</td>
+<td class="table-content">Yes</td>
+</tr>
+</tbody>
+</table>
+
+## Generate via API
+
+<Steps>
+<Step title="Set up webhooks">
+The [API endpoint](/api-reference/reporting/report-object) for the **Collected Fees** report uses [webhooks](/webhooks) to notify your chosen URL that a report is ready for download.
+
+The time it takes for a report to be generated depends on the quantity of data. If exporting large amounts of data via API, ensure you have these webhook [event types](/webhooks/event-types) set up to know when to fetch the report:
+
+- `REPORT_GENERATED` – Indicates that a report is ready for download at the `DownloadURL`
+- `REPORT_FAILED` – Indicates that a report was not generated successfully
+</Step>
+<Step title="Define filters and columns">
+The **Collected Fees** report can be filtered by:
+
+- `Currency` – Filter the report to the Fees Wallet of one currency.
+
+If the currency filter is not sent, the report contains data on all currencies.
+
+The columns set by default are [listed above](#columns). You can customize this in the `Columns` parameter by sending the full list of columns you wish to see in the report.
+</Step>
+<Step title="Run the report">
+Run the report by calling the [POST Create a Report](/api-reference/reporting/create-report) endpoint with the `ReportType` set to `COLLECTED_FEES`.
+
+Send your desired date period in the `AfterDate` and `BeforeDate` fields, which refers to the transaction `CreationDate`. Ensure that the difference between them is no more than 12 months and the `AfterDate` is not more than 24 months ago.
+
+Send your defined filters in the `Filters` parameter and, if not using the default columns, the full list of columns you wish to include in the `Columns` parameter.
+<RestCreateReportCollectedFees/>
+The API response shows the `Status` as `PENDING`, indicating that the report is being generated.
+<RestCreateReportCollectedFeesResponse/>
+</Step>
+<Step title="Download when ready">
+The report is ready for download when its status changes to `GENERATED`, which triggers the  `REPORT_GENERATED` webhook. 
+
+Call the [GET View a Report](/api-reference/reporting/view-report) endpoint to retrieve the `DownloadURL` value where you can download the report.
+
+If the `Status` changes to `FAILED`, triggering the `REPORT_FAILED` webhook, then more information about why the report could not be generated is available in the `ResultCode` and `ResultMessage`.
+</Step>
+<Step title="Repeat process as needed">
+The **Collected Fees** report is valid for 31 days. After this, its `Status` changes to `EXPIRED` at it is no longer available for download.
+
+You can re-generate another report with the same parameters and update the date range for the latest period.
+</Step>
+</Steps>
+<Note>
+**Note – You can schedule reports in the Dashboard**
+
+The <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a> features a scheduling feature that enables you to automatically generate the same report daily, weekly, monthly, or quarterly. 
+</Note>
