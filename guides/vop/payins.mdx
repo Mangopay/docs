@@ -1,0 +1,27 @@
+---
+title: VOP on pay-ins
+sidebarTitle: Pay-ins
+description: How Verification of Payee impacts pay-ins to Virtual Accounts
+---
+
+In a pay-in scenario, as a Responding PSP, Mangopay supplies the account holder name and IBAN to the Requesting PSP.
+
+Verification of Payee affects all SCT and SCT Inst EUR payments made to Virtual Accounts and Banking Aliases.
+
+```mermaid
+sequenceDiagram
+  actor Payer
+  participant Requesting PSP
+   participant Mangopay
+  
+    Payer ->> Requesting PSP: Request payment
+    Requesting PSP->> Mangopay: Perform VOP check
+    Mangopay -->> Requesting PSP: Provide VOP result
+
+  rect rgb(191, 223, 255)
+    Requesting PSP -->> Payer: Display VOP result and handle confirmation
+    Payer -->> Requesting PSP: Confirm payment
+    Requesting PSP -->> Mangopay: Send payment <br/> (pay-in to vIBAN)
+				Note left of Requesting PSP: VOP result handling decided by Requesting PSP
+  end
+```
