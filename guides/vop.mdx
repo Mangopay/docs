@@ -9,17 +9,35 @@ A bank wire transfer involves two payment service providers (PSPs) or banks:
 - The **Requesting PSP**, making the payment request on behalf of their customer, the **Payer**. Mangopay is a Requesting PSP in a payout scenario, requesting and receiving the results of the VOP check.
 - The **Responding PSP**, who’s customer, the **Payee**, will receive the funds. Mangopay is a Responding PSP in a pay-in scenario, responding with the VOP data.
 
+{/* light mode */}
+<div className="block dark:hidden">
 ```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
 sequenceDiagram
   actor Payer as Payer
   participant Requesting PSP
-   participant Mangopay
-   participant Responding PSP
-   actor Payee
+  participant Mangopay
+  participant Responding PSP
+  actor Payee
 
-
-  rect rgb(191, 223, 255)
-
+  rect rgba(245, 243, 245, 1)
     Payer ->> Requesting PSP: Initiate payment
     Requesting PSP->> Mangopay: Perform VOP
     Mangopay -->> Requesting PSP: Provide VOP result
@@ -27,15 +45,60 @@ sequenceDiagram
         Note left of Mangopay: Pay-in to Virtual Account
   end
 
-
-  rect rgb(191, 223, 255)
-
+  rect rgba(245, 243, 245, 1)
     Mangopay ->> Responding PSP: Perform VOP
     Responding PSP -->> Mangopay: Provide result
-    Mangopay->>Payee: Send payment
-        Note right of Responding PSP: Payout
+    Mangopay->>Responding PSP: Send payment
+        Note right of Mangopay: Payout
+    Responding PSP ->> Payee: Receive funds
   end
 ```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  actor Payer as Payer
+  participant Requesting PSP
+   participant Mangopay
+   participant Responding PSP
+   actor Payee
+
+  rect rgba(34, 37, 37, 1)
+    Payer ->> Requesting PSP: Initiate payment
+    Requesting PSP->> Mangopay: Perform VOP
+    Mangopay -->> Requesting PSP: Provide VOP result
+    Requesting PSP ->> Mangopay: Send payment
+        Note left of Mangopay: Pay-in to Virtual Account
+  end
+
+  rect rgba(34, 37, 37, 1)
+    Mangopay ->> Responding PSP: Perform VOP
+    Responding PSP -->> Mangopay: Provide result
+    Mangopay->>Responding PSP: Send payment
+        Note right of Mangopay: Payout
+    Responding PSP ->> Payee: Receive funds
+  end
+```
+</div>
 
 ## What Verification of Payee checks
 
@@ -134,12 +197,14 @@ All the API values in the table above refer to properties of the User object exc
 ## Impact for your platform
 
 <CardGroup cols={2}>
-<Card title="Pay-in" href="/guides/vop/payin" arrow="true" cta="Read more">
+<Card title="Pay-ins to virtual IBANs" href="/guides/vop/payin" arrow="true" cta="Read more">
+<br/>
 In a pay-in scenario, as a Responding PSP, Mangopay supplies the account holder name and IBAN to the Requesting PSP.
 
 On the pay-in side, VOP impacts all platforms using the Virtual Account or Banking Alias feature. 
 </Card>
-<Card title="Payout" href="/guides/vop/payout" arrow="true" cta="Read more">
+<Card title="Recipients and payouts" href="/guides/vop/payout" arrow="true" cta="Read more">
+<br/>
 In a payout scenario, as a Requesting PSP, Mangopay will be carrying out VOP checks on recipients and payouts.
 
 On the payout side, the VOP impacts platforms whose users hold a User-Owned Account.
