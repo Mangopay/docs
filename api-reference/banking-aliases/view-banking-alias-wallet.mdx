@@ -9,6 +9,22 @@ import NodeViewBankingAliasWallet from '/snippets/code/node-view-banking-alias-w
 import JavaViewBankingAliasWallet from '/snippets/code/java-view-banking-alias-wallet.mdx';
 import NetViewBankingAliasWallet from '/snippets/code/net-view-wallet-banking-alias.mdx';
 
+<Warning>
+**Deprecated – Decommissioning planned Q3 2026**
+
+Mangopay plans to decommission the Banking Alias endpoints in Q3 2026. 
+
+Platforms using them should plan to re-integrate using the [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints. 
+
+Existing Banking Alias objects are available via the [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account) endpoint by using the Banking Alias `Id` and `WalletId` as path parameters.
+</Warning>
+
+<Note>
+**Note - Payee confirmation in the UK** 
+    
+When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is displayed as the account holder name. You should communicate this to them to avoid confusion.
+</Note>
+
 ### Path parameters  
 
 <WalletId />  
@@ -17,7 +33,7 @@ import NetViewBankingAliasWallet from '/snippets/code/net-view-wallet-banking-al
 
 <AccordionGroup>
 
-<Accordion title="200">  
+<Accordion title="200" defaultOpen>  
 
 <Array_BankingAliasResponse />  
 
@@ -30,9 +46,10 @@ import NetViewBankingAliasWallet from '/snippets/code/net-view-wallet-banking-al
 ```json 200 - FR
 [
     {
-        "OwnerName": "Alex Smith",
+        "OwnerName": "MGP PlatformTradingName",
         "IBAN": "FR7674521100005657670994474",
         "BIC": "MPAYFRP1PIN",
+        "VirtualAccountPurposeResponse": "COLLECTION",
         "CreditedUserId": "user_m_01HSB23417BFG7YXR7E371JSEA",
         "Country": "FR",
         "Tag": "Created using Mangopay API Postman Collection",
@@ -47,9 +64,10 @@ import NetViewBankingAliasWallet from '/snippets/code/net-view-wallet-banking-al
 ```json 200 - GB 
 [
     {
-        "OwnerName": "Alex Smith",
+        "OwnerName": "MGP PlatformTradingName",
         "IBAN": "GB78SAPY60838221394585",
         "BIC": null,
+        "VirtualAccountPurposeResponse": "COLLECTION",
         "LocalAccountDetails": {
             "SortCode": "608382",
             "AccountNumber": "21394585"
