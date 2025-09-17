@@ -38,11 +38,13 @@ Mangopay enables you to create an IBAN or local account identifier attached to a
 In the API, the [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) object allows you to create and manage dedicated virtual IBANs for your users' wallets. You can also see local and international pay-in capabilities available to your platform.
 
 <Note>
-**Note - Replaces Banking Alias feature**
+**Note - Replaces deprecated Banking Alias feature**
 
-The [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints replace the legacy [Banking Alias](/api-reference/banking-aliases/banking-alias-object) endpoints, which should be considered deprecated and no longer used.
+The [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints replace the deprecated [Banking Alias](/api-reference/banking-aliases/banking-alias-object) endpoints, which will be removed in **Q3 2026**.
 
-New platforms should integrate using Virtual Accounts. While existing Banking Alias objects and endpoints continue to be supported, platforms are invited to change their integration to benefit from extended country and currency coverage. Any further country and currency expansion will **only** be delivered on virtual accounts.
+Platforms using Banking Aliases must plan to change their integration.
+
+All Banking Alias objects are available via the [GET View a Virtual Account](/api-reference/banking-aliases/view-banking-alias) endpoint, using the Banking Alias `Id` and `WalletId` as path parameters. 
 </Note>
 
 The Virtual Account endpoints bring many advantages over the Banking Alias feature: 
@@ -51,6 +53,8 @@ The Virtual Account endpoints bring many advantages over the Banking Alias featu
 - Ability to open accounts in the name of the user thanks to user-owned accounts (see [types](#types) below)
 - Adherence to financial market standards (ISO 20022)
 - Dedicated endpoint giving the countries and currencies available to your platform ([GET View Virtual Account availabilities](/api-reference/virtual-accounts/view-virtual-account-availabilities))
+
+Any further product development or currency and country coverage will only be delivered on Virtual Accounts and not Banking Aliases.
 
 ### SCT Instant on FR accounts
 
@@ -71,16 +75,16 @@ As a payment method, virtual accounts allow a user to wire funds directly to the
 The steps to set up the virtual account are: 
 
 <Steps>
-<Step title="You create a wallet for the account">
-You call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
+<Step title="Create a wallet for the account">
+Call the <a href="/api-reference/wallets/create-wallet">POST Create a Wallet</a> endpoint and specify its currency.
 <Warning>
 **Caution – Currency must be consistent**
 
 The currency of the wallet must match the currency of the account you intend to create. See [countries and currencies](#iban-countries-and-currencies) for details.
 </Warning>
 </Step>
-<Step title="You create the virtual account">
-You call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the `Country` and `VirtualAccountPurpose`, whether `COLLECTION` or `USER_OWNED` (see [types](#types) for details).
+<Step title="Create the virtual account">
+Call the <a href="/api-reference/virtual-accounts/create-virtual-account">POST Create a Virtual Account</a> endpoint, specifying the `Country` and `VirtualAccountPurpose`, whether `COLLECTION` or `USER_OWNED` (see [types](#types) for details).
 
 The response shows the details of the account and its `Status`, which must be `ACTIVE` to receive funds.
 
@@ -111,8 +115,8 @@ Once the Virtual Account is set up and its `Status` is `Active`, the user can wi
 The payment flow is as follows:
 
 <Steps>
-  <Step title="You obtain the account details and create a reference">
-    You call the <a href="/api-reference/virtual-accounts/view-virtual-account">GET View a Virtual Account</a> endpoint to obtain the account details in international or local formats.
+  <Step title="Obtain the account details and create a reference">
+    Call the <a href="/api-reference/virtual-accounts/view-virtual-account">GET View a Virtual Account</a> endpoint to obtain the account details in international or local formats.
 
     You can also create a unique custom reference for the user to use for the payment.
 
@@ -124,24 +128,26 @@ The payment flow is as follows:
       See also the note about delayed [UK CoP recognition](#set-up-the-account) for `GB` accounts.
     </Warning>
   </Step>
-  <Step title="You present the payment details to the user">
-    You display the account details along with your custom reference.
+  <Step title="Present the payment details to the user">
+    Display the account details along with your custom reference.
 
     <Check>
-      **Best practice – Display instructions and details clearly to the user**
+      **Best practice – Display instructions, account holder name, and account number clearly to the user**
 
-      Your user must understand that they need to initiate the bank wire on their side.
+      As well as the account number or IBAN, ensure you display the `AccountOwner` clearly as well. For EUR SEPA payments, both data points are used for [Verification of Payee (VOP)](/guides/vop).
+      
+      Your user must understand that they need to initiate the bank wire transfer on their side with their bank.
 
       Ensure your messaging is clear and that the payment details are easy to copy and use.
     </Check>
   </Step>
-  <Step title="The user makes the payment via online banking">
+  <Step title="Wait for the user to make the payment via online banking">
     The user requests the wire transfer via their online banking app, specifying the virtual account as the payee.
   </Step>
-  <Step title="Mangopay creates the pay-in and credits the wallet">
+  <Step title="Handle webhook notification when Mangopay creates the pay-in and credits the wallet">
     On receipt of the funds, Mangopay automatically creates an <a href="">External Instruction Bank Wire PayIn</a>.
 
-    You can be notified of this by setting up a <a href="/webhooks">webhook</a> for the `PAYIN_NORMAL_SUCCEEDED` event type.
+    Set up a <a href="/webhooks">webhook</a> for the `PAYIN_NORMAL_SUCCEEDED` event type to be notified of this.
 
     You can then use the <a href="/api-reference/virtual-accounts/view-payin-external-instruction">GET View a PayIn</a> endpoint to get the custom `WireReference` you provided to the user, as well as confirm the amount and status.
 
@@ -407,6 +413,17 @@ The following tables summarize the account coverage available to platforms who h
 </Tabs>
 
 Platforms can see what countries and currencies are available to them at any time using the [GET List Virtual Account availabilities](/api-reference/virtual-accounts/view-virtual-account-availabilities) endpoint. 
+
+### On-demand non-local currencies
+
+In addition to the coverage above, Mangopay is able to offer virtual accounts in additional currencies by request of platforms.
+- **Available currencies**: `AED`, `AUD`, `CAD`, `CHF`, `CNH`, `CZK`, `HKD`, `HUF`, `ILS`, `JPY`, `MXN`, `NOK`, `NZD`, `PLN`, `RON`, `SAR`, `SEK`, `SGD`, `TRY`, `USD`, `ZAR`
+- **Payment rails**: SWIFT
+- **Account format**: `DK` IBAN only
+- **Available Virtual Account types: `COLLECTION` and `USER_OWNED`
+- **Limitations**: Available for payments from business accounts only (not personal ones) 
+
+Contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a> or <a href="https://mangopay.com/contact">Sales contact form</a> for more information.
 
 ### Account formats
 The virtual account details are available in two response parameters: 
