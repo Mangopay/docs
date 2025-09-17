@@ -30,7 +30,7 @@ If your platform does not offer User-Owned Accounts to your users, your payouts 
 
 The following endpoints will be enriched with the Verification of Payee in the API response:
 
-- [POST Create a Payout](/api-reference/payouts/create-payout), if the owner of the payout’s `BankccountId` has at least one User-Owned Virtual Account
+- [POST Create a Payout](/api-reference/payouts/create-payout), if the owner of the payout’s `BankAccountId` has at least one User-Owned Virtual Account
 - [POST Create a Recipient](/api-reference/recipients/create-recipient), if the platform offers User-Owned Accounts
 - [GET View a Recipient](/api-reference/recipients/view-recipient), if the platform offers User-Owned Accounts
 
@@ -224,7 +224,9 @@ The Recipient endpoint can be used to retrieve legacy Bank Account objects by us
 
 ## Payouts
 
-Mangopay is introducing VOP checks when your platform requests a payout using [POST Create a Payout](/api-reference/payouts/create-payout).
+Mangopay is introducing VOP checks when your platform requests a payout using [POST Create a Payout](/api-reference/payouts/create-payout) only if the owner of the payout’s `BankAccountId` has at least one User-Owned Virtual Account.
+
+If the user doesn't have at least one User-Owned Virtual Account, or if the payout does not use the SCT or SCT Inst rails, then VOP is not performed.
 
 {/* light mode */}
 <div className="block dark:hidden">
