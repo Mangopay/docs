@@ -1,6 +1,7 @@
 ---
 title: 'View a Banking Alias'  
 api: 'GET /v2.01/{ClientId}/bankingaliases/{BankingAliasId}'  
+tag: DEPRECATED
 ---
 
 import WalletId1Response from '/snippets/p-response/WalletId1Response.mdx';
@@ -15,6 +16,7 @@ import BIC2Response from '/snippets/p-response/BIC2Response.mdx';
 import IBAN2Response from '/snippets/p-response/IBAN2Response.mdx';
 import OwnerName1Response from '/snippets/p-response/OwnerName1Response.mdx';
 import LocalAccountDetailsResponse from '/snippets/p-response/LocalAccountDetailsResponse.mdx';
+import VirtualAccountPurposeResponse from '/snippets/p-response/VirtualAccountPurposeResponse.mdx';
 
 import BankingAliasId from '/snippets/p-query/BankingAliasId.mdx';
 
@@ -23,6 +25,16 @@ import NodeViewBankingAlias from '/snippets/code/node-view-banking-alias.mdx';
 import RubyViewBankingAlias from '/snippets/code/ruby-view-banking-alias.mdx';
 import JavaViewBankingAlias from '/snippets/code/java-view-banking-alias.mdx';
 import NetViewBankingAlias from '/snippets/code/net-view-banking-alias.mdx';
+
+<Warning>
+**Deprecated – Decommissioning planned Q3 2026**
+
+Mangopay plans to decommission the Banking Alias endpoints in Q3 2026. 
+
+Platforms using them should plan to re-integrate using the [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints. 
+
+Existing Banking Alias objects are available via the [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account) endpoint by using the Banking Alias `Id` and `WalletId` as path parameters.
+</Warning>
 
 <Note>
 **Note - Payee confirmation in the UK** 
@@ -38,13 +50,15 @@ When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is d
 
 <AccordionGroup>
 
-<Accordion title="200 - FR">  
+<Accordion title="200 - FR" defaultOpen>  
 
 <OwnerName1Response />  
 
 <IBAN2Response />  
 
 <BIC2Response />  
+
+<VirtualAccountPurposeResponse/>
 
 <CreditedUserId3Response />  
 
@@ -71,6 +85,8 @@ When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is d
 <IBAN2Response />  
 
 <BIC2Response />
+
+<VirtualAccountPurposeResponse/>
 
 <LocalAccountDetailsResponse />
 
@@ -101,6 +117,7 @@ When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is d
     "OwnerName": "Alex Smith",
     "IBAN": "FR7674521100005657670994474",
     "BIC": "MPAYFRP1PIN",
+    "VirtualAccountPurposeResponse": "USER_OWNED",
     "CreditedUserId": "user_m_01HSB23417BFG7YXR7E371JSEA",
     "Country": "FR",
     "Tag": "Created using Mangopay API Postman Collection",
@@ -113,9 +130,10 @@ When the user sets up the payee with their bank, Mangopay UK or Mangopay SA is d
 ```
 ```json 200 - GB
 {
-    "OwnerName": "Alex Smith",
+    "OwnerName": "MGP PlatformTradingName",
     "IBAN": "GB78SAPY60838221394585",
     "BIC": null,
+    "VirtualAccountPurposeResponse": "COLLECTION",
     "LocalAccountDetails": {
         "SortCode": "608382",
         "AccountNumber": "21394585"

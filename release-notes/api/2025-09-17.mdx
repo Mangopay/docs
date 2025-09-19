@@ -1,0 +1,31 @@
+---
+title: 'API - Sep 17, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+{/* <div class="release-notes-page"> */}
+
+## <span class="pill pill-orange">Changed</span>
+### Banking Alias OwnerName value set automatically
+
+On [POST Create a Banking Alias](/api-reference/banking-aliases/create-iban-banking-alias), the `OwnerName` is now set automatically by Mangopay. The `VirtualAccountPurpose` response parameter has also been added to categorize the account's purpose.
+
+If the User owning the attached wallet has `UserCategory` of `OWNER` and the `KYCLevel` of `REGULAR`, then the `OwnerName` is set to the `FirstName` and `LastName` values for a [Natural User](/api-reference/users/natural-user-object-sca) or the `Name` value for a [Legal User](/api-reference/users/legal-user-object-sca). In this case, the `VirtualAccountPurpose` in the API response is `USER_OWNED`.
+
+If the User is not KYC verified and an `OWNER`, then the `OwnerName` is set to “MGP `PlatformTradingName`" in standard cases, or else “Mangopay” for Marketplace Payment Extension (MPE) workflows. In this case, the `VirtualAccountPurpose` in the API response is `COLLECTION`.
+
+<Warning>
+**Caution – Rely on API response value**
+
+Your platform must rely on the API response value for the `OwnerName`. You should systematically call [GET View a Banking Alias](/api-reference/banking-aliases/view-banking-alias) to retrieve the correct data before inviting the payment from the end user.
+</Warning>
+
+This change is due to Verification of Payee (VOP) for SCT and SCT Inst pay-ins to vIBAN. See the guide for details including [integration recommendations](/guides/vop/payins#integration-recommendations) and more details about the categorization.
+
+### Banking Alias endpoints deprecated
+
+The [Banking Alias endpoints](/api-reference/banking-aliases/banking-alias-object) should no longer be used and have been marked as deprecated. 
+
+Mangopay plans to decommission these endpoints in **Q3 2026**, making them no longer available. Platforms using the feature need to plan to reintegrate using the Virtual Account endpoints before then.
+
+Your platform can use the [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account) endpoint to retrieve all Banking Alias objects by using the Banking Alias `Id` and `WalletId` as path parameters.

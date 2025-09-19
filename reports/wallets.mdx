@@ -1,0 +1,137 @@
+---
+title: Wallets report
+sidebarTitle: Wallets
+description: List user wallets, their owners, descriptions and tags, and their balances at the time of report creation
+---
+
+import RestCreateWalletsReportResponse from '/snippets/code/rest-create-wallets-report-response.mdx';
+
+import RestCreateWalletsReport from '/snippets/code/rest-create-wallets-report.mdx';
+import PhpCreateWalletsReport from '/snippets/code/php-create-wallets-report.mdx';
+import NodeCreateWalletsReport from '/snippets/code/node-create-wallets-report.mdx';
+import RubyCreateWalletsReport from '/snippets/code/ruby-create-wallets-report.mdx';
+import CreateWalletsReportPython from '/snippets/code/create-wallets-report-python.mdx';
+import NetCreateWalletsReport from '/snippets/code/net-create-wallets-report.mdx';
+
+The **Wallets** report lists user wallets, their owners, descriptions and tags, and their balances at the time of report creation.
+
+You can access this report <a href="https://hub.mangopay.com/" target="_blank">in the Dashboard</a> in ***Dashboard (Legacy)*** >  ***Reporting*** > ***+ (right side)***.
+
+The **Wallets** report is only available in the legacy Dashboard. It also uses a different endpoint and [generation flow](#generate-via-api).
+
+## Columns
+
+The **Wallets** report has the following columns and columns used by default.
+
+<table>
+    <thead>
+        <tr>
+            <th class="header">Column</th>
+            <th class="header">Description</th>
+            <th class="header">Included by default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="table-content">Id</td>
+            <td class="table-content">The unique identifier of the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">Tag</td>
+            <td class="table-content">Custom data that can be added to the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">CreationDate</td>
+            <td class="table-content">The date and time at which the wallet was created in a timestamp format.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">CreationDate:ISO</td>
+            <td class="table-content">The date and time at which the wallet was created in the following format: dd/MM/yyyy HH:mm:ss.</td>
+            <td class="table-content">No</td>
+        </tr>
+        <tr>
+            <td class="table-content">Owners</td>
+            <td class="table-content">The Id of the user attached to the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">Description</td>
+            <td class="table-content">The description of the wallet. It can be a name, a type, anything that can help you clearly identify the wallet on the platform (and for your end users).</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">BalanceAmount</td>
+            <td class="table-content">The current balance of the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">BalanceCurrency</td>
+            <td class="table-content">The currency of the balance of the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">Currency</td>
+            <td class="table-content">The currency of the wallet.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+        <tr>
+            <td class="table-content">FundsType</td>
+            <td class="table-content">The type of funds in the wallet, which can be DEFAULT, FEES, or CREDIT.</td>
+            <td class="table-content">Yes</td>
+        </tr>
+    </tbody>
+</table> 
+
+## Generate via API
+
+<Steps>
+<Step title="Set up callback URL (optional)">
+If downloading large quantities of data, you may wish to define a URL on which to be notified that the report is ready. In the Wallets report, you can do this in the `CallbackURL` parameter of the [POST Create a Wallets Report](/api-reference/reports/create-wallets-report) endpoint.
+</Step>
+<Step title="Define filters and columns">
+
+In the [POST Create a Wallets Report](/api-reference/reports/create-wallets-report) endpoint, use the `Filters` parameter to filter the data to be returned in the report.
+
+The `BeforeDate` and `AfterDate` filters refer to the `CreationDate` of the wallets. This range can't exceed 24 months.
+
+If no `Filters` are specified, the report contains all wallets created in the last 1 month.
+
+The columns set by default are [listed above](#columns). You can customize this in the `Columns` parameter by sending the full list of columns you wish to see in the report.
+</Step>
+<Step title="Run the report">
+Run the report by calling the [POST Create a Wallets Report](/api-reference/reports/create-wallets-report) endpoint.
+
+Send your defined filters in the `Filters` parameter and, if not using the default columns, the full list of columns you wish to include in the `Columns` parameter.
+
+<CodeGroup>
+  <RestCreateWalletsReport />
+  <PhpCreateWalletsReport />
+  <NodeCreateWalletsReport />
+  <RubyCreateWalletsReport />
+  <CreateWalletsReportPython />
+  <NetCreateWalletsReport />
+</CodeGroup>
+
+The API response shows the `Status` as `PENDING`, indicating that the report is being generated. It also shows the filters and columns set by default if not sent. 
+
+<CodeGroup>
+<RestCreateWalletsReportResponse/>
+</CodeGroup>
+
+</Step>
+<Step title="Download when ready">
+The report is ready for download when its status changes from `PENDING` to `READY_FOR_DOWNLOAD`. This event triggers a notification to your `CallbackURL` (defined in Step 1) with the following format:
+
+> https<span>://www</span>.example.com?EventType=REPORT_READY_FOR_DOWNLOAD&ResourceId=`ReportId`&Date=`ReportDate`
+
+Using the `ReportId` as the path parameter, call the legacy [GET View a Report](/api-reference/reports/view-report) endpoint to retrieve the `DownloadURL` value where you can download the report.
+</Step>
+<Step title="Repeat process as needed">
+The Wallets report `DownloadURL` value is valid for 24 hours. After this, the `Status` changes to `EXPIRED` at it is no longer available for download.
+
+You can re-generate another report with the same parameters and update the date range for the latest period.
+</Step>
+</Steps>

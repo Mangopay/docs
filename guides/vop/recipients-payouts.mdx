@@ -1,0 +1,674 @@
+---
+title: Recipients and payouts
+sidebarTitle: Recipients and payouts
+description: How Verification of Payee (VOP) impacts recipients and payouts
+---
+
+In a payout scenario, as a Requesting PSP, Mangopay will be carrying out VOP checks on recipients and payouts and returning the result in the API response.
+
+## Scope
+
+VOP applies to EUR Recipients and Payouts using SCT or SCT Inst, and for users holding User-Owned Accounts.
+
+In terms of Recipient properties, this means: 
+
+- `Currency` is `EUR`
+- `PayoutMethod` is `LocalBankTransfer`
+- `Country` is a SEPA country
+
+VOP does not apply to non-EUR payouts in SEPA countries, such as SEK payouts to a bank in Sweden (which uses the local scheme RIX). VOP also does not apply to international payouts, such as EUR to a non-SEPA country or, for example, SEK to a SEPA country that isn’t Sweden, both of which use SWIFT.
+
+<Note>
+**Note – Only applies to User-Owned Accounts**
+
+In the first instance, VOP will only be carried out for users who hold a User-Owned Virtual Account. In 2026 Mangopay will make VOP available for all platforms for anti-fraud purposes. 
+
+If your platform does not offer User-Owned Accounts to your users, your payouts are not impacted by Verification of Payee.
+</Note>
+
+## VOP result API fields
+
+The following endpoints will be enriched with the Verification of Payee in the API response:
+
+- [POST Create a Payout](/api-reference/payouts/create-payout), if the owner of the payout’s `BankAccountId` has at least one User-Owned Virtual Account
+- [POST Create a Recipient](/api-reference/recipients/create-recipient), if the platform offers User-Owned Accounts
+- [GET View a Recipient](/api-reference/recipients/view-recipient), if the platform offers User-Owned Accounts
+
+These endpoints will return a new object parameter, `RecipientVerificationOfPayee`, containing: 
+
+- `RecipientVerificationId` – A unique identifier of the VOP check performed by Mangopay.
+- `RecipientVerificationCheck` – The outcome of the VOP check performed by Mangopay, using the details in the Recipient or Bank Account object referenced in the `BankAccountId` field.
+- `RecipientVerificationMessage` – The explanation of the check outcome.
+
+The fields will give the result of the VOP check:
+
+<table>
+<thead>
+<tr>
+<th class="header">`RecipientVerificationCheck`</th>
+<th class="header">`RecipientVerificationMessage`</th>
+<th class="header">Scenario</th>
+<th class="header">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">`MATCH`</td>
+<td class="table-content">Account name fully matches account identifier.</td>
+<td class="table-content">The account is valid and the account name matches the IBAN.</td>
+<td class="table-content">Proceed with the payout or recipient.</td>
+</tr>
+<tr>
+<td class="table-content">`CLOSE_MATCH`</td>
+<td class="table-content">Account name partially matches account identifier. Name returned by check: FirstName LastName. Payment made to this account may not reach its intended counterparty.</td>
+<td class="table-content">The account is valid but the name doesn’t match exactly.</td>
+<td class="table-content">Confirm details with your user before proceeding. Reregister the Recipient if required.</td>
+</tr>
+<tr>
+<td class="table-content">`NO_MATCH`</td>
+<td class="table-content">Account name does not match account identifier. Payment made to this account may not reach its intended counterparty.</td>
+<td class="table-content">This account likely belongs to a different owner.</td>
+<td class="table-content">Do not proceed until you confirm the account details with the user.</td>
+</tr>
+<tr>
+<td class="table-content">`MATCH_NOT_POSSIBLE`</td>
+<td class="table-content">Responding PSP's verification service unreachable. Payment made to this account may not reach its intended counterparty.</td>
+<td class="table-content">The check could not be completed.</td>
+<td class="table-content">Retry later, or proceed only after confirming the account details with the user.</td>
+</tr>
+</tbody>
+</table>
+
+<Warning>
+**Caution – Risk of misdirected payouts**
+
+For any result other than `MATCH`, there is a risk of the funds not reaching their intended destination. Funds sent to the wrong account may not be recoverable.
+</Warning>
+
+## Implementation recommendations
+
+1. Retrieve and display the `RecipientVerificationCheck` and `RecipientVerificationMessage` to your users. These data points are both returned in the `RecipientVerificationOfPayee` object on [GET View a Recipient](/api-reference/recipients/view-recipient), [POST Create a Recipient](/api-reference/recipients/create-recipient), and [POST Create a Payout](/api-reference/payouts/create-payout).
+2. Check the VOP result of Recipients using [GET View a Recipient](/api-reference/recipients/view-recipient) before initiating payouts, to avoid funds being sent to the wrong account.
+
+## Recipients
+
+If the user has a User-Owned Account, Mangopay performs a VOP check on the endpoints:
+
+- [GET View a Recipient](/api-reference/recipients/view-recipient)
+- [POST Create a Recipient](/api-reference/recipients/create-recipient)
+
+VOP is only performed on Recipients where:
+
+- `Currency` is `EUR`
+- `PayoutMethod` is `LocalBankTransfer`
+- `Country` is a SEPA country
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  actor Payee
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Payee ->> Platform: Register or view account <br/> or request payout
+Platform ->> Mangopay: POST Create Recipient <br/> or GET Recipient
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Return VOP result
+Mangopay -->> Platform: Return VOP result <br/> in API response
+Platform -->> Payee: Display result and <br/> handle user action
+Payee ->> Platform: Register new account <br/> or confirm payout
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  actor Payee
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Payee ->> Platform: Register or view account <br/> or request payout
+Platform ->> Mangopay: POST Create Recipient <br/> or GET Recipient
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Return VOP result
+Mangopay -->> Platform: Return VOP result <br/> in API response
+Platform -->> Payee: Display result and <br/> handle user action
+Payee ->> Platform: Register new account <br/> or confirm payout
+```
+</div>
+
+The [GET View a Recipient](/api-reference/recipients/view-recipient) and [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoints will return the VOP result in the `RecipientVerificationOfPayee` parameter of the API response:
+
+```json API response - 200 OK expandable
+{
+    "Id": "rec_01K3V3GWJQBZXQ3HKNWCQCJRXF",
+    "Status": "ACTIVE",
+    "CreationDate": 1756477551,
+    "DisplayName": "ExampleBusinessName EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01JH2Z9GXCCHGFN65T5HDZG4GB",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "ExampleBusinessName",
+        "Address": {
+            "AddressLine1": "3929 Dickinson Streets",
+            "AddressLine2": "Stamm Tunnel",
+            "City": "Paris",
+            "Region": "Ile de France",
+            "PostalCode": "75001",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630004000031234567890143",
+            "BIC": "BNPAFRPPXXX"
+        }
+    },
+		"RecipientVerificationOfPayee": {
+			  "RecipientVerificationId": "123456789",
+			  "RecipientVerificationCheck": "MATCH",
+			  "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
+
+The [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint returns the latest VOP check performed for that account. If no check has ever been performed (for existing Recipient objects and Bank Account objects), then a new check will be carried out.
+
+The [GET View a Bank Account](/api-reference/bank-accounts/view-bank-account) endpoint will not trigger a VOP check nor return any VOP result. Ensure your platform uses [GET View a Recipient](/api-reference/recipients/view-recipient) object to retrieve account information. 
+
+The Recipient endpoint can be used to retrieve legacy Bank Account objects by using the Bank Account `Id` as the `RecipientId` path parameter.
+
+## Payouts
+
+Mangopay is introducing VOP checks when your platform requests a payout using [POST Create a Payout](/api-reference/payouts/create-payout) only if the owner of the payout’s `BankAccountId` has at least one User-Owned Virtual Account.
+
+If the user doesn't have at least one User-Owned Virtual Account, or if the payout does not use the SCT or SCT Inst rails, then VOP is not performed.
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  actor Payee
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Payee ->> Platform: Request payout
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Return VOP result
+Mangopay -->> Platform: Return VOP result <br/> in API response
+Mangopay -->> Responding PSP: Send (or block) payment
+  Note right of Mangopay: Payout from UO account
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  actor Payee
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Payee ->> Platform: Request payout
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Return VOP result
+Mangopay -->> Platform: Return VOP result <br/> in API response
+Mangopay -->> Responding PSP: Send (or block) payment
+  Note right of Mangopay: Payout from UO account
+```
+</div>
+
+The steps are as follows: 
+
+1. Your platform calls [POST Create a Payout](/api-reference/payouts/create-payout).
+2. Mangopay performs Verification of Payee (VOP) using the associated Recipient or Bank Account data (reference in the `BankAccountId`) by checking the IBAN and account holder name with the Responding PSP (which is the Payee’s bank).
+3. Mangopay returns the VOP result in the API response.
+4. Mangopay proceeds with the payment, unless it is blocked as described in the scenarios below.
+
+## Payout scenarios
+
+### Match or close match
+
+When Mangopay performs the VOP check with the Responding PSP, if the result is `MATCH` or `NO_MATCH`, then the payout will continue as before.
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is MATCH <br/> or CLOSE_MATCH
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is MATCH <br/> or CLOSE_MATCH
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+
+The [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will return an HTTP 200 result containing the `RecipientVerificationOfPayee` fields:
+
+```json API response - 200 OK expandable
+{
+    "Id": "po_b_01K3GM8HWNCVDMACCRA0ZZPH02",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "CreationDate": 1756126005,
+    "AuthorId": "user_m_01K075ZBVXGFYAXM7529W2ZS5W",
+    "CreditedUserId": null,
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 900
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 100
+    },
+    "Status": "CREATED",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "Type": "PAYOUT",
+    "Nature": "REGULAR",
+    "CreditedWalletId": null,
+    "DebitedWalletId": "wlt_m_01J9KQE9Z2S4G4R867C5H6W5ZV",
+    "PaymentType": "BANK_WIRE",
+    "BankAccountId": "rec_01K1ZWF7RJG9MEY8VQ0QE2RQ4D",
+    "BankWireRef": "Example123",
+    "ModeRequested": null,
+    "ModeApplied": "PENDING_RESPONSE",
+    "FallbackReason": null,
+    "EndToEndId": "3b891fba337d45ec874646ac48565964",
+    "PaymentRef": null,
+    "RecipientVerificationOfPayee": {
+      "RecipientVerificationId": "123456789",
+      "RecipientVerificationCheck": "MATCH",
+      "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
+
+### No match or match not possible
+
+If the result of the VOP check is `NO_MATCH` or `MATCH_NOT_POSSIBLE`, then the behavior will be as follows.
+
+### Before Oct 9, 2025
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+
+Before Oct 9, 2025, the payout will continue as normal. The `NO_MATCH` or `MATCH_NOT_POSSIBLE` result will be returned in the `RecipientVerificationOfPayee` object.
+
+This behavior serves as a warning: `NO_MATCH` result means your platform should inform the user that their payment may not reach its intended payee. In these cases, the user should check their account details and re-register the Recipient if necessary.
+
+### After Oct 9, 2025
+
+Mangopay has sent a contract amendment to platforms that offer User-Owned Accounts to their users.
+
+### If amendment signed
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
+Mangopay ->> Responding PSP: Send payout
+```
+</div>
+
+If the amendment is signed, from Oct 9, 2025, the behavior will stay the same: the payout will continue and the `NO_MATCH` or `MATCH_NOT_POSSIBLE` result will be returned in the `RecipientVerificationOfPayee` object.
+
+### If amendment not signed
+
+{/* light mode */}
+<div className="block dark:hidden">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFFFFF',
+      'primaryTextColor': '#2D0F37',
+      'primaryBorderColor': '#2D0F37',
+      'lineColor': '#2D0F37',
+      'secondaryColor': '#FFFFFF',
+      'tertiaryColor': '#FFFFFF',
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#E0DBE1",
+      'noteBkgColor': "#E0DBE1",
+      'noteTextColor': '#2D0F37'
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 400 Bad Request with <br/>error message
+	Note right of Mangopay: Payout blocked
+```
+</div>
+{/* dark mode */}
+<div className="hidden dark:block">
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': "#090D0D",
+      'primaryTextColor': "#FFFFFF",
+      'primaryBorderColor': "#FFFFFF",
+      'lineColor': "#FFFFFF",
+      'secondaryColor': "#090D0D",
+      'tertiaryColor': "#090D0D",
+      'fontSize': '32px',
+      'fontFamily': 'Inter',
+      'noteBorderColor': "#12282F",
+      'noteBkgColor': "#090D0D",
+      'noteTextColor': "#FFFFFF"
+    }
+  }
+}%%
+sequenceDiagram
+  participant Platform
+  participant Mangopay
+  participant Responding PSP
+
+Platform ->> Mangopay: POST Payout
+Mangopay ->> Responding PSP: Perform VOP
+Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 400 Bad Request with <br/>error message
+	Note right of Mangopay: Payout blocked
+```
+</div>
+
+Until the amendment is signed, from Oct 9, 2025, payouts will be blocked if the VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`.
+
+The [POST Create a Payout](/api-reference/payouts/view-payout) endpoint will return a 400 error:
+
+```json API response - 400 Bad Request
+{
+    "Id": "44312c27-c681-4240-8df9-a2507bcf30d6",
+    "Message": "Payout not allowed because Verification of Payee result is NO_MATCH", // or MATCH_NOT_POSSIBLE
+    "Type": "invalid_action",
+    "Date": 1747666655.0,
+    "errors": null
+}
+```
+
+Once the amendment is signed, the block will be lifted.
+
+<Note>
+**Note – Block only applies to UO account holders**
+
+The block will be applied to users who hold a User-Owned Account. For these users, all payouts will be blocked regardless of which wallet they are debited from (determined by the owner of the payout’s `BankAccountId`).
+
+The block will also only apply to EUR payments via SCT and SCT Inst.
+
+Payouts authored by users without User-Owned Accounts will not be VOP checked and not be blocked because of VOP.
+</Note>

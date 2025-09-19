@@ -1,6 +1,7 @@
 ---
 title: 'Create an IBAN Banking Alias'  
 api: 'POST /v2.01/{ClientId}/wallets/{WalletId}/bankingaliases/iban'  
+tag: DEPRECATED
 ---
 
 import LocalAccountDetailsResponse from '/snippets/p-response/LocalAccountDetailsResponse.mdx';
@@ -29,16 +30,22 @@ import PythonCreateIbanBankingAlias from '/snippets/code/python-create-iban-bank
 import NetCreateBankingAlias from '/snippets/code/net-create-banking-alias.mdx';
 
 <Warning>
-**Caution – Replaced by Virtual Accounts**
+**Deprecated – Decommissioning planned Q3 2026**
 
-New integrations should use [Virtual Accounts](/api-reference/virtual-accounts/virtual-account-object), which have replaced Banking Aliases. Existing banking aliases can continue to be used and these endpoints are still supported.
+Mangopay plans to decommission the Banking Alias endpoints in Q3 2026. 
 
-See the [Banking Alias object](/api-reference/banking-aliases/banking-alias-object) for a comparison.
+Platforms using them should plan to re-integrate using the [Virtual Account](/api-reference/virtual-accounts/virtual-account-object) endpoints. 
+
+Existing Banking Alias objects are available via the [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account) endpoint by using the Banking Alias `Id` and `WalletId` as path parameters.
 </Warning>
 
-The `OwnerName` must match the name of the user owning the wallet (`FirstName` and `LastName` for a <a href="/api-reference/users/natural-user-object-sca">Natural User</a>, `Name` for a <a href="/api-reference/users/legal-user-object-sca">Legal User</a>).
+<Warning>
+**Caution – Rely on `OwnerName` returned in response**
 
-If Mangopay has provided your platform with a Technical Collection Virtual IBAN for reconciliation purposes, the `OwnerName` must be "Mangopay S.A." or "Mangopay S.A. - Your Trading Name". Please ensure your have confirmed this integration with our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+Since September 15, 2025, Mangopay sets the `OwnerName` value by default based on the criteria [available here](/guides/vop/payins#banking-alias-categorization). 
+
+Your platform must rely on the API response value (also available on the GET endpoints) and ensure it is easy to see and copy for the end user in your interfaces.
+</Warning>
 
 <Note>
 **Note - Payee confirmation in the UK** 
