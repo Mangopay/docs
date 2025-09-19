@@ -2,7 +2,11 @@ import MaxLength255Characters from '/snippets/rules/max-length-255-characters.md
   
 <ResponseField name="OwnerName" type="string" >  
 <MaxLength255Characters />    
-The owner of the banking alias. The `OwnerName` must match the name of the user owning the wallet (`FirstName` and `LastName` for a <a href="/api-reference/users/natural-user-object-sca">Natural User</a>, `Name` for a <a href="/api-reference/users/legal-user-object-sca">Legal User</a>).
+The owner of the banking alias, which is set automatically by Mangopay since September 15, 2025 ([read more](/guides/vop/payins#banking-alias-categorization)).
 
-If Mangopay has provided your platform with a Technical Collection Virtual IBAN for reconciliation purposes, the `OwnerName` must be "Mangopay S.A." or "Mangopay S.A. - Your Trading Name". Please ensure your have confirmed this integration with our teams <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
+If the User owning the attached wallet has `UserCategory` of `OWNER` and the `KYCLevel` of `REGULAR`, then the `OwnerName` is set to the `FirstName` and `LastName` values for a [Natural User](/api-reference/users/natural-user-object-sca) or the `Name` value for a [Legal User](/api-reference/users/legal-user-object-sca). In this case, the `VirtualAccountPurpose` in the API response is `USER_OWNED`.
+
+If the User is not KYC verified and an `OWNER`, then the `OwnerName` is set to “MGP `PlatformTradingName`" in standard cases, or else “Mangopay” for Marketplace Payment Extension (MPE) workflows. In this case, the `VirtualAccountPurpose` in the API response is `COLLECTION`.
+
+**Caution:** Your platform must ensure that you use the `OwnerName` returned in the API response.
 </ResponseField>
