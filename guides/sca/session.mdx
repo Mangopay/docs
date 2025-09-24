@@ -283,11 +283,47 @@ The `returnUrl` parameter name is case-sensitive.
 
 Note that the concatenation of Mangopay's `RedirectUrl` and your encoded `returnUrl` must be less than 2,000 characters, which is the limit of most web browsers.
 
-### 4. Redirect the user to the hosted webpage
+### 4. Set the session language (optional)
+
+By default, the SCA session detects the user's browser language if it is one of those listed in the table below. 
+
+Regional variants for the same language resolve to the single translation supported by Mangopay: e.g. `es-419` (Latin American Spanish) resolves to `es`, `en-US` (American English) resolves to `en`.
+
+If the user's browser is in a language (or variant) not listed below, the session is in English by default.
+
+You can override the default behavior by manually setting the language of the session using the `lang` query parameter, with one of the values below. For example, to set the session to Spanish, regardless of the user's browser language, you can add `&lang=es` to your URL:
+
+<table>
+<tbody>
+<tr>
+<td class="table-content no-borders">
+<span>https:</span>//sca.mangopay.com?&#8288;token=0193d02f30df7a188c51cf890a191d21&returnUrl=https%3A%2F%2Fexample.com&lang=es
+</td>
+</tr>
+</tbody>
+</table>
+
+<table><thead><tr>
+<th class="header">Language</th>
+<th class="header">`lang` value</th>
+</tr></thead><tbody>
+<tr><td class="table-content">Dutch</td><td class="table-content">`nl`</td></tr>
+<tr><td class="table-content">English</td><td class="table-content">`en`</td></tr>
+<tr><td class="table-content">French</td><td class="table-content">`fr`</td></tr>
+<tr><td class="table-content">German</td><td class="table-content">`de`</td></tr>
+<tr><td class="table-content">Greek</td><td class="table-content">`el`</td></tr>
+<tr><td class="table-content">Italian</td><td class="table-content">`it `</td></tr>
+<tr><td class="table-content">Polish</td><td class="table-content">`pl`</td></tr>
+<tr><td class="table-content">Portuguese</td><td class="table-content">`pt`</td></tr>
+<tr><td class="table-content">Spanish</td><td class="table-content">`es`</td></tr>
+</tbody>
+</table>
+
+### 5. Redirect the user to the hosted webpage
 
 Redirect the user on the new URL string which now comprises Mangopay's full `RedirectUrl` response value (including the unique token) and your added `returnUrl`.
 
-### 5. Let the user complete the session
+### 6. Let the user complete the session
 Once on the session URL, the user can perform the necessary actions for the SCA session. This includes enrollment or authentication, as well as all required authentication factors.
 
 <Note>
@@ -300,7 +336,7 @@ If this happens, you need to retry the SCA session using the relevant endpoint (
 
 To test the OTP factor in Sandbox, you can use the `PhoneNumber` `+33611111111` (or `0611111111` and `FR`) and the passcode **702100** to simulate a successful flow. You can also use a real phone number to receive the SMS OTP.
 
-### 6. Receive the user on return
+### 7. Receive the user on return
 
 Once the user completes authentication (successfully or not) they are redirected to your `returnUrl` to continue their experience on your platform.
 
@@ -330,7 +366,7 @@ Your integration should asynchronously rely on webhooks for event status changes
 
 When Mangopay introduced SCA, there was a second query parameter, `actionStatus`, that was added to the `returnUrl` on redirection. This was subsequently removed for consistency across all SCA redirection scenarios, and to encourage reliance on webhooks.
 
-### 7. Confirm the session outcome and retry if required
+### 8. Confirm the session outcome and retry if required
 
 The query parameters appended to the `returnUrl` are indicative.
 
