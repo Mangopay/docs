@@ -672,3 +672,547 @@ The block will also only apply to EUR payments via SCT and SCT Inst.
 
 Payouts authored by users without User-Owned Accounts will not be VOP checked and not be blocked because of VOP.
 </Note>
+
+## Testing 
+
+In Sandbox, Mangopay provides testing data to allow you to simulate different VOP results when you call [POST Create a Recipient](/api-reference/recipients/create-recipient).
+
+### FR business recipient
+
+<table><thead><tr>
+<th class="header">IBAN</th>
+<th class="header">`BusinessName`</th>
+<th class="header">VOP result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="table-content" rowSpan={3}>
+`FR7630001007941234567890185`
+</td>
+<td class="table-content">
+`EuroCorp`
+</td>
+<td class="table-content">
+`MATCH`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`EuroCarp`
+</td>
+<td class="table-content">
+`CLOSE_MATCH`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Any other value
+</td>
+<td class="table-content">
+`NO_MATCH`
+</td>
+</tr>
+</tbody>
+</table>
+
+Insert the data above in the relevant fields when you call [POST Create a Recipient](/api-reference/recipients/create-recipient), ensuring you follow the schema for a `LocalBankTransfer` payout method with the `Country` set to `FR` and the `Currency` in `EUR`.
+
+Follow the examples below.
+#### API request
+<CodeGroup>
+```json MATCH
+{
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCorp", 
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "FR1420041010050500013M02606"
+        }
+    }
+}
+```
+```json CLOSE_MATCH
+{
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCarp", // Name misspelled with A
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "FR7630001007941234567890185"
+        }
+    }
+}
+```
+```json NO_MATCH
+{
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "InterCorp", // Or any other name
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "FR7630001007941234567890185"
+        }
+    }
+}
+```
+</CodeGroup>
+
+#### API response
+<CodeGroup>
+```json MATCH
+{
+    "Id": "rec_01K6CYKD6MW45X0TFXS8GSMNWH",
+    "Status": "PENDING",
+    "CreationDate": 1759223854,
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCorp",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630001007941234567890185",
+            "BIC": "BDFEFRPPCCT"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999e9b6f97eb49e77af2505f5a816"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "383db3d8-2bdd-480d-bed8-28bf5be275a9",
+        "RecipientVerificationCheck": "MATCH",
+        "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
+```json CLOSE_MATCH
+{
+    "Id": "rec_01K6CYMN7FTBKKQMP8TYM06CJS",
+    "Status": "PENDING",
+    "CreationDate": 1759223895,
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCarp",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630001007941234567890185",
+            "BIC": "BDFEFRPPCCT"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999ea569f77f79ecbee7dfaba41d6"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "fb72cf37-c468-48fe-afda-4c747d94cec3",
+        "RecipientVerificationCheck": "CLOSE_MATCH",
+        "RecipientVerificationMessage": "Account name partially matches account identifier. Name returned by check: EuroCorp. Payment made to this account may not reach its intended counterparty."
+    }
+}
+```
+```json NO_MATCH
+{
+    "Id": "rec_01K6CYNBD687FB7AZ71VCH29SR",
+    "Status": "PENDING",
+    "CreationDate": 1759223917,
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "BusinessRecipient": {
+        "BusinessName": "InterCorp",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630001007941234567890185",
+            "BIC": "BDFEFRPPCCT"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999eaaf667626a742b929d1473822"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "54ad763c-d10b-4e36-b3ae-efd6d54afcf8",
+        "RecipientVerificationCheck": "NO_MATCH",
+        "RecipientVerificationMessage": "Account name does not matches account identifier. Payment made to this account may not reach its intended counterparty."
+    }
+}
+```
+</CodeGroup>
+
+### DE individual recipient
+
+<table><thead><tr>
+<th class="header">IBAN</th>
+<th class="header">`FirstName`</th>
+<th class="header">`LastName`</th>
+<th class="header">VOP result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="table-content" rowSpan={3}>
+`DE75512108001245126199`
+</td>
+<td class="table-content">
+`John`
+</td>
+<td class="table-content">
+`Doe`
+</td>
+<td class="table-content">
+`MATCH`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`John`
+</td>
+<td class="table-content">
+`Dae`
+</td>
+<td class="table-content">
+`CLOSE_MATCH`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+Any other value
+</td>
+<td class="table-content">
+Any other value
+</td>
+<td class="table-content">
+`NO_MATCH`
+</td>
+</tr>
+</tbody>
+</table>
+
+Insert the data above in the relevant fields when you call [POST Create a Recipient](/api-reference/recipients/create-recipient), ensuring you follow the schema for a `LocalBankTransfer` payout method with the `Country` set to `DE` and the `Currency` in `EUR`.
+
+Follow the examples below.
+#### API request
+<CodeGroup>
+```json MATCH
+{
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "DE75512108001245126199"
+        }
+    }
+}
+```
+```json CLOSE_MATCH
+{
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "John",
+        "LastName": "Dae", // Name misspelled with A
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "DE75512108001245126199"
+        }
+    }
+}
+```
+```json NO_MATCH
+{
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "Jane", // Or any other first name
+        "LastName": "Doe", // Or any other last name
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "DE75512108001245126199"
+        }
+    }
+}
+```
+</CodeGroup>
+
+#### API response
+<CodeGroup>
+```json MATCH
+{
+    "Id": "rec_01K6CYKD6MW45X0TFXS8GSMNWH",
+    "Status": "PENDING",
+    "CreationDate": 1759223854,
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCorp",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630001007941234567890185",
+            "BIC": "BDFEFRPPCCT"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999e9b6f97eb49e77af2505f5a816"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "383db3d8-2bdd-480d-bed8-28bf5be275a9",
+        "RecipientVerificationCheck": "MATCH",
+        "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
+```json CLOSE_MATCH
+{
+    "Id": "rec_01K6CZ7Q1357HZ1FY8CY0MKE85",
+    "Status": "PENDING",
+    "CreationDate": 1759224519,
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "IndividualRecipient": {
+        "FirstName": "John",
+        "LastName": "Dae",
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "DE75512108001245126199",
+            "BIC": "SOGEDEFFXXX"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999f3de167bc19fbbd7b13292e87b"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "50a8f8be-46c4-467b-b820-d5957e9eea92",
+        "RecipientVerificationCheck": "CLOSE_MATCH",
+        "RecipientVerificationMessage": "Account name partially matches account identifier. Name returned by check: . Payment made to this account may not reach its intended counterparty."
+    }
+}
+```
+```json NO_MATCH
+{
+    "Id": "rec_01K6CZ5KVFHDTK9H9R78F5ZPX7",
+    "Status": "PENDING",
+    "CreationDate": 1759224450,
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "UserId": "user_m_01K6ATMK6BA01BHGF14P7M1Q95",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "IndividualRecipient": {
+        "FirstName": "Jane",
+        "LastName": "Doe",
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "DE75512108001245126199",
+            "BIC": "SOGEDEFFXXX"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_019999f2d0ed7bdbabd6f6d96f2acbf5"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "22e3f171-abbe-42ad-8ab0-1f52b61f7a21",
+        "RecipientVerificationCheck": "NO_MATCH",
+        "RecipientVerificationMessage": "Account name does not matches account identifier. Payment made to this account may not reach its intended counterparty."
+    }
+}
+```
+</CodeGroup>
+
+### Error cases
+
+The following IBANs allow you to simulate error cases with any account holder name.
+
+<table><thead><tr>
+<th class="header">IBAN</th>
+<th class="header">VOP result</th>
+<th class="header">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="table-content">
+`FR1420041010050500013M02606`
+</td>
+<td class="table-content">
+`MATCH_NOT_POSSIBLE`
+</td>
+<td class="table-content">
+Simulates a technical error, `RecipientVerificationId` is returned.
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`FR7630006000011234567890189`
+</td>
+<td class="table-content">
+`MATCH_NOT_POSSIBLE`
+</td>
+<td class="table-content">
+Simulates a PSP not responding, with delayed response and `RecipientVerificationId` as `null`.
+</td>
+</tr>
+</tbody>
+</table>
