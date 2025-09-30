@@ -103,6 +103,7 @@ VOP is only performed on Recipients where:
 - `PayoutMethod` is `LocalBankTransfer`
 - `Country` is a SEPA country
 
+<div min-height="470px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -174,6 +175,7 @@ Mangopay -->> Platform: Return VOP result <br/> in API response
 Platform -->> Payee: Display result and <br/> handle user action
 Payee ->> Platform: Register new account <br/> or confirm payout
 ```
+</div>
 </div>
 
 The [GET View a Recipient](/api-reference/recipients/view-recipient) and [POST Create a Recipient](/api-reference/recipients/create-recipient) endpoints will return the VOP result in the `RecipientVerificationOfPayee` parameter of the API response:
@@ -228,6 +230,7 @@ Mangopay is introducing VOP checks when your platform requests a payout using [P
 
 If the user doesn't have at least one User-Owned Virtual Account, or if the payout does not use the SCT or SCT Inst rails, then VOP is not performed.
 
+<div min-height="230px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -299,6 +302,7 @@ Mangopay -->> Platform: Return VOP result <br/> in API response
 Mangopay -->> Responding PSP: Send (or block) payment
   Note right of Mangopay: Payout from UO account
 ```
+</div>
 </div>
 
 The steps are as follows: 
@@ -314,6 +318,7 @@ The steps are as follows:
 
 When Mangopay performs the VOP check with the Responding PSP, if the result is `MATCH` or `CLOSE_MATCH`, then the payout will continue as before.
 
+<div min-height="465px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -379,6 +384,7 @@ Responding PSP -->> Mangopay: Result is MATCH <br/> or CLOSE_MATCH
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
+</div>
 </div>
 
 The [POST Create a Payout](/api-reference/payouts/create-payout) endpoint will return an HTTP 200 result containing the `RecipientVerificationOfPayee` fields:
@@ -432,6 +438,7 @@ If the result of the VOP check is `NO_MATCH` or `MATCH_NOT_POSSIBLE`, then the b
 
 ### Before Oct 9, 2025
 
+<div min-height="440px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -497,6 +504,7 @@ Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
+</div>
 </div>
 
 Before Oct 9, 2025, the payout will continue as normal. The `NO_MATCH` or `MATCH_NOT_POSSIBLE` result will be returned in the `RecipientVerificationOfPayee` object.
@@ -509,6 +517,7 @@ Mangopay has sent a contract amendment to platforms that offer User-Owned Accoun
 
 ### If amendment signed
 
+<div min-height="440px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -574,12 +583,14 @@ Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
+</div>
 </div>
 
 If the amendment is signed, from Oct 9, 2025, the behavior will stay the same: the payout will continue and the `NO_MATCH` or `MATCH_NOT_POSSIBLE` result will be returned in the `RecipientVerificationOfPayee` object.
 
 ### If amendment not signed
 
+<div min-height="450px">
 {/* light mode */}
 <div className="block dark:hidden">
 ```mermaid
@@ -645,6 +656,7 @@ Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 400 Bad Request with <br/>error message
 	Note right of Mangopay: Payout blocked
 ```
+</div>
 </div>
 
 Until the amendment is signed, from Oct 9, 2025, payouts will be blocked if the VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`.
@@ -1136,7 +1148,7 @@ Follow the examples below.
     "RecipientVerificationOfPayee": {
         "RecipientVerificationId": "50a8f8be-46c4-467b-b820-d5957e9eea92",
         "RecipientVerificationCheck": "CLOSE_MATCH",
-        "RecipientVerificationMessage": "Account name partially matches account identifier. Name returned by check: . Payment made to this account may not reach its intended counterparty."
+        "RecipientVerificationMessage": "Account name partially matches account identifier. Name returned by check: John Doe. Payment made to this account may not reach its intended counterparty."
     }
 }
 ```
@@ -1216,16 +1228,20 @@ Simulates a PSP not responding, with delayed response and `RecipientVerification
 </tbody>
 </table>
 
-{/* ### View a Recipient
+### View a Recipient
 
 If you use the testing data above, the [GET View a Recipient](/api-reference/recipients/view-recipient) returns the VOP check that was performed at creation, with the same `RecipientVerificationId`.
 
 ### Payout
 
-The POST Create a Payout returns the VOP check performed previously on the Recipient, if it exists.
+The [POST Create a Payout](/api-reference/payouts/create-payout) returns the VOP check performed previously on the Recipient, if it exists.
 
 <Note>
 **Note – Payout fails if Recipient not ACTIVE and User not verified**
 
-If you don't complete SCA on Recipients created with the test data above, the payout request will fail immediately with the `ResultCode` [121006](/errors/codes/121006) – `The associated bank account is not active`, but the VOP check result will still be returned.
-</Note> */}
+If you don't complete SCA on Recipients created with the test data above, then the Recipient `Status` is not `ACTIVE` and the payout will fail immediately. The payout will also not succeed if the User does not have `KYCLevel` of `REGULAR`.
+
+In both cases, however, the VOP data is still returned in the response to [POST Create a Payout](/api-reference/payouts/create-payout) if it applies to the associated `BankAccountId`. 
+</Note>
+
+The VOP result fields are not returned on the [GET View a Payout](/api-reference/payouts/view-payout) nor [GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied) endpoints.
