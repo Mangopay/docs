@@ -1,0 +1,24 @@
+<ResponseField name="RecipientVerificationOfPayee" type="object" nullable>
+Information about the [Verification of Payee (VOP)](/guides/vop) check performed on the Recipient. Because VOP only applies to SEPA local schemes, this object is returned `null` if the Recipient's `Currency` is not `EUR` or its `PayoutMethod` is not `LocalBankTransfer`.
+<Expandable>
+<ResponseField name="RecipientVerificationId" type="string" nullable>  
+The unique identifier of the VOP check. This value may be `null` if the check could not be performed.
+</ResponseField>  
+<ResponseField name="RecipientVerificationCheck" type="string">  
+Possible values: `MATCH`, `CLOSE_MATCH`, `NO_MATCH`, `MATCH_NOT_POSSIBLE`
+
+The result of the VOP check: 
+- `MATCH` – The account is valid and the account name matches the IBAN.
+- `CLOSE_MATCH` – The account is valid but the name doesn’t match exactly.
+- `NO_MATCH` – This account likely belongs to a different owner.
+- `MATCH_NOT_POSSIBLE` – The check could not be completed.
+</ResponseField>  
+<ResponseField name="RecipientVerificationMessage" type="string">
+The explanation of the `RecipientVerificationCheck`:
+- If `MATCH`, then `Account name fully matches account identifier.`
+- If `CLOSE_MATCH`, then `Account name partially matches account identifier. Name returned by check: {Name}. Payment made to this account may not reach its intended counterparty.`
+- If `NO_MATCH`, then `Account name does not matches account identifier. Payment made to this account may not reach its intended counterparty.`
+- If `MATCH_NOT_POSSIBLE`, then `Account name does not matches account identifier. Payment made to this account may not reach its intended counterparty.`
+</ResponseField>
+</Expandable>
+</ResponseField>
