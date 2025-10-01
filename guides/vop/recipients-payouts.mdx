@@ -1232,9 +1232,15 @@ Simulates a PSP not responding, with delayed response and `RecipientVerification
 
 If you use the testing data above, the [GET View a Recipient](/api-reference/recipients/view-recipient) returns the VOP check that was performed at creation, with the same `RecipientVerificationId`.
 
+{/* In Sandbox, as in Production, active Bank Account objects have been migrated to Recipients. This means that if you call [GET View a Recipient](/api-reference/recipients/view-recipient) with the Id of a legacy Bank Account. */}
+
 ### Payout
 
 The [POST Create a Payout](/api-reference/payouts/create-payout) returns the VOP check performed previously on the Recipient, if it exists.
+
+In Production, Mangopay will perform an additional VOP check at the point of the payout initiation call and return it in the payout response. In Sandbox, however, a VOP check is only performed when the Recipient is created. Therefore, the payout response contains the same VOP check (same `RecipientVerificationId`) as the one returned on the Recipient.
+
+The VOP result fields are not returned on the [GET View a Payout](/api-reference/payouts/view-payout) nor [GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied) endpoints (in both Sandbox and Production).
 
 <Note>
 **Note – Payout fails if Recipient not ACTIVE and User not verified**
@@ -1243,5 +1249,3 @@ If you don't complete SCA on Recipients created with the test data above, then t
 
 In both cases, however, the VOP data is still returned in the response to [POST Create a Payout](/api-reference/payouts/create-payout) if it applies to the associated `BankAccountId`. 
 </Note>
-
-The VOP result fields are not returned on the [GET View a Payout](/api-reference/payouts/view-payout) nor [GET View a Payout and check mode applied](/api-reference/payouts/view-payout-check-mode-applied) endpoints.
