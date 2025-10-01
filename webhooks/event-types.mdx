@@ -84,7 +84,7 @@ The User has been unblocked by Mangopay and can now make payouts or send or rece
 </tr><tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Owner User (Natural or Legal Soletrader) has triggered SCA enrollment or re-enrollment via a User endpoint. Their access to Mangopay features is restricted until they complete the SCA redirection to enroll successfully.
+The Owner User (Natural or Legal Soletrader) has triggered SCA enrollment or re-enrollment via a User endpoint. Their access to SCA-controlled actions is restricted until they complete the SCA redirection to enroll successfully.
 <br/><br/>
 This event is only triggered when the User's `UserStatus` changes to `PENDING_USER_ACTION`, which only happens in the situations described [here](/guides/sca/users#pending-user-action).
 </td>
@@ -96,7 +96,7 @@ This event is only triggered when the User's `UserStatus` changes to `PENDING_US
 </tr><tr>
 <th class="header">Description</th>
 <td class="table-content">
-The Owner User (Natural or Legal Soletrader) completed the SCA session successfully following a call to a User endpoint, and can now access Mangopay features.
+The Owner User (Natural or Legal Soletrader) completed an SCA session successfully, and can now access Mangopay features.
 <br/><br/>
 This event is only triggered when the User's `UserStatus` changes from `PENDING_USER_ACTION` to `ACTIVE`.
 </td>
@@ -1536,6 +1536,184 @@ The payout return has failed.
 <th class="header">Description</th>
 <td class="table-content">
 The payout return has been successfully processed.
+</td>
+</tr></table>
+
+## Echo
+
+### Intents
+
+<table><tr>
+<th class="header">Resource</th>
+<td class="table-content">Intent `CaptureId`</td>
+</tr><tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View an Intent](/api-reference/intents/view-intent)</td>
+</tr><tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Echo](/guides/echo)</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_AUTHORIZED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent was successfully created.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_CAPTURED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Capture was successfully processed.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_REFUNDED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Refund was successfully processed.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_REFUND_REVERSED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Refund was successfully reversed.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_DISPUTE_CREATED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Dispute was successfully processed.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_DISPUTE_DEFENDED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Dispute `Status` was successfully changed to `DEFENDED`.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_DISPUTE_WON`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Dispute was successfully processed as `WON`.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_DISPUTE_LOST`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent Dispute was successfully processed as `LOST`.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_SETTLED_NOT_PAID`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent was successfully reconciled.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`INTENT_PAID`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Intent was successfully paid.
+</td>
+</tr></table>
+
+### Intent Splits
+
+<table><tr>
+<th class="header">Resource</th>
+<td class="table-content">Intent `SplitId`</td>
+</tr><tr>
+<th class="header">Related&nbsp;GET</th>
+<td class="table-content">[GET View an Intent](/api-reference/intents/view-intent)</td>
+</tr><tr>
+<th class="header">Related&nbsp;guides</th>
+<td class="table-content">[Echo](/guides/echo)</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`SPLIT_CREATED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Split was successfully created.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`SPLIT_PENDING_FUNDS_RECEPTION`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Split was successfully reconciled.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`SPLIT_AVAILABLE`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Split was successfully paid.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`SPLIT_REJECTED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Split could not be processed due to a technical issue, and can be retried.
+</td>
+</tr></table>
+
+<table><tr>
+<th class="header">Event type</th>
+<td class="table-content">`SPLIT_REVERSED`</td>
+</tr><tr>
+<th class="header">Description</th>
+<td class="table-content">
+The Split was successfully reversed.
 </td>
 </tr></table>
 
