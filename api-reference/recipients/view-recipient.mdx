@@ -19,10 +19,13 @@ import InternationalBankTransfer_RecipientResponse from '/snippets/p-response/In
 import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankTransfer_RecipientResponse.mdx';
 import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
 import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
+import RecipientVerificationOfPayee from '/snippets/p-response/RecipientVerificationOfPayee.mdx';
 
 import RecipientId from '/snippets/p-path/RecipientId.mdx';
 
 import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
+
+Verification of Payee (VOP) impacts SEPA local schemes, which means Recipients with `Currency` value `EUR` and `PayoutMethod` value `LocalBankTransfer`. [Read more](/guides/vop/recipients-payouts) **&rarr;**
 
 ### Path parameters
 
@@ -60,10 +63,48 @@ import RestGetNoBody from '/snippets/code/rest-get-no-body.mdx';
 <LocalBankTransfer_RecipientResponse/>
 </Tab>
 </Tabs>
+<RecipientVerificationOfPayee/>
 </Accordion>
 </AccordionGroup>
 
 <ResponseExample>
+```json VOP: ACTIVE, EUR, local, PAYOUT
+{
+    "Id": "rec_01K6DDEMYPH2NHC0F25BQFJCTK",
+    "Status": "PENDING",
+    "CreationDate": 1759239427,
+    "DisplayName": "EuroCorp EUR FR account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Business",
+    "Currency": "EUR",
+    "Country": "FR",
+    "UserId": "user_m_01K5Y4XQA9HESYF8S9V70K16XH",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "BusinessRecipient": {
+        "BusinessName": "EuroCorp",
+        "Address": {
+            "AddressLine1": "6 rue de la Cité",
+            "AddressLine2": "Appartement 3",
+            "City": "Paris",
+            "Region": "île-de-France",
+            "PostalCode": "75003",
+            "Country": "FR"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "FR7630001007941234567890185",
+            "BIC": "BDFEFRPPCCT"
+        }
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "9cd39426-d2b0-4f70-b79f-e54af433626f",
+        "RecipientVerificationCheck": "MATCH",
+        "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
 ```json ACTIVE, EUR, international, PAYOUT
 {
     "Id": "rec_01JRADYFJYPFM10XPQ8VFWW947",

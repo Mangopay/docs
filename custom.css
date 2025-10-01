@@ -1,21 +1,25 @@
 /* Google Font import */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap"); */
 
-html {
-  font-family: "Inter", sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Inter&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+
+@font-face {
+  font-family: "AeonikMedium";
+  /* local hosting to test */
+  /* src: url("/fonts/aeonik/aeonik-medium.woff") */
+  src: url("https://feature-redesign-2025--dev-mangopay.netlify.app/fonts/aeonik/aeonik-medium.woff")
+    format("woff");
 }
-/* 
-* {
+
+/* {
   transition-duration: 0.15s !important;
   transition-delay: 0ms !important;
 } */
-
 /* reduce italic slant */
 /* em {
   font-style: normal;
   font-variation-settings: "slnt" -10;
 } */
-
 /* useful for debugging, targeting an element */
 /* .prose {
   border: 1px solid red !important;
@@ -24,8 +28,7 @@ html {
 .not-prose {
   border: 1px solid lime !important;
 } */
-
-.max-w-8xl {
+/* .max-w-8xl {
   max-width: 104rem !important;
 }
 
@@ -35,13 +38,11 @@ html {
 
 .h-\[calc\(100\%-10rem\)\] {
   height: 100%;
-}
-
+} */
 /* Remove "Copy page / Copied" to leave just the icon */
 /* #page-context-menu-button span {
   display: none;
 } */
-
 /* Make "AI responses may contain mistakes" more visible */
 /* text-gray-600 = #4b5563 */
 #chat-assistant-disclaimer-text {
@@ -64,6 +65,7 @@ html {
   align-items: center;
   gap: 4px;
   border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
   font-size: 12px;
   font-style: normal;
   font-weight: 700;
@@ -74,23 +76,23 @@ html {
 /* Colored pills for release notes */
 
 .pill-green {
-  background-color: #40ca5a;
-  color: #1a5615;
+  background-color: #89e481;
+  color: #00482f;
 }
 
 .pill-orange {
-  background-color: #fcb069;
-  color: #5b3a1d;
+  background-color: #ffda84;
+  color: #664e14;
 }
 .pill-blue {
   background-color: #8ec2ff;
   color: #0f407b;
 }
 
-.pill-purple {
+/* .pill-purple {
   background-color: #b7b2ff;
   color: #272269;
-}
+} */
 
 /* Gray pill for error categories */
 
@@ -102,36 +104,79 @@ html {
 
 /* Colors for homepage cards */
 .background-color-yellow {
-  background-color: #ffd260;
+  background-color: #12282f;
+}
+
+.dark .background-color-yellow {
+  background-color: #e5e5e5;
 }
 
 .background-color-yellow:hover {
-  background-color: #370971;
+  background-color: #2a3e44;
+  /* transition:  .1s ease-in-out */ /* For smooth transition to other colors */
+}
+
+.dark .background-color-yellow:hover {
+  background-color: #ffffff;
   /* transition:  .1s ease-in-out */ /* For smooth transition to other colors */
 }
 
 .background-color-yellow:hover svg path:first-child {
-  fill: #ffd260;
+  fill: #ffffff;
   /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
 }
 .background-color-yellow:hover svg path:last-child {
-  stroke: #ffd260;
+  stroke: #ffffff;
   /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
 }
 
+.dark .background-color-yellow svg path:first-child {
+  fill: #00000e;
+  /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
+}
+.dark .background-color-yellow svg path:last-child {
+  stroke: #00000e;
+  /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
+}
+
+.dark .background-color-yellow:hover svg path:first-child {
+  fill: #00000e;
+  /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
+}
+.dark .background-color-yellow:hover svg path:last-child {
+  stroke: #00000e;
+  /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
+}
+
+.card-header-color-yellow {
+  color: #ffffff !important;
+}
+
+.dark .card-header-color-yellow {
+  color: #00000e !important;
+}
+
 .background-color-lavander {
-  background-color: #b7b2ff;
+  background-color: #dbd9ff;
+}
+
+.dark .background-color-lavander {
+  background-color: #b6b2ff;
 }
 
 .background-color-lavander:hover {
-  background-color: #12282f;
+  background-color: #b6b2ff;
+}
+
+.dark .background-color-lavander:hover {
+  background-color: #867eff;
 }
 
 .background-color-lavander:hover svg path:first-child {
-  fill: #b7b2ff;
+  fill: #00000e;
 }
 .background-color-lavander:hover svg path:last-child {
-  stroke: #b7b2ff;
+  stroke: #00000e;
 }
 
 /*  */
@@ -142,9 +187,20 @@ html {
   color: inherit;
 }
 
-#topbar-cta-button * {
-  color: #fcb069 !important;
-  border: unset;
+/* topbar based on colors.dark in docs.json file */
+
+/* override hover state */
+#topbar-cta-button a:hover .bg-primary-dark {
+  --primary-dark: 65 83 89;
+}
+
+/* override colors.dark for dark mode version */
+html.dark #topbar-cta-button .bg-primary-dark {
+  --primary-dark: 34 37 37;
+}
+
+html.dark #topbar-cta-button a:hover .bg-primary-dark {
+  --primary-dark: 58 61 61;
 }
 
 :is(.dark #navbar > div:nth-child(2) .dark\:border-primary-light) {
@@ -193,7 +249,7 @@ html.dark
 
 /* Links */
 
-.prose :where(a:not(.card)):not(:where([class~="not-prose"] *)) {
+/* .prose :where(a:not(.card)):not(:where([class~="not-prose"] *)) {
   color: inherit;
   border-bottom-color: #2d0f37;
 }
@@ -201,27 +257,34 @@ html.dark
 html.dark .prose :where(a:not(.card)):not(:where([class~="not-prose"] *)) {
   color: inherit;
   border-bottom-color: white;
-}
+} */
 
 /*  */
 /* Typography */
 /*  */
-
+/* 
 html.dark #header .dark\:text-primary-light {
   color: white;
 }
 
 #content-container {
   text-wrap: pretty;
-}
+} */
 
 /* h1 */
 
-@media (min-width: 640px) {
+/* @media (min-width: 640px) {
   .sm\:text-3xl {
-    font-size: 40px;
-    line-height: 48px;
+    font-size: 48px;
+    line-height: 56px;
   }
+} */
+
+#page-title {
+  font-family: "AeonikMedium", sans-serif;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 56px;
 }
 
 code.language-ruby,
@@ -373,34 +436,6 @@ html.dark #sidebar .dark\:text-gray-400 p {
   text-decoration-color: inherit;
 }
 
-/* Per Design Light Highlight */
-/* html:not(.dark) #sidebar a.bg-primary\/10.text-primary {
-  background: #2d0f37 !important;
-  color: white !important;
-} */
-
-/*  */
-/* Unordered List */
-/*  */
-
-/* .prose :where(ul > li):not(:where([class~="not-prose"] *)):before {
-  content: "•";
-  width: 3px;
-  height: auto;
-  position: relative;
-  top: 0;
-  line-height: 100%;
-  left: -20px;
-  margin-right: -9px;
-  background-color: transparent !important;
-} */
-
-/* removed as redundant */
-/* .prose
-  :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-  padding-left: 1.95em !important;
-} */
-
 /*  */
 /* Cards */
 /*  */
@@ -448,12 +483,12 @@ html.dark #sidebar .dark\:text-gray-400 p {
 }
 
 .card-variation.background-color-yellow:hover .card-header > h2 {
-  color: #ffd260;
+  color: #ffffff;
   /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
 }
 
 .card-variation.background-color-lavander:hover .card-header > h2 {
-  color: #b7b2ff;
+  color: #00000e;
 }
 
 .card-variation .card-header > h2 {
@@ -469,23 +504,46 @@ html.dark #sidebar .dark\:text-gray-400 p {
 }
 
 .card-variation.background-color-yellow:hover .card-body p {
-  color: #ffd260;
+  color: #ffffff;
+  /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
+}
+
+.dark .card-variation.background-color-yellow:hover .card-body p {
+  color: #00000e;
   /* transition:  .1s ease-in-out */ /*  For smooth transition to other colors */
 }
 
 .card-variation.background-color-lavander:hover .card-body p {
-  color: #b7b2ff;
+  color: #00000e;
 }
 
 /* Home page SDK card divs */
 .sdk-card {
-  background-color: #f5f3f5;
+  background-color: #f5f5f6;
+  border: hidden;
   /* padding-top: 1.5rem; */
 }
+
+:not(.dark).sdk-card:hover {
+  border: hidden;
+  background-color: #e5e5e9;
+  color: #00000e !important;
+  /* padding-top: 1.5rem; */
+}
+
+/* .dark .sdk-card:hover {
+  --tw-bg-opacity: 1 !important;
+} */
 
 .dark .sdk-card p {
   color: #dfdee0;
 }
+
+/* Background hover targets all cards, including those with no href. To investigate? */
+/* .card:hover:not(.card-variation, .sdk-card) {
+  --tw-border-opacity: 0 !important;
+  background-color: #f5f5f6;
+} */
 
 /* Tables CSS */
 table {
@@ -621,9 +679,9 @@ td {
 }
 
 /* table-of-contents */
-html:not(.dark) #table-of-contents .text-primary {
+/* html:not(.dark) #table-of-contents .text-primary {
   color: #fcb069;
-}
+} */
 
 /* Currencies Table */
 
@@ -723,6 +781,7 @@ html:not(.dark) #table-of-contents .text-primary {
 
 .release-notes-cards .pill {
   margin-top: 1.2em !important;
+  margin-bottom: 0em !important;
 }
 
 .release-notes-page
