@@ -1211,7 +1211,7 @@ The following IBANs allow you to simulate error cases with any account holder na
 `MATCH_NOT_POSSIBLE`
 </td>
 <td class="table-content">
-Simulates a technical error, `RecipientVerificationId` is returned.
+Simulates a technical error. A `RecipientVerificationId` value is returned, which generally indicates that Mangopay was able to attempt the check but that a technical error occurred.
 </td>
 </tr>
 <tr>
@@ -1222,7 +1222,7 @@ Simulates a technical error, `RecipientVerificationId` is returned.
 `MATCH_NOT_POSSIBLE`
 </td>
 <td class="table-content">
-Simulates a PSP not responding, with delayed response and `RecipientVerificationId` as `null`.
+Simulates a PSP not responding, with delayed response. The `RecipientVerificationId` is `null`, which generally indicates that Mangopay was not able to attempt the check.
 </td>
 </tr>
 </tbody>
@@ -1232,7 +1232,19 @@ Simulates a PSP not responding, with delayed response and `RecipientVerification
 
 If you use the testing data above, the [GET View a Recipient](/api-reference/recipients/view-recipient) returns the VOP check that was performed at creation, with the same `RecipientVerificationId`.
 
-{/* In Sandbox, as in Production, active Bank Account objects have been migrated to Recipients. This means that if you call [GET View a Recipient](/api-reference/recipients/view-recipient) with the Id of a legacy Bank Account. */}
+In Sandbox, as in Production, active Bank Account objects have been migrated to Recipients, so you are able to call the [GET View a Recipient](/api-reference/recipients/view-recipient) with the `Id` of a legacy Bank Account. 
+
+In Production, Mangopay will perform a new VOP check on the legacy Bank Account when you make the GET call, but in Sandbox, we won't. This means that Sandbox legacy Bank Accounts will always return: 
+
+```json Legacy Bank Account in Sandbox
+    ...
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": null,
+        "RecipientVerificationCheck": "MATCH_NOT_POSSIBLE",
+        "RecipientVerificationMessage": "Account name could not be verified. Payment made to this account may not reach its intended counterparty."
+    }
+    ...
+```
 
 ### Payout
 
