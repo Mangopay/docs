@@ -92,8 +92,9 @@ Using the activation link provided at activation, you give approval to Mangopay 
 PayPal requires all platforms to submit risk-related data before each transaction.
 
 <Steps>
-<Step title="Submit data about the future ">
-    
+<Step title="Submit data about the transaction">
+To submit the required data to PayPal, you platform can call the [POST Submit data for a PayPal PayIn](/api-reference/paypal/submit-data-paypal-payin) endpoint.
+
 The data points presented in the API reference are standard fields for all marketplace businesses. PayPal requires some different or additional data from platforms operating in the following industries:
 - Events and ticketing
 - Online travel agents:
@@ -133,12 +134,13 @@ Each pay-in, including recurring merchant-initiated transactions (MIT), requires
 </Steps>
 
 ## One-time payments
+For one-time payments, the flow is as follows:
 <Steps>
 <Step title="User chooses payment method">
 On your app or website, the user selects PayPal as the payment method
 </Step>
 <Step title="Pre-transaction data">
-Your platform submits data about the transaction and retrieves the returned `DataCollectionId` ([see above](#submit-pre-transaction-data)).
+Your platform submits data about the transaction via the [POST Submit data for a PayPal PayIn](/api-reference/paypal/submit-data-paypal-payin) endpoint and retrieves the returned `DataCollectionId` ([see above](#submit-pre-transaction-data)).
 </Step>
 <Step title="Payment initiation">
 For one-time payments, you create the payment request by calling <a href="/api-reference/paypal/create-paypal-payin">POST Create a PayPal PayIn</a>, specifying the `ReturnURL` and including the `DataCollectionId`.
@@ -183,7 +185,7 @@ The registration contains the amount of the first transaction. It is possible to
 In the response, the `RecurringPayinRegistrationId` allows you to link the recurring pay-ins to this registration object. The `Status` of the registration object is `CREATED`.
 </Step>
 <Step title="Submit pre-transaction data">
-Send data about the transaction and retrieve the returned `DataCollectionId` ([see above](#submit-pre-transaction-data)).
+Send data about the transaction via the [POST Submit data for a PayPal PayIn](/api-reference/paypal/submit-data-paypal-payin) endpoint and retrieve the returned `DataCollectionId` ([see above](#submit-pre-transaction-data)).
 </Step>
 <Step title="Process the customer-initiated transaction (CIT)">
 Call the [POST Create a Recurring PayPal PayIn (CIT)](/api-reference/paypal/create-recurring-paypal-payin-cit) to initiate the first transaction, and include the `DataCollectionId`.
@@ -203,9 +205,11 @@ Once the user agrees and the first payment is successfully authorized, the `Stat
 Set up a webhook for the `RECURRING_REGISTRATION_IN_PROGRESS` event type to be notified of this.
 </Step>
 <Step title="Process merchant-initiated transactions (MIT)">
-Each subsequent payment, without the user present, also requires a new `DataCollectionId` as in the steps above.
+Each subsequent payment, without the user present, also requires a new `DataCollectionId`, obtained in the same way as the CIT by calling the [POST Submit data for a PayPal PayIn](/api-reference/paypal/submit-data-paypal-payin) endpoint ([see above](#submit-pre-transaction-data)).
 
-For subsequent payments, without the user present, you can call the [POST Create a Recurring PayPal PayIn (MIT)](/api-reference/paypal/create-recurring-paypal-payin-mit) endpoint.
+Once you have the `DataCollectionId`, call the the [POST Create a Recurring PayPal PayIn (MIT)](/api-reference/paypal/create-recurring-paypal-payin-mit) endpoint to initiate the pay-in.
+
+The user is not present for the MIT pay-in, and so no redirection is necessary.
 
 <Note>
 **Note – No re-authentication with PayPal**
