@@ -45,6 +45,49 @@ Because the information in the UBO Declaration is compared with the verification
 
 <a href="/guides/users/verification/documents/submission/how-to">How to submit a KYC Document &rarr;</a>  
 
+## Test data
+
+You can simulate the acceptance or refusal of a UBO Declaration in Sandbox. To do so, when you create the first UBO (Step 2 below), set the `FirstName` to the relevant value to produce the desired outcome after submission (Step 4):
+
+<table>
+<thead>
+<tr>
+<th class="header">
+First UBO `FirstName` value
+</th>
+<th class="header">
+Final `Status`
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`AcceptUBO`
+</td>
+<td class="table-content">
+`VALIDATED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`RefuseUBO`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`IncompleteUBO`
+</td>
+<td class="table-content">
+`INCOMPLETE`
+</td>
+</tr>
+</tbody>
+</table>
+
 ## 1. Create the UBO Declaration  
 
 Create the UBO Declaration with the `UserId`.
@@ -65,7 +108,7 @@ The response shows the `Status` “CREATED” and contains an `Id`, which is the
 
 ## 2. Create the first UBO  
 
-With the `Id` of the UBO Declaration as the `UboDeclarationId` path parameter, create the first UBO, entering the required information.  
+With the `Id` of the UBO Declaration as the `UboDeclarationId` path parameter, create the first UBO, entering the required information. In Sandbox, set the `FirstName` to the desired test outcome, for example, `AcceptUBO`. 
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/ubodeclarations/&lcub;UboDeclarationId&rcub;/ubos](/api-reference/ubo-declarations/create-ubo)
 
@@ -106,9 +149,9 @@ Once all UBOs are created and correctly declared, submit the declaration for rev
 ## 5. Set up relevant hooks (recommended)  
 
 There are dedicated hooks to provide notifications of the outcome of the review by Mangopay:  
-- UBO_DECLARATION_VALIDATED, notifying that the UBO Declaration status has changed to `VALIDATED`.  
-- UBO_DECLARATION_REFUSED, notifying that the UBO Declaration status has changed to `REFUSED`.  
-- UBO_DECLARATION_INCOMPLETE, notifying that the UBO Declaration status has changed to `INCOMPLETE`.  
+- `UBO_DECLARATION_VALIDATED`, notifying that the UBO Declaration status has changed to `VALIDATED`.  
+- `UBO_DECLARATION_REFUSED`, notifying that the UBO Declaration status has changed to `REFUSED`.  
+- `UBO_DECLARATION_INCOMPLETE`, notifying that the UBO Declaration status has changed to `INCOMPLETE`.  
 
 <Note>  
 **Note - Only `INCOMPLETE` declarations can be reused** 
@@ -118,18 +161,6 @@ UBO Declarations can be resubmitted or not depending on their status:
 - `INCOMPLETE` - The object can be modified and re-submitted.  
 For more information about why the declaration wasn’t validated, see the `Reason` and `Message` parameters returned by the <a href="/api-reference/ubo-declarations/view-ubo-declaration">View a UBO Declaration</a> endpoint.   
 </Note>
-
-<hr />  
-
-## 6. Simulate the response from Mangopay in Sandbox  
-
-The outcome of Mangopay’s review is indicated by the change of status of the declaration.  
-
-In the Dashboard, you can simulate the response from Mangopay:  
-1. Go to the _Sandbox operations_ section.  
-2. Select _Process a UBO declaration_. 
-3. Enter the identifiers of the declaration and the user, then select the action you want to simulate.
-4. Click _Submit_ to send the response.
 
 <hr />  
 
