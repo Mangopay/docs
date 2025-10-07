@@ -45,98 +45,12 @@ If mobile integration is needed, you will be asked to provide the email addresse
     There is a sample project available in Artifactory under the name [nethonesdk-ios-mangopay](https://nethone.jfrog.io/ui/repos/tree/General/nethonesdk-ios-mangopay), which may help integrate our SDK.
 </Note>
 
-### Installation using CocoaPods
-
-<Note>
-    **Note - Contact Mangopay**
-
-    If you want to use the CocoaPods option, contact your assigned solutions engineer to create a CocoaPods repository for you.
-</Note>
-
-
-<Warning>
-    **Caution - CocoaPods deprecation**
-
-    CocoaPods will be deprecated in later updates. We recommend you use the XCFramework or Swift Package Manager installation.
-</Warning>
-
-**1. Install the latest version of CocoaPods**
-
-``` shell
-sudo gem install cocoapods
-```
-
-**2. Install Artifactory CocoaPods plugin**
-
-``` shell
-gem install cocoapods-art
-```
-
-**3. To pass the Artifactory authorization during the CocoaPod download, go to your application home directory and add the following code to your .netrc file**
-
-<Note>
-    **Note - Using your .netrc file**
-
-    Create the .netrc file manually if it doesn’t exist in your home directory. For more information, see the [GNU .netrc file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html) article.
-</Note>
-
-``` shell 
-machine nethone.jfrog.io
-login <your jfrog username>
-password <your jfrog password or api key>
-```
-
-**4. Add the Artifactory repository to your application directory**
-
-``` shell
-pod repo-art add nethonesdk-ios-<your company name>-cocoapods "https://nethone.jfrog.io/nethone/api/pods/nethonesdk-ios-<your company name>-cocoapods"
-```
-
-**5. Go to your application home directory and add the following code to your Podfile.**
-
-``` ruby
-source 'https://github.com/CocoaPods/Specs.git'
-
-platform :ios, '10.0'
-use_frameworks!
-
-plugin 'cocoapods-art', :sources => [
-    'nethonesdk-ios-sample-cocoapods', 'master'
-]
-
-target 'Cocoapods Integration' do
-    pod 'NethoneSDK'
-end
-```
-
-**6. Install the pods files.**
-
-``` shell
-pod install
-```
-
-**Version update**
-
-To update, you would first need to update the artifactory repository then the pods.
-
-**1. Update the artifactory repository.**
-
-``` shell
-pod repo-art update nethonesdk-ios-<your company name>-cocoapods
-```
-
-**2. Update the pods.**
-
-``` shell
-pod update
-```
-
 ### Installation using Swift Package Manager
 
 <Note>
     **Note - Contact Mangopay**
 
-    If you want to use the  Swift Package Manager option, contact your assigned solutions engineer to create a  Swift Package Manager repository for you.  
+    If you want to use the <a href="https://www.swift.org/package-manager/" target="_blank">Swift Package Manager</a> option, contact your assigned solutions engineer to create a Swift Package Manager repository for you.  
 </Note>
 
 <Info>
@@ -150,60 +64,44 @@ pod update
 
 **1. Create the Dependencies directory inside your project.**
 
-``` shell
+```shell
 mkdir Dependencies
 ```
 
 **2. Set it as your working directory.**
 
-``` shell
+```shell
 cd Dependencies
 ```
 
 **3. Initialize Swift package.**
 
-``` shell
+```shell
 swift package init
 ```
 
 **4. Remove unnecessary test files.**
 
-``` shell
+```shell
 rm -r Tests
 ```
 
 **5. Set up the repository and add your credentials to your .netrc file.**
 
-Go to the [Nethone Artifactory Repository](https://nethone.jfrog.io/):
-1. On the left navigation pane, go to _Artifactory_ > _Artifacts_
-2. Find `nethonesdk-ios-{your_company_name}-spm` repository.
-3. In the top corner, click the Set Me Up button
-4. Enter your password then client on Generate Token & Create Instructions
-5. Add your credentials to your .netrc file:
-
-<Note>
-    **Note - Using your .netrc file**
-
-    Create the .netrc file manually if it doesn’t exist in your home directory. For more information, see the [GNU .netrc file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html) article.
-</Note>
-
-``` shell
-machine nethone.jfrog.io 
-login <your jfrog username> 
-password <the generate token>
-```
+1. Go to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/repos/tree).
+2. Find `nethonesdk-ios-mangopay-spm` repository.
+3. In the top right corner, click the Set Me Up button
 
 **6. Set Artifactory as a Swift repository.**
 
 ``` shell
-swift package-registry set "https://nethone.jfrog.io/artifactory/api/swift/nethonesdk-ios-<your company name>-spm"
+swift package-registry set "https://nethone.jfrog.io/artifactory/api/swift/nethonesdk-ios-mangopay-spm"
 ```
 
 **7. Add NethoneSDK dependency in the Package.swift file.**
 
-``` swift Swift
+```swift Swift
 // swift-tools-version: 5.7
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -212,11 +110,10 @@ let package = Package(
     products: [
         .library(
             name: "Dependencies",
-            targets: ["Dependencies"]
-        ),
+            targets: ["Dependencies"]),
     ],
     dependencies: [
-        .package(id: "Nethone.NethoneSDK", from: "2.13.1")
+        .package(id: "Nethone.NethoneSDK", exact: "2.17.1")
     ],
     targets: [
         .target(
@@ -232,60 +129,94 @@ let package = Package(
 ``` shell
 swift package resolve
 ```
-**9/ Add the Dependencies package to your Xcode project**
+**9. Add the Dependencies package to your Xcode project**
 
 1. Open your Xcode project.
 2. Navigate to _File_ > _Add Package Dependencies_.
 3. Click the _Add Local_ button.
 4. Select the _Dependencies_ directory.
 
-### Installation using SwiftUI
+### Installation using CocoaPods (optional)
 
-First, download the latest version of NethoneSDKSwiftUI.xcframework:
+<Note>
+    **Note - Contact Mangopay**
 
-1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
-2. Download the latest version of NethoneSDKSwiftUI.xcframework.
-3. Find `nethonesdk-ios-{your_company_name}` repository.
-4. Save it in the project folder.
+    If you want to use the <a href="https://cocoapods.org">CocoaPods</a> option, contact your assigned solutions engineer to create a CocoaPods repository for you.
+</Note>
 
-In Xcode, embed the framework into your application target:
 
-1. Go to the application target _General_ settings.
-2. Scroll to the bottom to find the _Embedded Binaries_ section.
-3. Click the + button and add NethoneSDKSwiftUI.xcframework from your disk.
+<Warning>
+    **Caution - CocoaPods deprecation**
+
+    CocoaPods will be deprecated in later updates. We recommend you use the Swift Package Manager installation.
+</Warning>
+
+**1. Install the latest version of CocoaPods**
+
+```shell
+sudo gem install cocoapods
+```
+
+**2. Install Artifactory CocoaPods plugin**
+
+```shell
+gem install cocoapods-art
+```
+
+**3. Add the Artifactory repository to your application directory**
+
+```shell
+pod repo-art add nethonesdk-ios-mangopay-cocoapods "https://nethone.jfrog.io/nethone/api/pods/nethonesdk-ios-mangopay-cocoapods"
+```
+
+**4. Go to your application home directory and add the following code to your Podfile.**
+
+```ruby
+platform :ios, '12.0'
+use_frameworks!
+
+plugin 'cocoapods-art', :sources => [
+    'nethonesdk-ios-mangopay-cocoapods', 'trunk'
+]
+
+target '<Your Target Name>' do
+    pod 'NethoneSDK'
+end
+```
+
+**5. Install the pods files.**
+
+``` shell
+pod install
+```
 
 **Version update**
 
-Update the framework manually:
+To update, you would first need to update the artifactory repository then the pods.
 
-1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
-2. Download the new version of the NethoneSDKSwiftUI.xcframework.
-3. Find the folder where you had the older version of the NethoneSDKSwiftUI.xcframework saved.
-4. Overwrite it by saving the newly downloaded version.
+**1. Update the artifactory repository.**
 
-### Installation using the XCFramework
+``` shell
+pod repo-art update nethonesdk-ios-mangopay-cocoapods
+```
 
-First, download the latest version of NethoneSDK.xcframework:
+**2. Update the pods.**
 
-1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
-2. Download the latest version of NethoneSDK.xcframework.
-3. Find `nethonesdk-ios-{your_company_name}` repository.
-4. Save it in the project folder.
+``` shell
+pod update
+```
 
-In Xcode, embed the framework into your application target:
+### Manually
 
-1. Go to the application target _General_ settings.
-2. Scroll to the bottom to find the _Embedded Binaries_ section.
-3. Click the + button and add NethoneSDK.xcframework from your disk.
+1. Download the latest version of NethoneSDK.xcframework from your [Artifactory Repository](https://nethone.jfrog.io/ui/repos/tree). Find the `nethonesdk-ios-mangopay` repository and save it in the project folder.
 
-**Version update**
+2. Embed frameworks into your app target.
+In Xcode, go to the application target **General** settings. On the bottom, you can find ***Embedded Binaries*** section. Add NethoneSDK.xcframework by clicking the plus ***+*** button and choose the framework from your disk.
 
-The XCFramework update needs to be done manually:
+#### How to update
 
-1. Log in to the [Nethone Artifactory Repository](https://nethone.jfrog.io/ui/login/).
-2. Download the new version of the NethoneSDK.xcframework.
-3. Find the folder where you had the older version of the NethoneSDK.xcframework saved.
-4. Overwrite it by saving the newly downloaded version.
+To update, download the new version of the NethoneSDK.xcframework from Artifactory and save it in the place as the previous version, thereby overwriting it.
+
 
 ## Initializing the SDK
 
