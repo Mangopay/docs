@@ -467,7 +467,7 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
@@ -500,7 +500,7 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
@@ -546,7 +546,7 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
@@ -579,7 +579,7 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
 Mangopay -->> Platform: 200 OK with <br/>RecipientVerificationOfPayee <br/>data
 Mangopay ->> Responding PSP: Send payout
 ```
@@ -619,8 +619,8 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
-Mangopay -->> Platform: 400 Bad Request with <br/>error message
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK but Payout <br/>FAILED (008500)
 	Note right of Mangopay: Payout blocked
 ```
 </div>
@@ -652,37 +652,16 @@ sequenceDiagram
 
 Platform ->> Mangopay: POST Payout
 Mangopay ->> Responding PSP: Perform VOP
-Responding PSP -->> Mangopay: Result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
-Mangopay -->> Platform: 400 Bad Request with <br/>error message
+Responding PSP -->> Mangopay: If result is NO_MATCH or <br/>MATCH_NOT_POSSIBLE
+Mangopay -->> Platform: 200 OK but Payout <br/>FAILED (008500)
 	Note right of Mangopay: Payout blocked
 ```
 </div>
 </div>
 
-Until the amendment is signed, from Oct 9, 2025, payouts will be blocked if the VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`.
+Until the amendment is signed, from Oct 9, 2025, payouts will fail if the VOP result is `NO_MATCH` or `MATCH_NOT_POSSIBLE`.
 
-The [POST Create a Payout](/api-reference/payouts/view-payout) endpoint will return a 400 error:
-
-<CodeGroup>
-```json 400 - NO_MATCH
-{
-  "Id": "44312c27-c681-4240-8df9-a2507bcf30d6",
-    "Message": "Payout not allowed because Verification of Payee result is NO_MATCH",
-    "Type": "invalid_action",
-    "Date": 1747666655.0,
-    "errors": null
-}
-```
-```json 400 - MATCH_NOT_POSSIBLE
-{
-    "Id": "d89d76a8-5da5-4454-8df9-fcbace0362a7",
-    "Message": "Payout not allowed because Verification of Payee result is MATCH_NOT_POSSIBLE",
-    "Type": "invalid_action",
-    "Date": 1759405223.0,
-    "errors": null
-}
-```
-</CodeGroup>
+While the [POST Create a Payout](/api-reference/payouts/view-payout) endpoint will return a 200 OK response, the payout will subsequently fail with the `ResultCode` [008500](/errors/codes/008500) – `Transaction blocked by Fraud Policy`. 
 
 Once the amendment is signed, the block will be lifted.
 
