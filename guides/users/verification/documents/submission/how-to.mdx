@@ -39,12 +39,144 @@ The KYC Document object allows you to submit any type of verification document f
 <Note>  
 **Note - Follow best practices for identity documents** 
   
-`IDENTITY_PROOF` documents must adhere to best practices to avoid refusal. Communicate our <a href="/guides/users/verification/documents/submission/id-best-practices">guidelines for IDs</a> to your end users to help them upload good-quality documents and optimize your acceptance rate.  
-</Note>  
+In Production, `IDENTITY_PROOF` documents must adhere to best practices to avoid refusal. Communicate our <a href="/guides/users/verification/documents/submission/id-best-practices">guidelines for IDs</a> to your end users to help them upload good-quality documents and optimize your acceptance rate.  
+</Note>
+
+## Test data
+
+You can simulate the acceptance or refusal of a KYC Document in Sandbox. To do so, when you create the KYC Document (Step 1 below), set the `Tag` to the relevant (case-sensitive) value to produce the desired outcome after submission (Step 4):
+
+<table>
+<thead>
+<tr>
+<th class="header">
+`Tag` value
+</th>
+<th class="header">
+Final `Status`
+</th>
+<th class="header">
+Final `RefusedReasonType`
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-content">
+`accept`
+</td>
+<td class="table-content">
+`VALIDATED`
+</td>
+<td class="table-content">
+`null`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_unreadable`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`UNREADABLE`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_not_accepted`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_NOT_ACCEPTED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_expired`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_HAS_EXPIRED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_incomplete`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_INCOMPLETE`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_missing`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_MISSING`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_no_user_data_match`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_DO_NOT_MATCH_USER_DATA`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_falsified`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`DOCUMENT_FALSIFIED`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_underage`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`UNDERAGE_PERSON`
+</td>
+</tr>
+<tr>
+<td class="table-content">
+`refuse_specific_case`
+</td>
+<td class="table-content">
+`REFUSED`
+</td>
+<td class="table-content">
+`SPECIFIC_CASE`
+</td>
+</tr>
+</tbody>
+</table>
 
 ## 1. Create the KYC Document
 
-Create the document with the `UserId` and indicate which type is being submitted.  
+Create the document with the `UserId`, indicating which type is being submitted. In Sandbox, set the `Tag` to the desired test outcome, for example, `accept`. 
 
 > [**POST** /v2.01/&lcub;ClientId&rcub;/users/&lcub;UserId&rcub;/kyc/documents](/api-reference/kyc-documents/create-kyc-document)
 
@@ -57,7 +189,7 @@ Create the document with the `UserId` and indicate which type is being submitted
     <PythonCreateKycDocument />
 </CodeGroup>  
 
-The response shows the `Status` “CREATED” and contains an `Id`, which is the unique identifier of the KYC Document object. You need to save this for the next step.  
+The response shows the `Status` as `CREATED` and contains an `Id`, which is the unique identifier of the KYC Document object. You need to save this for the next step.  
 
 ## 2. Upload a file to the KYC Document
 
@@ -133,16 +265,6 @@ For more information on the requirements for user verification, see:
 <Card title="Guide" href="/guides/users/verification/requirements">
 Requirements by user type
 </Card>
-
-## 6. Simulate the response from Mangopay in Sandbox  
-
-The outcome of Mangopay’s review is indicated by the change of status of the document.  
-
-In the <a href="https://hub.mangopay.com/" target="_blank">Dashboard</a>, you can simulate the response from Mangopay:  
-1. Go to the _Sandbox operations_ section.  
-2. Select _Process a KYC document_.  
-3. Enter the identifiers of the document and the user, then select the action you want to simulate.  
-4. Click _Submit_ to send the response.  
 
 ## Related resources
 

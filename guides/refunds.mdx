@@ -51,29 +51,27 @@ See how to process pay-in and transfer refunds
 
 ### Prerequisites  
 
-The following conditions must be met to make a pay-in refund:  
-- The amount value is 1 or above, regardless of the currency.   
+The following conditions must be met to perform a pay-in refund:  
+- The amount value is `1` or above, regardless of the currency.
 - The initial transaction status is `SUCCEEDED`.  
-- The initial transaction hasn’t been disputed.
+- The initial transaction hasn't been disputed.
 - The initial transaction was made within the time window specified for the [payment method](/guides/payment-methods).
-
-<Note>  
-**Note - Refunds on bank wire pay-ins** 
-
-You cannot create a Refund object to reimburse a [bank wire pay-in](/api-reference/bank-wire-payins/create-bank-wire-payin) or a [pay-in to virtual IBAN](/api-reference/virtual-accounts/view-payin-external-instruction). Instead, you must use a [Payout](/api-reference/payouts/payout-object) object and provide the ID of the initial transaction in the `PaymentRef`.
-
-For more details, see the [refunds using payouts](/guides/payouts/integration#refunds-using-payouts) section. 
-</Note>  
+- The payment method is not: 
+  - [Bank wire pay-in](/api-reference/bank-wire-payins/create-bank-wire-payin)
+  - [Pay-in to virtual IBAN](/api-reference/virtual-accounts/view-payin-external-instruction)
+  - [Pay by Bank](/api-reference/pay-by-bank/create-pay-by-bank-payin)
+  
+  For these payment methods, the Refund endpoint can't be used and you need to use a [Payout](/api-reference/payouts/create-payout) provide the ID of the initial transaction in the `PaymentRef` (see [refunds using payouts](/guides/payouts/integration#refunds-using-payouts) for details).
 
 ### Partial pay-in refunds  
 
 Sometimes, platforms will need to refund only part of the initial pay-in amount (for instance, the customer returns only one product from a larger order).  
 
-Mangopay allows for partial pay-in refunds. To partially refund a pay-in, you need to provide a debited funds `Amount` value lower than the initial transaction amount.  
+Mangopay allows for partial pay-in refunds. To partially refund a pay-in, you need to provide a `DebitedFunds.Amount` value lower than the initial transaction amount. The `Fees.Amount` must also be lower than the `DebitedFunds.Amount`, meaning you can't do a refund that consists only of `Fees`.
 
 When making multiple partial pay-in refunds, please note that:  
 - The refunded funds cannot exceed the initial transaction credited funds (and the same rule applies for the fees).  
-- A waiting time of 24 hours is necessary when refunding the same amount several times in a row. This is a safety mechanism to avoid unintended duplicate refunds.  
+- A waiting time of 24 hours is necessary when refunding the same amount several times in a row. This is a safety mechanism to avoid unintended duplicate refunds.
 
 ## Transfer refunds  
 

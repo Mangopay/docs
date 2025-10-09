@@ -32,6 +32,7 @@ import LocalBankTransfer_RecipientResponse from '/snippets/p-response/LocalBankT
 import IndividualRecipient_RecipientResponse from '/snippets/p-response/IndividualRecipient_RecipientResponse.mdx';
 import BusinessRecipient_RecipientResponse from '/snippets/p-response/BusinessRecipient_RecipientResponse.mdx';
 import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+import RecipientVerificationOfPayee from '/snippets/p-response/RecipientVerificationOfPayee.mdx';
 
 import UserId from '/snippets/p-path/UserId.mdx';
 
@@ -52,6 +53,8 @@ To let the user complete the SCA session, your platform needs to retrieve the re
 </Note>
 
 Recipient creation is asynchronous, meaning that this endpoint returns the `Status` as `PENDING` regardless of whether SCA is required (because `RecipientScope` is `OWNER`) or not. In all cases, your integration should rely on the `RECIPIENT_ACTIVE` [webhook](/webhooks/event-types#recipients) to know when the recipient is `ACTIVE`.
+
+Verification of Payee (VOP) impacts SEPA local schemes, which means Recipients with `Currency` value `EUR` and `PayoutMethod` value `LocalBankTransfer`. [Read more](/guides/vop/recipients-payouts) **&rarr;**
 
 ### Path parameters
 
@@ -121,6 +124,7 @@ Recipient creation is asynchronous, meaning that this endpoint returns the `Stat
 </Tab>
 </Tabs>
 <PendingUserActionResponse/>
+<RecipientVerificationOfPayee/>
 </Accordion>
 </AccordionGroup>
 
@@ -165,6 +169,45 @@ The following error values may be returned:
 
 
 <ResponseExample>
+```json 201 - VOP: EUR, local, individual, PAYOUT
+{
+    "Id": "rec_01K6D2J3683015F5D3M81JEXRH",
+    "Status": "PENDING",
+    "CreationDate": 1759228005,
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "UserId": "user_m_01K5Y4XQA9HESYF8S9V70K16XH",
+    "RecipientScope": "PAYOUT",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "IndividualRecipient": {
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {
+            "IBAN": "DE75512108001245126199",
+            "BIC": "SOGEDEFFXXX"
+        }
+    },
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=sca_01999a290f06700b992580d3450609a0"
+    },
+    "RecipientVerificationOfPayee": {
+        "RecipientVerificationId": "46fa0ccc-6cb0-4874-95ba-9edbc6cf7904",
+        "RecipientVerificationCheck": "MATCH",
+        "RecipientVerificationMessage": "Account name fully matches account identifier."
+    }
+}
+```
 ```json 201 - EUR, international, business, PAYOUT
 {
     "Id": "rec_01JRADYFJYPFM10XPQ8VFWW947",
@@ -232,6 +275,32 @@ The following error values may be returned:
 </ResponseExample>
 
 <RequestExample>
+```json REST - VOP: EUR, local, individual, PAYOUT
+{
+    "DisplayName": "John Doe EUR DE account",
+    "PayoutMethodType": "LocalBankTransfer",
+    "RecipientType": "Individual",
+    "Currency": "EUR",
+    "Country": "DE",
+    "Tag": "Created using the Mangopay API Postman collection",
+    "RecipientScope": "PAYOUT",
+    "IndividualRecipient": {
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Address": {
+            "AddressLine1": "Oranienburger Str. 87",
+            "City": "Berlin",
+            "PostalCode": "10178",
+            "Country": "DE"
+        }
+    },
+    "LocalBankTransfer": {
+        "EUR": {        
+            "IBAN": "DE75512108001245126199"
+        }
+    }
+}
+```
 ```json REST - EUR, international, business, PAYOUT
 {
     "DisplayName": "Alex Smith EUR IBAN account",
