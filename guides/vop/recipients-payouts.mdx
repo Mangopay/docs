@@ -8,7 +8,7 @@ In a payout scenario, as a Requesting PSP, Mangopay will be carrying out VOP che
 
 ## Scope
 
-VOP applies to EUR Recipients and Payouts using SCT or SCT Inst, and for users holding User-Owned Accounts.
+VOP applies to EUR Recipients and Payouts using SCT or SCT Inst.
 
 In terms of Recipient properties, this means: 
 
@@ -19,11 +19,11 @@ In terms of Recipient properties, this means:
 VOP does not apply to non-EUR payouts in SEPA countries, such as SEK payouts to a bank in Sweden (which uses the local scheme RIX). VOP also does not apply to international payouts, such as EUR to a non-SEPA country or, for example, SEK to a SEPA country that isn’t Sweden, both of which use SWIFT.
 
 <Note>
-**Note – Only applies to User-Owned Accounts**
+**Note – VOP on Recipients available for all platforms**
 
-In the first instance, VOP will only be carried out for users who hold a User-Owned Virtual Account. In 2026 Mangopay will make VOP available for all platforms for anti-fraud purposes. 
+The VOP checks on **Recipients** are available for all platforms for anti-fraud purposes. 
 
-If your platform does not offer User-Owned Accounts to your users, your payouts are not impacted by Verification of Payee.
+If your platform offers User-Owned Accounts to your users, their **payouts** are also impacted by VOP and may be blocked.
 </Note>
 
 ## VOP result API fields
@@ -31,8 +31,8 @@ If your platform does not offer User-Owned Accounts to your users, your payouts 
 The following endpoints will be enriched with the Verification of Payee in the API response:
 
 - [POST Create a Payout](/api-reference/payouts/create-payout), if the owner of the payout’s `BankAccountId` has at least one User-Owned Virtual Account
-- [POST Create a Recipient](/api-reference/recipients/create-recipient), if the platform offers User-Owned Accounts
-- [GET View a Recipient](/api-reference/recipients/view-recipient), if the platform offers User-Owned Accounts
+- [POST Create a Recipient](/api-reference/recipients/create-recipient) (for all platforms)
+- [GET View a Recipient](/api-reference/recipients/view-recipient) (for all platforms)
 
 These endpoints will return a new object parameter, `RecipientVerificationOfPayee`, containing: 
 
@@ -92,7 +92,7 @@ For any result other than `MATCH`, there is a risk of the funds not reaching the
 
 ## Recipients
 
-If the user has a User-Owned Account, Mangopay performs a VOP check on the endpoints:
+Mangopay performs a VOP check on the endpoints:
 
 - [GET View a Recipient](/api-reference/recipients/view-recipient)
 - [POST Create a Recipient](/api-reference/recipients/create-recipient)
@@ -672,7 +672,9 @@ The block will be applied to users who hold a User-Owned Account. For these user
 
 The block will also only apply to EUR payments via SCT and SCT Inst.
 
-Payouts authored by users without User-Owned Accounts will not be VOP checked and not be blocked because of VOP.
+Payouts authored by users without User-Owned Accounts will not be VOP checked and not be blocked because of VOP. 
+
+On Recipients, VOP checks are applied and available to all platforms, regardless of whether they offer User-Owned Accounts or not.
 </Note>
 
 ## Testing
