@@ -41,7 +41,7 @@ The actions taken by `OWNER` users that require SCA to be performed are:
 - **Transfer initiation**, between two `OWNER` users
 - **Mangopay Account access** by `OWNER` users to view wallet balance or list transactions
 
-SCA authentication therefore impacts the recipient creation endpoint, the transfer endpoint, and 4 endpoints for account access.
+SCA authentication therefore impacts the recipient creation endpoint, the transfer endpoint, and 4 endpoints for wallet access.
 
 <Note>
 **Note – SCA cannot be delayed**
@@ -53,7 +53,96 @@ The SCA session (the `RedirectUrl` in the API response) is valid for **10 minute
 It is not possible to initiate an action and then ask the user to complete the SCA session later.
 </Note>
 
-## Integration required for SCA
+### Integration required for SCA
+
+The following table lists the actions and endpoints on which SCA redirection is required (or may be required, because Mangopay may be able to exempt a given transfer or wallet access request).
+
+#### Enrollment and authentication
+
+<table><thead><tr>
+<th class="header">Action (and guide)</th>
+<th class="header">Endpoint</th>
+</tr></thead><tbody><tr>
+<td class="table-content">
+[User creation](/guides/sca/users#register-an-owner-for-the-first-time) (if `OWNER`)
+</td>
+<td class="table-content">
+- [POST Create a Natural User](/api-reference/users/create-natural-user-sca)
+- [POST Create a Legal User](/api-reference/users/create-legal-user-sca)
+</td>
+</tr><tr>
+<td class="table-content">
+[User categorization](/guides/sca/users#transition-a-payer-to-owner) (from `PAYER` to `OWNER`)
+</td>
+<td>
+- [POST&nbsp;Categorize&nbsp;a&nbsp;Natural&nbsp;User](/api-reference/users/categorize-natural-user)
+- [POST Categorize a Legal User](/api-reference/users/categorize-legal-user)
+</td>
+</tr><tr>
+<td class="table-content">
+[User modification](/guides/sca/users#re-enroll-an-enrolled-owner) if SCA contact details changed (re-enrollment)
+</td>
+<td>
+- [PUT Update a Natural User](/api-reference/users/update-natural-user-sca)
+- [PUT Update a Legal User](/api-reference/users/update-legal-user-sca)
+</td>
+</tr><tr>
+<td class="table-content">
+[Recipient creation](/guides/sca/recipients) (if `OWNER` and `RecipientScope` is `PAYOUT`)
+</td>
+<td>
+- [POST Create a Recipient](/api-reference/recipients/create-recipient)
+</td>
+</tr><tr>
+<td class="table-content">
+[Transfer initiation](/guides/sca/transfers) to another `OWNER` (unless specific transfer is exempted by Mangopay as low-amount or low-risk) using `ScaContext`
+</td>
+<td>
+- [POST Create a Transfer](/api-reference/recipients/create-transfer)
+</td>
+</tr><tr>
+<td class="table-content">
+[Wallet access](/guides/sca/wallets) (unless SCA for wallet access was performed in the last 180 days) using `ScaContext`
+</td>
+<td>
+- [GET View a Wallet](/api-reference/wallets/view-wallet)
+- [GET List Wallets for a User](/api-reference/wallets/list-wallets-user)
+- [GET List Transactions for a User](/api-reference/transactions/list-transactions-user)
+- [GET&nbsp;List&nbsp;Transactions&nbsp;for&nbsp;a&nbsp;Wallet](/api-reference/transactions/list-transactions-wallet)
+</td>
+</tr></tbody></table>
+
+<Warning>
+**Caution – ScaContext is mandatory in all cases**
+
+For all platforms, the `ScaContext` parameter on transfers and wallet access is mandatory in all cases where the User is an `OWNER`.
+</Warning>
+
+#### Enrollment of legacy users
+
+Additionally, you need to integrate the following endpoint to proactively [enroll any legacy existing Owner users](/guides/sca/users#enroll-an-existing-owner) who have not enrolled in SCA:
+
+- [POST Enroll a User in SCA](/api-reference/users/enroll-user)
+
+#### Webhooks
+
+Because SCA redirection is required on [POST Create a Transfer](/api-reference/transfers/create-transfer), you must ensure your integration relies on the following [webhook event types](/webhooks/event-types#transfers) for the asynchronous outcome of SCA:
+- `TRANSFER_NORMAL_CREATED`
+- `TRANSFER_NORMAL_FAILED`
+- `TRANSFER_NORMAL_SUCCEEDED`
+
+To retry a failed transfer and retrieve a new SCA redirection link, call the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint.
+
+There are also [webhook event types](/webhooks/event-types#mangopay-sca-enrollment) that inform you about enrollment attempts (but not authentication): 
+- `SCA_ENROLLMENT_SUCCEEDED`
+- `SCA_ENROLLMENT_EXPIRED`
+- `SCA_ENROLLMENT_FAILED`
+
+And there are two [webhook event types](/webhooks/event-types#user-account) relating to enrollment attempts specifically in the User endpoints:
+- `USER_ACCOUNT_VALIDATION_ASKED`
+- `USER_ACCOUNT_ACTIVATED`
+
+{/* ### Integration required for SCA
 
 The table below lists the mandatory integration that we require your platform to undertake, along with their availability in Sandbox and Production to start implementation.
 
@@ -151,7 +240,7 @@ Now
 </td>
 </tr>
 </tbody>
-</table> 
+</table>  */}
 {/* 
 ### Deadline for integration
 
