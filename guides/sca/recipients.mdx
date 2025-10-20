@@ -6,13 +6,13 @@ description: Read about Mangopay's new Recipients feature, replacing bank accoun
 
 ## Introduction
 
-Mangopay is releasing a new version of the Bank Account object called Recipients.
+A Recipient represents the beneficiary and the beneficiary account (typically a bank account) of a payout. A Recipient can also be used for pay-ins for direct debits (see [recipient scopes](#recipient-scopes)).
 
-When a Mangopay Account holder (`OWNER`) registers an external bank or payment account, the account holder must authenticate using SCA.
+When a Mangopay Account holder (meaning a User with `UserCategory` of `OWNER`) registers an external bank or payment account, the account holder must authenticate using SCA.
 
 As well as supporting SCA, Recipients enable faster and more reliable local and international payouts.
 
-The new set of Recipient endpoints replaces the legacy [Bank Account](/api-reference/bank-accounts/bank-account-object) endpoints, including bank account types.
+The Recipient endpoints replace the legacy [Bank Account](/api-reference/bank-accounts/bank-account-object) endpoints, including the legacy bank account types.
 
 In the Recipients feature, each local and international account has a specified data schema which your platform has to retrieve in advance of requesting the details from the user. Once you have the user’s details, you are also able to check that they are valid before creating the Recipient.
 
@@ -24,12 +24,12 @@ Integrate Recipients for new bank account registrations, including SCA redirecti
 
 SCA redirection is required each time a user registers a new recipient bank account, even if they are registering them one after another.
 
-All payout currencies are available in Recipients in Production and Sandbox.
+All payout currencies are available for Recipients in Production and Sandbox.
 
 <Note>
 **Note – ScaContext not available on Recipients**
 
-The ScaContext parameter which is available for existing integrations on transfers and wallet access does not exist on Recipients. 
+The `ScaContext` parameter which is available for existing integrations on transfers and wallet access does not exist on Recipients. 
 
 All new bank account registrations for Owners require SCA. New account registrations for Payers, for direct debit pay-ins and some refunds, can be implemented without SCA thanks to the pay-in [recipient scope](#pay-in). 
 </Note>
