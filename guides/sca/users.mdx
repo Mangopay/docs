@@ -10,40 +10,81 @@ When a Mangopay Account is created, the account holder must enroll in SCA.
 
 A Mangopay account is created when a Natural or Legal user is assigned the `UserCategory` of `OWNER`, because these users accept and are bound by Mangopay's T&Cs and are being provided with Mangopay payment and/or e-money services.
 
-To facilitate SCA enrollment in the User objects, Mangopay has released new endpoints. These endpoints create the same kind of resource as the legacy ones, but they return a `PendingUserAction.RedirectUrl` and apply a new `UserStatus` value. 
+Mangopay Account creation is not in itself an action subject to SCA, but enrollment in SCA must happen at the same time. Therefore, the user management endpoints return an SCA redirection link when the `OWNER` value is assigned. 
 
-Your platform needs to use the `RedirectUrl` to redirect the individual to Mangopay's hosted-webpage so they can enroll. See [SCA session](/guides/sca/session) for more details on how to do this.
+The unique SCA session link is returned in the `PendingUserAction.RedirectUrl`. Your platform needs to use the `RedirectUrl` to redirect the individual to Mangopay's hosted-webpage so they can enroll. See [SCA session](/guides/sca/session) for more details on how to do this.
+
+The SCA session always requires the email address of the individual performing SCA, because the email is used to build anonymized behavioral biometrics data. The phone number can be entered by the individual during the SCA session for the OTP SMS factor – you don't have to send it via the API. See the SCA factors guide for more details on [how the email is used](/guides/sca/factors#email-confirmation-behavioral-biometrics) and on [managing phone numbers](/guides/sca/factors#handling-phone-number-data).
 
 ### Natural user integration
 
-For **Natural users**, SCA redirection is fully available to integrate, using the individual's phone number and email. The `Email` is already required for Natural users. To simplify adoption, your users can provide their phone number during the SCA session – you don't have to send it via the API.
+For **Natural users**, the SCA session uses:
+- The mandatory `Email` property
+- The optional `PhoneNumber` and `PhoneNumberCountry` if provided
 
 ### Legal user integration
 
-For **Legal users**, SCA redirection is fully available to integrate for **Soletraders**. The individual's email must be provided via the API, in the `LegalRepresentative.Email` property, but the phone number can be entered by the individual during the SCA session.
+Following the rollout of SCA for Soletraders, Mangopay is proceeding with the application of SCA to the other Legal User types: Business, Organization, and Partnership. 
 
-For the other Legal user types (Business, Partnership, Organization), Mangopay is developing functionality to designate additional **authorized individuals** who can complete SCA on behalf of the entity.
+For SCA on Legal Users: 
 
-Until then, if `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`, then the SCA-enabled user endpoints do not return the SCA redirection link.
+- A single individual can complete SCA for a Legal User
+- The individual’s email and phone number must be registered as the Legal User’s
+    - `LegalRepresentative.Email`
+    - `LegalRepresentative.PhoneNumber`
+    - `LegalRepresentative.PhoneNumberCountry`
 
-<Note>
-**Note – Integrate the new endpoints for all Legal User types**
+The declared individual will be required to enroll in SCA and authenticate SCA-controlled actions.
 
-Your platform should still implement the new endpoints and SCA redirection logic if you only have Legal Users whose `LegalPersonType` is `BUSINESS`, `PARTNERSHIP` or `ORGANIZATION`.
-</Note>
+#### How to prepare your integration for SCA Legal Users:
 
-To simulate the `PendingUserAction.RedirectUrl` during your integration, set the `LegalPersonType` to `SOLETRADER` to get the `RedirectUrl` in the response.
+**1. Check the contact details of the individual performing SCA and update if needed**
+
+You can retrieve the data points above via the [GET View a User (SCA)](/api-reference/users/view-user-sca) endpoint, using the `UserId` as a path parameter.
+
+To update the email and phone number, call [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca), sending only the new data values and the other required fields.
+
+```json REST
+{
+    "UserCategory": "OWNER",
+    "TermsAndConditionsAccepted": true,
+		"LegalRepresentative": {
+        "Email": "alex.smith@example.com",
+        "PhoneNumber": "0611111111",
+        "PhoneNumberCountry": "FR"
+    }
+}
+```
+<Warning>
+**Caution – Including other data may trigger KYC/B downgrade**
+
+Make sure your API call doesn't include any other sub-properties of the `LegalRepresentative` object, otherwise you may inadvertently trigger a KYC/B downgrade.
+</Warning>
+
+**2. Ensure you have the SCA redirection logic in place for all Legal User types**
+
+For legal users, you need to redirect the user to the hosted SCA session regardless of their `LegalPersonType`.
+
+SCA redirection is required to complete SCA-triggering actions if the `PendingUserAction.RedirectUrl` is returned by the API.
+
+See [integration required for SCA](/guides/sca#integration-required-for-sca) for the full list of scenarios and endpoints where you need to implement SCA redirection logic.
+
+**3. Enroll the User proactively (recommended)**
+
+Your platform should enroll all existing `OWNER` users proactively using [POST Enroll a User in SCA](/api-reference/users/enroll-user).
+
+As a temporary measure to encourage adoption, legacy users can also enroll in SCA on any of SCA sessions returned by the API.
 
 ### Existing user integration
 
 Existing users will not be immediately restricted by the introduction of SCA ([see below](#restrictions-on-existing-users)).
 
-For existing Natural users and `SOLETRADER` users (see note on [legal users](#legal-user-integration)), SCA redirection will be triggered in the following scenarios:
+For existing users, both Natural and Legal (all types), SCA redirection will be triggered in the following scenarios:
 
 - For existing `PAYER` users, when you change their category to `OWNER` using [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user) or [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
 - For existing `OWNER` users, when you:
     - Enroll them proactively using [POST Enroll a User](/api-reference/users/enroll-user)
-    - Register a [Recipient](/guides/sca/recipients) (bank/payment account) for them
+    - Register a payout [Recipient](/guides/sca/recipients) (bank/payment account) for them
     - Request a [user-initiated transfer](/guides/sca/transfers) for them to another `OWNER`
     - Request to access their [wallet balance or transaction history](/guides/sca/wallets)
 
@@ -65,35 +106,37 @@ Mangopay may be required to start introducing consequences on users if they have
 
 Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt in its integration. We remain committed to maintaining the highest standards of security and compliance.
 
-Mangopay will also be shortly providing an endpoint that allows you to close inactive user accounts.
+For OWNER accounts that are not longer in use, your platform can request their closure using the dedicated endpoints: 
+- [DELETE Close a Natural User](/api-reference/users/close-natural-user)
+- [DELETE Close a Legal User](/api-reference/users/close-legal-user)
 
 ### Integration action required on Users
 
 <Info>
-**Action required now:**
+**Action required:**
 
 For **new** Natural and Legal Users (of all types):
 
-- Integrate the new endpoints for user creation. [Read how](/guides/sca/users#register-an-owner-for-the-first-time) **&rarr;**
-- Integrate the new endpoints for changing a `PAYER` to an `OWNER`. [Read how](/guides/sca/users#transition-a-payer-to-owner) **&rarr;**
-- Integrate the new endpoints for re-enrollment of enrolled users. [Read how](/guides/sca/users#re-enroll-an-enrolled-owner) **&rarr;**
+- Integrate the SCA-enabled endpoints for user creation. [Read how](/guides/sca/users#register-an-owner-for-the-first-time) **&rarr;**
+- Integrate the SCA-enabled endpoints for changing a `PAYER` to an `OWNER`. [Read how](/guides/sca/users#transition-a-payer-to-owner) **&rarr;**
+- Integrate the SCA-enabled endpoints for re-enrollment of enrolled users. [Read how](/guides/sca/users#re-enroll-an-enrolled-owner) **&rarr;**
 
-The new endpoints must be integrated for `PAYER` users too, regardless of whether they are likely to be come `OWNER`.
+The SCA-enabled endpoints must be integrated for `PAYER` users too, regardless of whether they are likely to be come `OWNER`.
 
 For **existing** users (Natural and Legal Soletrader):
 
-- Integrate SCA enrollment existing `OWNER` users at an appropriate moment in your user journey using the dedicated endpoint. [Read how](/guides/sca/users#enroll-an-existing-owner) **&rarr;**
+- Integrate SCA enrollment of existing `OWNER` users at an appropriate moment in your user journey using the dedicated endpoint. [Read how](/guides/sca/users#enroll-an-existing-owner) **&rarr;**
 </Info>
 
 <Info>
-**Possible exemptions on Users:**
+**Possible SCA exemptions on Users:**
 
 - None, because these actions are enrollment or re-enrollment.
 </Info>
 
 ## User status
 
-The new user endpoints for SCA introduce a new possible value for the `UserStatus` response parameter.
+The SCA-enabled user endpoints introduced a new possible value for the `UserStatus` response parameter.
 
 For users created prior to or without SCA, `UserStatus` has two possible values, which were the same for `PAYER` and `OWNER`.
 
@@ -118,7 +161,7 @@ For users created prior to or without SCA, `UserStatus` has two possible values,
   `CLOSED`
   </td>
   <td class="table-content">
-  The user is permanently deactivated (Mangopay use only).
+  The user is permanently deactivated.
   </td>
 </tr>
 </tbody>
@@ -157,7 +200,7 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
   `CLOSED`
   </td>
   <td class="table-content">
-  The user is permanently deactivated (Mangopay use only).
+  The user is permanently deactivated.
   </td>
 </tr>
 </tbody>
@@ -165,7 +208,7 @@ For the `OWNER` category with SCA, the property can have a new value, `PENDING_U
 
 ### Pending user action
 
-The `PENDING_USER_ACTION` status value indicates that the user needs enroll in SCA.
+The `PENDING_USER_ACTION` status value indicates that the user needs enroll (or re-enroll) in SCA.
 
 #### Triggers
 
@@ -192,7 +235,7 @@ A call to the dedicated enrollment endpoint ([POST Enroll a User in SCA](/api-re
 This ensures that legacy users do not become blocked if they are unable to complete SCA successfully.
 </Note>
 
-The `PENDING_USER_ACTION` value for `UserStatus` and the webhook `USER_ACCOUNT_VALIDATION_ASKED` are not triggered if the user is a Legal Business, Partnership, or Organization, as SCA is not yet available for [these user types](#legal-user-integration).
+{/* The `PENDING_USER_ACTION` value for `UserStatus` and the webhook `USER_ACCOUNT_VALIDATION_ASKED` are not triggered if the user is a Legal Business, Partnership, or Organization, as SCA is not yet available for [these user types](#legal-user-integration). */}
 
 <Warning>
 **Caution – Changing category with legacy PUT**
@@ -272,9 +315,9 @@ The user account webhooks are not triggered for:
 
 ## Enrollment in the user lifecycle
 
-The following scenarios describe how you can enroll your users in SCA to create their Owner user account. For an overview, see the [diagram below]().
+The following scenarios describe how you can enroll your users in SCA to create their Owner user account. For an overview, see the [diagram below](#user-lifecycle-diagram%3A-categories).
 
-In each case, the API call triggers SCA and returns the `PendingUserAction.RedirectUrl` redirection link. And in each case, the way you need to redirect the user and handle the outcome is the same. For more detailed guidance on this redirection process, [SCA session]().
+In each case, the API call triggers SCA and returns the `PendingUserAction.RedirectUrl` redirection link. And in each case, the way you need to redirect the user and handle the outcome is the same. For more detailed guidance on this redirection process, [SCA session](/guides/sca/session).
 
 ### Testing
 
@@ -315,34 +358,34 @@ Call the [POST Create a Natural User (SCA)](/api-reference/users/create-natural-
 - Set `TermsAndConditionsAccepted` to `true` (ensuring you have obtained the user's acceptance of Mangopay's T&Cs)
 - Provide the required data for Owners
 <Accordion title="See required data for Natural Owners">
-- `FirstName`
-- `LastName`
-- `Email`
-- `Birthday`
-- `Nationality`
-- `CountryOfResidence`
+- `FirstName` (for KYC purposes, checked against the ID proof document)
+- `LastName` (for KYC)
+- `Email` (for SCA purposes, used during the SCA session)
+- `Birthday` (for KYC)
+- `Nationality` (for KYC)
+- `CountryOfResidence` (for KYC)
 </Accordion>
 If you provide the `PhoneNumber`, it will be pre-populated in the hosted SCA experience for them to confirm or change; otherwise, they will be asked to provide it.
 </Tab>
-<Tab title="Legal Users (Soletraders)">
+<Tab title="Legal Users">
 Call the [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) endpoint to register an Owner and enroll them in SCA:
 - Set `UserCategory` to `OWNER`
 - Set `TermsAndConditionsAccepted` to `true` (ensuring you have obtained the user's acceptance of Mangopay's T&Cs)
-- Set the `LegalPersonType` as `SOLETRADER` (as per their [local structure](/guides/users/verification/requirements/kyb-local)) 
+- Set the `LegalPersonType` as `SOLETRADER` to simulate the SCA redirection (see [SCA triggers in Sandbox](/#sca-triggers-in-sandbox))
 - Provide the required data for Owners
 <Accordion title="See required data for Legal Owners">
 - `Name` (registered legal name)
 - `Email` (for the registered entity)
 - `HeadquartersAddress` (registered address)
-- `CompanyNumber` (if available)
+- `CompanyNumber` (required for Business, relevant for others if available)
 
-For the sole proprietor (in the `LegalRepresentative` object):
-- `FirstName`
-- `LastName`
-- `Email`
-- `Birthday`
-- `Nationality`
-- `CountryOfResidence`
+For the individual (in the `LegalRepresentative` object):
+- `FirstName` (for KYC/B purposes, checked against the ID proof document)
+- `LastName` (for KYC/B)
+- `Email` (for SCA purposes, used during the SCA session)
+- `Birthday` (for KYC/B)
+- `Nationality` (for KYC/B)
+- `CountryOfResidence` (for KYC/B)
 </Accordion>
 If you provide the `LegalRepresentative.PhoneNumber`, it will be pre-populated in the hosted SCA experience for them to confirm or change; otherwise, they will be asked to provide it.
 </Tab>
@@ -383,34 +426,34 @@ Call the [PUT Categorize a Natural User (SCA)](/api-reference/users/categorize-n
 - Set `TermsAndConditionsAccepted` to `true` (ensuring you have obtained the user's acceptance of Mangopay's T&Cs)
 - Provide the required data for Owners
 <Accordion title="See required data for Natural Owners">
-- `FirstName`
-- `LastName`
-- `Email`
-- `Birthday`
-- `Nationality`
-- `CountryOfResidence`
+- `FirstName` (for KYC purposes, checked against the ID proof document)
+- `LastName` (for KYC)
+- `Email` (for SCA purposes, used during the SCA session)
+- `Birthday` (for KYC)
+- `Nationality` (for KYC)
+- `CountryOfResidence` (for KYC)
 </Accordion>
 If you provide the `PhoneNumber`, it will be pre-populated in the hosted SCA experience for them to confirm or change; otherwise, they will be asked to provide it.
 </Tab>
-<Tab title="Legal Users (Soletraders)">
+<Tab title="Legal Users">
 Call the [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca) endpoint to register an Owner and enroll them in SCA:
 - Set `UserCategory` to `OWNER`
 - Set `TermsAndConditionsAccepted` to `true` (ensuring you have obtained the user's acceptance of Mangopay's T&Cs)
-- Set the `LegalPersonType` as `SOLETRADER` (as per their [local structure](/guides/users/verification/requirements/kyb-local)) 
+- Set the `LegalPersonType` as `SOLETRADER` to simulate the SCA redirection (see [SCA triggers in Sandbox](/#sca-triggers-in-sandbox))
 - Provide the required data for Owners
 <Accordion title="See required data for Legal Owners">
 - `Name` (registered legal name)
 - `Email` (for the registered entity)
 - `HeadquartersAddress` (registered address)
-- `CompanyNumber` (if available)
+- `CompanyNumber` (required for Business, relevant for others if available)
 
-For the sole proprietor (in the `LegalRepresentative` object):
-- `FirstName`
-- `LastName`
-- `Email`
-- `Birthday`
-- `Nationality`
-- `CountryOfResidence`
+For the individual (in the `LegalRepresentative` object):
+- `FirstName` (for KYC/B purposes, checked against the ID proof document)
+- `LastName` (for KYC/B)
+- `Email` (for SCA purposes, used during the SCA session)
+- `Birthday` (for KYC/B)
+- `Nationality` (for KYC/B)
+- `CountryOfResidence` (for KYC/B)
 </Accordion>
 If you provide the `LegalRepresentative.PhoneNumber`, it will be pre-populated in the hosted SCA experience for them to confirm or change; otherwise, they will be asked to provide it.
 </Tab>
@@ -483,7 +526,9 @@ If you modify the `PhoneNumber` and/or `PhoneNumberCountry`, then the SCA sessio
 
 If you modify only the `Email`, then the new email is confirmed using the `PhoneNumber` which was previously enrolled. In this case, the user is not given the opportunity to modify their phone number during the session.
 </Tab>
-<Tab title="Legal Users (Soletraders)">
+<Tab title="Legal Users">
+**Note:** In Sandbox, the [default behavior](#sca-triggers-in-sandbox) is that SCA redirection is only triggered if `LegalPersonType` is `SOLETRADER`.
+
 Call the [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca) endpoint setting the required parameters: 
 - `UserCategory` to `OWNER`
 - `TermsAndConditionsAccepted` to `true`
