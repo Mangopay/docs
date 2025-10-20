@@ -30,6 +30,20 @@ The diagram below shows an overview of how the solution works:
 
 The rest of this guide refers to the numbers in the diagram above, along the main stages. 
 
+## Onboarding 
+
+Before your platform can start integrating, Mangopay needs to know:
+- The third-party PSP(s) you are working with
+- The currencies in which you process transactions
+
+Then, for each combination of PSP and currency, Mangopay needs to create (or use the existing):
+- Dedicated Escrow Wallet
+- Virtual Account attached to the Escrow Wallet
+
+The Virtual Account is the IBAN that will receive the funds for escrow (sent by your PSP or your platform in step **6A**).
+
+The process above is the same for each `ClientId` you use, whether in Sandbox or Production.
+
 ## Declare payment authorization
 
 Mangopay Echo allows your platform to compliantly declare transactions acquired by third-party PSPs as **Intents**. The Intent API object represents a payment authorization processed by a third-party PSP, and can subsequently be used to track the full lifecycle of the transaction.
@@ -149,7 +163,7 @@ In response, the API creates the Settlement object with `SettlementId` and other
 
 In your workflow, the funds acquired by your third-party PSP arrive in the Mangopay environment as a payment to your dedicated Escrow Wallet (**6A**).
 
-In most cases, this payment is handled by your PSP. In some cases, your platform makes the payment. 
+In most cases, this payment is handled by your PSP (referred to as direct settlement). In some cases, your platform makes the payment.
 
 Once the funds arrive, the Settlement `Status` changes to `RECONCILED`. If the funds which arrive on the wallet do not cover the amount declared in Intents and Settlements, the Status changes to `INSUFFICIENT_FUNDS`. 
 
