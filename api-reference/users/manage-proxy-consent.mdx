@@ -1,0 +1,68 @@
+---
+title: 'Mangopay proxy consent for a User'
+api: 'POST /v2.01/{ClientId}/sca/users/{UserId}/consent'  
+description: 'Allow a user to give or revoke consent for proxy actions'
+---
+
+import PendingUserActionResponse from '/snippets/p-response/PendingUserActionResponse.mdx';
+
+import RestPostNoBody from '/snippets/code/rest-post-no-body.mdx';
+
+import UserId from '/snippets/p-path/UserId.mdx';
+
+This endpoint allows your platform to manage consent given by the end user for SCA-triggering actions taken under proxy. 
+
+Your platform needs to retrieve the returned `PendingUserAction.RedirectUrl`, add an encoded `returnUrl` query parameter for them to be returned to after the SCA session, and redirect the user (read more about [SCA redirection](/guides/sca/session)).
+
+On the SCA session link in the response, the user can: 
+- Give consent for the first time 
+- Give consent to additional actions included by your platform 
+- Revoke consent (which your platform must allow at any time)
+
+Read more about [proxy consent for SCA-triggering actions](/guides/sca/proxy-management) **&rarr;**
+
+### Path parameters
+
+<UserId />  
+
+### Responses  
+
+<AccordionGroup>
+
+<Accordion title="200" defaultOpen>  
+
+<PendingUserActionResponse />  
+
+</Accordion>
+
+</AccordionGroup> 
+
+<AccordionGroup>
+{/* 
+<Accordion title="400 - Endpoint not allowed if category is PAYER">
+```json 
+{
+    "Message": "This endpoint is not allowed for User categorized as PAYER",
+    "Type": "not_allowed_for_user_category_payer",
+    "Id": "4f848681-e524-403b-913a-12bf47095328",
+    "Date": 1736765347,
+    "errors": null
+}
+```
+</Accordion> */}
+
+</AccordionGroup>
+
+<ResponseExample>  
+```json 200
+{
+    "PendingUserAction": {
+        "RedirectUrl": "https://sca.sandbox.mangopay.com/?token=0193cf51ed367151a0cb1c59def21e13"
+    }
+}
+```
+</ResponseExample>  
+
+<RequestExample>  
+<RestPostNoBody/>
+</RequestExample>
