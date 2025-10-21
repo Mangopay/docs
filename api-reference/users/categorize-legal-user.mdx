@@ -42,9 +42,9 @@ import RestCategorizeLegalUser from '/snippets/code/rest-categorize-legal-user.m
 
 This endpoint allows you to transition a user whose `UserCategory` is `PAYER` into an `OWNER` by providing the required information and redirecting them on the `PendingUserAction.RedirectUrl` response value to complete SCA enrollment.
 
-The `RedirectUrl` is currently only returned if `LegalPersonType` is `SOLETRADER`, but the endpoint should be integrated for the other types.
+SCA applies to all `LegalPersonType`: `BUSINESS`, `ORGANIZATION`, `PARTNERSHIP`, and `SOLETRADER`. In Sandbox by default the `RedirectUrl` is only returned for `SOLETRADER` (see [legal user integration](/guides/sca/users#legal-user-integration) and [SCA triggers in Sandbox](/guides/sca/users#sca-triggers-in-sandbox)).
 
-Optionally, you can update the `LegalRepresentative.Email` and provide or update the `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry` before SCA redirection.
+Optionally, you can update the `LegalRepresentative.Email` (in not already present) and provide or update the `LegalRepresentative.PhoneNumber` and `LegalRepresentative.PhoneNumberCountry` before SCA redirection.
 
 If the user's `UserCategory` is already `OWNER`, use the [POST Enroll a User in SCA](/api-reference/users/enroll-user) endpoint to obtain an SCA session link.
 
