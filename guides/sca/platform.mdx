@@ -1,0 +1,100 @@
+---
+title: SCA on your platform
+description: How to integrate the mTLS certificate factor required for SCA on your platform
+---
+
+Mangopay must ensure that your platforms interactions with its services are compliant with SCA.
+
+## Factors
+
+The SCA on your the platform must use two factors. The [API key](/api-reference/overview/api-keys) that your platform currently uses to authenticate its API calls can serve as a knowledge-based factor. 
+
+The second factor Mangopay will use is an **mTLS certificate**, which your platform will need to set up and integrate as described below.
+
+### mTLS certificate
+
+Mutual Transport Security Layer (mTLS) is a standard protocol that enables two-way secure authentication between your platform’s server and Mangopay’s server, ensuring both parties are authenticated before data is exchanged.
+
+The system works using public-key cryptography, which involves a public-private key pair – the private key is a secret that you must store securely like your existing API key.
+
+## Set up your mTLS certificate
+
+<Note>
+**Note – Feature in development, process for information only**
+
+Mangopay’s mTLS functionality is still being finalized. Until then, the process below aims to give you an idea of what will be involved for your platform, but should not be followed.
+
+When the mTLS factor is released, your platform will need to complete the steps below to update its integration.
+
+The information presented in this process is subject to change.
+</Note>
+
+The process for setting up the mTLS certificate factor will be as follows: 
+
+### 1. Generate a private key
+    
+Your platform will need to generate a private key. 
+
+You can do this using OpenSSL, which is a widely used software library for cryptographic functions. 
+
+The following command, for example, creates a file named **private.key** in the directory where the command is run. This command generates an RSA key, which uses a popular algorithm for public-key cryptography. The length of the key is 2048 bits, a common standard.
+
+```shell
+openssl genrsa -out private.key 2048 
+```
+
+You should one key for Sandbox and one for Production to enhance security. 
+
+The private key is a long string or small file and you must store it securely, in the same way as an API key.
+  
+### 2. Create a Certificate Signing Request
+  
+Once you have the private key, you can use it to generate a Certificate Signing Request (CSR).
+
+A CSR is an encoded file that contains a public key and information about your server, and your private key is used to create a secure digital signature. 
+
+Create the CSR using OpenSSL by running the command below, replacing the `ClientId` variable with your relevant Client ID: 
+
+**Linux / MacOS**
+
+**Sandbox**
+
+```shell
+openssl req -new -key private.key -out mgp_cert_request.csr \
+  -subj "/CN=ClientId.sandbox.mangopay.com/O=Mangopay/C=LU" \
+  -addext "extendedKeyUsage=clientAuth"
+```
+
+**Production**
+
+```shell
+openssl req -new -key private.key -out mgp_cert_request.csr \
+  -subj "/CN=ClientId.prod.mangopay.com/O=Mangopay/C=LU" \
+  -addext "extendedKeyUsage=clientAuth"
+```
+
+**Windows (PowerShell, CMD, Git Bash)**
+
+**Sandbox**
+
+```shell
+openssl req -new -key private.key -out mgp_cert_request.csr -subj "//CN=clientID.sandbox.mangopay.com\O=Mangopay\C=LU" -addext "extendedKeyUsage=clientAuth"
+```
+
+**Production**
+
+```shell
+openssl req -new -key private.key -out mgp_cert_request.csr -subj "//CN=clientID.prod.mangopay.com\O=Mangopay\C=LU" -addext "extendedKeyUsage=clientAuth"
+```
+  
+### 3. Obtain your mTLS certificate from Mangopay
+  
+Once you have the CSR, you’ll to send it to Mangopay. You’ll be able to do this by either uploading it to the Mangopay Dashboard or by contacting the Support team. 
+
+Mangopay will return the mTLS certificate, which will be valid for 12 months. At the end of the 12 months, you will need to follow the same process as above to create a new CSR to send to Mangopay to received a renewed certificate that replaces the old one.
+
+### 4. Update your SDK version to start sending your mTLS certificate
+  
+Mangopay will release a new version of its server-side SDKs (version number to be announced) which will include a feature to manage the mTLS certificate.
+
+You will likely need to include your mTLS certificate as an input parameter of the SDK, which will then include it on all API calls.
