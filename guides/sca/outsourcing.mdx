@@ -9,7 +9,7 @@ Platforms that implement SCA on their own must declare to Mangopay the outcome o
 - Successful authentications
 - Exempted authentications
 
-The session that they apply must be linked to the SCA-controlled action within Mangopay.
+The session that they apply must be linked to the SCA-triggering action within Mangopay.
 
 <Note>
 **Note – Feature in development**
@@ -23,7 +23,7 @@ Mangopay plans to make this feature available in **October 2025**.
 
 ## SCA session identifier
 
-To link the SCA-controlled Mangopay action with the platform-managed SCA session, Mangopay will return an `ScaSessionId` parameter inside the `PendingUserAction` response object returned on SCA-controlled actions.
+To link the SCA-triggering Mangopay action with the platform-managed SCA session, Mangopay will return an `ScaSessionId` parameter inside the `PendingUserAction` response object returned on SCA-triggering actions.
 
 ```json
 {
@@ -42,7 +42,7 @@ Your platform will need to use the returned `ScaSessionId` value to submit the o
 
 Your platform will need to submit the outcome of the SCA session for the associated `ScaSessionId` using the dedicated endpoint below.
 
-The SCA-controlled action, such as a transfer, will move to a `SUCCEEDED` state only when `ScaSessionId` was returned to you and you provided its outcome. 
+The SCA-triggering action, such as a transfer, will move to a `SUCCEEDED` state only when `ScaSessionId` was returned to you and you provided its outcome. 
 
 This will apply to all endpoints that require SCA: users, recipients, transfers, wallet access. If the exemption is obvious, for example for low-value transfers (below 30 EUR), Mangopay will not return the `ScaSessionId`. If the SCA action fails for an unrelated reason, the `ScaSessionId` will not be returned.
 
