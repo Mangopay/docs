@@ -26,7 +26,7 @@ No, it is generally not possible to delay SCA enrollment when the `OWNER` is cre
 
 Account creation is not an action that triggers SCA, but SCA enrollment must ordinarily be completed at the moment of account creation.
 
-However, upon request in certain cases, Mangopay may allow SCA enrollment to be deferred until as soon as possible after account creation. This possibility is considered on a case-by-case basis following a risk analysis. In such cases, it is essential that your platform ensures that your users complete their SCA enrollment using the dedicated [**POST Enroll a User**](/api-reference/users/enroll-user) endpoint as soon as possible, and implements best practices to ensure that they do (such as periodic reminders).
+However, upon request in certain cases, Mangopay may allow account creation without simultaneous SCA enrollment. This possibility is considered on a case-by-case basis following a risk analysis. In such cases, it is essential that your platform ensures that users complete their SCA enrollment using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint as soon as possible after account creation, and that you platform implements best practices to ensure that they do (such as periodic reminders). 
 
 #### When will SCA be available for legal users, and what integration is required?
 Following the rollout of SCA for Soletraders, Mangopay is proceeding with the application of SCA to the other Legal User types: Business, Organization, and Partnership. 
@@ -63,23 +63,27 @@ The actions taken by `OWNER` users that require SCA to be performed are:
 For more details, see the [guides](/guides/sca#actions-requiring-sca).
 
 #### What should we expect regarding SCA for transfers between Mangopay wallets?
-Only transfers initiated directly by your Owner users require SCA to be performed by the user. Automated or programmed transfers for technical purposes in workflows may be able to continue as before provided that the user consents and that a proxy is in place in your platform's legal documentation with the user. Mangopay is releasing features to accommodate these situations in the very near future.
+Only transfers initiated directly by your Owner users require SCA to be performed by the user. Automated or programmed transfers for technical purposes in workflows may be able to continue as before provided that the user consents and that a proxy is in place in your platform's legal documentation with the user. For more details, see the [proxy management](/guides/sca/proxy-management) guide.
 
 For more details on user-initiated transfers, see the [transfers](/guides/sca/transfers) guide.
 
 #### For SCA-applicable actions not taken by the user, but rather as part of automated workflows, will SCA be required?
-For existing integrations, platforms will be able to identify actions not taken by the user thanks to the `USER_NOT_PRESENT` value of the new parameter `ScaContext`. These requests will not initially require SCA redirection.
+For existing integrations, platforms were able to identify actions not taken by the user thanks to the `USER_NOT_PRESENT` value of the `ScaContext` parameter.
 
-However, any [SCA-triggering action](/guides/sca#actions-requiring-sca) taken by your platform on behalf of the end user requires a proxy or mandate to be in place in the legal documentation (e.g. terms and conditions) between your platform and the user. Furthermore, it will be necessary for the user to provide their consent to Mangopay. 
+Mangopay has released features to manage:
+- The proxy under which your platform takes such actions (e.g. in your terms and conditions)
+- The user's consent, which must be declared to Mangopay via the hosted SCA session 
 
-Over time, Mangopay will analyze the adoption of SCA and may be required to take appropriate action to ensure compliance. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt in its existing integration.
+Integration of this [proxy management feature](/guides/sca/proxy-management), including user consent, is mandatory to continue using the `USER_NOT_PRESENT` value for `ScaContext`, otherwise actions will fail. 
+
+For [transfers and wallet access](/guides/sca/proxy-management#transfers-and-wallet-access) requests, the default value of `ScaContext` is changing to `USER_PRESENT` on Dec 15, 2025.
 
 #### What happens if we perform actions on behalf of users, without their direct involvement? 
-The `USER_NOT_PRESENT` value for `ScaContext` allows platforms to identify actions where SCA redirection will not be immediately required. 
+The `USER_NOT_PRESENT` value for `ScaContext` allowed platforms to identify actions where SCA redirection was not immediately required. 
 
-The use of this feature for actions taken on behalf of users, without their direct involvement, may be possible if the platform can demonstrate that it has the legal capacity to perform an action falling within the scope of the SCA on behalf of a third party. This legal capacity may result, for example, from a contractual arrangement (such as a mandate or representation contract) or another specific legal provision that would authorize the platform to act in this way.
+The use of this feature in cases where your platform takes SCA-triggering actions on behalf of users requires the integration of Mangopay's [proxy management feature](/guides/sca/proxy-management) and the user's consent (managed via the hosted SCA experience). 
 
-We remain committed to maintaining the highest standards of security and compliance, and Mangopay will analyze such cases over time to determine the appropriate SCA arrangement. 
+The use of `USER_NOT_PRESENT` without the user's consent will return an error. In these cases, your platform must either obtain the user's consent or send the `USER_PRESENT` value and redirect the user to the SCA session to perform SCA.
 
 #### When will SCA be triggered for our existing users, and how will it work?
 For existing users, Mangopay's features allow your platform to enroll them at a convenient point in their journey using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint. 
@@ -116,7 +120,7 @@ Mangopay's objective is to protect your users when they benefit from our service
 See the guide section on [existing user integration](/guides/sca/users#existing-user-integration) **&rarr;**
 
 #### If a user completes SCA enrollment and then registers a new Recipient (external account), will they need to authenticate again?
-No. Each the user must perform SCA on each Recipient creation action. This systematic approach allows Mangopay to use the trusted beneficiary SCA exemption for payouts.
+Yes. The user must perform SCA on each Recipient creation action. This systematic approach allows Mangopay to use the trusted beneficiary SCA exemption for payouts.
 
 #### Is SCA implementation compulsory for us?
 Yes, it is a regulatory obligation imposed by the PSD2 directive with the purpose of protecting you and your users against fraud and abuse. As a payment service provider (PSP), it's our role to protect your users from credential attacks and account takeovers by verifying their identities and ensuring the legitimacy of their actions. 
@@ -147,9 +151,11 @@ Mangopay provides solutions to simplify integration for developers. Please see t
 If you are using the WordPress plugin, please contact Mangopay as soon as possible <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
 
 #### We have a specific workflow. Can we get an exemption? 
-The changes being brought to the Transfer feature will allow platforms to declare automated transfers that do not require SCA by the end user. This feature will therefore allow your platform to implement your declared and authorized workflow in agreement with Mangopay. 
+Mangopay has released features to manage:
+- The proxy under which your platform takes such actions (e.g. in your terms and conditions)
+- The user's consent, which must be declared to Mangopay via the hosted SCA session 
 
-Mangopay will be releasing features to manage the proxy in place between your platform and the end user in such cases (e.g. in your T&Cs with the user), as well as the consent of the end user.
+Mangopay's feature for [proxy management](/guides/sca/proxy-management) and user consent addresses workflows where platforms wish to take action on behalf of their users under the proxy (or mandate) that is in place in their legal documentation (e.g. terms and conditions). If you believe your platform's workflow cannot be addressed by this feature, please contact Mangopay <a href="https://hub.mangopay.com/" target="_blank">via the Dashboard</a>.
 
 #### What should we say to our end users or customers who are asking us why we're requiring them to perform SCA? 
 You can convey to your end users that their security is being strengthened through the implementation of strong customer authentication (SCA) on your platform as per regulatory requirements. This enhanced security measure provides additional protection against account takeovers resulting from phishing attempts, credential attacks, and personal data breaches. By adopting SCA, you are not only prioritizing their safety but also ensuring compliance with the latest regulatory standards. You can assure your end users that you and Mangopay remain committed to delivering a secure and seamless experience.

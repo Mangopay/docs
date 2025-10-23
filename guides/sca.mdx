@@ -449,7 +449,7 @@ This means that `OWNER` users will not be asked to perform SCA on payout request
 
 #### KYC and UBO
 
-Submitting KYC Documents and UBO Declarations for review will not require SCA.
+Submitting KYC Documents and UBO Declarations for review does not require SCA.
 
 #### FX conversions
 
@@ -457,7 +457,7 @@ Because FX conversions take place between two wallets held by the same user, con
 
 #### Refunds
 
-Refunds of  all types will not be impacted by SCA. Pay-in and transfer refunds will continue to be possible for `PAYER` users. Furthermore, refunds that use payouts (by citing the reference of the initial transaction as the `PAYIN_REFUND` reason) will continue to be possible for `PAYER` users, because a Recipient can be created for this purpose (see [Recipient scopes - Pay-in](/guides/sca/recipients#recipient-scopes)).
+Refunds of  all types are not impacted by SCA. Pay-in and transfer refunds continue to be possible for `PAYER` users. Furthermore, [refunds that use payouts](/guides/payouts/integration#refunds-using-payouts) (by citing the reference of the initial transaction as the `PAYIN_REFUND` reason) continue to be possible for `PAYER` users, because a Recipient can be created for this purpose (see [Recipient scopes - Pay-in](/guides/sca/recipients#recipient-scopes)).
 
 #### Disputes
 
@@ -479,13 +479,15 @@ Your platform's team members use multi-factor authentication (MFA) to log in to 
 
 #### Using the Mangopay Dashboard
 
-SCA is applicable to all the [SCA-triggering actions](#actions-requiring-sca) that the `OWNER` user takes, whether via the API or via the Dashboard. Initially, your platform needs to change its API implementation. 
+SCA is applicable to all the [SCA-triggering actions](#actions-requiring-sca) that the `OWNER` user takes, whether via the API or via the Dashboard.
 
-Mangopay will be releasing features to address Dashboard-based actions.
+For SCA-triggering actions taken via the Dashboard on behalf of end users, your platform needs to ensure that:
+- The legal documentation (e.g. terms and conditions) between your platform and the user includes the proxy under which you take the action on their behalf
+- Your platform collects and manages the user's consent for the action
 
-When actions are executed on behalf of Mangopay Account holders without direct user authentication, each case will be evaluated individually to determine the appropriate SCA process. It is essential that we understand the context and legal justification for such actions, as bypassing direct user consent could expose us to security risks. We remain committed to maintaining the highest standards of security and compliance.
+For more information, see [managing proxy and user consent](/guides/sca/proxy-management) **&rarr;**
 
-The Dashboard will integrate the API-based SCA-features (e.g. Recipients), but presently it has the legacy user endpoints integrated. 
+The Dashboard will integrate the API-based SCA-features, but presently it has the legacy user endpoints integrated. 
 
 Note that if you change a `PAYER` to `OWNER` via the Dashboard, that action uses the legacy **PUT Update a User** endpoint, and as such it will not trigger SCA, even if the `PAYER` was created using the new SCA-enabled endpoint. Such a user will still need to enroll as an existing user via the [POST Enroll a User](/api-reference/users/enroll-user) endpoint.
 
@@ -493,7 +495,9 @@ Note that if you change a `PAYER` to `OWNER` via the Dashboard, that action uses
 
 The `UserCategory` value `PLATFORM` indicates a specific user approved by Mangopay that represents the platform. 
 
-Initially, SCA will not be applied to a User whose `UserCategory` is `PLATFORM`. SCA is applicable to actions taken by these users, however, and Mangopay is defining a suitable solution.
+Initially, SCA will not be applied to a User whose `UserCategory` is `PLATFORM`. 
+
+SCA is applicable to actions taken by these users, however, and Mangopay is defining a suitable solution. This will involve an additional authentication factor (a mTLS certificate) to apply SCA to your platform's interactions with Mangopay – read more about [SCA on your platform](/guides/sca/platform) **&rarr;**
 
 #### Your platform's MFA features
 
