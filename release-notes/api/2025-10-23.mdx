@@ -1,0 +1,48 @@
+---
+title: 'API - Oct 23, 2025'  
+description: '<small>&#8249; [All release notes](/release-notes)</small>'
+---
+
+## <div class="pill pill-green">Added</div>
+### SCA: Endpoint for managing user consent to actions under proxy
+
+Platforms taking action on behalf of users, including via the Dashboard, must now obtain and manage the user's consent for SCA-triggering actions. 
+
+The User can give their consent to each SCA-triggering action via Mangopay's hosted SCA experience, by way of a checkbox.
+
+The [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint allows your platform to retrieve an SCA session link on which the user can give and revoke their consent to the SCA-triggering actions that your platform takes under proxy.
+
+The User can also give consent when they first enroll in SCA, and on the next session they use after you platform requests activation of the proxy management feature.
+
+Read more about [managing consent for actions under proxy](/guides/sca/proxy-management) **&rarr;**
+
+## <div class="pill pill-orange">Changed</div>
+### SCA: ScaContext value USER_NOT_PRESENT requires integration of user consent
+
+Use of the `USER_NOT_PRESENT` value for `ScaContext` (in all cases) now requires: 
+- Integration of the new [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint
+- Consent given by the user for the action via the SCA hosted experience
+
+Otherwise, the user must perform SCA (which is the meaning of the `USER_PRESENT` value) via the SCA `RedirectUrl` returned by the API.
+
+On transfers and wallet access endpoints, the default value of `ScaContext` has thus far been `USER_NOT_PRESENT`, allowing platforms to indicate cases where they intend to act on the user's behalf. This now requires a proxy in place in your platform's legal documentation and consent given by the user via the SCA hosted experience.
+
+The default value will be changing to `USER_PRESENT` to enforce SCA on **December 15, 2025**. Your platform can also request activation before this date, when you are ready. 
+
+The parameter with the default value will be `USER_PRESENT` is also being added to:
+- The User endpoints (today) 
+- The Recipient creation endpoint (release planned early November 2025)
+
+Read more about [SCA context in proxy management](/guides/sca/proxy-management#sca-context) **&rarr;**
+
+## <div class="pill pill-green">Added</div>
+### SCA: ScaContext request parameter on User endpoints
+The `ScaContext` parameter has been added to User endpoints for the SCA-triggering action of updating account information: 
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+
+The default value is `USER_PRESENT` in these cases. To use the `USER_NOT_PRESENT` value, your platform needs to integrate and activate proxy management, and the user must have given consent via the SCA hosted experience.
+
+Note that on the User endpoints, the `ScaContext` parameter is not returned in the API response as it is not part of the data of the User – it's only related to the action being performed on the user. 
+
+Read more about [SCA context in proxy management](/guides/sca/proxy-management#sca-context) **&rarr;**

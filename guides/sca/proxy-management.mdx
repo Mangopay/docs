@@ -209,8 +209,8 @@ To orchestrate the logic of whether an SCA-triggering action is performed by the
 
 With the release of user consent, the values have the following meanings in all cases:
 
-1. `USER_PRESENT` – **The user is taking the SCA-triggering action.** The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an exemption, so no redirection link was returned).
-2. `USER_NOT_PRESENT` – **The platform is taking the action under proxy from the user** and the user has given consent to Mangopay to allow the action. 
+- `USER_PRESENT` – **The user is taking the SCA-triggering action.** The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an exemption, so no redirection link was returned).
+- `USER_NOT_PRESENT` – **The platform is taking the action under proxy from the user** and the user has given consent to Mangopay to allow the action. 
 
 The sections below describe how this new behavior is being enforced on cases where it already present, and the cases where it is being newly added.
 
@@ -280,8 +280,8 @@ The default value on users and recipients is `USER_PRESENT`.
 Change SCA contact information (`Email` or `PhoneNumber`)
 </td>
 <td class="table-content">
-- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
-- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca) (available)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca) (available)
 </td>
 <td class="table-content">
 If the request modifies: 
@@ -294,7 +294,7 @@ If the request modifies:
 Register or change external accounts
 </td>
 <td class="table-content">
-- [POST Create a Recipient](/api-reference/recipients/create-recipient)
+- [POST Create a Recipient](/api-reference/recipients/create-recipient) (release planned early November 2025)
 </td>
 <td class="table-content">
 If `RecipientScope` is `PAYOUT`
@@ -302,18 +302,20 @@ If `RecipientScope` is `PAYOUT`
 </tr>
 </tbody></table>
 
-Additionally, the `ScaContext` parameter is being added to the following user endpoints:
+#### User account creation
+
+Account creation is not an action that triggers SCA, but SCA enrollment must ordinarily be completed at the moment of account creation.
+
+However, upon request in certain cases, Mangopay may allow SCA enrollment to be deferred until as soon as possible after account creation. This possibility is considered on a case-by-case basis following a risk analysis. In such cases, it is essential that your platform ensures that your users complete their SCA enrollment using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint as soon as possible, and implements best practices to ensure that they do (such as periodic reminders). 
+
+Therefore, to serve these use cases, `ScaContext` is also added to the creation and categorization endpoints:
 
 - [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
 - [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
 - [PUT Categorize a Natural User](/api-reference/users/categorize-natural-user)
 - [PUT Categorize a Legal User](/api-reference/users/categorize-legal-user)
 
-Account creation is not an action that triggers SCA, but SCA enrollment must ordinarily be completed at the moment of account creation.
 
-However, upon request in certain cases, Mangopay may allow SCA enrollment to be deferred until as soon as possible after account creation. This possibility is considered on a case-by-case basis following a risk analysis. In such cases, it is essential that your platform ensures that your users complete their SCA enrollment using the dedicated [POST Enroll a User](/api-reference/users/enroll-user) endpoint as soon as possible, and implements best practices to ensure that they do (such as periodic reminders). 
-
-The addition of `ScaContext` to the creation and categorization endpoints serves these use cases.
 
 ## SCA context decision logic
 
