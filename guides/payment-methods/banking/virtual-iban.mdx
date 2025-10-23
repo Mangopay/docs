@@ -526,6 +526,15 @@ User-owned accounts allow platforms to create a unique IBAN for a specific user.
 <img className="block dark:hidden" src="/images/diagram_virtual_account_user_owned_light.svg" />
 <img className="hidden dark:block" src="/images/diagram_virtual_account_user_owned_dark.svg" />
 
+#### Top-up requires User-Owned Account
+
+Collection Accounts are not intended for users making payments to themselves to top up their wallet: this scenario requires a User-Owned Account. For example, the following flow is not permitted:
+- Pay-in to **Collection Account** attached to a Wallet held by an `OWNER` User
+- Transfer to another Wallet held by the same User – this Transfer is blocked with the [008500](/errors/codes/008500) `ResultCode`
+
+The correct implementation of this use case is:
+- Pay-in to **User-Owned Account** attached to a Wallet held by an `OWNER` User
+
 ## Related resources
 
 <CardGroup col={2}> 
