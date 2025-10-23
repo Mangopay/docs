@@ -53,9 +53,21 @@ The SCA session (the `RedirectUrl` in the API response) is valid for **10 minute
 It is not possible to initiate an action and then ask the user to complete the SCA session later.
 </Note>
 
+### Taking action by proxy with user consent 
+
+Due to your platform's activity and integration workflow, you may wish to take actions on behalf of users in certain circumstances. 
+
+If the action is one that is subject to SCA, then it is possible if:
+- The legal documentation (e.g. terms and conditions) between your platform and the user includes the actions that you take on their behalf by **proxy**
+- Mangopay has the **user’s consent** to the proxy that allows your platform to act on the user’s behalf for the specific action – this is managed through the hosted SCA experience
+
+Read more about [proxy management](/guides/sca/proxy-management) **&rarr;**
+
 ### Integration required for SCA
 
-The following table lists the actions and endpoints on which SCA redirection is required (or may be required, because Mangopay may be able to exempt a given transfer or wallet access request).
+The following table lists the actions and endpoints on which SCA redirection is required (or may be required, because Mangopay may be able to exempt a given transfer or wallet access request). 
+
+Additional integration is required if your platform is taking actions by proxy on behalf of the user (and sending the `ScaContext` value `USER_NOT_PRESENT`) – [read more](/guides/sca/proxy-management#integration-timeline) **&rarr;**
 
 #### Enrollment and authentication
 
@@ -116,6 +128,10 @@ The following table lists the actions and endpoints on which SCA redirection is 
 **Caution – ScaContext is mandatory in all cases**
 
 For all platforms, the `ScaContext` parameter on transfers and wallet access is mandatory in all cases where the User is an `OWNER`.
+
+Its values in all cases mean:
+- `USER_PRESENT` – The user is taking the SCA-triggering action. The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an exemption, so no redirection link was returned).
+- `USER_NOT_PRESENT` – The platform is taking the action under [proxy](/guides/sca/proxy-management) from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action.
 </Warning>
 
 #### Enrollment of legacy users
