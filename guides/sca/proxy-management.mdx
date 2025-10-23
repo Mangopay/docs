@@ -4,7 +4,7 @@ sidebarTitle: Proxy management
 description: Managing user consent to the proxy allowing you to take action on their behalf 
 ---
 
-For some platforms, their activity and integration workflow means that they want to take actions on behalf of users in some circumstances.
+Some platforms, due to their activity and integration workflow, may wish to take actions on behalf of users in certain circumstances.
 
 If the action is one that is subject to SCA, then it is possible for the platform to perform the action on the user’s behalf, but Mangopay must ensure that the user consents.
 
@@ -16,7 +16,7 @@ In order to be allowed to perform an [SCA-triggering action](/guides/sca#actions
 <Note>
 **Note – Acting under proxy requires SCA on your platform** 
 
-The use of proxy and consent to act on a user’s behalf also requires SCA on your platform directly. Mangopay is implementing that by way of a new authentication factor, mTLS certificate, in addition to your existing API key.
+The use of proxy and consent to act on a user’s behalf also requires SCA on your platform directly. Mangopay is implementing that by way of a new authentication factor, an mTLS certificate, in addition to your existing API key.
 
 [Read more](/guides/sca/platform) **&rarr;**
 </Note>
@@ -35,8 +35,8 @@ Mangopay’s system for managing proxy involves:
     
   The `ScaContext` parameter is used to orchestrate the logic of whether: 
 
-  - **The user is taking the action:** they are on-session and able to perform SCA and your platform redirects them to the SCA hosted experience (if SCA redirection link is returned by the API, which doesn’t happen if Mangopay applies an exemption). This is the sense of the `USER_PRESENT` value.
-  - **The platform is taking the action under proxy** **from the user** and the user has given consent to Mangopay to allow the action. This is the sense of the `USER_NOT_PRESENT` value.
+  - **The user is taking the action:** they are on-session and able to perform SCA and your platform redirects them to the SCA hosted experience (if SCA redirection link is returned by the API, which doesn’t happen if Mangopay applies an exemption). This is indicated by the `USER_PRESENT` value.
+  - **The platform is taking the action under proxy** **from the user** and the user has given consent to Mangopay to allow the action. This is indicated by the `USER_NOT_PRESENT` value.
 
 ## Integration timeline
 
@@ -115,7 +115,7 @@ Initiate payment transactions
 
 The consent to each action above requires explicit consent from the user by way of a checkbox via the proxy management system in the hosted experience. 
 
-Note that the action for recipients includes creation and modification, as modification is planned in future even if not possible now.
+Note that the action for recipients includes creation and modification, as modification is planned in future even if it is not possible now.
 
 <Note>
 **Note – Proxy consent must reflect your legal documentation**
@@ -129,7 +129,7 @@ During integration and activation, your platform needs to inform Mangopay which 
 
 ### Dashboard actions under proxy
 
-Platforms using the Dashboard to complete SCA-triggering actions also need to ensure that a proxy is place for the action, and they need to collect and manage user consent via the API. 
+Platforms using the Dashboard to complete SCA-triggering actions also need to ensure that a proxy is in place for the action, and they need to collect and manage user consent via the API. 
 
 The consent status for a given user will be available in the Dashboard (only, not the API).
 
@@ -165,7 +165,7 @@ The user also has the right to contact Mangopay to revoke their consent. In this
 The [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint allows your platform to:
 
 - Collect consent independently of an SCA-triggering action
-- Allow the user to revoke their consent, which you need to enable at any time
+- Allow the user to revoke their consent, which you must enable at any time
 
 The endpoint returns a `PendingUserAction.RedirectUrl` on which you need to redirect the user so they can give or revoke their consent. 
 
@@ -185,7 +185,7 @@ It may happen that your platform needs to add a consent scope after activation, 
 
 To do so: 
 
-- Contact Mangopay to change the proxy action with appropriate elements to justify that you will need to extend the scope of actions to be performed under proxy (e.g. update terms and conditions and or update power of attorney).
+- Contact Mangopay to change the proxy action with appropriate elements to justify why you need to extend the scope of actions to be performed under proxy (e.g. update terms and conditions and or update power of attorney).
 - Obtain consent for the new scope during the next SCA session for that user, which can be via [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent)
 
 Your platform may also wish to remove a proxy action scope. In this case, you need to contact Mangopay and request the change. The user does not need to be notified.
@@ -212,7 +212,7 @@ With the release of user consent, the values have the following meanings in all 
 - `USER_PRESENT` – **The user is taking the SCA-triggering action.** The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an exemption, so no redirection link was returned).
 - `USER_NOT_PRESENT` – **The platform is taking the action under proxy from the user** and the user has given consent to Mangopay to allow the action. 
 
-The sections below describe how this new behavior is being enforced on cases where it already present, and the cases where it is being newly added.
+The sections below describe how this new behavior is being enforced on cases where it is already present, and the cases where it is being newly added.
 
 <Warning>
 **Caution – SCA must be performed or consent must be given**
@@ -319,7 +319,7 @@ Therefore, to serve these use cases, `ScaContext` is also added to the creation 
 
 ## SCA context decision logic
 
-Mangopay’s SCA solution relies on the `ScaContext` value to determine whether SCA should be performed by the user or by Mangopay.
+Mangopay’s SCA solution relies on the `ScaContext` value to determine whether SCA should be performed by the user or if the action can be allowed under proxy with the user’s consent.
 
 The logic of the overall flow is shown below:
 {/* light mode */}
@@ -436,7 +436,7 @@ If the user’s consent is missing and thus the action was refused, then your pl
 <Note>
 **Note – SCA exemptions on specific action**
 
-It may happened that Mangopay can apply an [SCA exemption](/guides/sca#exemptions-available-to-mangopay) on a specific instance of an SCA-triggering **transfer** or **wallet access** request. If this happens, then the `PendingUserAction.RedirectUrl` is not returned even if the `USER_PRESENT` value was sent for `ScaContext`.
+It may happen that Mangopay can apply an [SCA exemption](/guides/sca#exemptions-available-to-mangopay) on a specific instance of an SCA-triggering **transfer** or **wallet access** request. If this happens, then the `PendingUserAction.RedirectUrl` is not returned even if the `USER_PRESENT` value was sent for `ScaContext`.
 
 This is not reflected in the diagram above.
 </Note>
