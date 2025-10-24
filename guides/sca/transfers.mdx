@@ -8,14 +8,7 @@ description: Read how SCA impacts the transfer endpoint
 
 When a Mangopay Account holder (`OWNER`) transfers funds to another Mangopay Account holder, they must authenticate using SCA.
 
-This means that when an `OWNER` user initiates a transfer to a wallet held by another `OWNER` user, the first user must authenticate the request. 
-
-<Info>
-**Possible exemptions on transfer actions**
-
-- For user-initiated transfers, Mangopay will apply the exemptions allowed by the regulations (such as low-risk or low-amount transfers, [read more](/guides/sca#exemptions-on-actions)). Platforms will not be able to specifically request exemptions.
-- For existing integrations, the value `USER_NOT_PRESENT` below can be used to declare an automated workflow transfer which won't trigger SCA redirection. In future, and based on its analysis of adoption, Mangopay may be required to take action to ensure SCA adoption, such as overriding these requests.
-</Info>
+This means that when an `OWNER` user initiates a transfer to a wallet held by another `OWNER` user, the first user must authenticate the request.
 
 ## Action required
 
@@ -23,20 +16,29 @@ On transfers between one `OWNER` user and another, your platform needs to implem
 
 ### 1. Send ScaContext on Owner-initiated transfers
 
-On the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint, Mangopay has introduced the body parameter `ScaContext`, which your platform needs to send on all transfers initiated by users whose `UserCategory` is `OWNER`. 
+On the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoint, Mangopay has introduced the body parameter `ScaContext`, which your platform needs to send on **all transfers** initiated by users whose `UserCategory` is `OWNER`.
 
 The `ScaContext` parameter has the values:
 
-- `USER_PRESENT` – The user is initiating the transfer and is actively present. The platform must [redirect the user](/guides/sca/session) for SCA using the `PendingUserAction.RedirectUrl` returned, unless an exemption can be applied by Mangopay such as on low-amount and low-risk transfers. Platforms are not able to request specific exemptions ([read more](/guides/sca#exemptions-on-actions)).
-- `USER_NOT_PRESENT` – No user is present: the transfer is automated by the platform as part of their declared and authorized workflow. On these transfers, SCA redirection is not initially required, but in future Mangopay may be required to override the request.
+- `USER_PRESENT` – The user is taking the SCA-triggering action of initiating a transfer. The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an [exemption](/guides/sca#exemptions-on-actions) for low-amount and low-risk transfers, so no redirection link was returned).
+- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action.
 
-To begin with, the parameter is technically **optional** and its default value if not sent is `null`, which has the same meaning as `USER_NOT_PRESENT`. This approach allows existing platforms to introduce SCA on their existing integration without undue consequences or breaking changes. Mangopay's objective is to protect your users when they benefit from our services, via an authentication solution that is easy for your platform to adopt. 
+The `ScaContext` parameter should be considered mandatory and the relevant value must be sent on all transfers initiated by `OWNER` users. You do not need to send `ScaContext` if the `UserCategory` is `PAYER`.
 
-For new platforms, the parameter should be considered **required** for transfers initiated by `OWNER` users, and `USER_PRESENT` should be considered the default value.
+#### USER_NOT_PRESENT requires proxy
 
-You do not need to send this parameter if the `UserCategory` is `PAYER`.
+To use the `USER_NOT_PRESENT` value, your platform must put in place a proxy in your legal documentation, and you must obtain the User's consent. For more information, see the [proxy management](/guides/sca/proxy-management#) guide.
 
-#### Example API request
+The introduction of Mangopay's proxy management system makes it possible to apply SCA correctly in all cases. If the proxy action is activated for your platform and you send `USER_NOT_PRESENT`, but the user hasn't given consent via the hosted SCA experience, then the request will fail.
+
+In this case, your platform has two options: 
+
+1. Obtain consent from the user by calling [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent), and then retry the transfer with `USER_NOT_PRESENT`
+2. Retry the action with the user on session to authenticate, by setting `ScaContext` to `USER_PRESENT` and redirecting the user on the `PendingUserAction.RedirectUrl` returned
+
+The rest of this guide discusses the `USER_PRESENT` case.
+
+#### Example API request with user present
 
 <Accordion title="See API request example with user present">
 ```json
@@ -60,13 +62,16 @@ You do not need to send this parameter if the `UserCategory` is `PAYER`.
 
 ### 2. Redirect the user for SCA if required 
 
-Your platform needs to consider that both values for `ScaContext` may technically result in the need for SCA redirection: you can include `USER_PRESENT` and be exempted by Mangopay, or include `USER_NOT_PRESENT` and, in future, have SCA imposed by Mangopay.
+For requests made with `ScaContext` set to `USER_PRESENT`, the user is on session and can perform SCA. On a given transfer request, it is possible that Mangopay can apply an SCA exemption if the transaction is considered low risk or for a low amount.
 
-If Mangopay determines that SCA is required for the transfer request, the API response contains `PendingUserAction.RedirectUrl`, as shown in the example below.
+If SCA is required for the transfer request, the API response contains `PendingUserAction.RedirectUrl`, as shown in the example below. If an exemption was applied (for `USER_PRESENT`), then the `RedirectUrl` is not returned because no redirection is necessary.
 
 #### Example API response
 
-<Accordion title="See API response example if SCA required">
+In Sandbox, the low-amount exemption is systematically applied for amounts of 30 EUR or less (or equivalent in other currencies). So in the examples below, setting `DebitedFunds.Amount` to more than `3000` triggers SCA (see [SCA triggers in Sandbox](#sca-triggers-in-sandbox) below for details).
+
+<Tabs>
+<Tab title="SCA redirection required">
 ```json
 {
     "ScaContext": "USER_PRESENT",
@@ -100,7 +105,41 @@ If Mangopay determines that SCA is required for the transfer request, the API re
     }
 }
 ```
-</Accordion>
+</Tab>
+<Tab title="Exemption applied">
+```json
+{
+    "ScaContext": "USER_PRESENT",
+    "Id": "xfer_c_01JRSHQFG2337DBQ4NS8XPYCK7",
+    "CreationDate": 1744614179,
+    "DebitedWalletId": "wlt_m_01JRJM7ASZN7YP4MBDVBT0HZF1",
+    "CreditedWalletId": "wlt_m_01JRHSTW2NP4MDB45WQMDNS23C",
+    "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
+    "CreditedUserId": "user_m_01JRHSS3B18H86QA0C467RVK07",
+    "DebitedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "CreditedFunds": {
+        "Currency": "EUR",
+        "Amount": 1000
+    },
+    "Fees": {
+        "Currency": "EUR",
+        "Amount": 0
+    },
+    "Type": "TRANSFER",
+    "Nature": "REGULAR",
+    "Status": "CREATED",
+    "Tag": "Created using Mangopay API Postman Collection",
+    "ResultCode": null,
+    "ResultMessage": null,
+    "ExecutionDate": null,
+    "PendingUserAction": null
+}
+```
+</Tab>
+</Tabs>
 
 <Warning>
 **Caution – Encode and add your returnUrl before redirection**
@@ -202,9 +241,9 @@ See the [Postman](/postman) guide for details on how to fork the collection and 
 Read more about redirecting users for an SCA session
 </Card>
 <Card
-  title="Endpoint"
-  href="/api-reference/transfers/create-transfer"
+  title="Proxy management"
+  href="/guides/sca/proxy-management"
 >
-Create a Transfer
+Read more about proxy management for USER_NOT_PRESENT
 </Card>
 </CardGroup>
