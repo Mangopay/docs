@@ -1,0 +1,112 @@
+---
+title: Onboarding and synchronizing sellers
+---
+
+To onboard your sellers, Mangopay's Mirakl Connector leverages:
+- The KYC banner in the Mirakl Seller Dashboard
+- A series of frontend components built and hosted by Mangopay
+
+Your sellers are guided through all the necessary steps, from Mangopay Account creation to KYC/B verification.
+
+## Benefits
+
+By using Mangopay's Mirakl Connector, your platform can therefore benefit from: 
+- **Faster time-to-market:** Pre-built, compliant verification journeys hosted by Mangopay
+- **Faster onboarding:**
+    - Optimized verification flows leading to high pass rates and fast resolution through clear error messages
+    - Fewer visible fields, meaning reduced friction for sellers
+    - Mobile-friendly and localized experiences to increase conversion
+    - Direct user feedback to ensure fewer errors in bank details
+- **Compliance-by-design** with mandatory SCA on relevant actions
+
+## Prerequisites
+
+To onboard sellers using Mangopay's Mirakl Connector, the following Mirakl settings are required: 
+- Activation of the Mirakl KYC banner – contact Mirakl Support to active
+- Exclusive use of the KYC banner by Mangopay, so Mangopay must be the only system that updates the banner
+
+## How it works 
+
+All of Mangopay's onboarding interactions leverage the KYC banner for communication with the seller and for providing links to the Mangopay-hosted webpages.
+
+There are 3 main pathways: 
+1. Mangopay Account creation 
+2. KYB verification
+3. Recipient creation
+
+### Mangopay Account creation 
+
+The account creation flow is as follows: 
+1. Mangopay's connector detects a new seller, and so it adds a link and messaging to the KYC banner in the Mirakl Dashboard
+
+2. The Seller clicks the link to Mangopay's hosted account registration
+
+3. The Seller fills out their account data and confirms 
+
+4. The Seller is redirected to Mangopay's hosted SCA session to enrolls in SCA
+
+5. The Seller is redirected back to the Mirakl Dashboard
+
+<Note>
+**Note – Connector also handles SCA re-enrollment**
+
+If the seller wishes to modify the phone number or email they used to enroll in SCA, then they are again redirect to Mangopay's SCA experience to re-enroll their new contact details.
+</Note>
+
+### KYB verification
+
+The KYB verification flow is as follows: 
+1. Mangopay's connector detects that the seller needs to complete their KYC verification, and so it adds a link and messaging to the KYC banner in the Mirakl Dashboard
+
+2. The Seller clicks the link to Mangopay's hosted KYC/B solution 
+
+3. The Seller is redirected back to the Mirakl Dashboard and views the outcome of Identity verification. 
+
+If verification fails, the Seller is provided with detailed errors and can start a new Identity Verification session.
+
+<Note>
+**Note – Connector also handles KYB data updates**
+
+If the seller wishes to modify identity data of the person who completed the KYC/B check, then they are again redirected to Mangopay's hosted KYC/B experience to verify the new individual. 
+</Note>
+
+### Recipient creation 
+
+The recipient creation flow is as follows: 
+1. Mangopay's connector detects that the seller needs to register an external bank account, and so it adds a link and messaging to the KYC banner in the Mirakl Dashboard
+
+2. The Seller clicks the link to Mangopay's hosted recipient creation experience
+
+4. The Seller is redirected to Mangopay's hosted SCA session to perform SCA
+
+4. The Seller is redirected back to the Mirakl Dashboard
+
+## Migration from legacy
+
+<Warning>
+Caution – Actions below must be done after confirmation
+
+
+
+</Warning>
+
+**Important**
+
+Those actions must be done after the activation by Mangopay of the Hosted Onboarding. 
+
+**1. Delete Mangopay Custom Fields in Mirakl**  `Irreversible`
+
+- Go to **Settings > Stores > Profile configuration**.
+- Delete the custom fields required by the Mangopay connector (e.g., legalrep-firstname).
+    - Link to full list: https://docs.mangopay.com/guides/mirakl/connector#3-add-shop-custom-fields
+- Note: Deletion is not instantaneous and may take some time to complete.
+
+**2. Remove Bank Account Details from the Mirakl Dashboard** `Irreversible`
+
+- Navigate to **Settings > Stores > Payment.**
+- Choose to remove bank account details either:
+    - Per store (recommended during testing), or
+    - Globally (for all stores).
+- Removing these details will:
+    - Disable operators’ ability to manage bank accounts.
+    - Delete the registered bank accounts linked to each store.
