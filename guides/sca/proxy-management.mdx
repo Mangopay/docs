@@ -150,19 +150,19 @@ A version of the consent screen is displayed in the SCA session:
 1. At the point of **SCA enrollment**, during the first SCA session the user completes (provided SCA by proxy is activated for your platform)
 2. On the next SCA session they use following the **activation** of the proxy management system
 3. On the next SCA session they use following the **modification** of the proxy actions (that is, if your platform adds an action)
-4. Independently of enrollment or an SCA-triggering action, on the SCA session URL returned by the [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint
+4. Independently of enrollment or an SCA-triggering action, on the SCA session URL returned by the [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint
 
 The action of giving consent or changing consent is authenticated by SCA, so once the user ticks the checkbox, they are required to authenticate using their chosen factors. At enrollment, they are asked to enroll their chosen factors.
 
 ### User’s control over their consent
 
-The user must be able to revoke their consent via your platform at any time. You need to enable this by integrating the [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint. 
+The user must be able to revoke their consent via your platform at any time. You need to enable this by integrating the [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint. 
 
 The user also has the right to contact Mangopay to revoke their consent. In this case, Mangopay does not plan to proactively inform your platform. You will, however, be able to see a given user’s consent status in the Mangopay Dashboard (but not in the API).
 
 ## Integrate the consent endpoint
 
-The [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint allows your platform to:
+The [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint allows your platform to:
 
 - Collect consent independently of an SCA-triggering action
 - Allow the user to revoke their consent, which you must enable at any time
@@ -186,7 +186,7 @@ It may happen that your platform needs to add a consent scope after activation, 
 To do so: 
 
 - Contact Mangopay to change the proxy action with appropriate elements to justify why you need to extend the scope of actions to be performed under proxy (e.g. update terms and conditions and or update power of attorney).
-- Obtain consent for the new scope during the next SCA session for that user, which can be via [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent)
+- Obtain consent for the new scope during the next SCA session for that user, which can be via [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent)
 
 Your platform may also wish to remove a proxy action scope. In this case, you need to contact Mangopay and request the change. The user does not need to be notified.
 
@@ -198,7 +198,7 @@ Its purpose is to obtain or update user consent independently of SCA enrollment 
 
 It returns the same body as the existing enrollment endpoint but it serves a different use case:
 
-- [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) can only be called if the **user is** **already enrolled in SCA** (`UserStatus` is `ACTIVE`)
+- [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) can only be called if the **user is** **already enrolled in SCA** (`UserStatus` is `ACTIVE`)
 - [POST Enroll a User in SCA](/api-reference/users/enroll-user) can only be called if the **user is not yet enrolled in SCA** (`UserStatus` is still `ACTIVE`), or is retrying a re-enrollment following a call to a PUT modification endpoint (in this case their `UserStatus` is `PENDING_USER_ACTION`)
 
 ## SCA context
@@ -428,7 +428,7 @@ Therefore, for an action to be allowed with `ScaContext` set to `USER_NOT_PRESEN
 
 If the user’s consent is missing and thus the action was refused, then your platform has two options: 
 
-1. Obtain consent from the user by calling [PUT Manage proxy consent for a User](/api-reference/users/manage-proxy-consent), and then retry the action with `USER_NOT_PRESENT`
+1. Obtain consent from the user by calling [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent), and then retry the action with `USER_NOT_PRESENT`
 2. Retry the action with the user on session to authenticate, by setting `ScaContext` to `USER_PRESENT` and redirecting the user on the `PendingUserAction.RedirectUrl` returned
 
 <Note>
