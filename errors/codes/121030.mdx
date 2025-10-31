@@ -1,0 +1,41 @@
+---
+title: '121030'  
+description: '<small>&#8249; [All error codes](/errors/codes#payouts)</small>'
+---
+  
+<table>
+    <tbody>
+        <tr>
+            <th class="header"><strong>Error message</strong></th>
+            <td class="table-content">Verification of Payee failed: account name and IBAN do not match. Please provide matching details to proceed with the payout</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Description</strong></th>
+            <td class="table-content">The payout failed because the result of the Verification of Payee (VOP) was `NO_MATCH` or `MATCH_NOT_POSSIBLE` and the VOP amendment is not signed</td>
+        </tr>
+        <tr>
+            <th class="header"><strong>Categories</strong></th>
+            <td class="table-content">  
+<div class="label">Payout</div>
+</td>
+        </tr>
+    </tbody>
+</table>  
+
+#### Causes  
+
+This error occurs when the [Verification of Payee (VOP)](/guides/vop) check performed on a payout request was `NO_MATCH` or `MATCH_NOT_POSSIBLE` and the platform has not signed the amendment taking liability in these cases.
+
+The VOP result was returned in the API response of the call to the [POST Create a Payout](/api-reference/payouts/create-payout) endpoint in the `RecipientVerificationOfPayee` property. The payout was successfully initiated but then subsequently failed with the `121030` `ResultCode`.
+
+VOP checks the bank account holder name and IBAN registered with Mangopay against the combination of these data points held by the destination bank of the payout. If the name and IBAN do not match, then `NO_MATCH` is returned in the `RecipientVerificationOfPayee.RecipientVerificationCheck` response field of the payout endpoint. If the VOP check could not be performed, then `MATCH_NOT_POSSIBLE` is returned.
+
+Read more about [VOP on recipients and payouts](/guides/vop/recipients-payouts) **&rarr;**
+
+Your platform can obtain the VOP result at any time by calling the [GET View a Recipient](/api-reference/recipients/view-recipient) endpoint with a `RecipientId` or legacy `BankAccountId`.
+
+#### What to do  
+
+If a payout fails with the 121030 result code, then your platform can ask the user to register a new Recipient using [POST Create a Recipient](/api-reference/recipients/create-recipient) and check the VOP result in the `RecipientVerificationOfPayee`. If the `RecipientVerificationCheck` value is `MATCH` or `CLOSE_MATCH` then the payout can be retried and avoid the 121030 result code.
+
+Otherwise, your platform can sign an amendment to remove the restriction on payouts to `NO_MATCH` and `MATCH_NOT_POSSIBLE` Recipients
