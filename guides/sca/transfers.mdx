@@ -47,7 +47,7 @@ The rest of this guide describes the `USER_PRESENT` case.
     "AuthorId": "user_m_01JRJM5RR5NYQDN0S6QWJJDRMR",
     "DebitedFunds": {
         "Currency": "EUR",
-        "Amount": 3001 
+        "Amount": 50001 
     },
     "Fees": {
         "Currency": "EUR",
@@ -68,7 +68,7 @@ If SCA is required for the transfer request, the API response contains `PendingU
 
 #### Example API response
 
-In Sandbox, the low-amount exemption is systematically applied for amounts of 30 EUR or less (or equivalent in other currencies). So in the examples below, setting `DebitedFunds.Amount` to more than `3000` triggers SCA (see [SCA triggers in Sandbox](#sca-triggers-in-sandbox) below for details).
+In Sandbox, the Transaction Risk Analysis (TRA) [exemption](/guides/sca#exemptions-available-to-mangopay) is systematically applied for amounts of 500 EUR or less (or equivalent in other currencies). So in the examples below, setting `DebitedFunds.Amount` to more than `50000` triggers SCA (see [SCA triggers in Sandbox](#sca-triggers-in-sandbox) below for details).
 
 <Tabs>
 <Tab title="SCA redirection required">
@@ -83,11 +83,11 @@ In Sandbox, the low-amount exemption is systematically applied for amounts of 30
     "CreditedUserId": "user_m_01JRHSS3B18H86QA0C467RVK07",
     "DebitedFunds": {
         "Currency": "EUR",
-        "Amount": 3001
+        "Amount": 50001
     },
     "CreditedFunds": {
         "Currency": "EUR",
-        "Amount": 3001
+        "Amount": 50001
     },
     "Fees": {
         "Currency": "EUR",
@@ -215,14 +215,14 @@ While in Production, Mangopay will apply the exemptions for low-risk or low-amou
 In Sandbox, SCA is triggered on [POST Create a Transfer](/api-reference/transfers/create-transfer) when all of the following are true: 
 - `DebitedWalletId` and `CreditedWalletId` belong to different `OWNER` users. 
 - The type of users owning the wallets is **Natural** or **Soletrader** (in any combination for debited and credited user).
-- `DebitedFunds.Amount` is greater than 30 EUR or equivalent. So if `Currency` is `EUR`, this means `Amount` must be `3001` or more.
+- `DebitedFunds.Amount` is greater than 500 EUR or equivalent. So if `Currency` is `EUR`, this means `Amount` must be `50001` or more.
 - `ScaContext` is `USER_PRESENT`
 
 The users involved in the transfer don't have to be already enrolled in SCA.
 
 In Sandbox, SCA is not triggered if any of the following are true:
 - The legal user's `LegalPersonType` is `BUSINESS`, `PARTNERSHIP`, or `ORGANIZATION`
-- The amount is less than 30 EUR or equivalent
+- The amount is less than 500 EUR or equivalent
 - `ScaContext` is `USER_NOT_PRESENT` or not sent (in which case it is `null`)
 
 ### Postman 
