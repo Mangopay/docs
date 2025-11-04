@@ -48,7 +48,7 @@ On the 4 endpoints listed above (only), your platform must send the `ScaContext`
 The `ScaContext` parameter has the values:
 
 - `USER_PRESENT` – The user is taking the SCA-triggering action of accessing their wallet. The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless exempted because a successful SCA session for wallet access occurred in the last 180 days, so no redirection link was returned).
-- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action.
+- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action. If the user has not given (or has revoked) their consent, then `USER_NOT_PRESENT` returns a 403 error. 
 
 The `ScaContext` parameter should be considered mandatory and the relevant value must be sent on all wallet access requests for `OWNER` users. You do not need to send `ScaContext` if the `UserCategory` is `PAYER`.
 

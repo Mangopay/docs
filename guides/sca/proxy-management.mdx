@@ -49,14 +49,14 @@ As explained in the rest of this guide, Mangopay’s system for managing proxy i
 <td class="table-content">Now</td>
 <td class="table-content">ASAP</td>
 </tr><tr>
+<td class="table-content">Integrate consent management endpoint to collect consent and enable users to revoke it</td>
+<td class="table-content">Now</td>
+<td class="table-content">ASAP</td>
+</tr><tr>
+</tr><tr>
 <td class="table-content">Start collecting user consent for proxy (via dedicated endpoint and other SCA sessions)</td>
-<td class="table-content">Now</td>
+<td class="table-content">Once proxy activated in production</td>
 <td class="table-content">ASAP</td>
-</tr><tr>
-<td class="table-content">Integrate consent management endpoint to enable users to revoke consent</td>
-<td class="table-content">Now</td>
-<td class="table-content">ASAP</td>
-</tr><tr>
 <td class="table-content">
 Ensure you send the relevant `ScaContext` value on all endpoints: 
 - Transfers (ensure correct value sent)
@@ -321,7 +321,7 @@ Mangopay’s SCA solution relies on the `ScaContext` value to determine whether 
 
 The logic of the overall flow is shown below:
 {/* light mode */}
-<div className="block dark:hidden">
+<div className="block dark:hidden w-3/4 mx-auto">
 ```mermaid
 %%{
   init: {
@@ -370,7 +370,7 @@ flowchart TD
 ```
 </div>
 {/* dark mode */}
-<div className="hidden dark:block">
+<div className="hidden dark:block w-3/4 mx-auto">
 ```mermaid 
 %%{
   init: {
@@ -419,18 +419,6 @@ flowchart TD
 ```
 </div>
 
-
-Therefore, for an action to be allowed with `ScaContext` set to `USER_NOT_PRESENT`, the following must be true:
-
-- Your platform has a proxy in place to act on the user’s behalf (in your legal documentation)
-- The proxy management system is activated for the action
-- The user has given their consent to Mangopay for the action
-
-If the user’s consent is missing and thus the action was refused, then your platform has two options: 
-
-1. Obtain consent from the user by calling [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent), and then retry the action with `USER_NOT_PRESENT`
-2. Retry the action with the user on session to authenticate, by setting `ScaContext` to `USER_PRESENT` and redirecting the user on the `PendingUserAction.RedirectUrl` returned
-
 <Note>
 **Note – SCA exemptions on specific action**
 
@@ -438,3 +426,25 @@ It may happen that Mangopay can apply an [SCA exemption](/guides/sca#exemptions-
 
 This is not reflected in the diagram above.
 </Note>
+
+Therefore, for an action to be allowed with `ScaContext` set to `USER_NOT_PRESENT`, the following must be true:
+
+- Your platform has a proxy in place to act on the user’s behalf (in your legal documentation)
+- The proxy management system is activated for the action
+- The user has given their consent to Mangopay for the action
+
+If the user’s consent is missing, either because it hasn't been given yet or it has been revoked, then sending `USER_NOT_PRESENT` returns a 403 error: 
+
+```json 403 - Consent not given for USER_NOT_PRESENT
+{
+    "Message": "You are not authorized to perform this action. The user has not provided consent to the requested proxy",
+    "Type": "sca_proxy_missing",
+    "Id": "bbf56cc0-079d-44fd-9e23-53bdb3e283e5#1762177336",
+    "Date": 1762177337,
+    "errors": null
+}
+```
+
+In this situation, your platform has two options:
+1. Obtain consent from the user by calling [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) and redirecting the user to the hosted SCA session, asking them to check the relevant checkbox. Then retry the initial action with `USER_NOT_PRESENT`. 
+1. Retry the action with the user on session to authenticate by setting `ScaContext` to `USER_PRESENT` and redirecting the user on the `PendingUserAction.RedirectUrl` returned. Note that this SCA session also presents the user with the consent screen on which they can check the checkbox to give consent for future actions.

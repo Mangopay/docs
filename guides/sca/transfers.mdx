@@ -21,7 +21,7 @@ On the [POST Create a Transfer](/api-reference/transfers/create-transfer) endpoi
 The `ScaContext` parameter has the values:
 
 - `USER_PRESENT` – The user is taking the SCA-triggering action of initiating a transfer. The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an [exemption](/guides/sca#exemptions-on-actions) for low-amount and low-risk transfers, so no redirection link was returned).
-- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action.
+- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action. If the user has not given (or has revoked) their consent, then `USER_NOT_PRESENT` returns a 403 error. 
 
 The `ScaContext` parameter should be considered mandatory and the relevant value must be sent on all transfers initiated by `OWNER` users. You do not need to send `ScaContext` if the `UserCategory` is `PAYER`.
 

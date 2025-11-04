@@ -217,6 +217,23 @@ Read more about [country restrictions](/guides/users/country-restrictions) **&ra
 }  
 ```
 </Accordion>
+<Accordion title="403 - Consent not given for proxy when USER_NOT_PRESENT sent">
+```json 403 - Forbidden
+{
+    "Message": "You are not authorized to perform this action. The user has not provided consent to the requested proxy",
+    "Type": "sca_proxy_missing",
+    "Id": "bbf56cc0-079d-44fd-9e23-53bdb3e283e5#1762177336",
+    "Date": 1762177337,
+    "errors": null
+}
+```
+
+The 403 error above occurs when your platform has [proxy management](/guides/sca/proxy-management) activated and sends `USER_NOT_PRESENT` for `ScaContext` with new values for `Email`, `PhoneNumber` or `PhoneNumberCountry`, but the user has not given (or has revoked) their consent for your platform to update SCA contact information in their absence.
+
+There are two ways to resolve this: 
+1. Ask the user to consent to your use of `USER_NOT_PRESENT` for this action by ticking the checkbox returned on the [POST Manage proxy consent for a User](/api-reference/users/manage-proxy-consent) endpoint 
+2. Send the API call to update SCA contact information again but with `ScaContext` set to `USER_PRESENT`, and redirect the user to authenticate the action
+</Accordion>
 </AccordionGroup>
 
 <ResponseExample>  
