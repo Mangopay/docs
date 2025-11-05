@@ -1,0 +1,60 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createLegalUserSca(legalUserScaObject)
+  begin
+    response = MangoPay::LegalUserSca.create(legalUserScaObject)
+    puts response
+    return response
+  rescue MangoPay::ResponseError => error
+    puts "Failed to create User: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+myLegalUserSca = {
+  UserCategory: 'OWNER',
+  TermsAndConditionsAccepted: true,
+  LegalPersonType: 'SOLETRADER',
+  Name: 'Alex Smith',
+  Email: 'alex.smith.services@example.com',
+  LegalRepresentative: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Birthday: 652117514,
+    Nationality: 'FR',
+    CountryOfResidence: 'FR',
+    Email: 'alex.smith@example.com',
+    PhoneNumber: '0611111111',
+    PhoneNumberCountry: 'FR'
+  },
+  CompanyNumber: '123456789',
+  HeadquartersAddress: {
+    AddressLine1: '3 rue de la Cité',
+    AddressLine2: 'Appartement 7',
+    City: 'Paris',
+    Region: 'Île-de-France',
+    PostalCode: '75004',
+    Country: 'FR'
+  },
+  LegalRepresentativeAddress: {
+    AddressLine1: '3 rue de la Cité',
+    AddressLine2: 'Appartement 7',
+    City: 'Paris',
+    Region: 'Île-de-France',
+    PostalCode: '75004',
+    Country: 'FR'
+  },
+  Tag: 'Created using the Mangopay Ruby SDK'
+}
+
+createLegalUserSca(myLegalUserSca)
+```

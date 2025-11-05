@@ -1,0 +1,24 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def closeLegalUserSca(userId)
+  begin
+    response = MangoPay::LegalUser.close(userId)
+    puts response
+    return response
+  rescue MangoPay::ResponseError => error
+    puts "Failed to close User: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+closeLegalUserSca('user_m_01K85X5HKK3YD61Y3YXD9FHV7H')
+```

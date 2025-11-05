@@ -1,0 +1,29 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def updateLegalUserSca(legalUserScaId, legalUserScaObject)
+  begin
+    response = MangoPay::LegalUserSca.update(legalUserScaId, legalUserScaObject)
+    puts response
+    return response
+  rescue MangoPay::ResponseError => error
+    puts "Failed to update User: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+myLegalUserSca = {
+  Tag: 'New tag',
+  TermsAndConditionsAccepted: true
+}
+
+updateLegalUserSca('user_m_01K85WZZWDYTG4AKT2P0NH954Y', myLegalUserSca)
+```

@@ -1,0 +1,27 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def getNaturalUserSca(userId)
+  begin
+    response1 = MangoPay::NaturalUserSca.fetch(userId)
+    # or:
+    response2 = MangoPay::User.fetch_sca(userId)
+    puts response1
+    puts response2
+    return response1
+  rescue MangoPay::ResponseError => error
+    puts "Failed to fetch User: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+getNaturalUserSca('user_m_01K85X5HKK3YD61Y3YXD9FHV7H')
+```

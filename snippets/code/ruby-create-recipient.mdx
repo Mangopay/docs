@@ -1,0 +1,48 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def createRecipient(recipient)
+  begin
+    response = MangoPay::Recipient.create(recipient, 'user_m_01JYEJ86451TKDK9BZAXRT4RTS')
+    puts response
+    return response
+  rescue MangoPay::ResponseError => error
+    puts "Failed to create Recipient: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+myRecipient = {
+  DisplayName: 'Alex Smith GBP account',
+  PayoutMethodType: 'LocalBankTransfer',
+  RecipientType: 'Individual',
+  Currency: 'GBP',
+  Country: 'GB',
+  IndividualRecipient: {
+    FirstName: 'Alex',
+    LastName: 'Smith',
+    Address: {
+      AddressLine1: '10 Kingsway',
+      City: 'London',
+      PostalCode: 'WC2B 6LH',
+      Country: 'GB'
+    }
+  },
+  LocalBankTransfer: {
+    GBP: {
+      SortCode: '200000',
+      AccountNumber: '55779911'
+    }
+  }
+}
+
+createRecipient(myRecipient)
+```

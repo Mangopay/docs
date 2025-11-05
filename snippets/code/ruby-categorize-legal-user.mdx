@@ -1,0 +1,43 @@
+```ruby Ruby
+require 'mangopay'
+
+MangoPay.configure do |client|
+  client.preproduction = true
+  client.client_id = 'your-mangopay-client-id'
+  client.client_apiKey = 'your-mangopay-api-key'
+  client.log_file = File.join(Dir.pwd, 'mangopay.log')
+end
+
+def categorizeLegalUser(userId, params)
+  begin
+    response = MangoPay::LegalUserSca.categorize(userId, params)
+    puts response
+    return response
+  rescue MangoPay::ResponseError => error
+    puts "Failed to categorize User: #{error.message}"
+    puts "Error details: #{error.details}"
+    return false
+  end
+end
+
+myLegalUserSca = {
+  UserCategory: 'OWNER',
+  TermsAndConditionsAccepted: true,
+  LegalRepresentative: {
+    Birthday: 652117514,
+    Nationality: 'FR',
+    CountryOfResidence: 'FR',
+    Email: 'name@example.com'
+  },
+  HeadquartersAddress: {
+        AddressLine1: '3 rue de la Cité',
+        AddressLine2: 'Appartement 7',
+        City: 'Paris',
+        Region: 'Île-de-France',
+        PostalCode: '75004',
+        Country: 'FR'
+    },
+}
+
+categorizeLegalUser('user_m_01K85X5HKK3YD61Y3YXD9FHV7H', myLegalUserSca)
+```
