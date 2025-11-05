@@ -131,7 +131,7 @@ Verification of Payee (VOP) impacts SEPA local schemes, which means Recipients w
 </AccordionGroup>
 
 <AccordionGroup>
-<Accordion title="400">
+<Accordion title="400 - Parameter errors">
 Example 400 error: 
 ```json
 {
@@ -166,6 +166,34 @@ The following error values may be returned:
   - If `LocalBankTransfer`, the IBAN country is not part of SEPA and the local currency is not EUR. 
   - If `InternationalBankTransfer`, the IBAN country is not GB or is not part of SEPA and local currency is not EUR.
 - `INVALID_ACCOUNT_NUMBER_AND_SORT_CODE_COMBINATION` – GB sort code and account number combination is not valid.
+</Accordion>
+<Accordion title="400 - User is PAYER but RecipientScope set to PAYOUT">
+```json
+{
+    "Id": "6e5f4718-7e68-4348-9967-84645261007f",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1762350143,
+    "Errors": {
+        "SCA": "2815488948686553431"
+    }
+}
+```
+This error occurs when `RecipientScope` is set to `PAYOUT` but the user's `UserCategory` is `PAYER`. A user must be an `OWNER` to register a Recipient that can be used for payouts.
+</Accordion>
+<Accordion title="400 - Legal User is missing LegalRepresentative.Email">
+```json
+{
+    "Id": "b8c130e9-1e18-4c67-80e6-a968a015608c",
+    "Message": "One or several required parameters are missing or incorrect. An incorrect resource ID also raises this kind of error.",
+    "Type": "param_error",
+    "Date": 1762356390,
+    "Errors": {
+        "SCA": "KAR_0042"
+    }
+}
+```
+This error typically means that a Legal User is missing the LegalRepresentative.Email, which is required to perform SCA. Prior to the introduction of SCA, it was possible to create a Legal User without the legal representative's email.
 </Accordion>
 </AccordionGroup>
 
