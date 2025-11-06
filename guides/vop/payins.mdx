@@ -196,7 +196,9 @@ The following is an example only: the Requesting PSP has control over both the m
 
 ## Integration recommendations
 
-1. Ensure that the Payer can easily see and copy the relevant value in your platform’s interface: 
+#### 1. Ensure vIBAN data is passed correctly to the paying user
+
+Ensure that the Payer can easily see and copy the relevant value in your platform’s interface:
 - `AccountOwner` returned on [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account#param-account-owner)
 - `OwnerName` returned on [GET View a Banking Alias](/api-reference/banking-aliases/view-banking-alias#param-owner-name)
     
@@ -204,15 +206,27 @@ This data point is the account holder name against which the VOP check is perfor
     
 Your platform should systematically perform a GET call to retrieve and display this data before inviting the user to make the payment.
 
-2. If your platforms is using the Banking Alias endpoints, plan to re-integrate using the the Virtual Accounts endpoints for greater control over the naming pattern, as well as all future feature developments.
+#### 2. Integrate the Virtual Account endpoints
 
-The Banking Alias endpoints will be deprecated in Q3 2026.
+If your platforms is using the [Banking Alias](/api-reference/banking-aliases/banking-alias-object) endpoints, plan to re-integrate using the the [Virtual Accounts](/api-reference/virtual-accounts/virtual-account-object) endpoints for greater control over the naming pattern, as well as all future feature developments.
+
+<Note>
+**Note – User-Owned Accounts requires contract amendment**
+
+If your platform is offering User-Owned Accounts via the Banking Alias endpoints, you need to sign the VOP contract amendment to continue offering these accounts via the Virtual Account endpoints.
+</Note>
+
+The Banking Alias endpoints will be decommissioned in Q3 2026.
 
 Banking Alias objects are available via the [GET View a Virtual Account](/api-reference/virtual-accounts/view-virtual-account) endpoint, by using the Banking Alias `Id` and its `WalletId` as the path parameters.
 
 This means your platform can already integrate the GET to retrieve the account data of Banking Alias objects.
 
-3. If your platform is using the Bank Wire PayIn endpoint, ensure Payers are provided the `BankAccount.OwnerName` returned in the response of [POST Create a Bank Wire PayIn](/api-reference/bank-wire-payins/create-bank-wire-payin). Note that for direct bank wire pay-ins, Mangopay is not the responding PSP – that role is played by its partners.
+#### 3. Ensure direct bank wire pay-in data is correctly passed to the payer user 
+
+If your platform is using the Bank Wire PayIn endpoint, ensure Payers are provided the `BankAccount.OwnerName` returned in the response of [POST Create a Bank Wire PayIn](/api-reference/bank-wire-payins/create-bank-wire-payin). 
+
+Note that for direct bank wire pay-ins, Mangopay is not the responding PSP – that role is played by its partners.
 
 ## Banking Alias categorization
 
@@ -314,3 +328,13 @@ Platforms using the [POST Create a Banking Alias](/api-reference/banking-aliases
 
 - The `OwnerName` property is still required but ignored and set automatically by Mangopay. Platforms use the `OwnerName` provided in the response or retrieve it systematically via the [GET View a Banking Alias](/api-reference/banking-aliases/view-banking-alias) endpoint.
 - The `VirtualAccountPurpose` is set automatically by Mangopay on creation.
+
+<Check>
+**Best practice – Integrate Virtual Account endpoints**
+
+If your platform is still using the [Banking Alias](/api-reference/banking-aliases/banking-alias-object) endpoints for vIBANs, you are strongly recommended to re-integrate using the [Virtual Accounts](/api-reference/virtual-accounts/virtual-account-object) endpoints (see the [guide](/guides/payment-methods/banking/virtual-iban) for more). 
+
+Note that offering User-Owned Accounts via the Virtual Account endpoints requires your platform to sign the VOP contract amendment. 
+
+The Banking Alias endpoints will be decommissioned in Q3 2026.
+</Check>
