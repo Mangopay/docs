@@ -1,0 +1,63 @@
+```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.GET;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+public class CreateLegalUserSca
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var myUser = new UserLegalScaOwnerPostDTO
+            {
+                HeadquartersAddress = new Address
+                {
+                    AddressLine1 = "17 Rue de la République",
+                    City = "Paris",
+                    Region = "Ile-de-France",
+                    PostalCode = "75001",
+                    Country = CountryIso.FR
+                },
+                LegalRepresentativeAddress = new Address
+                {
+                    AddressLine1 = "12032 Wiza Way",
+                    City = "Paris",
+                    Region = "Ile-de-France",
+                    PostalCode = "75001",
+                    Country = CountryIso.FR
+                },
+                Name = "Dedicated Notion",
+                LegalPersonType = LegalPersonType.BUSINESS,
+                LegalRepresentative = new LegalRepresentative
+                {
+                    FirstName = "Derek",
+                    LastName = "Nelson",
+                    Email = "derek.nelson@dedicatednotion.com",
+                    Birthday = new DateTime(1980, 3, 15),
+                    Nationality = CountryIso.FR,
+                    CountryOfResidence = CountryIso.FR,
+                },
+                CompanyNumber = "325698745",
+                Email = "dedicatednotion@dedicatednotion.com",
+                Tag = "Created using the Mangopay .NET SDK",
+                TermsAndConditionsAccepted = true,
+                UserCategory = UserCategory.OWNER
+            };
+
+            var createLegalUser = await api.Users.CreateOwnerAsync(myUser);
+
+            string prettyPrint = JsonConvert.SerializeObject(createLegalUser, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

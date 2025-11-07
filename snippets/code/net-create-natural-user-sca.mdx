@@ -1,0 +1,46 @@
+﻿```csharp .NET 
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.POST;
+using Newtonsoft.Json;
+
+public class CreateNaturalUserSca
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-mangopay-api-key";
+
+            var myUser = new UserNaturalScaOwnerPostDTO()
+            {
+                FirstName = "Dolly",
+                LastName = "Nelson",
+                Email = "dolly.nelson@example.com",
+                Address = new Address
+                {
+                    AddressLine1 = "17 Rue de la République",
+                    City = "Paris",
+                    PostalCode = "75001",
+                    Country = CountryIso.FR
+                },
+                Birthday = new DateTime(1985, 3, 15),
+                Nationality = CountryIso.FR,
+                CountryOfResidence = CountryIso.FR,
+                Tag = "Created using the Mangopay .NET SDK",
+                TermsAndConditionsAccepted = true,
+                UserCategory = UserCategory.OWNER
+            };
+
+            var createNaturalUser = await api.Users.CreateOwnerAsync(myUser);
+
+            string prettyPrint = JsonConvert.SerializeObject(createNaturalUser, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

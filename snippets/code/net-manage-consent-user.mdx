@@ -1,0 +1,24 @@
+﻿```csharp .NET
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+public class EnrollUser
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var result =
+                await api.Users.ManageConsent("user_m_01K8B28H25JBHX1QFVC0T54S1Q");
+
+            string prettyPrint = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

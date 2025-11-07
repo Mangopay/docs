@@ -1,0 +1,32 @@
+```csharp .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+public class UpdateLegalUserSca
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            var userId = "user_m_01K8AZMW2X4HWC02XVWXXSH86T";
+
+            var myUser = new UserLegalScaPutDTO
+            {
+                TermsAndConditionsAccepted = true,
+                Tag = "Updated tag"
+            };
+
+            var updatedUser = await api.Users.UpdateLegalAsync(myUser, userId);
+
+            string prettyPrint = JsonConvert.SerializeObject(updatedUser, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

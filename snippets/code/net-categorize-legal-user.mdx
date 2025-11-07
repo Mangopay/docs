@@ -1,0 +1,47 @@
+﻿```csharp .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities.PUT;
+using Newtonsoft.Json;
+
+public class CategorizeUser
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+            var categorizeLegal = new CategorizeUserLegalPutDTO
+            {
+                HeadquartersAddress = new Address
+                {
+                    AddressLine1 = "17 Rue de la République",
+                    City = "Paris",
+                    Region = "Ile-de-France",
+                    PostalCode = "75001",
+                    Country = CountryIso.FR
+                },
+                CompanyNumber = "325698745",
+                LegalRepresentative = new LegalRepresentative
+                {
+                    Birthday = new DateTime(1980, 3, 15),
+                    Nationality = CountryIso.FR,
+                    CountryOfResidence = CountryIso.FR,
+                },
+                TermsAndConditionsAccepted = true,
+                UserCategory = UserCategory.OWNER
+            };
+
+            var categorized =
+                await api.Users.CategorizeLegalAsync(categorizeLegal, "user_m_01K8B28H25JBHX1QFVC0T54S1Q");
+
+            string prettyPrint = JsonConvert.SerializeObject(categorized, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

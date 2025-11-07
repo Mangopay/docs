@@ -1,0 +1,32 @@
+﻿```csharp .NET
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+public class ViewUserSca
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+        api.Config.ClientId = "your-client-id";
+        api.Config.ClientPassword = "your-api-key";
+
+            var userId = "user_m_01K8AZGCCWGE9AA7J2M7ZE0SQ5";
+
+            var viewUser = await api.Users.GetScaAsync(userId);
+            // or:
+            // var viewUserNatural = await api.Users.GetNaturalScaAsync(userId);
+            // var viewUserLegal = await api.Users.GetNaturalScaAsync(userId);
+
+            string prettyPrint = JsonConvert.SerializeObject(viewUser, Formatting.Indented);
+            string prettyPrintNatural = JsonConvert.SerializeObject(viewUserNatural, Formatting.Indented);
+            string prettyPrintLegal = JsonConvert.SerializeObject(viewUserLegal, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+            Console.WriteLine(prettyPrintNatural);
+            Console.WriteLine(prettyPrintLegal);
+        }).GetAwaiter().GetResult();
+    }
+}
+```

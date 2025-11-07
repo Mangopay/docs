@@ -1,0 +1,25 @@
+﻿```csharp .NET
+using MangoPay.SDK;
+using Newtonsoft.Json;
+
+public class CloseUser
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
+
+            await api.Users.CloseLegalAsync("user_m_01K8B3WYXFGHKZZSN4DCEDJC69");
+            var closed =
+                await api.Users.GetScaAsync("user_m_01K8B3WYXFGHKZZSN4DCEDJC69");
+
+            string prettyPrint = JsonConvert.SerializeObject(closed, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```
