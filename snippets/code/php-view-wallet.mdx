@@ -1,12 +1,9 @@
-  
 ```php PHP
 <?php 
 
 require_once 'vendor/autoload.php';
 
 use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
 
 $api = new MangoPayApi();
 
@@ -20,9 +17,7 @@ try {
     $response = $api->Wallets->Get($walletId, $scaContext = 'USER_PRESENT');
 
     print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
+} catch (\MangoPay\Libraries\ResponseException $exception) {
+    print_r($exception->GetErrorDetails()->Data['RedirectUrl']);
 }
 ```

@@ -1,0 +1,53 @@
+```php PHP
+<?php
+require_once 'vendor/autoload.php';
+
+use MangoPay\CurrencyIso;
+use MangoPay\IndividualRecipient;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\MangoPayApi;
+use MangoPay\Recipient;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $localBankTransfer = [];
+    $gbpDetails = [];
+    $gbpDetails["SortCode"] = "010039";
+    $gbpDetails["AccountNumber"] = "11696419";
+    $localBankTransfer["GBP"] = $gbpDetails;
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = '10 Kingsway';
+    $address->City = 'London';
+    $address->Country = 'GB';
+    $address->PostalCode = 'WC2B 6LH';
+
+    $individualRecipient = new IndividualRecipient();
+    $individualRecipient->FirstName = "Alex";
+    $individualRecipient->LastName = "Smith";
+    $individualRecipient->Address = $address;
+
+    $recipient = new Recipient();
+    $recipient->DisplayName = "Alex Smith GBP account";
+    $recipient->PayoutMethodType = "LocalBankTransfer";
+    $recipient->RecipientType = "Individual";
+    $recipient->Currency = CurrencyIso::GBP;
+    $recipient->IndividualRecipient = $individualRecipient;
+    $recipient->LocalBankTransfer = $localBankTransfer;
+    $recipient->Country = "GB";
+
+    $response = $api->Recipients->Create($recipient, 'user_m_01K894KCN9MKGAJDCCDGQ7RSQX');
+
+    print_r($response);
+} catch (MGPResponseException $e) {
+    print_r($e);
+} catch (MGPException $e) {
+    print_r($e);
+}
+```

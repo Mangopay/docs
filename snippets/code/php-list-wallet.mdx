@@ -1,12 +1,9 @@
-  
 ```php PHP
 <?php 
 
 require_once 'vendor/autoload.php';
 
 use MangoPay\MangoPayApi;
-use MangoPay\Libraries\ResponseException as MGPResponseException;
-use MangoPay\Libraries\Exception as MGPException;
 
 $api = new MangoPayApi();
 
@@ -15,14 +12,15 @@ $api->Config->ClientPassword = 'your-api-key';
 $api->Config->TemporaryFolder = 'tmp/';
 
 try {
-    $userId = '146476890';
+    $userId = 'user_m_01K894KCN9MKGAJDCCDGQ7RSQX';
+    $pagination = new \MangoPay\Pagination(1, 10);
+    $filter = new FilterWallets();
+    $filter->ScaContext = "USER_PRESENT";
 
-    $response = $api->Users->GetWallets($userId);
+    $response = $api->Users->GetWallets($userId, $pagination, null, $filter);
 
     print_r($response);
-} catch(MGPResponseException $e) {
-    print_r($e);
-} catch(MGPException $e) {
-    print_r($e);
-}  
+} catch (\MangoPay\Libraries\ResponseException $exception) {
+    print_r($exception->GetErrorDetails()->Data['RedirectUrl']);
+}
 ```
