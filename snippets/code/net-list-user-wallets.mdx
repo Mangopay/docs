@@ -1,23 +1,38 @@
 ```csharp .NET 
 using MangoPay.SDK;
+using MangoPay.SDK.Core;
 using MangoPay.SDK.Entities;
 using Newtonsoft.Json;
 
-class Program
+public class ListUserWalletsSca
 {
-    static async Task Main(string[] args)
+    public void Run()
     {
-        MangoPayApi api = new MangoPayApi();
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
 
-        api.Config.ClientId = "your-client-id";
-        api.Config.ClientPassword = "your-api-key";
+            api.Config.ClientId = "your-client-id";
+            api.Config.ClientPassword = "your-api-key";
 
-        var userId = "user_m_01J2TZ261WZNDM0ZDRWGDYA4GN";
-        
-        var wallets = await api.Users.GetWalletsAsync(userId, new Pagination(1, 10));
+            var userId = "user_m_01K8AZGCCWGE9AA7J2M7ZE0SQ5";
+            var filter = new FilterWallets
+            {
+                ScaContext = "USER_PRESENT"
+            };
+            var pagination = new Pagination(1, 10);
 
-        string prettyPrint = JsonConvert.SerializeObject(wallets, Formatting.Indented);
-        Console.WriteLine(prettyPrint);
+            try
+            {
+                await api.Users.GetWalletsAsync(userId, pagination, filter);
+            }
+            catch (ResponseException ex)
+            {
+                Dictionary<string, string> data = ex.ResponseError.Data;
+                string prettyPrint = JsonConvert.SerializeObject(data, Formatting.Indented);
+                Console.WriteLine(prettyPrint);
+            }
+        }).GetAwaiter().GetResult();
     }
 }
 ```

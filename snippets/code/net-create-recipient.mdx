@@ -1,0 +1,55 @@
+```csharp .NET
+using MangoPay.SDK;
+using MangoPay.SDK.Core.Enumerations;
+using MangoPay.SDK.Entities;
+using MangoPay.SDK.Entities.GET;
+using Newtonsoft.Json;
+
+namespace ConsoleApp1.Recipient;
+
+public class CreateRecipient
+{
+    public void Run()
+    {
+        Task.Run(async () =>
+        {
+            MangoPayApi api = new MangoPayApi();
+
+            api.Config.ClientId = "your-mangopay-client-id";
+            api.Config.ClientPassword = "your-mangopay-api-key";
+
+            RecipientPostDTO postDto = new RecipientPostDTO();
+
+            Dictionary<string, object> localBankTransfer = new Dictionary<string, object>();
+            Dictionary<string, object> gbpDetails = new Dictionary<string, object>();
+            gbpDetails.Add("SortCode", "010039");
+            gbpDetails.Add("AccountNumber", "11696419");
+            localBankTransfer.Add(CurrencyIso.GBP.ToString(), gbpDetails);
+
+            postDto.DisplayName = "Display name";
+            postDto.PayoutMethodType = "LocalBankTransfer";
+            postDto.RecipientType = "Individual";
+            postDto.Currency = CurrencyIso.GBP;
+            postDto.IndividualRecipient = new IndividualRecipient()
+            {
+                FirstName = "Alex",
+                LastName = "Smith",
+                Address = new Address
+                {
+                    AddressLine1 = "10 Kingsway",
+                    City = "London",
+                    PostalCode = "WC2B 6LH",
+                    Country = CountryIso.GB
+                }
+            };
+            postDto.LocalBankTransfer = localBankTransfer;
+            postDto.Country = CountryIso.GB;
+
+            var createdRecipient = await api.Recipients.CreateAsync(postDto, "user_m_01K8AZGCCWGE9AA7J2M7ZE0SQ5");
+
+            string prettyPrint = JsonConvert.SerializeObject(createdRecipient, Formatting.Indented);
+            Console.WriteLine(prettyPrint);
+        }).GetAwaiter().GetResult();
+    }
+}
+```
