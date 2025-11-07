@@ -1,0 +1,44 @@
+```php PHP
+<?php
+require_once 'vendor/autoload.php';
+
+use MangoPay\MangoPayApi;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\Libraries\Exception as MGPException;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-mangopay-client-id';
+$api->Config->ClientPassword = 'your-mangopay-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $user = new \MangoPay\UserNaturalSca();
+
+    $user->FirstName = 'Jane';
+    $user->LastName = 'Smith';
+    $user->Email = "jane.smith@example.com";
+    
+    //$user->Address = new \MangoPay\Address();
+    //$user->Address->AddressLine1 = 'Rue des plantes';
+    //$user->Address->AddressLine2 = 'Building A';
+    //$user->Address->City = 'Paris';
+    //$user->Address->Country = 'FR';
+    //$user->Address->PostalCode = '75000';
+    //$user->Address->Region = 'IDF';
+    $user->Tag = 'Created using the Mangopay PHP SDK';
+    $user->Nationality = 'FR';
+    $user->CountryOfResidence = 'FR';
+    $user->Birthday = 655772400;
+    $user->TermsAndConditionsAccepted = true;
+    $user->UserCategory = 'Owner';
+    
+    $response = $api->Users->Create($user);
+
+    print_r($response);
+} catch(MGPResponseException $e) {
+    print_r($e);
+} catch(MGPException $e) {
+    print_r($e);
+}
+```

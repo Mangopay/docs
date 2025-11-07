@@ -1,0 +1,58 @@
+```php PHP
+<?php
+require_once 'vendor/autoload.php';
+
+use MangoPay\LegalPersonType;
+use MangoPay\LegalRepresentative;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\MangoPayApi;
+use MangoPay\UserCategory;
+use MangoPay\UserLegalSca;
+
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-mangopay-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+$api->Config->DebugMode = true;
+
+try {
+    $legalRepresentative = new LegalRepresentative();
+    $legalRepresentative->FirstName = "John";
+    $legalRepresentative->LastName = "SCA Review";
+    $legalRepresentative->Email = "john.sca@example.com";
+    $legalRepresentative->Birthday = mktime(0, 0, 0, 12, 21, 1975);
+    $legalRepresentative->Nationality = 'FR';
+    $legalRepresentative->CountryOfResidence = 'FR';
+    $legalRepresentative->PhoneNumber = "+33611111111";
+    $legalRepresentative->PhoneNumberCountry = "FR";
+
+    $address = new \MangoPay\Address();
+    $address->AddressLine1 = 'Rue des plantes';
+    $address->AddressLine2 = '2nd floor';
+    $address->City = 'Paris';
+    $address->Country = 'FR';
+    $address->PostalCode = '75000';
+    $address->Region = 'IDF';
+
+    $user = new UserLegalSca();
+    $user->Name = "MartixSampleOrg";
+    $user->Email = "john.sca@example.com";
+    $user->LegalPersonType = LegalPersonType::Business;
+    $user->HeadquartersAddress = $address;
+    $user->UserCategory = UserCategory::Owner;
+    $user->LegalRepresentativeAddress = $address;
+    $user->CompanyNumber = "LU123456";
+    $user->TermsAndConditionsAccepted = true;
+    $user->LegalRepresentative = $legalRepresentative;
+
+    $response = $api->Users->Create($user);
+
+    print_r($response);
+} catch (MGPResponseException $e) {
+    print_r($e);
+} catch (MGPException $e) {
+    print_r($e);
+}
+```

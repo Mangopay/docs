@@ -1,26 +1,28 @@
 ```php PHP
 <?php
-    require_once 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
-    use MangoPay\MangoPayApi;
-    use MangoPay\Libraries\ResponseException as MGPResponseException;
-    use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Libraries\Exception as MGPException;
+use MangoPay\Libraries\ResponseException as MGPResponseException;
+use MangoPay\MangoPayApi;
 
-    $api = new MangoPayApi();
+$api = new MangoPayApi();
+
+$api->Config->ClientId = 'your-client-id';
+$api->Config->ClientPassword = 'your-mangopay-api-key';
+$api->Config->TemporaryFolder = 'tmp/';
+
+try {
+    $userNatural = $api->Users->GetNaturalSca('user_m_01K8932FJ54AF8BY7PY80G0JG1');
+
+    $api->Users->Close($userNatural);
     
-    $api->Config->ClientId = 'your-client-id';
-    $api->Config->ClientPassword = 'your-api-key';
-    $api->Config->TemporaryFolder = 'tmp/';
+    $afterClose = $api->Users->GetNaturalSca('user_m_01K8932FJ54AF8BY7PY80G0JG1');
 
-    try {
-        $user = $api->Users->GetNatural('user_m_01JVCNQBJHQCJCTAST064W3WCM');
-        
-        $response = $api->Users->Close($user);
-
-        print_r($response);
-    } catch(MGPResponseException $e) {
-        print_r($e);
-    } catch(MGPException $e) {
-        print_r($e);
-    }
+    print_r($afterClose);
+} catch (MGPResponseException $e) {
+    print_r($e);
+} catch (MGPException $e) {
+    print_r($e);
+}
 ```

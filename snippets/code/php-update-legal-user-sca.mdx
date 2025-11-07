@@ -1,5 +1,6 @@
 ```php PHP
 <?php
+
 require_once 'vendor/autoload.php';
 
 use MangoPay\Libraries\Exception as MGPException;
@@ -13,13 +14,14 @@ $api->Config->ClientPassword = 'your-mangopay-api-key';
 $api->Config->TemporaryFolder = 'tmp/';
 
 try {
-    $userLegal = $api->Users->GetLegalSca('user_m_01K8932FJ54AF8BY7PY80G0JG1');
+    $user = $api->Users->GetLegalSca('user_m_01K892WTEN9AM7EFS2CYY9NVYQ');
 
-    $api->Users->Close($userLegal);
-    
-    $afterClose = $api->Users->GetLegalSca('user_m_01K8932FJ54AF8BY7PY80G0JG1');
+    $user->Tag = 'Updated tag';
+    $user->TermsAndConditionsAccepted = true;
 
-    print_r($afterClose);
+    $response = $api->Users->UpdateSca($user);
+
+    print_r($response);
 } catch (MGPResponseException $e) {
     print_r($e);
 } catch (MGPException $e) {
