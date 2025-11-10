@@ -67,7 +67,32 @@ Read more about [proxy management](/guides/sca/proxy-management) **&rarr;**
 
 The following table lists the actions and endpoints on which SCA redirection is required (or may be required, because Mangopay may be able to exempt a given transfer or wallet access request). 
 
+SCA redirection on enrollment and authentication actions is orchestrated in the API by the `ScaContext` parameter, which has the following values:
+- `USER_PRESENT` – The user is taking the SCA-triggering action. The platform must [redirect the user](/guides/sca/session) using the `PendingUserAction.RedirectUrl` returned so that the user can complete the SCA session (unless Mangopay applied an [exemption](/#exemptions-available-to-mangopay) on the given instance of an action, so no redirection link was returned).
+- `USER_NOT_PRESENT` – The platform is taking the action under proxy from the user and the user has previously given consent to Mangopay (via the SCA hosted experience) to allow the action. If the user has not given (or has revoked) their consent, then `USER_NOT_PRESENT` returns a 403 error. 
+
 Additional integration is required if your platform is taking actions by proxy on behalf of the user (and sending the `ScaContext` value `USER_NOT_PRESENT`) – [read more](/guides/sca/proxy-management#integration-timeline) **&rarr;**
+
+#### SCA enforcement
+
+SCA redirection logic needs to be implemented on the actions listed below.
+
+To roll out this change, Mangopay delivered: 
+- New endpoints (with `/sca/` in the URL path) for User creation, categorization, and modification
+- New endpoint to create Recipients (replacing legacy Bank Accounts)
+- Changes to the existing Transfer creation and 4 relevant wallet access endpoints
+
+On **Users** and **Recipients**, the default value for `ScaContext` was introduced as `USER_PRESENT`, as the endpoints could be newly integrated.
+
+On **Transfers** and **wallet access**, the default value for `ScaContext` was introduced as `USER_NOT_PRESENT` as a temporary measure to allow adoption without breaking existing flows.
+
+<Warning>
+**Caution – Default value changing Dec 15, 2025**
+
+On **Transfers** and **wallet access**, the default value for `ScaContext` will change to `USER_PRESENT` on **Dec 15, 2025** (for transfers between `OWNER` users and their wallets). 
+
+This means that [SCA redirection](/guides/sca/session) will be required if the `PendingUserAction.RedirectUrl` is returned.
+</Warning>
 
 #### Enrollment and authentication
 
@@ -79,8 +104,8 @@ Additional integration is required if your platform is taking actions by proxy o
 [User creation](/guides/sca/users#register-an-owner-for-the-first-time) (if `OWNER`)
 </td>
 <td class="table-content">
-- [POST Create a Natural User](/api-reference/users/create-natural-user-sca)
-- [POST Create a Legal User](/api-reference/users/create-legal-user-sca)
+- [POST Create a Natural User (SCA)](/api-reference/users/create-natural-user-sca)
+- [POST Create a Legal User (SCA)](/api-reference/users/create-legal-user-sca)
 </td>
 </tr><tr>
 <td class="table-content">
@@ -95,8 +120,8 @@ Additional integration is required if your platform is taking actions by proxy o
 [User modification](/guides/sca/users#re-enroll-an-enrolled-owner) if SCA contact details changed (re-enrollment)
 </td>
 <td>
-- [PUT Update a Natural User](/api-reference/users/update-natural-user-sca)
-- [PUT Update a Legal User](/api-reference/users/update-legal-user-sca)
+- [PUT Update a Natural User (SCA)](/api-reference/users/update-natural-user-sca)
+- [PUT Update a Legal User (SCA)](/api-reference/users/update-legal-user-sca)
 </td>
 </tr><tr>
 <td class="table-content">
