@@ -81,13 +81,13 @@ string
 </td>
 <td class="table-content">
 The status of the transaction. The accepted values listed can only apply to the `ExternalTransactionType` mentioned:
-- `SETTLED` – `PAYMENT` successfully processed: funds are expected to be received.
-- `REFUNDED` – `REFUND` fully processed: funds were returned to the buyer.
-- `REFUND_REVERSED` – `REFUND` processed but reversed: funds were returned to the platform.
-- `DISPUTED` – Funds deducted due to a `DISPUTE`: not available for settlement.
-- `DEFENDED` – Funds temporarily returned to the platform as part of the `DISPUTE` defense process.
-- `DISPUTED_WON` – `DISPUTE` resolved in favor of the platform.
-- `DISPUTED_LOST` – `DISPUTE` resolved against the platform: funds permanently withdrawn to buyer.
+- `SETTLED` – `PAYMENT` successfully processed: funds are expected to be received (positive `Amount`).
+- `REFUNDED` – `REFUND` fully processed: funds were returned to the buyer (negative `Amount`).
+- `REFUND_REVERSED` – `REFUND` processed but reversed: funds were returned to the platform (positive `Amount`).
+- `DISPUTED` – Funds deducted due to a `DISPUTE`: not available for settlement (negative `Amount`).
+- `DEFENDED` – Funds temporarily returned to the platform as part of the `DISPUTE` defense process (negative `Amount`).
+- `DISPUTED_WON` – `DISPUTE` resolved in favor of the platform (positive `Amount`).
+- `DISPUTED_LOST` – `DISPUTE` resolved against the platform: funds permanently withdrawn to buyer (negative `Amount`).
 </td>
 <td class="table-content">
 string
@@ -115,13 +115,26 @@ date (DD-MM-YYYY)
 `Amount`
 </td>
 <td class="table-content">
-The amount of the transaction in the currency's minor unit.
+The amount of the transaction in the currency's minor unit. The `Amount` figure is positive or negative depending on the `ExternalTransactionStatus`:
+- `SETTLED` - Positive
+- `REFUNDED` - Negative
+- `REFUND_REVERSED` - Positive
+- `DISPUTED` - Negative
+- `DEFENDED` - Negative
+- `DISPUTED_WON` - Positive
+- `DISPUTED_LOST` - Negative
+
+Therefore: 
+- A positive `Amount` is expected to be received by Mangopay and thus credited to the settled amount during Echo's reconciliation process.
+- A negative `Amount` is expected to be retained by the third-party PSP and thus debited from the settled amount during Echo's reconciliation process.
+
+A negative figure must be declared using a hyphen-dash: `-`
 </td>
 <td class="table-content">
 string
 </td>
 <td class="table-content">
-`50000` (500)
+`50000` (which in EUR for example is 500.00)
 </td>
 </tr>
 <tr>
@@ -186,7 +199,7 @@ string
 `TotalSettlementFeesAmount`
 </td>
 <td class="table-content">
-The total amount of fees taken by the provider from the settlement in the currency's minor unit. This amount match the sum of all `ExternalProviderFees` values in the file, if they are provided.
+The total amount of fees taken by the provider from the settlement in the currency's minor unit. This amount matches the sum of all `ExternalProviderFees` values in the file, if they are provided.
 </td>
 <td class="table-content">
 string
@@ -197,10 +210,12 @@ string
 </tr>
 <tr>
 <td class="table-content">
-`TotalSettlementAmount`
+`TotalNetSettlementAmount`
 </td>
 <td class="table-content">
-Net settlement amount in the currency's minor unit, which must be the sum of the `Amount` values of all transaction lines, minus the `TotalSettlementFeesAmount`.
+Net settlement amount in the currency's minor unit, which must be the sum of the `Amount` values of all transaction lines, minus the `TotalSettlementFeesAmount`. The `Amount` values must be declared as positive or negative as described depending on the `ExternalTransactionStatus`.
+
+Echo uses the formula: `TotalNetSettlementAmount` = SUM(`Amount` - `ExternalProviderFees`)
 </td>
 <td class="table-content">
 string
